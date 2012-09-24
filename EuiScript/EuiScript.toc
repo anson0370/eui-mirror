@@ -1,0 +1,12 @@
+﻿## Interface: 50001
+## Title: |cffC495DDEui|r Script
+## Title-zhCN: |cffC495DDEUI|r附加模块
+## Title-zhTW: |cffC495DDEUI|r附加模塊
+## Author: Ljxx.net
+## X-Category: ElvUI
+## Version: 20120919A
+## RequiredDeps: ElvUI
+
+init.lua
+module\load_module.xml
+option.lua

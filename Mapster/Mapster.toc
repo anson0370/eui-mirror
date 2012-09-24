@@ -1,0 +1,34 @@
+## Interface: 50001
+## Notes: Simple Map Mod
+## Notes-zhCN: 简单实用的地图模块
+## Notes-frFR: Simples modifications de la carte.
+## Title: |cffC495DDEUI|rMapster
+## Title-zhCN: |cffC495DDEUI|r地图增强Mapster
+## Title-zhTW: |cffC495DDEUI|r地圖增強Mapster
+## Author: Nevcairiel
+## SavedVariables: MapsterDB
+## X-Category: Map
+## Version: 1.5.0
+## X-License: All rights reserved.
+## X-Curse-Packaged-Version: 1.5.0
+## X-Curse-Project-Name: Mapster
+## X-Curse-Project-ID: mapster
+## X-Curse-Repository-ID: wow/mapster/mainline
+
+## OptionalDeps: Ace3, LibWindow-1.1
+
+#@no-lib-strip@
+Libs\LibWindow-1.1\LibWindow-1.1.lua
+#@end-no-lib-strip@
+
+Locale\locale.xml
+
+Mapster.lua
+Config.lua
+
+Coords.lua
+GroupIcons.lua
+BattleMap.lua
+FogClear.lua
+InstanceMaps.lua
+Scaling.lua

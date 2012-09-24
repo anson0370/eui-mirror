@@ -1,0 +1,4 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="clickset.lua"/>
+	<Script file="clickset_opt.lua"/>
+</Ui>

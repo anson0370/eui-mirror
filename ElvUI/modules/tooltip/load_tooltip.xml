@@ -1,0 +1,8 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">	
+	<Script file='tooltip.lua'/>
+	<Script file='Achievement.lua'/>
+	<Script file='ReforgeInfo.lua'/>
+	<Script file='Symbiosis.lua'/>
+	<Script file='UnitRole.lua'/>
+	<Script file='options.lua'/>
+</Ui>

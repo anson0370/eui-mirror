@@ -1,0 +1,4 @@
+﻿<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file = "SoraClassTimer.lua"/>
+	<Script file = "SoraClassTimer_option.lua"/>
+</Ui>
