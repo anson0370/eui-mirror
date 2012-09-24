@@ -208,6 +208,16 @@ function AB:PositionAndSizeBarPet()
 		end
 		
 		self:StyleButton(button);
+
+		--wtf lol
+		if not button.CheckFixed then 
+			hooksecurefunc(button:GetCheckedTexture(), 'SetAlpha', function(self, value)
+				if value == 1 then
+					self:SetAlpha(0.3)
+				end
+			end)
+			button.CheckFixed = true;
+		end		
 	end
 	possibleButtons = nil;
 	

@@ -13,8 +13,8 @@ function M:ErrorFrameToggle(event)
 end
 
 function M:COMBAT_LOG_EVENT_UNFILTERED(_, _, event, _, sourceGUID, sourceName, _, _, _, destName, _, _, _, _, _, spellID, spellName)
-	if not (event == "SPELL_INTERRUPT") then return end
-
+	if (event ~= "SPELL_INTERRUPT") or (select(2, IsInInstance()) == "pvp") then return end
+		
 	if E.db.general.interruptAnnounce == "PARTY" then
 		if IsInGroup() then
 			SendChatMessage(sourceName.. " ".. INTERRUPT.." "..destName.."'s \124cff71d5ff\124Hspell:"..spellID.."\124h["..spellName.."]\124h\124r!", "PARTY", nil, nil)

@@ -96,12 +96,31 @@ L[ [=[This works like a macro, you can run different situations to get the actio
  Example: '[combat] show;hide']=] ] = true;
 
 --Bags
+L['Currency Format'] = true;
+L['The display format of the currency icons that get displayed below the main bag. (You have to be watching a currency for this to display)'] = true;
+L["Icons Only"] = true;
+L["Icons and Text"] = true;
+L['Panel Width (Bags)'] = true;
+L['Toggle Bags'] = true;
+L['Align To Chat'] = true;
+L['Panel Width (Bank)'] = true;
+L['Adjust the width of the bank frame.'] = true;
+L['Button Size (Bag)'] = true;
+L['Align the width of the bag frame to fit inside the chat box.'] = true;
+L['Adjust the width of the bag frame.'] = true;
+L['The size of the individual buttons on the bank frame.'] = true;
+L['The size of the individual buttons on the bag frame.'] = true;
+L['Button Size (Bank)'] = true;
+L['Already Running..'] = true;
+L['You must be at a bank.'] = true;
+L['Confused.. Try Again!'] = true;
+L['Sort Inverted'] = true;
+L['Stack Bags to Bank'] = true;
+L['Stack Bank to Bags'] = true;
 L["Ascending"] = true;
-L["Bag Columns"] = true;
 L["Bag-Bar"] = true;
 L["Bags"] = true;
 L["BAGS_DESC"] = "Adjust bag settings for ElvUI."
-L["Bank Columns"] = true;
 L["Bar Direction"] = true;
 L["Bottom to Top"] = true;
 L["Click to search.."] = true;
@@ -116,14 +135,11 @@ L["goldabbrev"] = "|cffffd700g|r" --Also used in gold datatext
 L["Hold Shift:"] = true;
 L["No gray items to delete."] = true;
 L["No gray items to sell."] = true;
-L["Number of columns (width) of bags. Set it to 0 to match the width of the chat panels."] = true;
-L["Number of columns (width) of the bank. Set it to 0 to match the width of the chat panels."] = true;
 L["Purchase"] = true;
 L["Set the size of your bag buttons."] = true;
 L["silverabbrev"] = "|cffc7c7cfs|r" --Also used in gold datatext
 L["Sort Bags"] = true;
 L["Sort Direction"] = true; --Also used in Buffs and Debuffs
-L["Sort Orientation"] = true;
 L["Sort Special"] = true;
 L["Stack Items"] = true;
 L["Stack Special"] = true;
@@ -656,6 +672,11 @@ L['You can toggle the microbar by using your middle mouse button on the minimap 
 L['You can use the /resetui command to reset all of your movers. You can also use the command to reset a specific mover, /resetui <mover name>.\nExample: /resetui Player Frame'] = true;
 
 --UnitFrames
+L['Center'] = true;
+L['JustifyH'] = true;
+L["Sets the font instance's horizontal text alignment style."] = true;
+L['Spells'] = true;
+L['This filter is used for both aura bars and aura icons no matter what. Its purpose is to block out specific spellids from being shown. For example a paladin can have two sacred shield buffs at once, we block out the short one.'] = true;
 L['Style'] = true;
 L['Select the display method of the portrait.'] = true;
 L['2D'] = true;

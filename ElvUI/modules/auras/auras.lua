@@ -265,6 +265,7 @@ function A:Initialize()
 	ConsolidatedBuffs:Kill()
 	InterfaceOptionsFrameCategoriesButton12:SetScale(0.0001)
 	
+	self:Construct_ConsolidatedBuffs()
 	if E.private.auras.enable ~= true then TemporaryEnchantFrame:Kill(); return end
 	
 	local holder = CreateFrame("Frame", "AurasHolder", E.UIParent)
@@ -296,9 +297,6 @@ function A:Initialize()
 	
 	E:CreateMover(AurasHolder, "AurasMover", L["Auras Frame"], false, nil, A.PostDrag)
 	E:CreateMover(self.EnchantHeader, 'TempEnchantMover', L['Weapons'], nil, nil, A.WeaponPostDrag)
-	
-	
-	self:Construct_ConsolidatedBuffs()
 end
 
 E:RegisterModule(A:GetName())

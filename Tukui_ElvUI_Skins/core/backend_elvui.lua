@@ -30,7 +30,7 @@ local exceptions = {
 P["skins"] = {
 	["LootConfirmer"] = true,
 	["UISkinMinimap"] = true,
-	["DBMSkinHalf"] = true,
+	["DBMSkinHalf"] = false,
 	["RecountBackdrop"] = true,
 	["SkadaBackdrop"] = true,
 }
@@ -70,7 +70,7 @@ function XS:Initialize()
 
 	if IsAddOnLoaded("Tukui_UIPackages_Skins") then E:StaticPopup_Show("OLD_SKIN_PACKAGE") end
 	self.font = E["media"].normFont
-	self.pixelFont = LSM:Fetch("font","ElvUI Pixel")
+	self.pixelFont = LSM:Fetch("font","EUI")
 	self.datatext_font = LSM:Fetch("font",E.db.datatexts.font)
 
 	self:GenerateOptions()

@@ -83,14 +83,25 @@ function UF:CreateCustomTextGroup(unit, objectName)
 					['THICKOUTLINE'] = 'THICKOUTLINE',
 				},	
 			},
-			xOffset = {
+			justifyH = {
 				order = 5,
+				type = 'select',
+				name = L['JustifyH'],
+				desc = L["Sets the font instance's horizontal text alignment style."],
+				values = {
+					['CENTER'] = L['Center'],
+					['LEFT'] = L['Left'],
+					['RIGHT'] = L['Right'],
+				},
+			},
+			xOffset = {
+				order = 6,
 				type = 'range',
 				name = L['xOffset'],
 				min = -400, max = 400, step = 1,		
 			},
 			yOffset = {
-				order = 6,
+				order = 7,
 				type = 'range',
 				name = L['yOffset'],
 				min = -400, max = 400, step = 1,		
@@ -212,7 +223,85 @@ local function UpdateFilterGroup()
 				},				
 			},
 		}
+	
+	elseif selectedFilter == 'Blacklist (Strict)' then
+		E.Options.args.unitframe.args.filters.args.filterGroup = {
+			type = 'group',
+			name = selectedFilter,
+			guiInline = true,
+			order = -10,
+			childGroups = "select",
+			args = {
+				addSpellID = {
+					order = 1,
+					name = L['Add SpellID'],
+					desc = L['Add a spell to the filter.'],
+					type = 'input',
+					get = function(info) return "" end,
+					set = function(info, value) 
+						if not tonumber(value) then
+							E:Print(L["Value must be a number"])					
+						elseif not GetSpellInfo(value) then
+							E:Print(L["Not valid spell id"])
+						else	
+							E.global.unitframe.InvalidSpells[tonumber(value)] = true;
+							UpdateFilterGroup();
+							UF:Update_AllFrames();
+						end
+					end,					
+				},
+				removeSpellID = {
+					order = 2,
+					name = L['Remove SpellID'],
+					desc = L['Remove a spell from the filter.'],
+					type = 'input',
+					get = function(info) return "" end,
+					set = function(info, value) 
+						if not tonumber(value) then
+							E:Print(L["Value must be a number"])
+						elseif not GetSpellInfo(value) then
+							E:Print(L["Not valid spell id"])
+						else	
+							local match
+							if not G.unitframe.InvalidSpells[tonumber(value)] then
+								E.global.unitframe.InvalidSpells[tonumber(value)] = nil;
+							end		
+
+							if not G.unitframe.InvalidSpells[value] then
+								E.global.unitframe.InvalidSpells[value] = nil;
+							end									
+						end		
+
+						UpdateFilterGroup();
+						UF:Update_AllFrames();
+					end,				
+				},
+				desc = {
+					order = 3,
+					type = 'description',
+					name = L['This filter is used for both aura bars and aura icons no matter what. Its purpose is to block out specific spellids from being shown. For example a paladin can have two sacred shield buffs at once, we block out the short one.'],
+				},
+				spellGroup = {
+					order = 4,
+					name = L['Spells'],
+					type = 'group',
+					args = {},
+					guiInline = true,
+				},
+			},
+		}
 		
+		for spell, value in pairs(E.global.unitframe.InvalidSpells) do
+			local spellName = GetSpellInfo(spell)
+			if spellName then
+				E.Options.args.unitframe.args.filters.args.filterGroup.args.spellGroup.args[spell] = {
+					type = 'toggle',
+					name = spellName..' ('..spell..')',
+					get = function(info) return E.global.unitframe.InvalidSpells[spell] end,
+					set = function(info, value) E.global.unitframe.InvalidSpells[spell] = value; UF:Update_AllFrames() end,
+				}
+			end
+		end
 	elseif selectedFilter == 'Buff Indicator (Pet)' then
 		local buffs = {};
 		for _, value in pairs(E.global.unitframe.buffwatch.PET) do
@@ -1011,6 +1100,7 @@ E.Options.args.unitframe = {
 						filters['Buff Indicator'] = 'Buff Indicator'
 						filters['Buff Indicator (Pet)'] = 'Buff Indicator (Pet)'
 						filters['AuraBar Colors'] = 'AuraBar Colors'
+						filters['Blacklist (Strict)'] = 'Blacklist (Strict)'
 						return filters
 					end,
 				},
@@ -1182,11 +1272,12 @@ E.Options.args.unitframe.args.player = {
 				
 				E.db.unitframe.units['player'].customTexts[textName] = {
 					['text_format'] = '',
-					['size'] = 12,
+					['size'] = E.db.unitframe.fontSize,
 					['font'] = E.db.unitframe.font,
 					['xOffset'] = 0,
-					['yOffset'] = 0,	
-					['fontOutline'] = 'NONE'
+					['yOffset'] = 0,
+					['justifyH'] = 'CENTER',
+					['fontOutline'] = E.db.unitframe.fontOutline
 				};
 
 				UF:CreateCustomTextGroup('player', textName)
@@ -1978,6 +2069,7 @@ E.Options.args.unitframe.args.target = {
 					['font'] = E.db.unitframe.font,
 					['xOffset'] = 0,
 					['yOffset'] = 0,	
+					['justifyH'] = 'CENTER',
 					['fontOutline'] = 'NONE'
 				};
 
@@ -3023,6 +3115,7 @@ E.Options.args.unitframe.args.targettarget = {
 					['font'] = E.db.unitframe.font,
 					['xOffset'] = 0,
 					['yOffset'] = 0,	
+					['justifyH'] = 'CENTER',
 					['fontOutline'] = 'NONE'
 				};
 
@@ -3690,6 +3783,7 @@ E.Options.args.unitframe.args.focus = {
 					['font'] = E.db.unitframe.font,
 					['xOffset'] = 0,
 					['yOffset'] = 0,	
+					['justifyH'] = 'CENTER',
 					['fontOutline'] = 'NONE'
 				};
 
@@ -4662,6 +4756,7 @@ E.Options.args.unitframe.args.focustarget = {
 					['font'] = E.db.unitframe.font,
 					['xOffset'] = 0,
 					['yOffset'] = 0,	
+					['justifyH'] = 'CENTER',
 					['fontOutline'] = 'NONE'
 				};
 
@@ -5319,6 +5414,7 @@ E.Options.args.unitframe.args.pet = {
 					['font'] = E.db.unitframe.font,
 					['xOffset'] = 0,
 					['yOffset'] = 0,	
+					['justifyH'] = 'CENTER',
 					['fontOutline'] = 'NONE'
 				};
 
@@ -5497,147 +5593,39 @@ E.Options.args.unitframe.args.pet = {
 					args = {
 						playerOnly = {
 							order = 10,
-							guiInline = true,
-							type = 'group',
+							type = 'toggle',
 							name = L["Allow Personal Auras"],
-							args = {
-								friendly = {
-									order = 2,
-									type = 'toggle',
-									name = L['Friendly'],
-									desc = L['If the unit is friendly then this filter will be checked, otherwise it will be ignored.'],
-									get = function(info) return E.db.unitframe.units['pet']['buffs'].playerOnly.friendly end,
-									set = function(info, value) E.db.unitframe.units['pet']['buffs'].playerOnly.friendly = value; UF:CreateAndUpdateUF('pet') end,									
-								},
-								enemy = {
-									order = 3,
-									type = 'toggle',
-									name = L['Enemy'],
-									desc = L['If the unit is an enemy then this filter will be checked, otherwise it will be ignored.'],
-									get = function(info) return E.db.unitframe.units['pet']['buffs'].playerOnly.enemy end,
-									set = function(info, value) E.db.unitframe.units['pet']['buffs'].playerOnly.enemy = value; UF:CreateAndUpdateUF('pet') end,										
-								}
-							},
+							desc = L["Allow Personal Auras"],
 						},
 						useBlacklist = {
 							order = 11,
-							guiInline = true,
-							type = 'group',
+							type = 'toggle',
 							name = L["Block Blacklisted Auras"],
-							args = {
-								friendly = {
-									order = 2,
-									type = 'toggle',
-									name = L['Friendly'],
-									desc = L['If the unit is friendly then this filter will be checked, otherwise it will be ignored.'],
-									get = function(info) return E.db.unitframe.units['pet']['buffs'].useBlacklist.friendly end,
-									set = function(info, value) E.db.unitframe.units['pet']['buffs'].useBlacklist.friendly = value; UF:CreateAndUpdateUF('pet') end,									
-								},
-								enemy = {
-									order = 3,
-									type = 'toggle',
-									name = L['Enemy'],
-									desc = L['If the unit is an enemy then this filter will be checked, otherwise it will be ignored.'],
-									get = function(info) return E.db.unitframe.units['pet']['buffs'].useBlacklist.enemy end,
-									set = function(info, value) E.db.unitframe.units['pet']['buffs'].useBlacklist.enemy = value; UF:CreateAndUpdateUF('pet') end,										
-								}
-							},
+							desc = L["Block Blacklisted Auras"],
 						},
 						useWhitelist = {
 							order = 12,
-							guiInline = true,
-							type = 'group',
+							type = 'toggle',
 							name = L["Allow Whitelisted Auras"],
-							args = {
-								friendly = {
-									order = 2,
-									type = 'toggle',
-									name = L['Friendly'],
-									desc = L['If the unit is friendly then this filter will be checked, otherwise it will be ignored.'],
-									get = function(info) return E.db.unitframe.units['pet']['buffs'].useWhitelist.friendly end,
-									set = function(info, value) E.db.unitframe.units['pet']['buffs'].useWhitelist.friendly = value; UF:CreateAndUpdateUF('pet') end,									
-								},
-								enemy = {
-									order = 3,
-									type = 'toggle',
-									name = L['Enemy'],
-									desc = L['If the unit is an enemy then this filter will be checked, otherwise it will be ignored.'],
-									get = function(info) return E.db.unitframe.units['pet']['buffs'].useWhitelist.enemy end,
-									set = function(info, value) E.db.unitframe.units['pet']['buffs'].useWhitelist.enemy = value; UF:CreateAndUpdateUF('pet') end,										
-								}
-							},
+							desc = L["Allow Whitelisted Auras"],
 						},
 						noDuration = {
 							order = 13,
-							guiInline = true,
-							type = 'group',
+							type = 'toggle',
 							name = L["Block Auras Without Duration"],
-							args = {
-								friendly = {
-									order = 2,
-									type = 'toggle',
-									name = L['Friendly'],
-									desc = L['If the unit is friendly then this filter will be checked, otherwise it will be ignored.'],
-									get = function(info) return E.db.unitframe.units['pet']['buffs'].noDuration.friendly end,
-									set = function(info, value) E.db.unitframe.units['pet']['buffs'].noDuration.friendly = value; UF:CreateAndUpdateUF('pet') end,									
-								},
-								enemy = {
-									order = 3,
-									type = 'toggle',
-									name = L['Enemy'],
-									desc = L['If the unit is an enemy then this filter will be checked, otherwise it will be ignored.'],
-									get = function(info) return E.db.unitframe.units['pet']['buffs'].noDuration.enemy end,
-									set = function(info, value) E.db.unitframe.units['pet']['buffs'].noDuration.enemy = value; UF:CreateAndUpdateUF('pet') end,										
-								}
-							},				
+							desc = L["Block Auras Without Duration"],					
 						},
 						onlyDispellable = {
 							order = 13,
-							guiInline = true,
-							type = 'group',
+							type = 'toggle',
 							name = L['Allow Dispellable Auras'],
-							args = {
-								friendly = {
-									order = 2,
-									type = 'toggle',
-									name = L['Friendly'],
-									desc = L['If the unit is friendly then this filter will be checked, otherwise it will be ignored.'],
-									get = function(info) return E.db.unitframe.units['pet']['buffs'].onlyDispellable.friendly end,
-									set = function(info, value) E.db.unitframe.units['pet']['buffs'].onlyDispellable.friendly = value; UF:CreateAndUpdateUF('pet') end,									
-								},
-								enemy = {
-									order = 3,
-									type = 'toggle',
-									name = L['Enemy'],
-									desc = L['If the unit is an enemy then this filter will be checked, otherwise it will be ignored.'],
-									get = function(info) return E.db.unitframe.units['pet']['buffs'].onlyDispellable.enemy end,
-									set = function(info, value) E.db.unitframe.units['pet']['buffs'].onlyDispellable.enemy = value; UF:CreateAndUpdateUF('pet') end,										
-								}
-							},	
+							desc = L['Allow Dispellable Auras'],
 						},
 						noConsolidated = {
 							order = 14,
-							guiInline = true,
-							type = 'group',
+							type = 'toggle',
 							name = L["Block Raid Buffs"],
-							args = {
-								friendly = {
-									order = 2,
-									type = 'toggle',
-									name = L['Friendly'],
-									desc = L['If the unit is friendly then this filter will be checked, otherwise it will be ignored.'],
-									get = function(info) return E.db.unitframe.units['pet']['buffs'].noConsolidated.friendly end,
-									set = function(info, value) E.db.unitframe.units['pet']['buffs'].noConsolidated.friendly = value; UF:CreateAndUpdateUF('pet') end,									
-								},
-								enemy = {
-									order = 3,
-									type = 'toggle',
-									name = L['Enemy'],
-									desc = L['If the unit is an enemy then this filter will be checked, otherwise it will be ignored.'],
-									get = function(info) return E.db.unitframe.units['pet']['buffs'].noConsolidated.enemy end,
-									set = function(info, value) E.db.unitframe.units['pet']['buffs'].noConsolidated.enemy = value; UF:CreateAndUpdateUF('pet') end,										
-								}
-							},		
+							desc = L["Block Raid Buffs"],		
 						},
 						useFilter = {
 							order = 15,
@@ -5652,7 +5640,7 @@ E.Options.args.unitframe.args.pet = {
 								end
 								return filters
 							end,
-						},										
+						},						
 					},
 				},				
 			},
@@ -5913,6 +5901,7 @@ E.Options.args.unitframe.args.pettarget = {
 					['font'] = E.db.unitframe.font,
 					['xOffset'] = 0,
 					['yOffset'] = 0,	
+					['justifyH'] = 'CENTER',
 					['fontOutline'] = 'NONE'
 				};
 
@@ -6576,6 +6565,7 @@ E.Options.args.unitframe.args.boss = {
 					['font'] = E.db.unitframe.font,
 					['xOffset'] = 0,
 					['yOffset'] = 0,	
+					['justifyH'] = 'CENTER',
 					['fontOutline'] = 'NONE'
 				};
 
@@ -7173,6 +7163,7 @@ E.Options.args.unitframe.args.arena = {
 					['font'] = E.db.unitframe.font,
 					['xOffset'] = 0,
 					['yOffset'] = 0,	
+					['justifyH'] = 'CENTER',
 					['fontOutline'] = 'NONE'
 				};
 
@@ -8037,7 +8028,8 @@ E.Options.args.unitframe.args.party = {
 							['font'] = E.db.unitframe.font,
 							['xOffset'] = 0,
 							['yOffset'] = 0,	
-							['fontOutline'] = 'NONE'
+							['justifyH'] = 'CENTER',
+					['fontOutline'] = 'NONE'
 						};
 
 						UF:CreateCustomTextGroup(unit, textName)
@@ -8769,7 +8761,8 @@ for i=10, 40, 15 do
 								['font'] = E.db.unitframe.font,
 								['xOffset'] = 0,
 								['yOffset'] = 0,	
-								['fontOutline'] = 'NONE'
+								['justifyH'] = 'CENTER',
+					['fontOutline'] = 'NONE'
 							};
 
 							UF:CreateCustomTextGroup(unit, textName)

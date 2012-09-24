@@ -13,6 +13,9 @@ P['unitframe'].units.focus.castbar.color = P.general.bordercolor
 P['unitframe'].units.boss.castbar.color = P.general.bordercolor
 P['unitframe'].units.arena.castbar.color = P.general.bordercolor
 
+P['bags'].alignToChat = false
+P['bags'].spacing = 4
+P['bags'].point = {}
 
 P["FindIt"] = {
 	msg = "",
@@ -62,6 +65,8 @@ P['auras'].font = 'EUI'
 P['auras'].fontOutline = 'OUTLINE'
 P['auras'].fontSize = 12
 P['auras'].consolidatedBuffs.consolidateTo = false
+P['auras'].consolidatedBuffs.font = 'EUI'
+P['auras'].consolidatedBuffs.fontOutline = 'OUTLINE'
 
 P['chat'].font = 'EUI'
 P['chat'].tabFont = 'EUI'

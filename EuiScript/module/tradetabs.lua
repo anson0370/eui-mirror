@@ -69,7 +69,7 @@ local function UpdateTab(object, name, rank, texture)
 	tab:ClearAllPoints()
 
 	if E.Skins then
-		tab:SetPoint("TOPLEFT", object, "TOPRIGHT", 2, (-44 * index) + 44)
+		tab:SetPoint("TOPLEFT", object, "TOPRIGHT", 2, (-44 * index) + 34)
 
 		tab:DisableDrawLayer("BACKGROUND")
 		tab:SetNormalTexture(texture)

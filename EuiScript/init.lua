@@ -17,7 +17,7 @@ end
 
 --×Ô¶¯ÂôÀ¬»ø
 function S:SellItem()
-	if not E.db.euiscript.autosell then return end
+	if not E.db.euiscript.autosell or E.bags then return end
 	local c = 0
 	for b=0,4 do
 		for s=1,GetContainerNumSlots(b) do

@@ -472,6 +472,11 @@ end
 
 --UNITFRAMES
 do	
+	L['Center'] = "中";
+	L['JustifyH'] = "水準對齊";
+	L["Sets the font instance's horizontal text alignment style."] = "設置字體實例的水準文本對齊方式";
+	L['Spells'] = '技能';
+	L['This filter is used for both aura bars and aura icons no matter what. Its purpose is to block out specific spellids from being shown. For example a paladin can have two sacred shield buffs at once, we block out the short one.'] = '這個篩檢程式作用於光環條和光環圖示,不管是什麼,其目的是為了用阻止特定技能ID的技能被顯示. 例如: 聖騎士可以一次有兩個神聖之盾BUFF, 我們阻止了時間短的那個顯示.';
 	L['Style'] = '樣式';
 	L['Select the display method of the portrait.'] = '選擇頭像顯示方式';
 	L['2D'] = true;
@@ -1108,6 +1113,18 @@ end
 
 --Bags
 do
+	L['Currency Format'] = "貨幣格式";
+	L['The display format of the currency icons that get displayed below the main bag. (You have to be watching a currency for this to display)'] = "背包底部的貨幣顯示格式. (你需要在貨幣頁中勾選顯示)";
+	L["Icons Only"] = "圖標";
+	L["Icons and Text"] = "圖標和文字";
+	L['Bag Width'] = '背包寬度';
+	L['Bank Width'] = '銀行寬度';
+	L['Already Running..'] = "已在運行";
+	L['You must be at a bank.'] = "你必需在銀行";
+	L['Confused.. Try Again!'] = "重試";
+	L['Sort Inverted'] = "倒序";
+	L['Stack Bags to Bank'] = "堆疊背包到銀行";
+	L['Stack Bank to Bags'] = "堆疊銀行到背包";
 	L['Click to search..'] = "點擊搜索";
 	L['Sort Bags'] = "背包整理";
 	L['Stack Items'] = "堆疊物品";
@@ -1547,7 +1564,7 @@ end
 
 -- Bags
 do
-	L['BAGS_DESC'] = '調整EUI背包設置. Shift+左鍵移動(位置不保存)';
+	L['BAGS_DESC'] = '調整EUI背包設置. 左鍵移動(位置不保存)';
 	L['Bag Columns'] = '背包列數';
 	L['Number of columns (width) of bags. Set it to 0 to match the width of the chat panels.'] = '背包列數(寬度), 設為0自動匹配右聊天框寬度.';
 	L['Bank Columns'] = '銀行列數';
@@ -1556,6 +1573,17 @@ do
 	L['Direction the bag sorting will use to allocate the items.'] = '整理背包時物品排序方向.';
 	L['Bottom to Top'] = '底部到頂部';
 	L['Top to Bottom'] = '頂部到底部';
+	L['Panel Width (Bags)'] = "背包面板寬度";
+	L['Toggle Bags'] = '開關背包';
+	L['Align To Chat'] = '對齊到聊天框';
+	L['Panel Width (Bank)'] = '銀行面板寬度';
+	L['Adjust the width of the bank frame.'] = '調整銀行背包框體寬度';
+	L['Button Size (Bag)'] = '背包格子尺寸';
+	L['Align the width of the bag frame to fit inside the chat box.'] = '調整背包框的寬度以適應聊天框';
+	L['Adjust the width of the bag frame.'] = '調整背包框體寬度';
+	L['The size of the individual buttons on the bank frame.'] = '銀行框體單個格子的尺寸';
+	L['The size of the individual buttons on the bag frame.'] = '背包框體單個格子的尺寸';
+	L['Button Size (Bank)'] = '銀行背包格子尺寸';	
 end
 
 -- Reminder

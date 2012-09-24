@@ -30,7 +30,7 @@ local function SkinCB(self)
 
 		CB_Skin_OptionsFrame.Title = CB_Skin_OptionsFrame:CreateFontString(nil, 'OVERLAY')
 			if ElvUI then
-				CB_Skin_OptionsFrame.Title:SetFont(U.c["media"].normFont, 17, nil)
+				CB_Skin_OptionsFrame.Title:SetFont([[Interface\AddOns\ElvUI\media\fonts\PT_Sans_Narrow.ttf]], 17, nil)
 			else
 				CB_Skin_OptionsFrame.Title:SetFont([[Interface\AddOns\Tukui\medias\fonts\normal_font.ttf]], 17, nil)
 			end
@@ -106,7 +106,7 @@ local function SkinCB(self)
 		EnableBars:SetPoint("TOPLEFT", CB_Skin_OptionsFrame, "TOPLEFT", 16, -35)
 		EnableBars.Title = EnableBars:CreateFontString(nil, 'OVERLAY')
 			if ElvUI then
-				EnableBars.Title:SetFont(U.c["media"].normFont, 12, nil)
+				EnableBars.Title:SetFont([[Interface\AddOns\ElvUI\media\fonts\PT_Sans_Narrow.ttf]], 12, nil)
 			else
 				EnableBars.Title:SetFont([[Interface\AddOns\Tukui\medias\fonts\normal_font.ttf]], 12, nil)
 			end
