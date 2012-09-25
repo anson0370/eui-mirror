@@ -26,7 +26,7 @@ end
 -- Skin Bars
 local function SkinSexyCooldownBar(bar)
 	SCDStripSkinSettings(bar)
-	U.SkinFrame(bar)
+	if not bar.skinned then U.SkinFrame(bar) bar.skinned = true end
 	if(U.CheckOption("EmbedSexyCooldown")) then
 		bar:ClearAllPoints()
 		if IsAddOnLoaded("ElvUI") then
@@ -64,7 +64,7 @@ local function SkinSexyCooldownLabel(bar,label,store)
 	if not label.skinned then
 		if IsAddOnLoaded("ElvUI") then
 			local x = U.x
-			label:SetFont(U.c["media"].normFont, store.fontsize, "OUTLINE")
+			label:SetFont(x.pixelFont, store.fontsize, "OUTLINE")
 		else
 			label:SetFont(c["media"].pixelfont, store.fontsize, "OUTLINE")
 		end

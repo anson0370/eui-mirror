@@ -1127,7 +1127,7 @@ do
 	L['The display format of the currency icons that get displayed below the main bag. (You have to be watching a currency for this to display)'] = "背包底部的货币显示格式. (你需要在货币页中勾选显示)";
 	L["Icons Only"] = "图标";
 	L["Icons and Text"] = "图标和文字";
-	L['Already Running..'] = "已在运行";
+	L['Already Running.. Bailing Out!'] = "已在运行";
 	L['You must be at a bank.'] = "你必需在银行";
 	L['Confused.. Try Again!'] = "重试";
 	L['Sort Inverted'] = "倒序";

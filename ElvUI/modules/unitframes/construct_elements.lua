@@ -838,7 +838,13 @@ function UF:Construct_AuraBarHeader(frame)
 				self.numLines = self:NumLines()
 			end
 		end
-	end)	
+	end)
+	
+	local holder = CreateFrame('Frame', nil, auraBar)
+	holder:Point("BOTTOM", frame, "TOP", 0, 0)
+	holder:SetSize(360, 20)
+	auraBar:SetPoint("BOTTOM", holder, "TOP", 0, 0)
+	auraBar.Holder = holder
 	
 	return auraBar
 end

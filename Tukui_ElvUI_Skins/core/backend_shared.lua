@@ -1,4 +1,6 @@
 -- Shared backend for both UIs
+if not (IsAddOnLoaded("ElvUI") or IsAddOnLoaded("Tukui")) then return end
+
 local addon = select(1,...)
 local U = unpack(select(2,...))
 
@@ -62,9 +64,11 @@ U.Skins = {
 	},
 	["CLCProtSkin"] = {
 		["addon"] = "CLCProt",
+		["ui"] = "ElvUI"
 	},
 	["CLCRetSkin"] = {
-		["addon"] = "CLCRet"
+		["addon"] = "CLCRet",
+		["ui"] = "ElvUI"
 	},
 	["CliqueSkin"] = {
 		["addon"] = "Clique"
@@ -149,6 +153,7 @@ U.Skins = {
 	["PowerAurasIconsSkin"] = {
 		["buttonText"] = "PowerAuras Icons",
 		["addon"] = "PowerAuras",
+		["ui"] = "ElvUI"
 	},
 	["QuartzSkin"] = {
 		["addon"] = "Quartz"
@@ -211,6 +216,7 @@ U.Skins = {
 	},
 	["WeakAurasSkin"] = {
 		["addon"] = "WeakAuras",
+		["ui"] = "ElvUI",
 	},
 	["WhollySkin"] = {
 		["addon"] = "Wholly",

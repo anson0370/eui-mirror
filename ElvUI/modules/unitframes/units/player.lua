@@ -59,6 +59,7 @@ function UF:Construct_PlayerFrame(frame)
 
 	frame:Point('BOTTOMLEFT', E.UIParent, 'BOTTOM', -417, 135) --Set to default position	
 	E:CreateMover(frame, frame:GetName()..'Mover', L['Player Frame'], nil, nil, nil, 'ALL,SOLO')
+	E:CreateMover(frame.AuraBars.Holder, frame:GetName()..'AuraMover',  L['Player Frame'].. L['Aura Bars'], nil, nil, nil, 'ALL,SOLO')
 end
 
 function UF:UpdatePlayerFrameAnchors(frame, isShown)
@@ -1011,6 +1012,8 @@ function UF:Update_PlayerFrame(frame, db)
 			auraBars.enemyAuraType = db.aurabar.enemyAuraType
 			auraBars.auraBarWidth = db.aurabar.auraBarWidth
 			auraBars.auraBarHeight = db.aurabar.auraBarHeight
+			auraBars.Holder:SetWidth(db.aurabar.auraBarWidth)
+			auraBars.Holder:SetHeight(db.aurabar.auraBarHeight)
 			
 			local buffColor = UF.db.colors.auraBarBuff
 			local debuffColor = UF.db.colors.auraBarDebuff
@@ -1028,8 +1031,13 @@ function UF:Update_PlayerFrame(frame, db)
 			end
 			
 			auraBars:ClearAllPoints()
-			auraBars:SetPoint(anchorPoint..'LEFT', attachTo, anchorTo..'LEFT', (attachTo == frame and anchorTo == 'BOTTOM') and POWERBAR_OFFSET or 0, 0)
-			auraBars:SetPoint(anchorPoint..'RIGHT', attachTo, anchorTo..'RIGHT', attachTo == frame and POWERBAR_OFFSET * (anchorTo == 'BOTTOM' and 0 or -1) or 0, 0)
+			if db.aurabar.lock then
+				auraBars:SetPoint(anchorPoint..'LEFT', attachTo, anchorTo..'LEFT', (attachTo == frame and anchorTo == 'BOTTOM') and POWERBAR_OFFSET or 0, 0)
+				auraBars:SetPoint(anchorPoint..'RIGHT', attachTo, anchorTo..'RIGHT', attachTo == frame and POWERBAR_OFFSET * (anchorTo == 'BOTTOM' and 0 or -1) or 0, 0)
+			elseif db.aurabar.lock == false and auraBars.Holder then
+				auraBars:SetPoint(anchorPoint..'LEFT', auraBars.Holder, anchorTo..'LEFT')
+				auraBars:SetPoint(anchorPoint..'RIGHT', auraBars.Holder, anchorTo..'RIGHT', -POWERBAR_OFFSET, 0)
+			end
 
 			auraBars.buffColor = {buffColor.r, buffColor.g, buffColor.b}
 			auraBars.debuffColor = {debuffColor.r, debuffColor.g, debuffColor.b}

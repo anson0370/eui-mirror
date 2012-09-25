@@ -1453,8 +1453,13 @@ function UF:SmartAuraDisplay()
 			anchorPoint, anchorTo = 'TOP', 'BOTTOM'
 		end		
 		auraBars:ClearAllPoints()
-		auraBars:SetPoint(anchorPoint..'LEFT', buffs, anchorTo..'LEFT', 0, 0)
-		auraBars:SetPoint(anchorPoint..'RIGHT', buffs, anchorTo..'RIGHT')
+		if db.aurabar.lock then
+			auraBars:SetPoint(anchorPoint..'LEFT', buffs, anchorTo..'LEFT', 0, 0)
+			auraBars:SetPoint(anchorPoint..'RIGHT', buffs, anchorTo..'RIGHT')
+		else
+			auraBars:SetPoint(anchorPoint..'LEFT', auraBars.Holder, anchorTo..'LEFT', 0, 0)
+			auraBars:SetPoint(anchorPoint..'RIGHT', auraBars.Holder, anchorTo..'RIGHT')
+		end
 	end
 	
 	if debuffs:IsShown() then
@@ -1468,7 +1473,12 @@ function UF:SmartAuraDisplay()
 			anchorPoint, anchorTo = 'TOP', 'BOTTOM'
 		end		
 		auraBars:ClearAllPoints()
-		auraBars:SetPoint(anchorPoint..'LEFT', debuffs, anchorTo..'LEFT', 0, 0)
-		auraBars:SetPoint(anchorPoint..'RIGHT', debuffs, anchorTo..'RIGHT')		
+		if db.aurabar.lock then
+			auraBars:SetPoint(anchorPoint..'LEFT', debuffs, anchorTo..'LEFT', 0, 0)
+			auraBars:SetPoint(anchorPoint..'RIGHT', debuffs, anchorTo..'RIGHT')	
+		else
+			auraBars:SetPoint(anchorPoint..'LEFT', auraBars.Holder, anchorTo..'LEFT', 0, 0)
+			auraBars:SetPoint(anchorPoint..'RIGHT', auraBars.Holder, anchorTo..'RIGHT')		
+		end
 	end
 end

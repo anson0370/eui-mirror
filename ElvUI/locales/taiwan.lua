@@ -1119,7 +1119,7 @@ do
 	L["Icons and Text"] = "圖標和文字";
 	L['Bag Width'] = '背包寬度';
 	L['Bank Width'] = '銀行寬度';
-	L['Already Running..'] = "已在運行";
+	L['Already Running.. Bailing Out!'] = "已在運行";
 	L['You must be at a bank.'] = "你必需在銀行";
 	L['Confused.. Try Again!'] = "重試";
 	L['Sort Inverted'] = "倒序";

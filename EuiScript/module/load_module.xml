@@ -34,6 +34,6 @@
 	<Script file="AutoBuy.lua"/>
 	<Script file="AutoButton.lua"/>
 	<Script file="FindIt.lua"/>
-	<Script file="aurabarMovers.lua"/>
+	<!--Script file="aurabarMovers.lua"/-->
 	<Script file="Symbols.lua"/>
 </Ui>
