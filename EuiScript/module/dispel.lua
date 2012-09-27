@@ -25,7 +25,7 @@ Debuffmw:SetScript("OnEvent", function(self, event)
 		SHAMAN = { 370, 51886, },
 		PALADIN = { 4987, },
 		MAGE = { 475, },
-		DRUID = { 2782, },
+		DRUID = { 2782, 88423},
 		MONK = { 115450, },
 		ROGUE = {},
 		HUNTER = {},

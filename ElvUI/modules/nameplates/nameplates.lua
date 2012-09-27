@@ -751,8 +751,11 @@ function NP:PLAYER_ENTERING_WORLD()
 	table.wipe(self.BattleGroundHealers)
 	local inInstance, instanceType = IsInInstance()
 	if inInstance and instanceType == 'pvp' and self.db.markBGHealers then
-		self.CheckHealerTimer = self:ScheduleRepeatingTimer("CheckHealers", 1)
+		self.CheckHealerTimer = self:ScheduleRepeatingTimer("CheckBGHealers", 1)
 		self:CheckBGHealers()
+	elseif inInstance and instanceType == 'arena' and self.db.markBGHealers then
+		self.CheckHealerTimer = self:ScheduleRepeatingTimer("CheckArenaHealers", 1)
+		self:CheckArenaHealers()
 	else
 		if self.CheckHealerTimer then
 			self:CancelTimer(self.CheckHealerTimer)
