@@ -166,12 +166,6 @@ function M:PLAYER_ENTERING_WORLD()
 	self:ForceCVars()
 end
 
-function M:Kill()
-	--Kill Frames
-	HelpOpenTicketButtonTutorial:Kill()
-	TalentMicroButtonAlert:Kill()
-end
-
 function M:Initialize()
 	self:LoadRaidMarker()
 	self:LoadExpRepBar()
@@ -193,7 +187,6 @@ function M:Initialize()
 	self:RegisterEvent('PLAYER_ENTERING_WORLD')
 	
 	self.MovingTimer = self:ScheduleRepeatingTimer("CheckMovement", 0.1)
-	self:Kill()
 end
 
 E:RegisterModule(M:GetName())

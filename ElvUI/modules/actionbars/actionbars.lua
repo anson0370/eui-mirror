@@ -862,14 +862,13 @@ function AB:Initialize()
 	self:RegisterEvent('PET_BATTLE_OPENING_DONE', 'RemoveBindings')
 	self:RegisterEvent('UPDATE_VEHICLE_ACTIONBAR', 'VehicleFix')
 	self:RegisterEvent('UPDATE_OVERRIDE_ACTIONBAR', 'VehicleFix')
-	self:RegisterEvent('ACTIVE_TALENT_GROUP_CHANGED', 'UpdateButtonSettings');
 	self:ReassignBindings()
+
+	self:SecureHook('ActionButton_ShowOverlayGlow')
 	
 	if not GetCVarBool('lockActionBars') then
 		SetCVar('lockActionBars', 1)
 	end	
-	
-	self:SecureHook('ActionButton_ShowOverlayGlow')
 	
 	SpellFlyout:HookScript("OnShow", SetupFlyoutButton)
 end

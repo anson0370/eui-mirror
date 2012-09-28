@@ -225,25 +225,6 @@ function M:UpdateSettings()
 	end
 end
 
-local function GetLocTextColor()
-	local pvpType = GetZonePVPInfo()
-	if pvpType == "arena" then
-		return 0.84, 0.03, 0.03
-	elseif pvpType == "friendly" then
-		return 0.05, 0.85, 0.03
-	elseif pvpType == "contested" then
-		return 0.9, 0.85, 0.05
-	elseif pvpType == "hostile" then 
-		return 0.84, 0.03, 0.03
-	elseif pvpType == "sanctuary" then
-		return 0.035, 0.58, 0.84
-	elseif pvpType == "combat" then
-		return 0.84, 0.03, 0.03
-	else
-		return 0.84, 0.03, 0.03
-	end	
-end
-
 function M:Initialize()	
 	self:UpdateSettings()
 	if not E.private.general.minimap.enable then 

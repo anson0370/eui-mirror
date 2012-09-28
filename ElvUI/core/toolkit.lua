@@ -297,10 +297,6 @@ while object do
 		addapi(object)
 		handled[object:GetObjectType()] = true
 	end
-
-	if object.FixDimensions then
-		object:FixDimensions()
-	end	
 	
 	object = EnumerateFrames(object)
 end

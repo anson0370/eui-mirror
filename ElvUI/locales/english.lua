@@ -183,6 +183,7 @@ L['Wrap After'] = true;
 L['Your Auras First'] = true;
 
 --Chat
+L['P'] = true;
 L['Chat History'] = true;
 L['Log the main chat frames history. So when you reloadui or log in and out you see the history from your last session.'] = true;
 L['Fade Chat'] = true;

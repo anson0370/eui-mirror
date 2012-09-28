@@ -256,9 +256,7 @@ end
 
 function UF:CreateAndUpdateUFGroup(group, numGroup)
 	if InCombatLockdown() then self:RegisterEvent('PLAYER_REGEN_ENABLED'); return end
-	
-	self:UpdateColors()
-	
+		
 	for i=1, numGroup do
 		local unit = group..i
 		local frameName = E:StringTitle(unit)
@@ -292,8 +290,6 @@ end
 
 function UF:CreateAndUpdateHeaderGroup(group, groupFilter, template)
 	if InCombatLockdown() then self:RegisterEvent('PLAYER_REGEN_ENABLED'); return end
-	
-	self:UpdateColors()
 	
 	local db = self.db['units'][group]
 	if not self[group] then
@@ -386,8 +382,6 @@ function UF:CreateAndUpdateUF(unit)
 	assert(unit, 'No unit provided to create or update.')
 	if InCombatLockdown() then self:RegisterEvent('PLAYER_REGEN_ENABLED'); return end
 	
-	self:UpdateColors()
-
 	local frameName = E:StringTitle(unit)
 	frameName = frameName:gsub('t(arget)', 'T%1')
 	if not self[unit] then

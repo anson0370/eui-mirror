@@ -93,7 +93,6 @@ local function SpellHeal(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGU
 	local spellId, spellName, spellSchool, samount, soverhealing, absorbed, scritical = ...
 	samount = min(0, samount - soverhealing)
 	
-	if not spellName then spellName = 'UnKnown' end
 	srcGUID, srcName_modified = Skada:FixMyPets(srcGUID, srcName)
 	dstGUID, dstName = Skada:FixMyPets(dstGUID, dstName)
 	log_deathlog(Skada.current, dstGUID, dstName, spellId, (srcName_modified or srcName)..L["'s "]..spellName, samount, timestamp)

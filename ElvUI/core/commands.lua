@@ -114,26 +114,18 @@ function E:BGStats()
 	E:Print(L['Battleground datatexts will now show again if you are inside a battleground.'])
 end
 
-local print = print
-local tonumber = tonumber
-local MacroEditBox = MacroEditBox
-local MacroEditBox_OnEvent = MacroEditBox:GetScript("OnEvent")
-
 local function OnCallback(command)
-	MacroEditBox_OnEvent(MacroEditBox, "EXECUTE_CHAT_LINE", command)
+	MacroEditBox:GetScript("OnEvent")(MacroEditBox, "EXECUTE_CHAT_LINE", command)
 end
 
-function E:SlashIn(msg)
-	self.ScheduleTimer = LibStub("AceTimer-3.0").ScheduleTimer
-
+function E:DelayScriptCall(msg)
 	local secs, command = msg:match("^([^%s]+)%s+(.*)$")
 	secs = tonumber(secs)
 	if (not secs) or (#command == 0) then
-		local prefix = "|cff33ff99EUI|r:"
-		print(prefix, "usage:\n /in <seconds> <command>")
-		print(prefix, "example:\n /in 1.5 /say hi")
+		self:Print("usage: /in <seconds> <command>")
+		self:Print("example: /in 1.5 /say hi")
 	else
-		self:ScheduleTimer(OnCallback, secs, command)
+		E:ScheduleTimer(OnCallback, secs, command)
 	end
 end
 
@@ -223,7 +215,7 @@ function E:LoadCommands()
 	self:RegisterChatCommand("elvui", "ToggleConfig")
 	self:RegisterChatCommand("eui", "ToggleConfig")
 	
-	self:RegisterChatCommand('in', 'SlashIn')
+	self:RegisterChatCommand('in', 'DelayScriptCall')
 	self:RegisterChatCommand('euiat', 'EuiAt')
 	self:RegisterChatCommand('euidt', 'EuiDt')
 	self:RegisterChatCommand('bgstats', 'BGStats')
