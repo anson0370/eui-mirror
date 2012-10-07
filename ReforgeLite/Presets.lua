@@ -7,71 +7,11 @@ local MOP = (GetNumTalentTabs == nil)
 ----------------------------------------- CAP PRESETS ---------------------------------
 
 function ReforgeLite:RatingPerPoint (stat, level)
-  level = level or UnitLevel ("player")
-  local factor
-  if level > 85 then
-    if stat == self.STATS.DODGE or stat == self.STATS.PARRY then
-      return 885
-    elseif stat == self.STATS.HIT or stat == self.STATS.SPELLHIT then
-      return 340
-    elseif stat == self.STATS.HASTE then
-      return 425
-    elseif stat == self.STATS.CRIT then
-      return 600
-    elseif stat == self.STATS.EXP then
-      return 340
-    elseif stat == self.STATS.MASTERY then
-      return 300
-    end
+  level = level or UnitLevel("player")
+  if stat == self.STATS.SPELLHIT then
+    stat = self.STATS.HIT
   end
-  if level <= 34 and (stat == self.STATS.DODGE or stat == self.STATS.PARRY) then
-    factor = 0.5
-  elseif level <= 10 then
-    factor = 1 / 26
-  elseif level <= 60 then
-    factor = (level - 8) / 52
-  elseif level <= 70 then
-    factor = 82 / (262 - 3 * level)
-  elseif level <= 80 then
-    factor = (82 / 52) * math.pow (131 / 63, (level - 70) / 10)
-  else
-    factor = (82 / 52) * (131 / 63)
-    if level == 81 then
-      factor = factor * 1.31309
-    elseif level == 82 then
-      factor = factor * 1.72430
-    elseif level == 83 then
-      factor = factor * 2.26519
-    elseif level == 84 then
-      factor = factor * 2.97430
-    elseif level == 85 then
-      factor = factor * 3.90537
-    end
-  end
-  if stat == self.STATS.DODGE or stat == self.STATS.PARRY then
-    return factor * 13.8
-  elseif stat == self.STATS.HIT then
-    if MOP then
-      return factor * 8
-    else
-      return factor * 9.37931
-    end
-  elseif stat == self.STATS.SPELLHIT then
-    return factor * 8
-  elseif stat == self.STATS.HASTE then
-    return factor * 10
-  elseif stat == self.STATS.CRIT then
-    return factor * 14
-  elseif stat == self.STATS.EXP then
-    if MOP then
-      return factor * 8
-    else
-      return factor * 2.34483
-    end
-  elseif stat == self.STATS.MASTERY then
-    return factor * 14
-  end
-  return 0
+  return ReforgeLiteScalingTable[stat][level] or 0
 end
 function ReforgeLite:GetMeleeHitBonus ()
   return GetHitModifier () or 0
@@ -212,17 +152,6 @@ local MeleeCaps = {
     }
   }
 }
-local RangedCaps = {
-  {
-    stat = StatHit,
-    points = {
-      {
-        method = AtLeast,
-        preset = MeleeHitCap
-      }
-    }
-  }
-}
 local CasterCaps = {
   {
     stat = StatHit,
@@ -237,613 +166,378 @@ local CasterCaps = {
 
 ReforgeLite.presets = {
   ["DEATHKNIGHT"] = {
-    ["Blood"] = {
-      tanking = true,
-      weights = {
-        0, 100 * 200, 100 * 200, 20, 0, 0, 40, 150
+    ["<Blood> - <Avoidance>"] = {
+      prio = {
+        {stat = StatMastery},
+        {stat = StatParry},
+        {stat = StatDodge},
+        {stat = StatHit, preset = MeleeHitCap},
+        {stat = StatExp, preset = ExpSoftCap},
+        {stat = StatHaste},
+      }
+    },
+    ["<Blood> - <Control>"] = {
+      prio = {
+        {stat = StatMastery},
+        {stat = StatHit, preset = MeleeHitCap},
+        {stat = StatExp, preset = ExpSoftCap},
+        {stat = StatParry},
+        {stat = StatDodge},
+        {stat = StatHaste},
       },
     },
-    ["Frost"] = {
-      ["2H Weapon"] = {
-        weights = {
-          0, 0, 0, 201, 115, 129, 163, 126
-        },
-        caps = MeleeCaps,
-      },
-      ["Dual Wielding"] = {
-        weights = {
-          0, 0, 0, 229, 116, 147, 164, 144
-        },
-        caps = {
-          {
-            stat = StatHit,
-            points = {
-              {
-                method = AtLeast,
-                preset = MeleeHitCap,
-                after = 106,
-              },
-              {
-                preset = MeleeDWHitCap,
-              },
-            },
-          },
-          {
-            stat = StatExp,
-            points = {
-              {
-                method = AtLeast,
-                preset = ExpSoftCap,
-              },
-            },
-          },
-        },
+    ["<Frost> - <2H Weapon>"] = {
+      prio = {
+        {stat = StatHit, preset = MeleeHitCap},
+        {stat = StatExp, preset = ExpSoftCap},
+        {stat = StatHaste},
+        {stat = StatCrit},
+        {stat = StatMastery},
       },
     },
-    ["Unholy"] = {
-      weights = {
-        0, 0, 0, 200, 110, 160, 130, 150
+    ["<Frost> - <Dual Wielding>"] = {
+      prio = {
+        {stat = StatHit, preset = MeleeHitCap},
+        {stat = StatExp, preset = ExpSoftCap},
+        {stat = StatMastery},
+        {stat = StatHaste},
+        {stat = StatCrit},
+        {stat = StatHit, preset = MeleeDWHitCap},
       },
-      caps = MeleeCaps,
+    },
+    ["<Unholy>"] = {
+      prio = {
+        {stat = StatHit, preset = MeleeHitCap},
+        {stat = StatExp, preset = ExpSoftCap},
+        {stat = StatHaste},
+        {stat = StatCrit},
+        {stat = StatMastery},
+      },
     },
   },
   ["DRUID"] = {
-    ["Balance"] = {
-      weights = {
-        0, 0, 0, 200, 100, 150, 0, 130
-      },
-      caps = CasterCaps,
-    },
-    ["Feral Combat"] = {
-      ["Bear"] = {
-        weights = {
-          0, 150, 0, 40, 60, 10, 60, 90
-        },
-        caps = {
-          {
-            stat = StatHit,
-            points = {
-              {
-                preset = MeleeHitCap,
-              },
-            },
-          },
-          {
-            stat = StatExp,
-            points = {
-              {
-                preset = ExpSoftCap,
-                after = 30,
-              },
-              {
-                preset = ExpHardCap,
-              },
-            },
-          },
-        },
-      },
-      ["Cat"] = {
-        weights = {
-          0, 0, 0, 115, 110, 110, 115, 110
-        },
-        tip = "All stats are nearly equal for cats, don't rely on this too much",
-        caps = {
-          {
-            stat = StatHit,
-            points = {
-              {
-                preset = MeleeHitCap,
-              },
-            },
-          },
-          {
-            stat = StatExp,
-            points = {
-              {
-                preset = ExpSoftCap,
-              },
-            },
-          },
-        },
+    ["<Balance>"] = {
+      prio = {
+        {stat = StatHit, preset = SpellHitCap},
+        {stat = StatHaste, value = 5273},
+        {stat = StatCrit},
+        {stat = StatMastery},
+        {stat = StatHaste},
       },
     },
-    ["Restoration"] = {
-      weights = {
-        150, 0, 0, 0, 130, 160, 0, 140
+    ["<Balance> - T14"] = {
+      prio = {
+        {stat = StatHit, preset = SpellHitCap},
+        {stat = StatHaste, value = 3706},
+        {stat = StatCrit},
+        {stat = StatMastery},
+        {stat = StatHaste},
       },
-      tip = "Feel free to change the value of spirit if needed",
-      caps = {
-        {
-          stat = StatHaste,
-          points = {
-            {
-              preset = 1,
-              value = 2005,
-              after = 135,
-            },
-          },
-        },
+    },
+    ["<Feral>"] = {
+      prio = {
+        {stat = StatMastery},
+        {stat = StatCrit},
+        {stat = StatExp, preset = ExpSoftCap},
+        {stat = StatHit, preset = MeleeHitCap},
+        {stat = StatHaste},
+      },
+    },
+    ["<Guardian>"] = {
+      prio = {
+        {stat = StatDodge},
+        {stat = StatMastery},
+        {stat = StatCrit},
+        {stat = StatHit, preset = MeleeHitCap},
+        {stat = StatExp, preset = ExpHardCap},
+        {stat = StatHaste},
+      },
+    },
+    ["<Restoration>"] = {
+      prio = {
+        {stat = StatSpirit},
+        {stat = StatHaste, value = 3043},
+        {stat = StatMastery},
+        {stat = StatCrit},
+        {stat = StatHaste},
       },
     },
   },
   ["HUNTER"] = {
-    ["Beast Mastery"] = {
-      weights = {
-        0, 0, 0, 200, 150, 100, 0, 100
+    ["<Beast Mastery>"] = {
+      prio = {
+        {stat = StatHit, preset = MeleeHitCap},
+        {stat = StatExp, preset = ExpSoftCap},
+        {stat = StatMastery},
+        {stat = StatCrit},
+        {stat = StatHaste},
       },
-      caps = RangedCaps,
     },
-    ["Marksmanship (Arcane Shot)"] = {
-      weights = {
-        0, 0, 0, 200, 150, 140, 0, 110
+    ["<Marksmanship>"] = {
+      prio = {
+        {stat = StatHit, preset = MeleeHitCap},
+        {stat = StatExp, preset = ExpSoftCap},
+        {stat = StatHaste},
+        {stat = StatCrit},
+        {stat = StatMastery},
       },
-      caps = RangedCaps,
     },
-    ["Marksmanship (Aimed Shot)"] = {
-      weights = {
-        0, 0, 0, 200, 140, 150, 0, 110
+    ["<Survival>"] = {
+      prio = {
+        {stat = StatHit, preset = MeleeHitCap},
+        {stat = StatExp, preset = ExpSoftCap},
+        {stat = StatCrit},
+        {stat = StatHaste},
+        {stat = StatMastery},
       },
-      caps = RangedCaps,
-    },
-    ["Survival"] = {
-      weights = {
-        0, 0, 0, 200, 140, 130, 0, 120
-      },
-      caps = RangedCaps,
     },
   },
   ["MAGE"] = {
-    ["Arcane"] = {
-      weights = {
-        0, 0, 0, 200, 130, 150, 0, 140
-      },
-      caps = {
-        {
-          stat = StatHit,
-          points = {
-            {
-              method = AtLeast,
-              preset = SpellHitCap,
-            },
-          },
-        },
-        {
-          stat = StatHaste,
-          points = {
-            {
-              preset = 1,
-              value = 1767,
-              after = 120,
-            },
-          },
-        },
+    ["<Arcane>"] = {
+      prio = {
+        {stat = StatHit, preset = SpellHitCap},
+        {stat = StatMastery},
+        {stat = StatHaste},
+        {stat = StatCrit},
       },
     },
-    ["Fire"] = {
-      weights = {
-        0, 0, 0, 200, 150, 145, 0, 120
+    ["<Fire>"] = {
+      prio = {
+        {stat = StatHit, preset = SpellHitCap},
+        {stat = StatCrit},
+        {stat = StatMastery},
+        {stat = StatHaste},
       },
-      caps = CasterCaps,
     },
-    ["Frost"] = {
-      weights = {
-        0, 0, 0, 200, 180, 140, 0, 130
+    ["<Frost>"] = {
+      prio = {
+        {stat = StatHit, preset = SpellHitCap},
+        {stat = StatHaste},
+        {stat = StatCrit},
+        {stat = StatMastery},
       },
-      caps = CasterCaps,
+    },
+  },
+  ["MONK"] = {
+    ["<Brewmaster>"] = {
+      prio = {
+        {stat = StatHit, preset = MeleeHitCap},
+        {stat = StatExp, preset = ExpHardCap},
+        {stat = StatHaste},
+        {stat = StatCrit},
+        {stat = StatParry},
+        {stat = StatDodge},
+        {stat = StatMastery},
+      },
+    },
+    ["<Mistweaver>"] = {
+      prio = {
+        {stat = StatSpirit},
+        {stat = StatHaste, value = 1345},
+        {stat = StatMastery},
+        {stat = StatCrit},
+        {stat = StatHaste},
+      },
+    },
+    ["<Windwalker>"] = {
+      prio = {
+        {stat = StatHit, preset = MeleeHitCap},
+        {stat = StatExp, preset = ExpSoftCap},
+        {stat = StatHaste},
+        {stat = StatCrit},
+        {stat = StatMastery},
+      },
     },
   },
   ["PALADIN"] = {
-    ["Holy"] = {
-      weights = {
-        150, 0, 0, 0, 100, 120, 0, 110
+    ["<Holy>"] = {
+      prio = {
+        {stat = StatSpirit},
+        {stat = StatMastery},
+        {stat = StatHaste},
+        {stat = StatCrit},
       },
     },
-    ["Protection"] = {
-      tanking = true,
-      weights = {
-        0, 100, 100, 0, 0, 0, 0, 80
+    ["<Protection>"] = {
+      prio = {
+        {stat = StatHit, preset = MeleeHitCap},
+        {stat = StatExp, preset = ExpHardCap},
+        {stat = StatMastery},
+        {stat = StatHaste},
+        {stat = StatParry},
+        {stat = StatDodge},
       },
     },
-    ["Retribution"] = {
-      weights = {
-        0, 0, 0, 200, 135, 110, 180, 150
+    ["<Retribution>"] = {
+      prio = {
+        {stat = StatHit, preset = MeleeHitCap},
+        {stat = StatExp, preset = ExpSoftCap},
+        {stat = StatHaste},
+        {stat = StatMastery},
+        {stat = StatCrit},
       },
-      caps = MeleeCaps,
     },
   },
   ["PRIEST"] = {
-    ["Discipline"] = {
-      weights = {
-        150, 0, 0, 0, 80, 100, 0, 120
+    ["<Discipline>"] = {
+      prio = {
+        {stat = StatSpirit},
+        {stat = StatMastery},
+        {stat = StatHaste},
+        {stat = StatCrit},
       },
     },
-    ["Holy"] = {
-      weights = {
-        150, 0, 0, 0, 80, 120, 0, 100
+    ["<Holy>"] = {
+      prio = {
+        {stat = StatSpirit},
+        {stat = StatHaste, value = 3039},
+        {stat = StatMastery},
+        {stat = StatCrit},
+        {stat = StatHaste},
       },
     },
-    ["Shadow"] = {
-      weights = {
-        0, 0, 0, 200, 100, 140, 0, 130
+    ["<Shadow>"] = {
+      prio = {
+        {stat = StatHit, preset = SpellHitCap},
+        {stat = StatHaste},
+        {stat = StatCrit},
+        {stat = StatMastery},
       },
-      caps = CasterCaps
     },
   },
   ["ROGUE"] = {
-    ["Tier 12"] = {
-      ["Assassination"] = {
-        weights = {
-          0, 0, 0, 200, 120, 130, 120, 140
-        },
-        caps = {
-          {
-            stat = StatHit,
-            points = {
-              {
-                method = AtLeast,
-                preset = MeleeHitCap,
-                after = 160,
-              },
-              {
-                preset = SpellHitCap,
-                after = 82,
-              },
-              {
-                preset = MeleeDWHitCap,
-              },
-            },
-          },
-          {
-            stat = StatExp,
-            points = {
-              {
-                preset = ExpSoftCap,
-              },
-            },
-          },
-        },
-      },
-      ["Combat"] = {
-        weights = {
-          0, 0, 0, 215, 125, 170, 185, 150
-        },
-        caps = {
-          {
-            stat = StatHit,
-            points = {
-              {
-                method = AtLeast,
-                preset = MeleeHitCap,
-                after = 150,
-              },
-              {
-                preset = SpellHitCap,
-                after = 120,
-              },
-              {
-                preset = MeleeDWHitCap,
-              },
-            },
-          },
-          {
-            stat = StatExp,
-            points = {
-              {
-                method = AtLeast,
-                preset = ExpSoftCap,
-              },
-            },
-          },
-        },
-      },
-      ["Subtlety"] = {
-        weights = {
-          0, 0, 0, 155, 145, 155, 130, 90
-        },
-        caps = {
-          {
-            stat = StatHit,
-            points = {
-              {
-                method = AtLeast,
-                preset = MeleeHitCap,
-                after = 110,
-              },
-              {
-                preset = SpellHitCap,
-                after = 80,
-              },
-              {
-                preset = MeleeDWHitCap,
-              },
-            },
-          },
-          {
-            stat = StatExp,
-            points = {
-              {
-                preset = ExpSoftCap,
-              },
-            },
-          },
-        },
+    ["<Assassination>"] = {
+      prio = {
+        {stat = StatHit, preset = MeleeHitCap},
+        {stat = StatExp, preset = ExpSoftCap},
+        {stat = StatMastery},
+        {stat = StatCrit},
+        {stat = StatHaste},
+        {stat = StatHit, preset = MeleeDWHitCap},
       },
     },
-    ["Tier 13"] = {
-      ["Assassination"] = {
-        weights = {
-          0, 0, 0, 225, 120, 140, 140, 160
-        },
-        caps = {
-          {
-            stat = StatHit,
-            points = {
-              {
-                method = AtLeast,
-                preset = MeleeHitCap,
-                after = 170,
-              },
-              {
-                preset = SpellHitCap,
-                after = 90,
-              },
-              {
-                preset = MeleeDWHitCap,
-              },
-            },
-          },
-          {
-            stat = StatExp,
-            points = {
-              {
-                preset = ExpSoftCap,
-              },
-            },
-          },
-        },
+    ["<Combat>"] = {
+      prio = {
+        {stat = StatHit, preset = MeleeHitCap},
+        {stat = StatExp, preset = ExpSoftCap},
+        {stat = StatHaste},
+        {stat = StatMastery},
+        {stat = StatCrit},
+        {stat = StatHit, preset = MeleeDWHitCap},
       },
-      ["Combat"] = {
-        weights = {
-          0, 0, 0, 240, 120, 190, 210, 150
-        },
-        caps = {
-          {
-            stat = StatHit,
-            points = {
-              {
-                method = AtLeast,
-                preset = MeleeHitCap,
-                after = 170,
-              },
-              {
-                preset = SpellHitCap,
-                after = 135,
-              },
-              {
-                preset = MeleeDWHitCap,
-              },
-            },
-          },
-          {
-            stat = StatExp,
-            points = {
-              {
-                method = AtLeast,
-                preset = ExpSoftCap,
-              },
-            },
-          },
-        },
-      },
-      ["Subtlety"] = {
-        weights = {
-          0, 0, 0, 180, 150, 175, 155, 95
-        },
-        caps = {
-          {
-            stat = StatHit,
-            points = {
-              {
-                method = AtLeast,
-                preset = MeleeHitCap,
-                after = 115,
-              },
-              {
-                preset = SpellHitCap,
-                after = 90,
-              },
-              {
-                preset = MeleeDWHitCap,
-              },
-            },
-          },
-          {
-            stat = StatExp,
-            points = {
-              {
-                preset = ExpSoftCap,
-              },
-            },
-          },
-        },
+    },
+    ["<Subtlety>"] = {
+      prio = {
+        {stat = StatHit, preset = MeleeHitCap},
+        {stat = StatExp, preset = ExpSoftCap},
+        {stat = StatHaste},
+        {stat = StatCrit},
+        {stat = StatMastery},
+        {stat = StatHit, preset = MeleeDWHitCap},
       },
     },
   },
   ["SHAMAN"] = {
-    ["Elemental"] = {
-      weights = {
-        0, 0, 0, 200, 80, 140, 0, 120
-      },
-      caps = CasterCaps,
-    },
-    ["Enhancement"] = {
-      weights = {
-        0, 0, 0, 250, 120, 80, 190, 150
-      },
-      caps = {
-        {
-          stat = StatHit,
-          points = {
-            {
-              method = AtLeast,
-              preset = MeleeHitCap,
-              after = 200,
-            },
-            {
-              method = AtLeast,
-              preset = SpellHitCap,
-              after = 100,
-            },
-            {
-              preset = MeleeDWHitCap,
-            },
-          },
-        },
-        {
-          stat = StatExp,
-          points = {
-            {
-              method = AtLeast,
-              preset = ExpSoftCap,
-            },
-          },
-        },
+    ["<Elemental>"] = {
+      prio = {
+        {stat = StatHit, preset = SpellHitCap},
+        {stat = StatHaste},
+        {stat = StatMastery},
+        {stat = StatCrit},
       },
     },
-    ["Restoration"] = {
-      weights = {
-        130, 0, 0, 0, 100, 100, 0, 100
+    ["<Enhancement>"] = {
+      prio = {
+        {stat = StatHit, preset = MeleeHitCap},
+        {stat = StatExp, preset = ExpSoftCap},
+        {stat = StatMastery},
+        {stat = StatCrit},
+        {stat = StatHaste},
+      },
+    },
+    ["<Restoration>"] = {
+      prio = {
+        {stat = StatSpirit},
+        {stat = StatHaste, value = 871},
+        {stat = StatMastery},
+        {stat = StatCrit},
+        {stat = StatHaste},
       },
     },
   },
   ["WARLOCK"] = {
-    ["Affliction"] = {
-      weights = {
-        0, 0, 0, 200, 140, 160, 0, 120
+    ["<Affliction>"] = {
+      prio = {
+        {stat = StatHit, preset = SpellHitCap},
+        {stat = StatMastery},
+        {stat = StatHaste},
+        {stat = StatCrit},
       },
-      caps = CasterCaps,
     },
-    ["Demonology"] = {
-      weights = {
-        0, 0, 0, 200, 120, 140, 0, 160
+    ["<Demonology>"] = {
+      prio = {
+        {stat = StatHit, preset = SpellHitCap},
+        {stat = StatCrit},
+        {stat = StatHaste},
+        {stat = StatMastery},
       },
-      caps = CasterCaps,
     },
-    ["Destruction"] = {
-      weights = {
-        0, 0, 0, 200, 140, 160, 0, 120
+    ["<Destruction>"] = {
+      prio = {
+        {stat = StatHit, preset = SpellHitCap},
+        {stat = StatCrit},
+        {stat = StatHaste},
+        {stat = StatMastery},
       },
-      caps = CasterCaps,
     },
   },
   ["WARRIOR"] = {
-    ["Arms"] = {
-      weights = {
-        0, 0, 0, 200, 150, 100, 130, 120
-      },
-      caps = {
-        {
-          stat = StatHit,
-          points = {
-            {
-              method = AtLeast,
-              preset = MeleeHitCap,
-            },
-          },
-        },
-        {
-          stat = StatExp,
-          points = {
-            {
-              preset = ExpSoftCap,
-            },
-          },
-        },
+    ["<Arms>"] = {
+      prio = {
+        {stat = StatHit, preset = MeleeHitCap},
+        {stat = StatExp, preset = ExpSoftCap},
+        {stat = StatCrit},
+        {stat = StatMastery},
+        {stat = StatHaste},
       },
     },
-    ["Fury"] = {
-      ["Titan's Grip"] = {
-        weights = {
-          0, 0, 0, 200, 150, 100, 180, 130
-        },
-        caps = {
-          {
-            stat = StatHit,
-            points = {
-              {
-                method = AtLeast,
-                preset = MeleeHitCap,
-                after = 140,
-              },
-              {
-                value = 1300,
-                preset = 1,
-                after = 125
-              },
-              {
-                preset = MeleeDWHitCap,
-              },
-            },
-          },
-          {
-            stat = StatExp,
-            points = {
-              {
-                method = AtLeast,
-                preset = ExpSoftCap,
-              },
-            },
-          },
-        },
-      },
-      ["Single-Minded Fury"] = {
-        weights = {
-          0, 0, 0, 200, 150, 100, 180, 130
-        },
-        caps = {
-          {
-            stat = StatHit,
-            points = {
-              {
-                method = AtLeast,
-                preset = MeleeHitCap,
-                after = 140,
-              },
-              {
-                value = 1300,
-                preset = 1,
-                after = 125
-              },
-              {
-                preset = MeleeDWHitCap,
-              },
-            },
-          },
-          {
-            stat = StatExp,
-            points = {
-              {
-                method = AtLeast,
-                preset = ExpSoftCap,
-              },
-            },
-          },
-        },
+    ["<Fury>"] = {
+      prio = {
+        {stat = StatHit, preset = MeleeHitCap},
+        {stat = StatExp, preset = ExpSoftCap},
+        {stat = StatCrit},
+        {stat = StatMastery},
+        {stat = StatHaste},
       },
     },
-    ["Protection"] = {
-      tanking = true,
-      weights = {
-        40, 100, 100, 0, 0, 0, 0, 40
+    ["<Protection> - <Avoidance>"] = {
+      prio = {
+        {stat = StatMastery},
+        {stat = StatParry},
+        {stat = StatDodge},
+        {stat = StatHit, preset = MeleeHitCap},
+        {stat = StatExp, preset = ExpSoftCap},
+        {stat = StatHaste},
+      }
+    },
+    ["<Protection> - <Control>"] = {
+      prio = {
+        {stat = StatMastery},
+        {stat = StatHit, preset = MeleeHitCap},
+        {stat = StatExp, preset = ExpSoftCap},
+        {stat = StatParry},
+        {stat = StatDodge},
+        {stat = StatHaste},
       },
     },
   },
---  ["PvP (Arena)"] = {
---  },
 }
 
+local _, unitClass = UnitClass ("player")
+ReforgeLite.presets = ReforgeLite.presets[unitClass]
+
 function ReforgeLite:InitPresets ()
-  self.presets["Custom"] = self.db.customPresets
+  self.presets["<Custom>"] = self.db.customPresets
   
   if PawnVersion then
     local PawnMap = {
@@ -908,17 +602,16 @@ function ReforgeLite:InitPresets ()
       if type (v) == "function" then
         v = v ()
       end
-      info.text = ((list == self.db.customPresets or v.leaf == "import") and k or L[k])
+      info.text = k:gsub("<(.*)>",function(s) return ReforgeLiteLocale[s] end)
       info.value = v
-      if v.caps or v.weights or v.leaf then
+      if v.caps or v.weights or v.leaf or v.prio then
         info.func = function ()
           CloseDropDownMenus ()
           if v.leaf == "import" then
-            self:SetStatWeights (v.weights, v.caps)
+            self:SetStatWeights (v.weights, v.caps, v.prio)
           else
-            self:SetStatWeights (v.weights, v.caps or {})
+            self:SetStatWeights (v.weights, v.caps or {}, v.prio)
           end
-          self:SetTankingModel (v.tanking)
         end
         info.hasArrow = nil
         info.keepShownOnClick = nil

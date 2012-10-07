@@ -20,6 +20,11 @@ end
 
 --General
 do
+	L["Menu"] = '主菜單';
+	L["RaidTool"] = '團隊工具';
+	L["Shortcuts"] = '快捷操作';
+	L["UF Style"] = '框體樣式';
+	L["AB Style"] = '動作條樣式';
 	L["Name Font"] = '名字字體';
 	L["The font that appears on the text above players heads. |cffFF0000WARNING: This requires a game restart or re-log for this change to take effect.|r"] = '這控制玩家頭頂上名字的字體.|cffFF0000警告:這需要重新進入遊戲才能生效.|r'
 	L['Enable/Disable the minimap. |cffFF0000Warning: This will prevent you from seeing the consolidated buffs bar, and prevent you from seeing the minimap datatexts.|r'] = "啓用/禁用小地圖, |cffFF0000警告: 這將影響到綜合BUFF條的顯示和小地圖下面的信息文字顯示";
@@ -258,6 +263,8 @@ end
 
 --NamePlate Config
 do
+	L['Background Multiplier'] = "背景色透明度";
+	L['The backdrop of the nameplates color is scaled to match the color of the nameplate by this percentage. Set to zero to have no color in the nameplate backdrop.'] = "姓名版背景色透明度, 設為0時姓名版背景沒有顏色(黑色)";
 	L['Additional Filter'] = '額外的過濾器';
 	L["NamePlates"] = "姓名版";
 	L["NAMEPLATE_DESC"] = "修改姓名版設置.";
@@ -362,6 +369,10 @@ end
 
 --ACTIONBARS
 do
+	L['Out of Range'] = "超出距離的顏色";
+	L['Color of the actionbutton when out of range.'] = "當超出距離時動作條按鍵的顏色";
+	L['Out of Power'] = "能量不足的顏色";
+	L['Color of the actionbutton when out of power (Mana, Rage, Focus, Holy Power).'] = "當能量不足時（如法力，怒力等）動作條按鍵的顏色";
 	L["Delete Actionbar Layout DB"] = "刪除配置存檔";
 	L["Actionbar layout db is delete!"] = "動作條按鍵配置已經刪除！";
 	L["Output Actionbar layout"] = "導出動作條按鍵配置";
@@ -472,6 +483,22 @@ end
 
 --UNITFRAMES
 do	
+	L["Affliction"] = "痛苦";
+	L["Demonology"] = "惡魔";
+	L["Destruction"] = "毀滅";
+	L['Interruptable'] = "可打斷顏色";
+	L['Non-Interruptable'] = "不可打斷顏色";
+	L['Harmony'] = "真氣";
+	L['Blood'] = "鮮血符文";
+	L['Unholy'] = "邪惡符文";
+	L['Frost'] = "冰霜符文";
+	L['Death'] = "死亡符文";
+	L['Holy Power'] = "聖能";
+	L['Arcane Charges'] = "奧術衝能";
+	L['Shadow Orbs'] = "暗影寶珠";
+	L['Lunar'] = "月能";
+	L['Solar'] = "日能";
+	L['Class Resources'] = "職業資源";
 	L['Center'] = "中";
 	L['JustifyH'] = "水準對齊";
 	L["Sets the font instance's horizontal text alignment style."] = "設置字體實例的水準文本對齊方式";
@@ -487,7 +514,7 @@ do
 	L['If the unit is an enemy then this filter will be checked, otherwise it will be ignored.'] = '如果單位是敵對的,那麼這個篩檢程式會檢查,否則將被忽略.';
 	L['Allow Dispellable Auras'] = '允許能被驅散的光環';
 	L["Block Raid Buffs"] = '阻止團隊BUFF';
-	L["Block Auras Without Duration"] = '阻止無持繼時間的光環';
+	L["Block Auras Without Duration"] = '阻止無持續時間的光環';
 	L["Block Blacklisted Auras"] = '阻止列入黑名單的光環';
 	L["Allow Whitelisted Auras"] = '允許列入白名單的光環';
 	L["Allow Personal Auras"] = '允許個人光環';
@@ -1014,6 +1041,7 @@ end
 
 --Skins
 do
+	L['Black Market AH'] = "黑市";
 	L['Transmogrify Frame'] = "幻化窗口";
 	L['Open Tukui_UIPackages_Skins option'] = "打開插件美化皮膚選項";
 	L["Skins"] = "美化皮膚";
@@ -1365,7 +1393,7 @@ do
 	L["autoacceptinv"] = "自動接受邀請"
 	L["autoinvenable"] = "關鍵字組隊"
 	L["ainvkeyword"] = "自動組隊關鍵字"
-	L["errorenable"] = "遮罩紅字錯誤"
+	L["errorenable"] = "戰鬥時遮罩紅字錯誤"
 	
 	L['DoomCooldownPulse'] = "冷卻提示模塊";
 	L['Usge: /dcp'] = "命令: /dcp";
@@ -1373,7 +1401,7 @@ do
 	L["Fade In Time"] = "漸穩進入時間";
 	L["Fade Out Time"] = "漸隱淡出時間";
 	L["Max Opacity"] = "最大透明度";
-	L["Max Opacity Hold Time"] = "最大透明度持繼時間";
+	L["Max Opacity Hold Time"] = "最大透明度持續時間";
 	L["Animation Scaling"] = "動態效果縮放比率";
 	L["Close"] = "關閉";
 	L["Test"] = "測試";
@@ -1669,13 +1697,13 @@ do
 	L["Q2"] = "設置介面上一些術語的解釋"
 		L["A2"] = "人物模型頭頂的那個叫姓名版, 顯示玩家,目標等血量的框體包含在單位框體內,相關選項如BUFF,DEBUFF,施法等都可以在其入找到, 篩檢程式包含兩種工作方式,黑名單方式和白名單方式,大部份內置默認為白名單"
 	L["Q3"] = "如何監視玩家自已的一些觸發BUFF或目標身上的DEBUFF效果"
-		L["A3"] = "EUI內置三種監視模組,在設置介面上00開頭的藍色字體的三種,默認啟用的職業計時條模組, 此模組不可移動, 顯示方式為計時條, 添加監視內容在職業計時條頁的過濾頁裏. 這三種模組最好只開一種,否則比較混亂, 除了職業計時條其他兩種模組可以通過L解鎖移動."
+		L["A3"] = "EUI內置三種監視模組,在設置介面上00開頭的藍色字體的三種,默認啟用的光環條模組, 此模組可移動, 可調尺寸，顯示方式為計時條, 添加監視內容在光環條頁的過濾頁裏. 這三種模組最好只開一種,否則比較混亂, 除了職業計時條其他兩種模組可以通過L解鎖移動."
 	L["Q4"] = "如何調整介面上各個框體的位置"
 		L["A4"] = "點左聊天框右上角的L,可以快速解鎖介面上各元件,如果被擋住,也可點小地圖的右下角的C,或主菜單中的EUI進入, 或者輸入/ec命令訪問, 設置介面有個解鎖按鈕."
 	L["Q5"] = "如何移動施法條的位置和改變尺寸"
 		L["A5"] = "在設置介面的單位框體裏,找到玩家框體, 注意右上角的下拉菜單, 在其內找到施法條, 調節X,Y值可移動位置,點顯示/隱藏按鈕可預覽施法條."
 	L["Q6"] = "透明主題如何開啟"
-		L["A6"] = "透明主題的總開關在一般設置頁的中下部, 單位框體的一般設置頁的透明主題開關單獨影響單位框體模組,但受總開關控制"
+		L["A6"] = "透明主題的總開關在材質和字體設置頁的中下部, 單位框體的一般設置頁的透明主題開關單獨影響單位框體模組,但受總開關控制"
 	L["Q7"] = "人物, 法術書等系統菜單到哪兒找"
 		L["A7"] = "EUI對這部份進行了精簡, 可通過右擊頂部資訊條,或在小地圖框內按滑鼠中鍵來訪問此菜單"
 	L["Q8"] = "UI縮放問題"
@@ -1683,11 +1711,11 @@ do
 	L["Q9"] = "大腳表情和角色數據報告在哪兒? 5人副本的功略呢?"
 		L["A9"] = "在左聊天框E是表情,S是發送角色報告, 旁邊的腳丫圖示是開關大腳世界頻道的,L是框體解鎖. 在5人FB裏選中BOSS為目標輸入/boss命令可發送功略"
 	L["Q10"] = "背包在哪兒調"
-		L["A10"] = "EUI默認附帶了Baudbag整合背包,其設置介面在系統介面插件裏或/baudbag打開, 禁用此插件,可使用ElvUI的內置整合背包,移動時shift+左鍵拖動, 在EUI設置介面的背包頁裏調整"
+		L["A10"] = "EUI V4開始不帶Baudbag背包了,內置整合背包,可直接左鍵移動，並可保存位置，可調網路尺寸, 在EUI設置介面的背包頁裏調整"
 	L["Q11"] = "雙天賦切換介面及配置檔等問題"
 		L["A11"] = "在設置介面的配置頁裏, 可以新建一個配置檔, 然後勾選雙天賦配置,可設置好主副天賦的配置檔, 這樣切換天賦後就會自動切換配置檔,達到新介面的效果. 當然你也可以手動切換,比如打副本一個配置,PVP一個等."
 	L["Q12"] = "潛行者的影舞和潛行能不能區分動作條"
-		L["A12"] = "在設置介面的動作條頁裏, 找到動作條1, 在翻頁設置中把[bonusbar:1] 7; [form:3] 7; 改成 [bonusbar:1] 7; [form:3] 8;"
+		L["A12"] = "在設置介面的動作條頁裏, 找到動作條1, 在翻頁設置中改為[stance:1] 7;  [stance:2] 7; [stance:3] 10;"
 	L["Q13"] = "介面邊框顏色,血量顏色等如何調整."
 		L["A13"] = "介面整體邊框, 背景顏色在一般設置的中下部設置, 職業色血條在單位框體的一般設置頁裏最下麵有職業色血量顯示等."
 	L["Q14"] = "在10人副本,或25人副本中如何顯示出所有的隊伍."
@@ -1710,7 +1738,7 @@ do
 		L["A22"] = "原則上EUI相容所有的單體插件,但注意如果單體插件提供的功能是EUI已經有的功能,則可能造成衝突.如右上角的BUFF顯示插件."
 	L["Q23"] = "常用設置命令有哪些"
 		L["A23"] = "/ec 打開設置介面\n /luaerror 開關顯示插件錯誤 \n /egrid 顯示網格線方便對齊\n /moveui 解鎖框體移動\n /resetui 重置EUI插件\n /resetgold 重設金幣統計\n /frammode 採集模式小地圖\n /euiat 添加關注框體 /euidt 刪除關注框體\n /kb 設置動作條快捷鍵\n /skada toggle 開關Skada窗口"
-end		
+end			
 
 --Tukui_ElvUI_Skins
 L['AddOns'] = "插件美化包";

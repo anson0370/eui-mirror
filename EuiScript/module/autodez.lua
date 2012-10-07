@@ -6,36 +6,6 @@
 
 local E = unpack(ElvUI) -- Import Functions/Constants, Config, Locales
 
-local NeedLoot = {
-	33865,	-- Amani Hex Stick
-	68729,	-- Elementium Lockbox
-}
-
-if E.db["euiscript"].autogreed == true then
-	local autogreed = CreateFrame("Frame")
-	autogreed:RegisterEvent("START_LOOT_ROLL")
-	autogreed:SetScript("OnEvent", function(self, event, id)
-		local name = select(2, GetLootRollItemInfo(id))
-		if name == select(1, GetItemInfo(43102)) then
-			RollOnLoot(id, 2)
-		end
-		if UnitLevel("player") ~= MAX_PLAYER_LEVEL then return end
-		if id and select(4, GetLootRollItemInfo(id)) == 2 and not select(5, GetLootRollItemInfo(id)) then
-			for i in pairs(NeedLoot) do
-				if name == select(1, GetItemInfo(NeedLoot[i])) and RollOnLoot(id, 1) then
-					RollOnLoot(id, 1)
-					return
-				end
-			end
-			if RollOnLoot(id, 3) then
-				RollOnLoot(id, 3)
-			else
-				RollOnLoot(id, 2)
-			end
-		end
-	end)
-end
-
 ----------------------------------------------------------------------------------------
 --	Disenchant confirmation(tekKrush by Tekkub)
 ----------------------------------------------------------------------------------------

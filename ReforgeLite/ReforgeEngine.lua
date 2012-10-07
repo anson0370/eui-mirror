@@ -3,11 +3,12 @@
 
 local REFORGE_COEFF = 0.4
 local REFORGE_CHEAT = 5
-local E, L, V, P, G, _ = unpack(ElvUI); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+
 local _, playerClass = UnitClass ("player")
 local _, playerRace = UnitRace ("player")
 playerRace = string.upper(playerRace)
 local missChance = (playerRace == "NIGHTELF" and 7 or 5)
+local foodFactor = (playerRace == "PANDAREN" and 2 or 1)
 
 local function DeepCopy (t, cache)
   if type (t) ~= "table" then
@@ -34,6 +35,17 @@ local L = ReforgeLiteLocale
 
 ---------------------------------------------------------------------------------------
 
+function ReforgeLite:StrengthToParry(level)
+  level = level or UnitLevel("player")
+  if playerClass ~= "PALADIN" and playerClass ~= "WARRIOR" and playerClass ~= "DEATHKNIGHT" then
+    return 0
+  elseif level <= 85 then
+    return self:RatingPerPoint(self.STATS.PARRY, 85) / 243.60536
+  else
+    return self:RatingPerPoint(self.STATS.PARRY, 90) / 951.158596
+  end
+end
+
 function PlayerHasBuff (id)
   local i = 1
   while true do
@@ -42,38 +54,6 @@ function PlayerHasBuff (id)
       return false
     elseif spell == id then
       return true
-    end
-    i = i + 1
-  end
-end
-function GetPlayerBuffs ()
-  local kings = nil
-  local strength = nil
-  local flask = nil
-  local food = nil
-  local i = 1
-  while true do
-    local id = select (11, UnitAura ("player", i))
-    if id == nil then
-      return kings, strength, flask, food
-    else
-      if id == 79063 or id == 79061 or id == 90363 then
-        kings = true
-      elseif id == 57330 or id == 93435 or id == 8076 or id == 6673 then
-        strength = true
-      elseif id == 87554 then -- 90 dodge food
-        food = 2
-      elseif id == 87555 then -- 90 parry food
-        food = 3
-      elseif id == 87549 then -- 90 mastery food
-        food = 1
-      elseif id == 87545 then -- 90 strength food
-        food = 4
-      elseif id == 79472 then -- 300 strength flask
-        flask = 1
-      elseif id == 79635 then -- 225 mastery elixir
-        flask = 2
-      end
     end
     i = i + 1
   end
@@ -88,22 +68,88 @@ function AlchemyCanCraft (id)
   end
   return false
 end
+local FoodBuffs = {
+  [108031] = {strength = 2 * foodFactor},
+  [8118] = {strength = 3},
+  [97169] = {strength = 4},
+  [97167] = {strength = 4},
+  [8119] = {strength = 5},
+  [8120] = {strength = 8},
+  [12179] = {strength = 10},
+  [50166] = {strength = 15},
+  [33082] = {strength = 15},
+  [42735] = {strength = 18},
+  [24799] = {strength = 20 * foodFactor},
+  [33256] = {strength = 20 * foodFactor},
+  [24799] = {strength = 20 * foodFactor},
+  [43199] = {strength = 20},
+  [33256] = {strength = 20 * foodFactor},
+  [44106] = {strength = 20 * foodFactor},
+  [58448] = {strength = 25},
+  [58449] = {strength = 30},
+  [57371] = {strength = 40 * foodFactor},
+  [87556] = {strength = 60 * foodFactor},
+  [87545] = {strength = 90 * foodFactor},
+  [100379] = {strength = 90 * foodFactor},
+  [89346] = {strength = 100},
+  [104267] = {strength = 250 * foodFactor},
+  [104271] = {strength = 275 * foodFactor},
+  [79472] = {strength = 300 + (AlchemyCanCraft(58088) and 80 or 0)},
+  [104272] = {strength = 300 * foodFactor},
+  [105696] = {strength = 1000 + (AlchemyCanCraft(76088) and 160 or 0)},
+  [79638] = {strength = 80},
+
+  [28518] = {dodge = 10},
+  [70243] = {dodge = 20},
+  [70235] = {dodge = 20},
+  [29335] = {dodge = 20},
+  [87564] = {dodge = 60 * foodFactor},
+  [87554] = {dodge = 90 * foodFactor},
+  [124214] = {dodge = 100 * foodFactor},
+  [124220] = {dodge = 200 * foodFactor},
+
+  [87555] = {parry = 90 * foodFactor},
+  [125070] = {parry = 100 * foodFactor},
+  [125071] = {parry = 200 * foodFactor},
+}
+function ReforgeLite:GetPlayerBuffs ()
+  local i = 1
+  while true do
+    local id = select (11, UnitAura ("player", i))
+    if id == nil then
+      return false
+    else
+      if id == 20217 or id == 1126 or id == 90363 or id == 117666 or id == 117667 then
+        return true
+      end
+    end
+    i = i + 1
+  end
+end
 function ReforgeLite:DiminishStat (rating, stat)
-  return rating > 0 and 1 / (0.0152366 + 0.956 / (rating / self:RatingPerPoint (stat))) or 0
+  if stat == self.STATS.DODGE then
+    if rating < 0.01 then
+      return 0
+    end
+    local Cd = 66.56744
+    if playerClass == "WARRIOR" then
+      Cd = 90.6425
+    end
+    return 1 / (1 / Cd + 0.886 / (rating / self:RatingPerPoint(stat)))
+  elseif stat == self.STATS.PARRY then
+    local rpp = self:RatingPerPoint(stat)
+    local str, _, strPos, strNeg = UnitStat("player", 1)
+    return 1 / (1 / 237.1860 + 0.886 * rpp / (rating + (strPos + strNeg) * self:StrengthToParry()))
+  end
+  return 0
 end
 function ReforgeLite:GetMethodScore (method)
   local score = 0
   if method.tankingModel then
     score = method.stats.dodge * self.pdb.weights[self.STATS.DODGE] + method.stats.parry * self.pdb.weights[self.STATS.PARRY]
-    if playerClass == "WARRIOR" then
-      score = score + method.stats.block * self.pdb.weights[self.STATS.MASTERY] + method.stats.critBlock * self.pdb.weights[self.STATS.CRITBLOCK]
-    elseif playerClass == "PALADIN" then
-      score = score + method.stats.block * self.pdb.weights[self.STATS.MASTERY]
-    else
-      for i = 1, #self.itemStats do
-        if i ~= self.STATS.DODGE and i ~= self.STATS.PARRY then
-          score = score + method.stats[i] * self.pdb.weights[i]
-        end
+    for i = 1, #self.itemStats do
+      if i ~= self.STATS.DODGE and i ~= self.STATS.PARRY then
+        score = score + method.stats[i] * self.pdb.weights[i]
       end
     end
   else
@@ -113,74 +159,108 @@ function ReforgeLite:GetMethodScore (method)
   end
   return score
 end
+function ReforgeLite:GetMethodPenalty(method)
+  for i = 1, #method.items do
+    if self:IsItemLocked(i) then
+      local link = GetInventoryItemLink("player", self.itemData[i].slotId)
+      local src, dst = nil, nil
+      if link then
+        local reforge = self:GetReforgeID (link)
+        if reforge then
+          src = self.reforgeTable[reforge][1]
+          dst = self.reforgeTable[reforge][2]
+        end
+      end
+      if method.items[i].src ~= src or method.items[i].dst ~= dst then
+        return 200000
+      end
+    end
+  end
+  if self.pdb.caps[1] and self.pdb.caps[1].stat ~= 0 and not self:CapAllows(self.pdb.caps[1], method.stats[self.pdb.caps[1].stat]) then
+    return 100000
+  end
+  if self.pdb.caps[2] and self.pdb.caps[2].stat ~= 0 and not self:CapAllows(self.pdb.caps[2], method.stats[self.pdb.caps[2].stat]) then
+    return 100000
+  end
+  return 0
+end
 
 local itemBonuses = {
-         --   str  dod  par  mas
-  [58180] = { 380,   0,   0,   0 }, -- License to Slay
-  [68982] = {   0,   0,   0, 390 }, -- Necromantic Focus, lol
-  [69139] = {   0,   0,   0, 440 }, -- Necromantic Focus H
-  [77978] = {   0, 780,   0,   0 }, -- Resolve of Undying LFR
-  [77201] = {   0, 880,   0,   0 }, -- Resolve of Undying
-  [77998] = {   0, 990,   0,   0 }, -- Resolve of Undying H
-  [77977] = { 780,   0,   0,   0 }, -- Eye of Unmaking LFR
-  [77200] = { 880,   0,   0,   0 }, -- Eye of Unmaking
-  [77997] = { 990,   0,   0,   0 }, -- Eye of Unmaking H
+         --   str  dod  par
+  [58180] = { 380,   0,   0 }, -- License to Slay
+  [77978] = {   0, 780,   0 }, -- Resolve of Undying LFR
+  [77201] = {   0, 880,   0 }, -- Resolve of Undying
+  [77998] = {   0, 990,   0 }, -- Resolve of Undying H
+  [77977] = { 780,   0,   0 }, -- Eye of Unmaking LFR
+  [77200] = { 880,   0,   0 }, -- Eye of Unmaking
+  [77997] = { 990,   0,   0 }, -- Eye of Unmaking H
 }
 
+local armorSlots = {
+    "HeadSlot",
+    "ShoulderSlot",
+    "ChestSlot",
+    "WristSlot",
+    "HandsSlot",
+    "WaistSlot",
+    "LegsSlot",
+    "FeetSlot",
+}
+function ReforgeLite:StrengthSpecFactor()
+  local _, unitClass = UnitClass ("player")
+  if unitClass == "PALADIN" then
+    if GetSpecialization() ~= 3 then
+      return 1
+    end
+  elseif unitClass == "WARRIOR" then
+    if GetSpecialization() ~= 1 and GetSpecialization() ~= 2 then
+      return 1
+    end
+  elseif unitClass == "DEATHKNIGHT" then
+    if GetSpecialization() ~= 2 and GetSpecialization() ~= 3 then
+      return 1
+    end
+  else
+    return 1
+  end
+  local plateName = select(5, GetAuctionItemSubClasses(2))
+  for k, v in ipairs(armorSlots) do
+    local link = GetInventoryItemLink("player", GetInventorySlotInfo(v))
+    local info = link and select(7, GetItemInfo(link))
+    if info ~= plateName then
+      return 1
+    end
+  end
+
+  return 1.05
+end
+
 function ReforgeLite:GetBuffBonuses ()
-  local cur_buffs = {GetPlayerBuffs ()}
+  local kings = self:GetPlayerBuffs ()
   local cur_strength = UnitStat ("player", 1)
   local strength = cur_strength
-  local extra_strength = 0
-  local dodge_bonus = 0
-  local parry_bonus = math.floor ((strength - cur_strength) * 0.27)
-  local mastery_bonus = 0
+  local bonus_strength = 0
+  local bonus_dodge = 0
+  local bonus_parry = 0
   for i = 1, #self.itemData do
     local bonus = itemBonuses[GetInventoryItemID ("player", self.itemData[i].slotId)]
     if bonus then
-      extra_strength = extra_strength + bonus[1]
-      dodge_bonus = dodge_bonus + bonus[2]
-      parry_bonus = parry_bonus + bonus[3]
-      mastery_bonus = mastery_bonus + bonus[4]
+      bonus_strength = bonus_strength + bonus[1]
+      bonus_dodge = bonus_dodge + bonus[2]
+      bonus_parry = bonus_parry + bonus[3]
     end
   end
-  if self.pdb.buffs.strength and not cur_buffs[2] then
-    extra_strength = extra_strength + 549
+  if kings then
+    bonus_strength = bonus_strength * 1.05
   end
-  if self.pdb.buffs.flask == 1 and cur_buffs[3] ~= 1 then
-    extra_strength = extra_strength + 300
-    if AlchemyCanCraft () then
-      extra_strength = extra_strength + 80
-    end
-  end
-  if self.pdb.buffs.food == 4 and cur_buffs[4] ~= 4 then
-    extra_strength = extra_strength + 90
-  end
-  if cur_buffs[1] then
-    extra_strength = extra_strength * 1.05
-  end
-  strength = strength + extra_strength
-  if self.pdb.buffs.kings and not cur_buffs[1] then
+  bonus_strength = bonus_strength * self:StrengthSpecFactor()
+  strength = strength + bonus_strength
+  if self.pdb.buffs.kings and not kings then
     strength = strength * 1.05
   end
   strength = math.floor (strength)
-  parry_bonus = parry_bonus + math.floor ((strength - cur_strength) * 0.27)
-  if self.pdb.buffs.flask == 2 and cur_buffs[3] ~= 2 then
-    mastery_bonus = mastery_bonus + 225
-    if AlchemyCanCraft () then
-      mastery_bonus = mastery_bonus + 40
-    end
-  end
-  if self.pdb.buffs.food == 1 and cur_buffs[4] ~= 1 then
-    mastery_bonus = mastery_bonus + 90
-  end
-  if self.pdb.buffs.food == 2 and cur_buffs[4] ~= 2 then
-    dodge_bonus = dodge_bonus + 90
-  end
-  if self.pdb.buffs.food == 3 and cur_buffs[4] ~= 3 then
-    parry_bonus = parry_bonus + 90
-  end
-  return dodge_bonus, parry_bonus, mastery_bonus
+  bonus_strength = strength - cur_strength
+  return bonus_dodge, bonus_parry, bonus_strength
 end
 function ReforgeLite:UpdateMethodStats (method)
   method.stats = {}
@@ -215,29 +295,20 @@ function ReforgeLite:UpdateMethodStats (method)
       math.floor ((method.stats[self.STATS.SPIRIT] - oldspi) * self.s2eFactor / 100 + 0.5)
   end
   if method.tankingModel then
-    local dodge_bonus, parry_bonus, mastery_bonus = self:GetBuffBonuses ()
+    local bonus_dodge, bonus_parry, bonus_strength = self:GetBuffBonuses ()
     method.orig_stats = {}
     method.orig_stats[self.STATS.DODGE] = method.stats[self.STATS.DODGE]
     method.orig_stats[self.STATS.PARRY] = method.stats[self.STATS.PARRY]
-    method.orig_stats[self.STATS.MASTERY] = method.stats[self.STATS.MASTERY]
-    method.stats[self.STATS.DODGE] = method.stats[self.STATS.DODGE] + dodge_bonus
-    method.stats[self.STATS.PARRY] = method.stats[self.STATS.PARRY] + parry_bonus
-    method.stats[self.STATS.MASTERY] = method.stats[self.STATS.MASTERY] + mastery_bonus
-    method.stats.dodge = GetDodgeChance () - self:DiminishStat (GetCombatRating (CR_DODGE), self.STATS.DODGE)
-    method.stats.parry = GetParryChance () - self:DiminishStat (GetCombatRating (CR_PARRY), self.STATS.PARRY)
-    method.stats.dodge = method.stats.dodge + self:DiminishStat (method.stats[self.STATS.DODGE], self.STATS.DODGE)
-    method.stats.parry = method.stats.parry + self:DiminishStat (method.stats[self.STATS.PARRY], self.STATS.PARRY)
-    if playerClass == "WARRIOR" then
-      method.stats.critBlock = (8 + method.stats[self.STATS.MASTERY] / self:RatingPerPoint (self.STATS.MASTERY)) * 1.5
-      method.stats.block = 20 + method.stats.critBlock
-    elseif playerClass == "PALADIN" then
-      method.stats.block = 5 + (8 + method.stats[self.STATS.MASTERY] / self:RatingPerPoint (self.STATS.MASTERY)) * 2.25
-    end
-    local unhit = 100 + 0.8 * max (0, self.pdb.targetLevel)
-    method.stats.overcap = nil
-    if method.stats.block and missChance + method.stats.dodge + method.stats.parry + method.stats.block > unhit then
-      method.stats.overcap = missChance + method.stats.dodge + method.stats.parry + method.stats.block - unhit
-      method.stats.block = unhit - missChance - method.stats.dodge - method.stats.parry
+    method.stats[self.STATS.DODGE] = method.stats[self.STATS.DODGE] + bonus_dodge
+    method.stats.dodge = GetDodgeChance() - self:DiminishStat(GetCombatRating(CR_DODGE), self.STATS.DODGE)
+    method.stats.dodge = method.stats.dodge + self:DiminishStat(method.stats[self.STATS.DODGE], self.STATS.DODGE)
+    method.stats[self.STATS.PARRY] = method.stats[self.STATS.PARRY] + bonus_parry
+    if GetParryChance() > 0 then
+      local fake_parry = bonus_strength * self:StrengthToParry()
+      method.stats.parry = GetParryChance() - self:DiminishStat(GetCombatRating(CR_PARRY), self.STATS.PARRY)
+      method.stats.parry = method.stats.parry + self:DiminishStat(method.stats[self.STATS.PARRY] + fake_parry, self.STATS.PARRY)
+    else
+      method.stats.parry = GetParryChance()
     end
   end
 end
@@ -448,6 +519,7 @@ end
 function ReforgeLite:InitReforgeClassic ()
   local method = {}
   method.items = {}
+  local statsSum = 0
   for i = 1, #self.itemData do
     method.items[i] = {}
     method.items[i].stats = {}
@@ -455,10 +527,14 @@ function ReforgeLite:InitReforgeClassic ()
     local stats = (item and GetItemStats (item) or {})
     for j = 1, #self.itemStats do
       method.items[i].stats[j] = (stats[self.itemStats[j].name] or 0)
+      statsSum = statsSum + method.items[i].stats[j]
     end
   end
 
-  REFORGE_CHEAT = self.db.reforgeCheat
+  REFORGE_CHEAT = math.ceil(statsSum / 800)
+  if REFORGE_CHEAT < 1 then
+    REFORGE_CHEAT = 1
+  end
 
   local data = {}
   data.method = method
@@ -652,6 +728,7 @@ end
 function ReforgeLite:InitReforgeS2H ()
   local method = {}
   method.items = {}
+  local statsSum = 0
   for i = 1, #self.itemData do
     method.items[i] = {}
     method.items[i].stats = {}
@@ -659,10 +736,14 @@ function ReforgeLite:InitReforgeS2H ()
     local stats = (item and GetItemStats (item) or {})
     for j = 1, #self.itemStats do
       method.items[i].stats[j] = (stats[self.itemStats[j].name] or 0)
+      statsSum = statsSum + method.items[i].stats[j]
     end
   end
 
-  REFORGE_CHEAT = self.db.reforgeCheat
+  REFORGE_CHEAT = math.ceil(statsSum / 800)
+  if REFORGE_CHEAT < 1 then
+    REFORGE_CHEAT = 1
+  end
 
   local usecap = 1
   if self.pdb.caps[1].stat == 0 then
@@ -819,6 +900,7 @@ end
 function ReforgeLite:InitReforgeTank ()
   local method = {}
   method.items = {}
+  local statsSum = 0
   for i = 1, #self.itemData do
     method.items[i] = {}
     method.items[i].stats = {}
@@ -826,23 +908,19 @@ function ReforgeLite:InitReforgeTank ()
     local stats = (item and GetItemStats (item) or {})
     for j = 1, #self.itemStats do
       method.items[i].stats[j] = (stats[self.itemStats[j].name] or 0)
+      statsSum = statsSum + method.items[i].stats[j]
     end
   end
   method.tankingModel = self.pdb.tankingModel
 
-  REFORGE_CHEAT = self.db.reforgeCheat
+  REFORGE_CHEAT = math.ceil(statsSum / 800)
+  if REFORGE_CHEAT < 1 then
+    REFORGE_CHEAT = 1
+  end
 
   local data = {}
   data.method = method
-  if playerClass == "WARRIOR" or playerClass == "PALADIN" then
-    data.weights = {}
-    for i = 1, #self.itemStats do
-      data.weights[i] = 0
-    end
-    data.weights[self.STATS.MASTERY] = 1
-  else
-    data.weights = DeepCopy (self.pdb.weights)
-  end
+  data.weights = DeepCopy (self.pdb.weights)
   data.initial = {}
   for i = 1, #self.itemStats do
     data.initial[i] = self.itemStats[i].getter ()
@@ -863,22 +941,18 @@ function ReforgeLite:InitReforgeTank ()
   data.init = {}
   data.init.dodge = data.initial[self.STATS.DODGE]
   data.init.parry = data.initial[self.STATS.PARRY]
-  data.init.mastery = data.initial[self.STATS.MASTERY]
   for i = 1, #data.method.items do
     data.init.dodge = data.init.dodge + data.method.items[i].stats[self.STATS.DODGE]
-    data.init.mastery = data.init.mastery + data.method.items[i].stats[self.STATS.MASTERY]
     data.init.parry = data.init.parry + data.method.items[i].stats[self.STATS.PARRY]
   end
-  local dodge_bonus, parry_bonus, mastery_bonus = self:GetBuffBonuses ()
+  local dodge_bonus, parry_bonus = self:GetBuffBonuses()
   data.init.dodge = data.init.dodge + dodge_bonus
   data.init.parry = data.init.parry + parry_bonus
-  data.init.mastery = data.init.mastery + mastery_bonus
 
   local dodgeRating = GetCombatRating (CR_DODGE)
   data.baseDodge = GetDodgeChance () - self:DiminishStat (dodgeRating, self.STATS.DODGE)
   local parryRating = GetCombatRating (CR_PARRY)
   data.baseParry = GetParryChance () - self:DiminishStat (parryRating, self.STATS.PARRY)
-  data.unhit = 100 + 0.8 * max (0, self.pdb.targetLevel)
   
   data.caps = {{stat = self.STATS.DODGE, init = data.init.dodge}, {stat = self.STATS.PARRY, init = data.init.parry}}
 
@@ -900,27 +974,7 @@ function ReforgeLite:ChooseReforgeTank (data, reforgeOptions, scores, codes)
     local dodge = data.baseDodge + self:DiminishStat (dodge_rating, self.STATS.DODGE)
     local parry = data.baseParry + self:DiminishStat (parry_rating, self.STATS.PARRY)
     local valid = 1
-    if playerClass == "WARRIOR" then
-      local mastery = data.init.mastery + score
-      local critBlock = (8 + mastery / self:RatingPerPoint (self.STATS.MASTERY)) * 1.5
-      local block = 20 + critBlock
-      if missChance + dodge + parry + block > data.unhit then
-        block = data.unhit - missChance - dodge - parry
-      end
-      score = dodge * self.pdb.weights[self.STATS.DODGE] + parry * self.pdb.weights[self.STATS.PARRY]
-      score = score + block * self.pdb.weights[self.STATS.MASTERY] + critBlock * self.pdb.weights[self.STATS.CRITBLOCK]
-    elseif playerClass == "PALADIN" then
-      local mastery = data.init.mastery + score
-      local block = missChance + (8 + mastery / self:RatingPerPoint (self.STATS.MASTERY)) * 2.25
-      if missChance + dodge + parry + block >= data.unhit then
-        block = data.unhit - missChance - dodge - parry
-      else
-        valid = 2
-      end
-      score = dodge * self.pdb.weights[self.STATS.DODGE] + parry * self.pdb.weights[self.STATS.PARRY] + block * self.pdb.weights[self.STATS.MASTERY]
-    else
-      score = score + dodge * data.weights[self.STATS.DODGE] + parry * data.weights[self.STATS.PARRY]
-    end
+    score = score + dodge * data.weights[self.STATS.DODGE] + parry * data.weights[self.STATS.PARRY]
     if bestCode[valid] == nil or score > bestScore[valid] then
       bestCode[valid] = code
       bestScore[valid] = score

@@ -9,13 +9,11 @@ for i = 1, 12 do
 	setglobal("BINDING_NAME_CLICK AutoQuestButton"..i..":LeftButton", L["Auto QuestItem Button"]..i)
 end
 ----------------------------------------------------------------------------------------
---	AutoButton (by eui.cc at 2012/09/17)
+--	AutoButton (by eui.cc at 2012/10/05)
 ----------------------------------------------------------------------------------------
-local LOCALE_QUEST = select(10, GetAuctionItemClasses()) or "Quest"
-
-local function IsQuestItem(itemId)
-	local itemType, itemSubType, _, _, _, price = select(6, GetItemInfo(itemId))
-	return ((itemType == LOCALE_QUEST or itemSubType == LOCALE_QUEST) and price == 0)
+local function IsQuestItem(bagID, slotID)
+	local isQuestItem, questId, isActiveQuest = GetContainerItemQuestInfo(bagID, slotID);
+	return (questId or isQuestItem)
 end
 
 local function IsUsableItem(itemId)
@@ -137,7 +135,7 @@ function S:ScanItem()
 			for s = 1, GetContainerNumSlots(b) do
 				local itemID = GetContainerItemID(b, s)
 				itemID = tonumber(itemID)
-				if itemID and IsQuestItem(itemID) and IsUsableItem(itemID) then
+				if itemID and IsQuestItem(b, s) and IsUsableItem(itemID) then
 					num = num + 1
 					if num > E.db.euiscript.autobutton.questNum then break; end
 					
@@ -151,6 +149,7 @@ function S:ScanItem()
 					AutoButton.t:SetTexture(itemIcon)
 					AutoButton.itemName = itemName
 					AutoButton.spellName = IsUsableItem(itemID)
+					AutoButton:SetBackdropBorderColor(1.0, 0.3, 0.3)
 					
 					-- Get the count if there is one
 					if count and count ~= 1 then
@@ -180,7 +179,7 @@ function S:ScanItem()
 		for w = 1, 18 do
 			local EquipedItems = GetInventoryItemID("player", w)
 			if EquipedItems and IsUsableItem(EquipedItems) then
-				local itemName = GetItemInfo(EquipedItems)
+				local itemName, _, rarity = GetItemInfo(EquipedItems)
 				local itemIcon = GetInventoryItemTexture("player", w)
 				num = num + 1
 				if num > E.db.euiscript.autobutton.slotNum then break; end
@@ -188,6 +187,10 @@ function S:ScanItem()
 				local AutoButton = _G["AutoSlotButton".. num]
 				if not AutoButton then break; end
 
+				if rarity and rarity > 1 then
+					local r, g, b = GetItemQualityColor(rarity);
+					AutoButton:SetBackdropBorderColor(r, g, b);
+				end				
 				-- Set our texture to the item found in bags
 				AutoButton.t:SetTexture(itemIcon)
 				AutoButton.c:SetText("")

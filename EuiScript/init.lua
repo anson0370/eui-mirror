@@ -2,6 +2,7 @@ local E, L, DF = unpack(ElvUI); --Engine
 local S = E:NewModule('EuiScript', 'AceEvent-3.0', 'AceHook-3.0');
 E.build = GetAddOnMetadata("EuiScript", "Version")
 E.Euiscript = S
+CreateFrame("Frame", "U1Frame", UIParent);
 
 -- buy max number value with alt
 function S:ByMaxNumber(self, ...)
@@ -17,7 +18,7 @@ end
 
 --自动卖垃圾
 function S:SellItem()
-	if not E.db.euiscript.autosell or E.bags then return end
+	if not E.db.euiscript.autosell then return end
 	local c = 0
 	for b=0,4 do
 		for s=1,GetContainerNumSlots(b) do
@@ -214,6 +215,7 @@ function S:Initialize()
 	self:ConvertUFDb()
 	self:SupportMySlot()
 	
+	SetCVar("taintLog", 0); --禁止一些污染报告
 	--Module
 	self:LoadBloodShield()
 	

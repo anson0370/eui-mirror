@@ -148,9 +148,9 @@ local Default = {
 			}, 
 			{
 				Name = "目标减益", 
-				Direction = "UP", Interval = 4, 
-				Mode = "BAR", IconSize = 20, BarWidth = 260, 
-				Pos = {"BOTTOM", "ElvUF_Target", "TOP", 0, 65}, 
+				Direction = "RIGHT", Interval = 4, 
+				Mode = "ICON", IconSize = 48,  
+				Pos = {"BOTTOMLEFT", "ElvUF_Target", "TOPLEFT", 0, 68}, 
 				List = {	
 					-- Moonfire
 					{AuraID = 8921, UnitID = "target", Caster = "player"},
@@ -257,10 +257,9 @@ local Default = {
 			}, 
 			{
 				Name = "目标减益", 
-				Direction = "UP", Interval = 4, 
-				Mode = "BAR", 
-				IconSize = 20, BarWidth = 260, 
-				Pos = {"BOTTOM", "ElvUF_Target", "TOP", 0, 65}, 
+				Direction = "RIGHT", Interval = 4, 
+				Mode = "ICON", IconSize = 48, 
+				Pos = {"BOTTOMLEFT", "ElvUF_Target", "TOPLEFT", 0, 68}, 
 				List = {
 					-- Hunter's Mark
 					{AuraID = 1130, UnitID = "target", Caster = "all"},
@@ -359,10 +358,9 @@ local Default = {
 			}, 
 			{
 				Name = "目标减益", 
-				Direction = "UP", Interval = 4, 
-				Mode = "BAR", 
-				IconSize = 20, BarWidth = 260 , 
-				Pos = {"BOTTOM", "ElvUF_Target", "TOP", 0, 65}, 
+				Direction = "RIGHT", Interval = 4, 
+				Mode = "ICON", IconSize = 48,  
+				Pos = {"BOTTOMLEFT", "ElvUF_Target", "TOPLEFT", 0, 68}, 
 				List = {		
 					-- Arcane Blast
 					{AuraID = 36032, UnitID = "player", Caster = "player"},
@@ -475,9 +473,9 @@ local Default = {
 			}, 	
 			{
 				Name = "目标减益", 
-				Direction = "UP", Interval = 4, 
-				Mode = "BAR", IconSize = 20, BarWidth = 260, 
-				Pos = {"BOTTOM", "ElvUF_Target", "TOP", 0, 65}, 
+				Direction = "RIGHT", Interval = 4, 
+				Mode = "ICON", IconSize = 48,  
+				Pos = {"BOTTOMLEFT", "ElvUF_Target", "TOPLEFT", 0, 68}, 
 				List = {
 					-- Self
 					-- Curse of the Elements
@@ -624,9 +622,9 @@ local Default = {
 			}, 
 			{
 				Name = "目标减益", 
-				Direction = "UP", Interval = 4, 
-				Mode = "BAR", IconSize = 20, BarWidth = 260, 
-				Pos = {"BOTTOM", "ElvUF_Target", "TOP", 0, 65}, 
+				Direction = "RIGHT", Interval = 4, 
+				Mode = "ICON", IconSize = 48,  
+				Pos = {"BOTTOMLEFT", "ElvUF_Target", "TOPLEFT", 0, 68}, 
 				List = {
 					-- Storm Strike
 					{AuraID = 17364, UnitID = "target", Caster = "player"},
@@ -766,9 +764,9 @@ local Default = {
 			}, 
 			{
 				Name = "目标减益", 
-				Direction = "UP", Interval = 4, 
-				Mode = "BAR", IconSize = 20, BarWidth = 260, 
-				Pos = {"BOTTOM", "ElvUF_Target", "TOP", 0, 65}, 
+				Direction = "RIGHT", Interval = 4, 
+				Mode = "ICON", IconSize = 48,  
+				Pos = {"BOTTOMLEFT", "ElvUF_Target", "TOPLEFT", 0, 68}, 
 				List = {
 					-- Forbearance
 					{AuraID = 25771, UnitID = "player", Caster = "all"},
@@ -892,9 +890,9 @@ local Default = {
 			}, 
 			{
 				Name = "目标减益", 
-				Direction = "UP", Interval = 4, 
-				Mode = "BAR", IconSize = 20, BarWidth = 260, 
-				Pos = {"BOTTOM", "ElvUF_Target", "TOP", 0, 65}, 
+				Direction = "RIGHT", Interval = 4, 
+				Mode = "ICON", IconSize = 48,  
+				Pos = {"BOTTOMLEFT", "ElvUF_Target", "TOPLEFT", 0, 68}, 
 				List = {
 					-- Mind spike
 					{AuraID = 87178, UnitID = "target", Caster = "player"},
@@ -1020,9 +1018,9 @@ local Default = {
 			}, 
 			{
 				Name = "目标减益", 
-				Direction = "UP", Interval = 4, 
-				Mode = "BAR", IconSize = 20, BarWidth = 260, 
-				Pos = {"BOTTOM", "ElvUF_Target", "TOP", 0, 65}, 
+				Direction = "RIGHT", Interval = 4, 
+				Mode = "ICON", IconSize = 48,  
+				Pos = {"BOTTOMLEFT", "ElvUF_Target", "TOPLEFT", 0, 68}, 
 				List = {
 					-- Colossus Smash
 					{AuraID = 86346, UnitID = "target", Caster = "player"},
@@ -1131,9 +1129,9 @@ local Default = {
 			}, 
 			{
 				Name = "目标减益", 
-				Direction = "UP", Interval = 4, 
-				Mode = "BAR", IconSize = 20, BarWidth = 260, 
-				Pos = {"BOTTOM", "ElvUF_Target", "TOP", 0, 65}, 
+				Direction = "RIGHT", Interval = 4, 
+				Mode = "ICON", IconSize = 48,  
+				Pos = {"BOTTOMLEFT", "ElvUF_Target", "TOPLEFT", 0, 68}, 
 				List = {
 					-- Rupture
 					{AuraID = 1943, UnitID = "target", Caster = "player"},
@@ -1265,9 +1263,9 @@ local Default = {
 			}, 	
 			{
 				Name = "目标减益", 
-				Direction = "UP", Interval = 4, 
-				Mode = "BAR", IconSize = 16, BarWidth = 260, 
-				Pos = {"BOTTOM", "ElvUF_Target", "TOP", 0, 65}, 
+				Direction = "RIGHT", Interval = 4, 
+				Mode = "ICON", IconSize = 48,  
+				Pos = {"BOTTOMLEFT", "ElvUF_Target", "TOPLEFT", 0, 68}, 
 				List = {
 					-- Blood Plague
 					{AuraID = 59879, UnitID = "target", Caster = "player"},
@@ -1381,9 +1379,9 @@ local Default = {
 			}, 	
 			{
 				Name = "目标减益", 
-				Direction = "UP", Interval = 4, 
-				Mode = "BAR", IconSize = 16, BarWidth = 260, 
-				Pos = {"BOTTOM", "ElvUF_Target", "TOP", 0, 65}, 
+				Direction = "RIGHT", Interval = 4, 
+				Mode = "ICON", IconSize = 48,  
+				Pos = {"BOTTOMLEFT", "ElvUF_Target", "TOPLEFT", 0, 68}, 
 				List = {
 					-- Breath of Fire
 					{AuraID = 123725, UnitID = "target", Caster = "player"},
@@ -1485,7 +1483,7 @@ function Module:BuildAura()
 			end
 			if i == 1 then
 				Frame:SetPoint(unpack(value.Pos))
-				if value.Name ~= L["New Group"] then E:CreateMover(Frame, value.Name, value.Name) end
+				if value.Name ~= L["New Group"] then E:CreateMover(Frame, value.Name, value.Name, nil, nil, nil, 'ALL,EUI') end
 			end
 			tinsert(FrameTable, Frame)
 		end

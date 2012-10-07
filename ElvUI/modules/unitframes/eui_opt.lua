@@ -38,6 +38,32 @@ E.Options.args.unitframe.args.player.args.swing = {
 	set = function(info, value) E.db.unitframe.units.player.swing = value; StaticPopup_Show("CONFIG_RL") end,
 	type = 'toggle',
 }
+
+E.Options.args.unitframe.args.player.args.tankshield = {
+	order = 1200,
+	type = 'group',
+	name = L['BloodShield'],
+	desc = L["BloodShield desc"],
+	get = function(info) return E.db.unitframe.units['player']['tankshield'][ info[#info] ] end,
+	set = function(info, value) E.db.unitframe.units['player']['tankshield'][ info[#info] ] = value; UF:CreateAndUpdateUF('player') end,
+	args = {
+		enable = {
+			type = 'toggle',
+			order = 1,
+			name = L['Enable'],
+		},
+		position = {
+			type = 'select',
+			order = 8,
+			name = L['Position'],
+			values = {
+				['LEFT'] = 'LEFT',
+				['RIGHT'] = 'RIGHT',	
+			},
+		},		
+	},
+}
+
 E.Options.args.unitframe.args.player.args.classbar.args.text = {
 	order = 5,
 	type = 'toggle',

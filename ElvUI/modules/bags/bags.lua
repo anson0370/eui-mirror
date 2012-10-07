@@ -467,15 +467,28 @@ function B:UpdateTokens()
 	end
 
 	f.bottomOffset = 28;
-	if numTokens == 1 then
-		f.currencyButton[1]:Point('BOTTOM', f.currencyButton, 'BOTTOM', -(f.currencyButton[1].text:GetWidth() / 2), 3);
-	elseif numTokens == 2 then
-		f.currencyButton[1]:Point('BOTTOM', f.currencyButton, 'BOTTOM', -(f.currencyButton[1].text:GetWidth()) - (f.currencyButton[1]:GetWidth() / 2), 3);
-		f.currencyButton[2]:Point('BOTTOMLEFT', f.currencyButton, 'BOTTOM', f.currencyButton[2]:GetWidth() / 2, 3);
+	if self.db.currencyFormat == 'ICON' then
+		if numTokens == 1 then
+			f.currencyButton[1]:Point('BOTTOMRIGHT', f.currencyButton, 'BOTTOMRIGHT', -(f.currencyButton[1].text:GetWidth()) - 5, 3);
+		elseif numTokens == 2 then
+			f.currencyButton[2]:Point('BOTTOMRIGHT', f.currencyButton, 'BOTTOMRIGHT', -(f.currencyButton[2].text:GetWidth()) - 5, 3);
+			f.currencyButton[1]:Point('BOTTOMRIGHT', f.currencyButton, 'BOTTOMRIGHT', -(f.currencyButton[1].text:GetWidth()) - (f.currencyButton[2].text:GetWidth()) - 30, 3);
+		else
+			f.currencyButton[3]:Point('BOTTOMRIGHT', f.currencyButton, 'BOTTOMRIGHT', -(f.currencyButton[3].text:GetWidth()) - 5 , 3);
+			f.currencyButton[2]:Point('BOTTOMRIGHT', f.currencyButton, 'BOTTOMRIGHT', -(f.currencyButton[2].text:GetWidth()) - (f.currencyButton[3].text:GetWidth()) - 30, 3);
+			f.currencyButton[1]:Point('BOTTOMRIGHT', f.currencyButton, 'BOTTOMRIGHT', -(f.currencyButton[1].text:GetWidth()) - (f.currencyButton[2].text:GetWidth()) - (f.currencyButton[3].text:GetWidth()) - 55, 3);
+		end
 	else
-		f.currencyButton[1]:Point('BOTTOMLEFT', f.currencyButton, 'BOTTOMLEFT', 3, 3);
-		f.currencyButton[2]:Point('BOTTOM', f.currencyButton, 'BOTTOM', -(f.currencyButton[2].text:GetWidth() / 3), 3);	
-		f.currencyButton[3]:Point('BOTTOMRIGHT', f.currencyButton, 'BOTTOMRIGHT', -(f.currencyButton[3].text:GetWidth()) - (f.currencyButton[3]:GetWidth() / 2), 3);
+		if numTokens == 1 then
+			f.currencyButton[1]:Point('BOTTOM', f.currencyButton, 'BOTTOM', -(f.currencyButton[1].text:GetWidth() / 2), 3);
+		elseif numTokens == 2 then
+			f.currencyButton[1]:Point('BOTTOM', f.currencyButton, 'BOTTOM', -(f.currencyButton[1].text:GetWidth()) - (f.currencyButton[1]:GetWidth() / 2), 3);
+			f.currencyButton[2]:Point('BOTTOMLEFT', f.currencyButton, 'BOTTOM', f.currencyButton[2]:GetWidth() / 2, 3);
+		else
+			f.currencyButton[1]:Point('BOTTOMLEFT', f.currencyButton, 'BOTTOMLEFT', 3, 3);
+			f.currencyButton[2]:Point('BOTTOM', f.currencyButton, 'BOTTOM', -(f.currencyButton[2].text:GetWidth() / 3), 3);	
+			f.currencyButton[3]:Point('BOTTOMRIGHT', f.currencyButton, 'BOTTOMRIGHT', -(f.currencyButton[3].text:GetWidth()) - (f.currencyButton[3]:GetWidth() / 2), 3);
+		end
 	end
 end
 
@@ -505,7 +518,7 @@ function B:VendorGrays(delete, nomsg)
 	for b=0,4 do
 		for s=1,GetContainerNumSlots(b) do
 			local l = GetContainerItemLink(b, s)
-			if l then
+			if l and select(11, GetItemInfo(l)) then
 				local p = select(11, GetItemInfo(l))*select(2, GetContainerItemInfo(b, s))
 				
 				if delete then
@@ -549,22 +562,22 @@ end
 
 local function StartMoving(self)
 	if InCombatLockdown() then return end
-	for i = 1, self:GetNumChildren() do
-		local f = select(i, self:GetChildren())
-		if f:IsShown() then f:Hide() end
-	end
+--	for i = 1, self:GetNumChildren() do
+--		local f = select(i, self:GetChildren())
+--		if f:IsShown() then f:Hide() end
+--	end
 	self:StartMoving()
 end
 
 local function StopMoving(self)
 	self:StopMovingOrSizing()
 	self:SetUserPlaced(false)
-	for i = 1, self:GetNumChildren() do
-		local f = select(i, self:GetChildren())
-		if not f:IsShown() then f:Show() end
-	end	
-	if self.editBox then self.editBox:Hide() end
-	self.ContainerHolder:Hide()
+--	for i = 1, self:GetNumChildren() do
+--		local f = select(i, self:GetChildren())
+--		if not f:IsShown() then f:Show() end
+--	end	
+--	if self.editBox then self.editBox:Hide() end
+--	self.ContainerHolder:Hide()
 	if not B.db.point[self:GetName()] then B.db.point[self:GetName()] = {} end
 	B.db.point[self:GetName()].p1, B.db.point[self:GetName()].p2, B.db.point[self:GetName()].p3, B.db.point[self:GetName()].p4, B.db.point[self:GetName()].p5 = self:GetPoint();
 end
@@ -834,17 +847,19 @@ end
 
 function B:PositionBagFrames()
 	if self.BagFrame then
-		self.BagFrame:Point('BOTTOMRIGHT', RightChatToggleButton, 'TOPRIGHT', 0 - E.db.bags.xOffset, 4 + E.db.bags.yOffset);
+		self.BagFrame:ClearAllPoints()
 		if self.db.point[self.BagFrame:GetName()] then
-			self.BagFrame:ClearAllPoints()
-			self.BagFrame:SetPoint(self.db.point[self.BagFrame:GetName()].p1, self.db.point[self.BagFrame:GetName()].p2, self.db.point[self.BagFrame:GetName()].p3, self.db.point[self.BagFrame:GetName()].p4, self.db.point[self.BagFrame:GetName()].p5);
+			self.BagFrame:SetPoint(self.db.point[self.BagFrame:GetName()].p1, E.UIParent, self.db.point[self.BagFrame:GetName()].p3, self.db.point[self.BagFrame:GetName()].p4, self.db.point[self.BagFrame:GetName()].p5);
+		else
+			self.BagFrame:Point('BOTTOMRIGHT', RightChatToggleButton, 'TOPRIGHT', 0 - E.db.bags.xOffset, 4 + E.db.bags.yOffset);		
 		end
 	end
 	if self.BankFrame then
-		self.BankFrame:Point('BOTTOMLEFT', LeftChatToggleButton, 'TOPLEFT', 0 + E.db.bags.xOffset, 4 + E.db.bags.yOffset);
+		self.BankFrame:ClearAllPoints()
 		if self.db.point[self.BankFrame:GetName()] then
-			self.BankFrame:ClearAllPoints()
-			self.BankFrame:SetPoint(self.db.point[self.BankFrame:GetName()].p1, self.db.point[self.BankFrame:GetName()].p2, self.db.point[self.BankFrame:GetName()].p3, self.db.point[self.BankFrame:GetName()].p4, self.db.point[self.BankFrame:GetName()].p5);
+			self.BankFrame:SetPoint(self.db.point[self.BankFrame:GetName()].p1, E.UIParent, self.db.point[self.BankFrame:GetName()].p3, self.db.point[self.BankFrame:GetName()].p4, self.db.point[self.BankFrame:GetName()].p5);
+		else
+			self.BankFrame:Point('BOTTOMLEFT', LeftChatToggleButton, 'TOPLEFT', 0 + E.db.bags.xOffset, 4 + E.db.bags.yOffset);		
 		end		
 	end
 end
@@ -874,6 +889,7 @@ end
 function B:OpenBags()
 	self.BagFrame:Show();
 	self.BagFrame:UpdateAllSlots();
+	E:GetModule('Tooltip'):GameTooltip_SetDefaultAnchor(GameTooltip)
 end
 
 function B:CloseBags()
@@ -882,6 +898,8 @@ function B:CloseBags()
 	if self.BankFrame then
 		self.BankFrame:Hide();
 	end
+	
+	E:GetModule('Tooltip'):GameTooltip_SetDefaultAnchor(GameTooltip)
 end
 
 function B:OpenBank()

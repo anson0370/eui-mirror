@@ -2,16 +2,10 @@ local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, Priv
 
 P['general'].bordercolor = { r = .31,g = .31,b = .31 }
 P['general'].backdropfadecolor = { r = .06,g = .06,b = .06, a = 0.9 }
-P['general'].experience.height = 12
-P['general'].reputation.height = 12
-P['unitframe'].units.focus.aurabar.noConsolidated = 'ALL'
+P['general'].stickyFrames = false
 P['unitframe'].colors.health = P.general.bordercolor
 P['unitframe'].colors.auraBarBuff = P.general.bordercolor
-P['unitframe'].units.player.castbar.color = P.general.bordercolor
-P['unitframe'].units.target.castbar.color = P.general.bordercolor
-P['unitframe'].units.focus.castbar.color = P.general.bordercolor
-P['unitframe'].units.boss.castbar.color = P.general.bordercolor
-P['unitframe'].units.arena.castbar.color = P.general.bordercolor
+P['unitframe'].colors.castColor = P.general.bordercolor
 
 P['bags'].alignToChat = false
 P['bags'].spacing = 4
@@ -110,8 +104,6 @@ for i = 6, 9 do
 	}
 end
 
-P['datatexts']['panels']['EuiTopLeftDataTexts'] = ''
-P['datatexts']['panels']['EuiTopRightDataTexts'] = ''
 P['datatexts']['panels']['MainABInfobar'] = {
 	['left'] = '',
 	['middle'] = '',
@@ -125,8 +117,6 @@ P["general"].transparent = false
 P["general"].classcolor = false
 V["general"].autoscale = true
 V["general"].uiscale = 0.71
-P["general"].experience.width = 239
-P["general"].reputation.width = 239
 
 P["skins"] = {
 	fontSize = 12,
@@ -153,6 +143,8 @@ P["nameplate"].trackauras = true
 P["nameplate"].trackfilter = ''
 P["nameplate"].iconsize = 20
 P["nameplate"].fontsize = 9
+P["nameplate"].combat = true
+P["nameplate"].healthtext = 'CURRENT_PERCENT'
 
 P["unitframe"].number = "K"
 P["unitframe"].colors.nameclasscolor = false
@@ -160,6 +152,7 @@ P["unitframe"].targetGlow = true
 P["unitframe"].unitframeType = 1
 P["unitframe"].transparent = false
 
+P['unitframe'].units.target.smartAuraDisplay = 'DISABLED'
 P['unitframe'].units.target.debuffs.useWhitelist = {friendly = false, enemy = true}
 P['unitframe'].units.player.classbar.text = true
 P['unitframe'].units.player.aurabar.auraBarWidth = 270
@@ -172,10 +165,15 @@ P['unitframe'].units.target.aurabar.attachTo = 'DEBUFFS'
 P['unitframe'].units.focus.aurabar.auraBarWidth = 190
 P['unitframe'].units.focus.aurabar.auraBarHeight = 20
 P['unitframe'].units.focus.aurabar.lock = true
+P['unitframe'].units.player.tankshield = {
+	['enable'] = true,
+	['position'] = 'RIGHT',
+}
+
 
 P['unitframe'].units.boss.health.text_format = '[healthcolor][health:current-percent]'
 
-P["unitframe"].units.player.swing = true
+P["unitframe"].units.player.swing = false
 P["unitframe"].units.player.portrait.enable = true
 P["unitframe"].units.player.portrait.overlay = true
 P["unitframe"].units.player.power.width = 'fill'
@@ -189,14 +187,10 @@ P["unitframe"].units.player.combobar = {
 P["unitframe"].units.target.power.width = 'fill'
 P["unitframe"].units.targettarget.power.width = 'fill'
 P["unitframe"].units.targettarget.name.length = 'LONGLEVEL'
-P["unitframe"].units.player.castbar.color = { r = .78,g = .67,b = .35 }
-P["unitframe"].units.target.castbar.color = { r = .78,g = .67,b = .35 }
+P["unitframe"].colors.castColor = { r = .78,g = .67,b = .35 }
 P["unitframe"].units.target.portrait.enable = true
 P["unitframe"].units.target.portrait.overlay = true
-P["unitframe"].units.target.smartAuraDisplay = 'DISABLED'
-P["unitframe"].units.target.buffs.playerOnly = 'NONE'
-P["unitframe"].units.target.buffs.noConsolidated = 'NONE'
-P["unitframe"].units.target.buffs.noDuration = 'NONE'
+P["unitframe"].units.target.debuffs.enable = true
 P["unitframe"].units.raid25.power.width = 'fill'
 P["unitframe"].units.raid25.showParty = false
 P["unitframe"].units.raid25.maxColumns = 8
@@ -454,7 +448,7 @@ P["euiscript"] = {
 		["combatnoti_entering"] = "ENTERING COMBAT",
 	["wgtimenoti"] = true,
 --	["chatemote"] = true,
-	["autogreed"] = false,
+	["autogreed"] = true,
 --	["buffreminder"] = true,
 	["autoinvenable"] = true,
 	["ainvkeyword"] = "eui",
@@ -487,7 +481,7 @@ P["euiscript"] = {
 	["camerafactor"] = 2,
 	["cameradistance"] = 20,
 	["auto_confirm_de"] = false,
-	["bloodshield"] = true,
+	["bloodshield"] = false,
 	["autobuy"] = true,
 	["bgInfo"] = true,
 	["TaintError"] = false,

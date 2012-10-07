@@ -10,7 +10,8 @@ function LO:Initialize()
 	self:CreateChatPanels()
 	self:CreateMinimapPanels()
 	self:CreateActionbarInfobar()
-	self:LocXY()
+--	self:LocXY()
+	self:InfoBar()
 end
 
 local function GetLocTextColor()
@@ -85,11 +86,6 @@ local menuList = {
 	func = function() PVEFrame_ToggleFrame(); end},
 	{text = ENCOUNTER_JOURNAL, 
 	func = function() if not IsAddOnLoaded('Blizzard_EncounterJournal') then EncounterJournal_LoadUI(); end ToggleFrame(EncounterJournal) end},	
-	{text = L_CALENDAR,
-	func = function()
-	if(not CalendarFrame) then Calendar_LoadUI() end
-		Calendar_Toggle()
-	end},
 	{text = L["GameMenu"],
     func = function() ToggleFrame(GameMenuFrame) end},	
 	{text = HELP_BUTTON,

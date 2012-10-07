@@ -496,8 +496,40 @@ E.Options.args.actionbar = {
 				['CTRL'] = CTRL_KEY,
 			},
 		},
-		euiabstyle = {
+		noRangeColor = {
+			type = 'color',
 			order = 9,
+			name = L['Out of Range'],
+			desc = L['Color of the actionbutton when out of range.'],
+			get = function(info)
+				local t = E.db.actionbar[ info[#info] ]
+				return t.r, t.g, t.b, t.a
+			end,
+			set = function(info, r, g, b)
+				E.db.actionbar[ info[#info] ] = {}
+				local t = E.db.actionbar[ info[#info] ]
+				t.r, t.g, t.b = r, g, b
+				AB:UpdateButtonSettings();
+			end,				
+		},
+		noPowerColor = {
+			type = 'color',
+			order = 10,
+			name = L['Out of Power'],
+			desc = L['Color of the actionbutton when out of power (Mana, Rage, Focus, Holy Power).'],
+			get = function(info)
+				local t = E.db.actionbar[ info[#info] ]
+				return t.r, t.g, t.b, t.a
+			end,
+			set = function(info, r, g, b)
+				E.db.actionbar[ info[#info] ] = {}
+				local t = E.db.actionbar[ info[#info] ]
+				t.r, t.g, t.b = r, g, b
+				AB:UpdateButtonSettings();
+			end,			
+		},		
+		euiabstyle = {
+			order = 11,
 			type = 'select',
 			name = E.ValColor..L["Eui AB Style"].."|r",
 			disabled = function() return not E.private.actionbar.enable end,	
@@ -514,7 +546,7 @@ E.Options.args.actionbar = {
 			end,
 		},			
 		fontGroup = {
-			order = 10,
+			order = 12,
 			type = 'group',
 			guiInline = true,
 			disabled = function() return not E.private.actionbar.enable end,
@@ -549,10 +581,8 @@ E.Options.args.actionbar = {
 		},	
 		microbar = {
 			type = "group",
-			order = 20,
 			name = L['Micro Bar'],
 			disabled = function() return not E.private.actionbar.enable end,
-			guiInline = true,
 			get = function(info) return E.db.actionbar.microbar[ info[#info] ] end,
 			set = function(info, value) E.db.actionbar.microbar[ info[#info] ] = value; AB:UpdateMicroPositionDimensions() end,
 			args = {

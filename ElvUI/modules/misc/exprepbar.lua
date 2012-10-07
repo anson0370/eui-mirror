@@ -6,18 +6,18 @@ FACTION_STANDING_LABEL100 = UNKNOWN
 function M:UpdateExpRepAnchors()
 	local repBar = ReputationBarMover
 	local expBar = ExperienceBarMover
-	
+
 	if (E:HasMoverBeenMoved('ExperienceBarMover') or E:HasMoverBeenMoved('ReputationBarMover')) or not repBar or not expBar then return; end
 	repBar:ClearAllPoints()
 	expBar:ClearAllPoints()
 	
 	if self.expBar:IsShown() and self.repBar:IsShown() then
-		expBar:Point('TOP', ElvuiLoc, 'BOTTOM', 0, -3)
-		repBar:Point('TOP', self.expBar, 'BOTTOM', 0, -2)
+		expBar:Point('TOP', E.UIParent, 'TOP', 0, -1)
+		repBar:Point('TOP', self.expBar, 'BOTTOM', 0, -1)
 	elseif self.expBar:IsShown() then
-		expBar:Point('TOP', ElvuiLoc, 'BOTTOM', 0, -2)
+		expBar:Point('TOP', E.UIParent, 'TOP', 0, -1)
 	else
-		repBar:Point('TOP', ElvuiLoc, 'BOTTOM', 0, -2)
+		repBar:Point('TOP', E.UIParent, 'TOP', 0, -1)
 	end
 end
 
@@ -106,12 +106,12 @@ function M:UpdateReputation(event)
 		
 		
 		if textFormat == 'PERCENT' then
-			text = string.format('%s: %d%% [%s]', name, value / max * 100, _G['FACTION_STANDING_LABEL'..ID])
+			text = string.format('%s: %d%% [%s]', name, ((value - min) / (max - min) * 100), _G['FACTION_STANDING_LABEL'..ID])
 		elseif textFormat == 'CURMAX' then
-			text = string.format('%s: %s - %s [%s]', name, E:ShortValue(value), E:ShortValue(max), _G['FACTION_STANDING_LABEL'..ID])
+			text = string.format('%s: %s - %s [%s]', name, E:ShortValue(value - min), E:ShortValue(max - min), _G['FACTION_STANDING_LABEL'..ID])
 		elseif textFormat == 'CURPERC' then
-			text = string.format('%s: %s - %d%% [%s]', name, E:ShortValue(value), value / max * 100, _G['FACTION_STANDING_LABEL'..ID])
-		end				
+			text = string.format('%s: %s - %d%% [%s]', name, E:ShortValue(value - min), ((value - min) / (max - min) * 100), _G['FACTION_STANDING_LABEL'..ID])
+		end					
 		
 		bar.text:SetText(text)		
 	end
@@ -241,22 +241,22 @@ local function repopenFunc(name)
 end
 
 function M:LoadExpRepBar()
-	self.expBar = self:CreateBar('ElvUI_ExperienceBar', ExperienceBar_OnEnter, 'TOP', ElvuiLoc, 'BOTTOM', 0, -3)
+	self.expBar = self:CreateBar('ElvUI_ExperienceBar', ExperienceBar_OnEnter, 'TOP', E.UIParent, 'TOP', 0, -1)
 	self.expBar.statusBar:SetStatusBarColor(0, 0.4, 1, .8)
 	self.expBar.rested = CreateFrame('StatusBar', nil, self.expBar)
 	self.expBar.rested:SetInside()
 	self.expBar.rested:SetStatusBarTexture(E.media.normTex)
 	self.expBar.rested:SetStatusBarColor(1, 0, 1, 0.2)
 
-	self.repBar = self:CreateBar('ElvUI_ReputationBar', ReputationBar_OnEnter, 'TOP', self.expBar, 'BOTTOM', 0, -2)
+	self.repBar = self:CreateBar('ElvUI_ReputationBar', ReputationBar_OnEnter, 'TOP', self.expBar, 'BOTTOM', 0, -1)
 
 	self:UpdateExpRepDimensions()
 	
-	E:CreateMover(self.expBar, "ExperienceBarMover", L["Experience Bar"], nil, nil, nil, nil, expcloseFunc, expopenFunc)
-	E:CreateMover(self.repBar, "ReputationBarMover", L["Reputation Bar"], nil, nil, nil, nil, repcloseFunc, repopenFunc)
-	
 	self:EnableDisable_ExperienceBar()
 	self:EnableDisable_ReputationBar()
+
+	E:CreateMover(self.expBar, "ExperienceBarMover", L["Experience Bar"], nil, nil, nil, nil, expcloseFunc, expopenFunc)
+	E:CreateMover(self.repBar, "ReputationBarMover", L["Reputation Bar"], nil, nil, nil, nil, repcloseFunc, repopenFunc)
 	
 	self:UpdateExpRepAnchors()
 end

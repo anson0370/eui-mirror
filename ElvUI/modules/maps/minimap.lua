@@ -240,7 +240,18 @@ function M:Initialize()
 	Minimap:ClearAllPoints()
 	Minimap:Point("TOPLEFT", mmholder, "TOPLEFT", 2, -2)
 	Minimap:SetMaskTexture('Interface\\ChatFrame\\ChatFrameBackground')
+	Minimap:SetQuestBlobRingAlpha(0) 
+	Minimap:SetArchBlobRingAlpha(0)	
 	Minimap:CreateBackdrop('Default')
+	Minimap:HookScript('OnEnter', function(self)
+		if E.db.general.minimap.locationText ~= 'MOUSEOVER' or not E.private.general.minimap.enable then return; end
+		self.location:Show()
+	end)
+	
+	Minimap:HookScript('OnLeave', function(self)
+		if E.db.general.minimap.locationText ~= 'MOUSEOVER' or not E.private.general.minimap.enable then return; end
+		self.location:Hide()
+	end)	
 	
 	--Fix spellbook taint
 	ShowUIPanel(SpellBookFrame)
@@ -251,7 +262,9 @@ function M:Initialize()
 	Minimap.location:Point('TOP', Minimap, 'TOP', 0, -2)
 	Minimap.location:SetJustifyH("CENTER")
 	Minimap.location:SetJustifyV("MIDDLE")	
-	Minimap.location:Hide()
+	if E.db.general.minimap.locationText ~= 'SHOW' or not E.private.general.minimap.enable then
+		Minimap.location:Hide()
+	end
 	
 	MinimapBorder:Hide()
 	MinimapBorderTop:Hide()
@@ -305,7 +318,12 @@ function M:Initialize()
 	Minimap:EnableMouseWheel(true)
 	Minimap:SetScript("OnMouseWheel", M.Minimap_OnMouseWheel)	
 	Minimap:SetScript("OnMouseUp", M.Minimap_OnMouseUp)
-	
+
+	self:RegisterEvent("PLAYER_ENTERING_WORLD", "Update_ZoneText")
+	self:RegisterEvent("ZONE_CHANGED_NEW_AREA", "Update_ZoneText")
+	self:RegisterEvent("ZONE_CHANGED", "Update_ZoneText")
+	self:RegisterEvent("ZONE_CHANGED_INDOORS", "Update_ZoneText")
+
 	self:RegisterEvent('ADDON_LOADED')
 	self:UpdateSettings()
 	

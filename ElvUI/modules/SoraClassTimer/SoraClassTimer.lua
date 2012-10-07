@@ -225,12 +225,12 @@ function Module:Initialize()
 	local playerAnchor = CreateFrame("Frame", "playerSClassTimerAnchor", UIParent)
 	playerAnchor:Size(C["PlayerIconSize"])
 	playerAnchor:Point("BOTTOMLEFT", ElvUF_Player, "TOPLEFT", 0, 12)
-	E:CreateMover(playerAnchor, "playerAnchorMover", L["player"]..L["SoraClassTimer"])
+	E:CreateMover(playerAnchor, "playerAnchorMover", L["player"]..L["SoraClassTimer"], nil, nil, nil, 'ALL,EUI')
 	
 	local targetAnchor = CreateFrame("Frame", "targetSClassTimerAnchor", UIParent)
 	targetAnchor:Size(C["TargetIconSize"])
 	targetAnchor:Point("BOTTOMLEFT", ElvUF_Target, "TOPLEFT", 0, 12)
-	E:CreateMover(targetAnchor, "targetAnchorMover", L["target"]..L["SoraClassTimer"])
+	E:CreateMover(targetAnchor, "targetAnchorMover", L["target"]..L["SoraClassTimer"], nil, nil, nil, 'ALL,EUI')
 	
 end
 

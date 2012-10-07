@@ -4,17 +4,22 @@
 ## Title-zhCN: |cffC495DDEUI|r重铸助手
 ## Title-zhTW: |cffC495DDEUI|r重鑄助手
 ## Notes: Calculates optimal reforging for given weights/caps.
-## Version: 1.12
+## Version: 1.15
 ## SavedVariables: ReforgeLiteDB
 ## Dependencies: 
-## X-Curse-Packaged-Version: v1.12
+## X-Curse-Packaged-Version: v1.13
 ## X-Curse-Project-Name: ReforgeLite
 ## X-Curse-Project-ID: reforgelite
 ## X-Curse-Repository-ID: wow/reforgelite/mainline
-## RequiredDeps: ElvUI
+## X-Curse-Packaged-Version: v1.15
+## X-Curse-Project-Name: ReforgeLite
+## X-Curse-Project-ID: reforgelite
+## X-Curse-Repository-ID: wow/reforgelite/mainline
 
 Localization.lua
+Scaling.lua
 GUI.lua
 ReforgeLite.lua
 ReforgeEngine.lua
 Presets.lua
+TaskUI.lua

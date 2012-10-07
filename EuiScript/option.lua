@@ -122,6 +122,7 @@ E.Options.args.euiscript = {
 					order = 23,
 					type = "toggle",
 					name = L["autogreed"],
+					disabled = (UnitLevel('player') ~= MAX_PLAYER_LEVEL),
 				},
 				autoinvenable = {
 					order = 26,
@@ -167,7 +168,7 @@ E.Options.args.euiscript = {
 					type = "toggle",
 					name = L["BloodShield"],
 					desc = L["BloodShield desc"],
-					set = function(info, value) E.db.euiscript.bloodshield = value; E:GetModule('Euiscript'):ToggleBloodShield(); end,
+					set = function(info, value) E.db.euiscript.bloodshield = value; E:GetModule('EuiScript'):ToggleBloodShield(); end,
 				},
 				autobuy = {
 					order = 35,

@@ -19,7 +19,8 @@ local DEFAULT_STRINGS = {
 	-- zhCN
 	Battleground = L['BG'],
 	Guild = L['G'],
-	raid = L['R']	
+	raid = L['R'],
+	Party = L['P'],
 }
 
 local hyperlinkTypes = {
@@ -324,10 +325,18 @@ end
 
 function CH:OnEnter(frame)
 	_G[frame:GetName().."Text"]:Show()
+	
+	if frame.conversationIcon then
+		frame.conversationIcon:Show()
+	end
 end
 
 function CH:OnLeave(frame)
 	_G[frame:GetName().."Text"]:Hide()
+	
+	if frame.conversationIcon then
+		frame.conversationIcon:Hide()
+	end
 end
 
 local x = CreateFrame('Frame')
@@ -342,8 +351,16 @@ function CH:SetupChatTabs(frame, hook)
 	
 	if not hook then
 		_G[frame:GetName().."Text"]:Show()
+		
+		if frame.conversationIcon then
+			frame.conversationIcon:Show()
+		end
 	elseif GetMouseFocus() ~= frame then
 		_G[frame:GetName().."Text"]:Hide()
+		
+		if frame.conversationIcon then 
+			frame.conversationIcon:Hide()
+		end
 	end
 end
 
@@ -392,8 +409,6 @@ function CH:PositionChat(override)
 				isDocked = false
 			end	
 		end	
-		
-		if not chat.isInitialized then return end
 		
 		if point == "BOTTOMRIGHT" and chat:IsShown() and not (id > NUM_CHAT_WINDOWS) and id == self.RightChatWindowID then
 			if id ~= 2 then
@@ -657,7 +672,9 @@ function CH:SetupChat(event, ...)
 		else
 			frame:SetShadowColor(0, 0, 0, 1)
 		end
-		frame:SetShadowOffset((E.mult or 1), -(E.mult or 1))
+		frame:SetTimeVisible(100)
+		frame:SetShadowOffset((E.mult or 1), -(E.mult or 1))	
+		frame:SetFading(self.db.fade)
 	end	
 	
 	if self.db.hyperlinkHover then

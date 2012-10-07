@@ -99,7 +99,8 @@ function S:ToggleBloodShield()
 end		
 
 function S:LoadBloodShield()
-	if not E.db.euiscript.bloodshield then return end
+	if not E.db.euiscript.bloodshield or E.db.unitframe.units.player.tankshield then return end
+
 	if not BS_Name then return end
 	if ElvUF_Player == nil then return end
 		

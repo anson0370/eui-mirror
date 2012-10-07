@@ -1,35 +1,12 @@
 local E, _, DF = unpack(select(2, ...)) -- Import Functions/Constants, Config, Locales
 local RC = E:NewModule('RaidCheck');
 
-
-
 local join = string.join
 local find = string.find
 local format = string.format
 local sort = table.sort
 local floor = math.floor
 local MaxGroup = 5
-
-local EuiSetTooltip = function(f,title,L1,R1,L2,R2,L3,R3,L4,R4)
-	f:SetScript("OnEnter", function()
-		if not InCombatLockdown() then
-			GameTooltip:SetOwner(f, "ANCHOR_BOTTOMRIGHT")
-			GameTooltip:ClearLines()
-			GameTooltip:SetText(title or " ")
-			if title then GameTooltip:AddLine(" ") end
-			if L1 and R1 then GameTooltip:AddDoubleLine(L1,R1,16/255,226/255,5/255,1,1,1) end
-			if L2 and R2 then GameTooltip:AddLine(" "); GameTooltip:AddDoubleLine(L2,R2,16/255,226/255,5/255,1,1,1) end
-			if L3 and R3 then GameTooltip:AddLine(" "); GameTooltip:AddDoubleLine(L3,R3,16/255,226/255,5/255,1,1,1) end
-			if L4 and R4 then GameTooltip:AddLine(" "); GameTooltip:AddDoubleLine(L4,R4,16/255,226/255,5/255,1,1,1) end
-			GameTooltip:Show()
-		end
-	end)
-
-	f:SetScript("OnLeave", function()
-		GameTooltip:Hide()
-	end)
-
-end
 
 local L = {}
 if (GetLocale() == "zhCN") then
@@ -54,11 +31,11 @@ if (GetLocale() == "zhCN") then
 	L.RaidCheckMsgNoFlask = "%s人无合剂效果"
 	L.RaidCheckMsgHasFlask = "%s人已有合剂效果"
 
-	L.RaidCheckTipLeftButtonOnLeftInfo = "检查团队成员到位情况"
-	L.RaidCheckTipRightButtonOnLeftInfo = "发起团队就位确认"
-	L.RaidCheckTipLeftButtonOnRightInfo = "检查团队BUFF"
-	L.RaidCheckTipRightButtonOnRightInfo = "检查合剂效果"
-	L.RAIDCHECK_RAIDTOOL = "打开团队工具面板"
+	L.RaidCheckTipLeftButtonOnLeftInfo = "到位情况"
+	L.RaidCheckTipRightButtonOnLeftInfo = "就位确认"
+	L.RaidCheckTipLeftButtonOnRightInfo = "检查BUFF"
+	L.RaidCheckTipRightButtonOnRightInfo = "检查合剂"
+	L.RAIDCHECK_RAIDTOOL = "团队工具"
 
 	L.MouseLeftButton = "鼠标左键"
 	L.MouseRightButton = "鼠标右键"
@@ -88,11 +65,11 @@ elseif (GetLocale() == "zhTW") then
 	L.RaidCheckMsgNoFlask = "%s人無藥劑效果"
 	L.RaidCheckMsgHasFlask = "%s人已有藥劑效果"
 
-	L.RaidCheckTipLeftButtonOnLeftInfo = "檢查團隊成員到位情況"
-	L.RaidCheckTipRightButtonOnLeftInfo = "發起團隊就位確認"
-	L.RaidCheckTipLeftButtonOnRightInfo = "檢查團隊BUFF"
-	L.RaidCheckTipRightButtonOnRightInfo = "檢查藥劑效果"
-	L.RAIDCHECK_RAIDTOOL = "打開團隊工具面板"
+	L.RaidCheckTipLeftButtonOnLeftInfo = "到位情況"
+	L.RaidCheckTipRightButtonOnLeftInfo = "就位確認"
+	L.RaidCheckTipLeftButtonOnRightInfo = "檢查BUFF"
+	L.RaidCheckTipRightButtonOnRightInfo = "檢查藥劑"
+	L.RAIDCHECK_RAIDTOOL = "團隊工具"
 
 	L.MouseLeftButton = "鼠標左鍵"
 	L.MouseRightButton = "鼠標右鍵"
@@ -365,33 +342,24 @@ function RC:CheckRaidStatus()
 end
 
 function RC:Initialize()
-	if E.db["euiscript"].raidcheck ~= true then return end
+	if not EuiInfoBar then return end
 	
-	local RaidCheckFrameLeft = CreateFrame("Button", "RaidCheckFrameLeft", UIParent)
-	RaidCheckFrameLeft:SetAllPoints(ElvuiLocX)
-	EuiSetTooltip(RaidCheckFrameLeft, L.BottomPanelRaidCheck, L.MouseLeftButton, RaidUtilityPanel and L.RAIDCHECK_RAIDTOOL or L.RaidCheckTipLeftButtonOnLeftInfo, L.MouseRightButton, L.RaidCheckTipRightButtonOnLeftInfo)
-
-	RaidCheckFrameLeft:SetScript("OnMouseDown", function(self, btn)
-		if InCombatLockdown() then return end
-		if btn == "LeftButton" then
-			if RaidUtilityPanel and RC:CheckRaidStatus() then RaidUtilityPanel:Show() else RC:CheckPosition() end
-		elseif btn == "RightButton" then
-			DoReadyCheck()
-		end
+	EuiInfoBar.RaidTool.raidtool1.text:SetText(RaidUtilityPanel and L.RAIDCHECK_RAIDTOOL or L.RaidCheckTipLeftButtonOnLeftInfo)
+	EuiInfoBar.RaidTool.raidtool1:HookScript("OnClick", function()
+		if RaidUtilityPanel and RC:CheckRaidStatus() then RaidUtilityPanel:Show() else RC:CheckPosition() end
 	end)
-
-
-	local RaidCheckFrameRight = CreateFrame("Button", "RaidCheckFrameRight", UIParent)
-	RaidCheckFrameRight:SetAllPoints(ElvuiLocY)
-	EuiSetTooltip(RaidCheckFrameRight, L.BottomPanelRaidCheck, L.MouseLeftButton, L.RaidCheckTipLeftButtonOnRightInfo, L.MouseRightButton, L.RaidCheckTipRightButtonOnRightInfo)
+	EuiInfoBar.RaidTool.raidtool2.text:SetText(L.RaidCheckTipRightButtonOnLeftInfo)
+	EuiInfoBar.RaidTool.raidtool2:HookScript("OnClick", function()
+		DoReadyCheck()
+	end)
 	
-	RaidCheckFrameRight:SetScript("OnMouseDown", function(self, btn)
-		if InCombatLockdown() then return end
-		if btn == "LeftButton" then
-			RC:CheckRaidBuff()
-		elseif btn == "RightButton" then
-			RC:CheckRaidFlask()
-		end
+	EuiInfoBar.RaidTool.raidtool3.text:SetText(L.RaidCheckTipLeftButtonOnRightInfo)
+	EuiInfoBar.RaidTool.raidtool3:HookScript("OnClick", function()
+		RC:CheckRaidBuff()
+	end)
+	EuiInfoBar.RaidTool.raidtool4.text:SetText(L.RaidCheckTipRightButtonOnRightInfo)
+	EuiInfoBar.RaidTool.raidtool4:HookScript("OnClick", function()
+		RC:CheckRaidFlask()
 	end)	
 end
 

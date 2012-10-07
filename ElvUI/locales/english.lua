@@ -7,6 +7,10 @@ if not L then return; end
 L["A taint has occured that is preventing you from using your talents/glyphs, this can happen if you've inspected someone. Unfortionatly theres nothing we can do to fix it, please reload your ui and try again."] = true;
 
 --ActionBars
+L['Out of Range'] = true;
+L['Color of the actionbutton when out of range.'] = true;
+L['Out of Power'] = true;
+L['Color of the actionbutton when out of power (Mana, Rage, Focus, Holy Power).'] = true;
 L["Delete Actionbar Layout DB"] = true;
 L["Actionbar Layout Save and Load"] = true;
 L["Save Actionbar Layout"] = true;
@@ -414,6 +418,9 @@ L["No locals to dump"] = true;
 L['|cFFE30000Lua error recieved. You can view the error message when you exit combat.'] = true;
 
 --General
+L["Menu"] = true;
+L["RaidTool"] = true;
+L["Shortcuts"] = true;
 L["Name Font"] = true;
 L["The font that appears on the text above players heads. |cffFF0000WARNING: This requires a game restart or re-log for this change to take effect.|r"] = true;
 L["Accept Invites"] = true;
@@ -501,6 +508,8 @@ L["Experience Bar"] = true;
 L["Reputation Bar"] = true;
 
 --NamePlates
+L['Background Multiplier'] = true;
+L['The backdrop of the nameplates color is scaled to match the color of the nameplate by this percentage. Set to zero to have no color in the nameplate backdrop.'] = true;
 L["Add Name"] = true;
 L["All"] = true;
 L["Auras"] = true;
@@ -555,6 +564,7 @@ L["Use this filter."] = true;
 L["You can't remove a default name from the filter, disabling the name."] = true;
 
 --Skins
+L['Black Market AH'] = true;
 L['Transmogrify Frame'] = true;
 L['Open Tukui_UIPackages_Skins option'] = true;
 L["Achievement Frame"] = true;
@@ -673,6 +683,23 @@ L['You can toggle the microbar by using your middle mouse button on the minimap 
 L['You can use the /resetui command to reset all of your movers. You can also use the command to reset a specific mover, /resetui <mover name>.\nExample: /resetui Player Frame'] = true;
 
 --UnitFrames
+L['Raid Icon'] = true;
+L["Affliction"] = true;
+L["Demonology"] = true;
+L["Destruction"] = true;
+L['Interruptable'] = true;
+L['Non-Interruptable'] = true;
+L['Harmony'] = true;
+L['Blood'] = true;
+L['Unholy'] = true;
+L['Frost'] = true;
+L['Death'] = true;
+L['Holy Power'] = true;
+L['Arcane Charges'] = true;
+L['Shadow Orbs'] = true;
+L['Lunar'] = true;
+L['Solar'] = true;
+L['Class Resources'] = true;
 L['Center'] = true;
 L['JustifyH'] = true;
 L["Sets the font instance's horizontal text alignment style."] = true;

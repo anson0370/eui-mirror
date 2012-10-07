@@ -126,6 +126,10 @@ E.Options.args.chat = {
 					type = 'toggle',
 					name = L['Fade Chat'],
 					desc = L['Fade the chat text when there is no activity.'],
+					set = function(info, value)
+						E.db.chat[ info[#info] ] = value
+						CH:UpdateFading()
+					end,					
 				},	
 				chatHistory = {
 					order = 8,

@@ -46,10 +46,10 @@ function GUI:CreateEditBox (parent, width, height, default, setter)
       box:ClearFocus ()
     end)
     box.Recycle = function (box)
+      box:Hide ()
       box:SetScript ("OnEditFocusLost", nil)
       box:SetScript ("OnEnter", nil)
       box:SetScript ("OnLeave", nil)
-      box:Hide ()
       table.insert (self.editBoxes, box)
     end
   end

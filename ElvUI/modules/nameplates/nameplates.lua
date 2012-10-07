@@ -466,6 +466,7 @@ function NP:UpdateThreat(frame)
 	badscale = self.db.badscale
 	transition = self.db.goodtransitioncolor
 	transition2 = self.db.badtransitioncolor
+	local bgMult = self.db.bgMult
 	if self.db.enhancethreat ~= true then
 		if(frame.threat:IsShown()) then
 			local _, val = frame.threat:GetVertexColor()
@@ -497,7 +498,7 @@ function NP:UpdateThreat(frame)
 				if E.role == "Tank" then
 					if not frame.customColor then
 						frame.hp:SetStatusBarColor(bad.r, bad.g, bad.b)
-						frame.hp.hpbg:SetTexture(bad.r, bad.g, bad.b, 0.25)
+						frame.hp.hpbg:SetTexture(bad.r, bad.g, bad.b, bgMult)
 					end
 
 					if not frame.customScale and badscale ~= 1 then
@@ -508,7 +509,7 @@ function NP:UpdateThreat(frame)
 				else
 					if not frame.customColor then
 						frame.hp:SetStatusBarColor(good.r, good.g, good.b)
-						frame.hp.hpbg:SetTexture(good.r, good.g, good.b, 0.25)
+						frame.hp.hpbg:SetTexture(good.r, good.g, good.b, bgMult)
 					end
 					
 					if not frame.customScale and goodscale ~= 1 then
@@ -521,7 +522,7 @@ function NP:UpdateThreat(frame)
 				--Set colors to their original, not in combat
 				if not frame.customColor then
 					frame.hp:SetStatusBarColor(frame.hp.rcolor, frame.hp.gcolor, frame.hp.bcolor)
-					frame.hp.hpbg:SetTexture(frame.hp.rcolor, frame.hp.gcolor, frame.hp.bcolor, 0.25)
+					frame.hp.hpbg:SetTexture(frame.hp.rcolor, frame.hp.gcolor, frame.hp.bcolor, bgMult)
 				end
 				
 				if not frame.customScale and (goodscale ~= 1 or badscale ~= 1) then
@@ -538,7 +539,7 @@ function NP:UpdateThreat(frame)
 				if E.role == "Tank" then
 					if not frame.customColor then
 						frame.hp:SetStatusBarColor(good.r, good.g, good.b)
-						frame.hp.hpbg:SetTexture(good.r, good.g, good.b, 0.25)
+						frame.hp.hpbg:SetTexture(good.r, good.g, good.b, bgMult)
 					end
 					
 					if not frame.customScale and goodscale ~= 1 then
@@ -550,7 +551,7 @@ function NP:UpdateThreat(frame)
 				else
 					if not frame.customColor then
 						frame.hp:SetStatusBarColor(bad.r, bad.g, bad.b)
-						frame.hp.hpbg:SetTexture(bad.r, bad.g, bad.b, 0.25)
+						frame.hp.hpbg:SetTexture(bad.r, bad.g, bad.b, bgMult)
 					end
 					
 					if not frame.customScale and badscale ~= 1 then
@@ -572,13 +573,13 @@ function NP:UpdateThreat(frame)
 						--Losing Threat
 						if not frame.customColor then
 							frame.hp:SetStatusBarColor(transition2.r, transition2.g, transition2.b)	
-							frame.hp.hpbg:SetTexture(transition2.r, transition2.g, transition2.b, 0.25)
+							frame.hp.hpbg:SetTexture(transition2.r, transition2.g, transition2.b, bgMult)
 						end
 					else
 						--Gaining Threat
 						if not frame.customColor then
 							frame.hp:SetStatusBarColor(transition.r, transition.g, transition.b)	
-							frame.hp.hpbg:SetTexture(transition.r, transition.g, transition.b, 0.25)
+							frame.hp.hpbg:SetTexture(transition.r, transition.g, transition.b, bgMult)
 						end
 					end
 				else
@@ -586,13 +587,13 @@ function NP:UpdateThreat(frame)
 						--Losing Threat
 						if not frame.customColor then
 							frame.hp:SetStatusBarColor(transition.r, transition.g, transition.b)	
-							frame.hp.hpbg:SetTexture(transition.r, transition.g, transition.b, 0.25)
+							frame.hp.hpbg:SetTexture(transition.r, transition.g, transition.b, bgMult)
 						end
 					else
 						--Gaining Threat
 						if not frame.customColor then
 							frame.hp:SetStatusBarColor(transition2.r, transition2.g, transition2.b)	
-							frame.hp.hpbg:SetTexture(transition2.r, transition2.g, transition2.b, 0.25)
+							frame.hp.hpbg:SetTexture(transition2.r, transition2.g, transition2.b, bgMult)
 						end
 					end				
 				end
@@ -753,9 +754,6 @@ function NP:PLAYER_ENTERING_WORLD()
 	if inInstance and instanceType == 'pvp' and self.db.markBGHealers then
 		self.CheckHealerTimer = self:ScheduleRepeatingTimer("CheckBGHealers", 1)
 		self:CheckBGHealers()
-	elseif inInstance and instanceType == 'arena' and self.db.markBGHealers then
-		self.CheckHealerTimer = self:ScheduleRepeatingTimer("CheckArenaHealers", 1)
-		self:CheckArenaHealers()
 	else
 		if self.CheckHealerTimer then
 			self:CancelTimer(self.CheckHealerTimer)

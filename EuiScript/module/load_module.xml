@@ -4,6 +4,7 @@
 	<!--Script file="achievementpoint.lua"/-->
 	<Script file='drag.lua'/>
 	<!--Script file="mapmove.lua"/-->
+	<Script file='Durability.lua'/>
 	<Script file="tradetabs.lua"/>
 	<Script file="RaidCD.lua"/>
 	<Script file="classCD.lua"/>

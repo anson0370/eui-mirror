@@ -28,6 +28,7 @@ function UF:Construct_PlayerFrame(frame)
 
 	frame.Swing = self:ConstructSwingBar(frame)	
 	frame.CPoints = self:Construct_Combobar(frame, true)
+	frame.TankShield = self:Construct_TankShield(frame)
 	
 	if E.myclass == "PALADIN" then
 		frame.HolyPower = self:Construct_PaladinResourceBar(frame)
@@ -677,6 +678,7 @@ function UF:Update_PlayerFrame(frame, db)
 				else
 					bars[i].backdrop:Show()
 				end
+				bars[i]:SetStatusBarColor(unpack(ElvUF.colors.holyPower))
 			end
 			
 			if not USE_MINI_CLASSBAR then
@@ -727,6 +729,7 @@ function UF:Update_PlayerFrame(frame, db)
 				else
 					bars[i].backdrop:Show()
 				end
+				bars[i]:SetStatusBarColor(unpack(ElvUF.colors.shadowOrbs))
 			end
 			
 			if not USE_MINI_CLASSBAR then
@@ -770,6 +773,9 @@ function UF:Update_PlayerFrame(frame, db)
 						bars[i]:Point("LEFT", bars[i-1], "RIGHT", SPACING, 0)
 					end
 				end
+				
+				bars[i]:SetStatusBarColor(unpack(ElvUF.colors.arcaneCharges))
+				bars[i].bg:SetTexture(unpack(ElvUF.colors.arcaneCharges))				
 				
 				if not USE_MINI_CLASSBAR then
 					bars[i].backdrop:Hide()
@@ -896,6 +902,9 @@ function UF:Update_PlayerFrame(frame, db)
 				runes:Hide()
 				RuneFrame.Show = RuneFrame.Hide
 				RuneFrame:Hide()				
+			end			
+			if runes.UpdateAllRuneTypes then
+				runes:UpdateAllRuneTypes() --colors update
 			end				
 		elseif E.myclass == "DRUID" then
 			local eclipseBar = frame.EclipseBar
@@ -916,6 +925,8 @@ function UF:Update_PlayerFrame(frame, db)
 			--?? Apparent bug fix for the width after in-game settings change
 			eclipseBar.LunarBar:SetMinMaxValues(0, 0)
 			eclipseBar.SolarBar:SetMinMaxValues(0, 0)
+			eclipseBar.LunarBar:SetStatusBarColor(unpack(ElvUF.colors.eclipseBar[1]))
+			eclipseBar.SolarBar:SetStatusBarColor(unpack(ElvUF.colors.eclipseBar[2]))			
 			eclipseBar.LunarBar:Size(CLASSBAR_WIDTH, CLASSBAR_HEIGHT - (BORDER*2))			
 			eclipseBar.SolarBar:Size(CLASSBAR_WIDTH, CLASSBAR_HEIGHT - (BORDER*2))	
 			
@@ -937,7 +948,24 @@ function UF:Update_PlayerFrame(frame, db)
 			frame:DisableElement('CombatFade')
 		end		
 	end
-		
+
+	--Raid Icon
+	do
+		local RI = frame.RaidIcon
+		if db.raidicon.enable then
+			frame:EnableElement('RaidIcon')
+			RI:Show()
+			RI:Size(db.raidicon.size)
+			
+			local x, y = self:GetPositionOffset(db.raidicon.attachTo)
+			RI:ClearAllPoints()
+			RI:Point(db.raidicon.attachTo, frame, db.raidicon.attachTo, x + db.raidicon.xOffset, y + db.raidicon.yOffset)	
+		else
+			frame:DisableElement('RaidIcon')	
+			RI:Hide()
+		end
+	end		
+	
 	--Debuff Highlight
 	do
 		local dbh = frame.DebuffHighlight
@@ -1123,6 +1151,44 @@ function UF:Update_PlayerFrame(frame, db)
 			frame[objectName]:SetPoint(objectDB.justifyH or 'CENTER', frame, 'CENTER', objectDB.xOffset, objectDB.yOffset)
 		end
 	end	
+	
+	--TankShield
+	do
+		local TankShield = frame.TankShield
+		if db.tankshield.enable then
+			if not frame:IsElementEnabled('TankShield') then
+				frame:EnableElement('TankShield')
+			end
+			local ts = 0
+		--	if db.power.offset > 0 then
+		--		ts = frame.Health.backdrop:GetHeight() + db.power.offset
+		--	else
+				ts = UNIT_HEIGHT
+		--	end
+			TankShield:ClearAllPoints()
+			TankShield.sb:ClearAllPoints()
+			if db.tankshield.position == 'RIGHT' then
+				TankShield:Point("TOPLEFT", frame.Health.backdrop, "TOPRIGHT", SPACING + db.power.offset, 0)
+				TankShield:Point("BOTTOMRIGHT", frame.Power.backdrop, "BOTTOMRIGHT", SPACING + ts, 0)
+				TankShield.sb:Point("TOPLEFT", TankShield, "TOPRIGHT", (BORDER + SPACING), -BORDER)
+				TankShield.sb:Point("BOTTOMRIGHT", TankShield, "BOTTOMRIGHT", 12, BORDER)
+			else
+				if (USE_PORTRAIT and not USE_PORTRAIT_OVERLAY) then
+					TankShield:Point("TOPRIGHT", frame.Portrait.backdrop, "TOPLEFT", -(SPACING), 0)
+					TankShield:Point("BOTTOMLEFT", frame.Portrait.backdrop, "BOTTOMLEFT", -(SPACING + ts), 0)
+				else
+					TankShield:Point("TOPRIGHT", frame.Health.backdrop, "TOPLEFT", -(SPACING), 0)
+					TankShield:Point("BOTTOMLEFT", frame.Power.backdrop, "BOTTOMLEFT", -(SPACING + ts), 0)
+				end
+				TankShield.sb:Point("TOPRIGHT", TankShield, "TOPLEFT", -(BORDER + SPACING), -BORDER)
+				TankShield.sb:Point("BOTTOMLEFT", TankShield, "BOTTOMLEFT", -12, BORDER)
+			end
+		else
+			if frame:IsElementEnabled('TankShield') then
+				frame:DisableElement('TankShield')
+			end
+		end		
+	end
 	
 	E:SetMoverSnapOffset(frame:GetName()..'Mover', -(12 + db.castbar.height))
 	frame:UpdateAllElements()
