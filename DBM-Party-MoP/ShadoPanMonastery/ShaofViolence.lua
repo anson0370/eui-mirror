@@ -2,7 +2,7 @@
 local L		= mod:GetLocalizedStrings()
 local sndWOP	= mod:NewSound(nil, "SoundWOP", true)
 
-mod:SetRevision(("$Revision: 7884 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 7902 $"):sub(12, -3))
 mod:SetCreatureID(56719)
 mod:SetModelID(43283)
 mod:SetZone()
@@ -33,7 +33,6 @@ function mod:ShaSpikeTarget()
 		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\runaway.mp3")--快躲開
 	end
 end
-
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(38166) then

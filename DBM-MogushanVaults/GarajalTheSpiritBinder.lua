@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 local sndWOP	= mod:NewSound(nil, "SoundWOP", true)
 local sndTT		= mod:NewSound(nil, "SoundTT", false)
 
-mod:SetRevision(("$Revision: 7778 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 7901 $"):sub(12, -3))
 mod:SetCreatureID(60143)
 mod:SetModelID(41256)
 mod:SetZone()
@@ -42,7 +42,7 @@ local specWarnVoodooDolls				= mod:NewSpecialWarningSpell(122151, false)
 local specWarnGD						= mod:NewSpecialWarningYou(122181)
 
 local timerTotemCD						= mod:NewNextTimer(36, 116174)
-local timerBanishmentCD					= mod:NewNextTimer(70, 116272)
+local timerBanishmentCD					= mod:NewNextTimer(65, 116272)
 local timerSoulSever					= mod:NewBuffFadesTimer(30, 116278)--Tank version of spirit realm
 local timerSpiritualInnervation			= mod:NewBuffFadesTimer(30, 116161)--Dps version of spirit realm
 local timerShadowyAttackCD				= mod:NewCDTimer(8, "ej6698", nil, nil, nil, 117222)
@@ -50,7 +50,9 @@ local timerShadowyAttackCD				= mod:NewCDTimer(8, "ej6698", nil, nil, nil, 11722
 local prewarnedPhase2 = false
 local warnPhase2Soon					= mod:NewPrePhaseAnnounce(2, 3)
 
-mod:AddBoolOption("SetIconOnVoodoo")
+local berserkTimer					= mod:NewBerserkTimer(360)
+
+mod:AddBoolOption("SetIconOnVoodoo", false)
 
 local voodooDollTargets = {}
 local spiritualInnervationTargets = {}
@@ -117,12 +119,11 @@ function mod:OnCombatStart(delay)
 	table.wipe(voodooDollTargetIcons)
 	timerShadowyAttackCD:Start(7-delay)
 	timerTotemCD:Start(-delay)
-	if self:IsDifficulty("lfr25") then
-		timerBanishmentCD:Start(65-delay)
-	else
-		timerBanishmentCD:Start(-delay)
-	end
+	timerBanishmentCD:Start(-delay)
 	prewarnedPhase2 = false
+	if not self:IsDifficulty("lfr25") then -- lfr seems not berserks.
+		berserkTimer:Start(-delay)
+	end
 end
 
 function mod:OnCombatEnd()
@@ -260,7 +261,7 @@ function mod:OnSync(msg, guid)
 			table.insert(voodooDollTargetIcons, DBM:GetRaidUnitId(guids[guid]))
 			self:UnscheduleMethod("SetVoodooIcons")
 			if self:LatencyCheck() then--lag can fail the icons so we check it before allowing.
-				self:ScheduleMethod(0.5, "SetVoodooIcons")--Still seems touchy and .3 is too fast even on a 70ms connection in rare cases so back to .5
+				self:ScheduleMethod(1, "SetVoodooIcons")
 			end
 		end
 	elseif msg == "VoodooGoneTargets" and guids[guid] and self.Options.SetIconOnVoodoo then
@@ -271,11 +272,7 @@ function mod:OnSync(msg, guid)
 		self:Schedule(0.3, warnSpiritualInnervationTargets)
 	elseif msg == "BanishmentTarget" and guids[guid] then
 		warnBanishment:Show(guids[guid])
-		if self:IsDifficulty("lfr25") then
-			timerBanishmentCD:Start(65)
-		else
-			timerBanishmentCD:Start()
-		end
+		timerBanishmentCD:Start()
 		if guid ~= UnitGUID("player") then--make sure YOU aren't target before warning "other"
 			specWarnBanishmentOther:Show(guids[guid])
 		end

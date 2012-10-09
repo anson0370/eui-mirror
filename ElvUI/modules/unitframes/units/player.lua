@@ -1159,26 +1159,21 @@ function UF:Update_PlayerFrame(frame, db)
 			if not frame:IsElementEnabled('TankShield') then
 				frame:EnableElement('TankShield')
 			end
-			local ts = 0
-		--	if db.power.offset > 0 then
-		--		ts = frame.Health.backdrop:GetHeight() + db.power.offset
-		--	else
-				ts = UNIT_HEIGHT
-		--	end
+
 			TankShield:ClearAllPoints()
 			TankShield.sb:ClearAllPoints()
 			if db.tankshield.position == 'RIGHT' then
 				TankShield:Point("TOPLEFT", frame.Health.backdrop, "TOPRIGHT", SPACING + db.power.offset, 0)
-				TankShield:Point("BOTTOMRIGHT", frame.Power.backdrop, "BOTTOMRIGHT", SPACING + ts, 0)
+				TankShield:Point("BOTTOMRIGHT", frame.Power.backdrop, "BOTTOMRIGHT", SPACING + UNIT_HEIGHT - db.power.offset, 0)
 				TankShield.sb:Point("TOPLEFT", TankShield, "TOPRIGHT", (BORDER + SPACING), -BORDER)
 				TankShield.sb:Point("BOTTOMRIGHT", TankShield, "BOTTOMRIGHT", 12, BORDER)
 			else
 				if (USE_PORTRAIT and not USE_PORTRAIT_OVERLAY) then
 					TankShield:Point("TOPRIGHT", frame.Portrait.backdrop, "TOPLEFT", -(SPACING), 0)
-					TankShield:Point("BOTTOMLEFT", frame.Portrait.backdrop, "BOTTOMLEFT", -(SPACING + ts), 0)
+					TankShield:Point("BOTTOMLEFT", frame.Portrait.backdrop, "BOTTOMLEFT", -(SPACING + UNIT_HEIGHT), 0)
 				else
 					TankShield:Point("TOPRIGHT", frame.Health.backdrop, "TOPLEFT", -(SPACING), 0)
-					TankShield:Point("BOTTOMLEFT", frame.Power.backdrop, "BOTTOMLEFT", -(SPACING + ts), 0)
+					TankShield:Point("BOTTOMLEFT", frame.Power.backdrop, "BOTTOMLEFT", -(SPACING + UNIT_HEIGHT), 0)
 				end
 				TankShield.sb:Point("TOPRIGHT", TankShield, "TOPLEFT", -(BORDER + SPACING), -BORDER)
 				TankShield.sb:Point("BOTTOMLEFT", TankShield, "BOTTOMLEFT", -12, BORDER)

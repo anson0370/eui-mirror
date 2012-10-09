@@ -217,7 +217,7 @@ function S:Initialize()
 	
 	SetCVar("taintLog", 0); --禁止一些污染报告
 	--Module
-	self:LoadBloodShield()
+--	self:LoadBloodShield()
 	
 	self:SecureHook('MerchantItemButton_OnModifiedClick', 'ByMaxNumber')
 	self:SecureHook('WorldStateAlwaysUpFrame_Update', 'MoveWorldState')

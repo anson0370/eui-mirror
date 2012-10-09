@@ -2,7 +2,7 @@
 local L		= mod:GetLocalizedStrings()
 local sndWOP	= mod:NewSound(nil, "SoundWOP", true)
 
-mod:SetRevision(("$Revision: 7766 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 7901 $"):sub(12, -3))
 mod:SetCreatureID(60701, 60708, 60709, 60710)--Adds: 60731 Undying Shadow, 60958 Pinning Arrow
 mod:SetModelID(41813)
 mod:SetZone()
@@ -69,6 +69,7 @@ local specWarnFlankingOrders	= mod:NewSpecialWarningSpell(117910, nil, nil, nil,
 local specWarnImperviousShield	= mod:NewSpecialWarningTarget(117961)--Heroic Ability
 local specWarnImperviousShieldD	= mod:NewSpecialWarningDispel(117961, isDispeller)--Heroic Ability
 --Subetai
+local specWarnVolley			= mod:NewSpecialWarningSpell(118094, nil, nil, nil, true)
 local specWarnPinningArrow		= mod:NewSpecialWarningSwitch("ej5861", mod:IsDps())
 local specWarnPillage			= mod:NewSpecialWarningMove(118047)--Works as both a You and near warning
 local specWarnSleightOfHand		= mod:NewSpecialWarningTarget(118162)--Heroic Ability
@@ -319,6 +320,7 @@ mod.SPELL_MISSED = mod.SPELL_DAMAGE
 function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, _, _, spellId)
 	if spellId == 118088 and self:AntiSpam(2, 1) then--Volley
 		warnVolley:Show()
+		specWarnVolley:Show()
 		timerVolleyCD:Start()
 		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_zyjy.mp3") --注意箭雨
 	elseif spellId == 118121 and self:AntiSpam(2, 2) then--Rain of Arrows
@@ -444,9 +446,8 @@ function mod:CHAT_MSG_MONSTER_YELL(msg, boss)
 end
 
 function mod:UNIT_POWER(uId)
-	if (self:GetUnitCreatureId(uId) == 60708) and UnitPower(uId) > 70 and not Warned then
+	if (self:GetUnitCreatureId(uId) == 60708) and UnitPower(uId) > 60 and not Warned then
 		Warned = true
-		print(self:GetUnitCreatureId(uId))
 		if not mod:IsDps() then
 			sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_nlgg.mp3") --能量過高
 		end

@@ -4,7 +4,7 @@
 ## Title-zhTW: |cffC495DDEUI|r附加模塊
 ## Author: Ljxx.net
 ## X-Category: ElvUI
-## Version: 20121006A
+## Version: 20121008C
 ## RequiredDeps: ElvUI
 
 init.lua

@@ -2,7 +2,7 @@
 local L		= mod:GetLocalizedStrings()
 local sndWOP	= mod:NewSound(nil, "SoundWOP", true)
 
-mod:SetRevision(("$Revision: 7882 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 7901 $"):sub(12, -3))
 mod:SetCreatureID(59184)--59220 seem to be her mirror images
 mod:SetModelID(40639)
 mod:SetZone()
@@ -18,7 +18,7 @@ mod:RegisterEventsInCombat(
 )
 
 local warnWondrousRapidity		= mod:NewSpellAnnounce(114062, 3)
-local warnGravityFlux			= mod:NewSpellAnnounce(114059, 2)
+local warnGravityFlux			= mod:NewTargetAnnounce(114059, 2)
 local warnWhirlofIllusion		= mod:NewSpellAnnounce(113808, 4)
 
 local specWarnWondrousRapdity	= mod:NewSpecialWarningMove(114062, mod:IsTank())--Frontal cone fixate attack, easily dodged (in fact if you don't, i imagine it'll wreck you on heroic)
@@ -26,6 +26,15 @@ local specWarnWondrousRapdity	= mod:NewSpecialWarningMove(114062, mod:IsTank())-
 local timerWondrousRapidity		= mod:NewBuffFadesTimer(7.5, 114062)
 local timerWondrousRapidityCD	= mod:NewNextTimer(14, 114062)
 local timerGravityFlux			= mod:NewCDTimer(12, 114059) -- needs more review.
+
+function mod:GravityFluxTarget()
+	local targetname = self:GetBossTarget(59184)
+	if not targetname then return end
+	warnGravityFlux:Show(targetname)
+	if (targetname == UnitName("player")) and (not mod:IsTank()) then
+		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\runaway.mp3")--快躲開
+	end
+end
 
 function mod:OnCombatStart(delay)
 	timerWondrousRapidityCD:Start(6-delay)
@@ -50,7 +59,7 @@ end
 
 function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, _, _, spellId)
 	if (spellId == 114059 or spellId == 114047) and self:AntiSpam(2, 1) then -- found 2 spellids on first cast, 4 spellids total (114035, 114038, 114047, 114059). needs more logs to confirm whether spellid is correct.
-		warnGravityFlux:Show()
+		self:ScheduleMethod(0.1, "GravityFluxTarget")
 		timerGravityFlux:Start()
 --	"<330.7> Phylactery [[boss2:Summon Books::0:111669]]"
 	elseif spellId == 113808 and self:AntiSpam(2, 2) then

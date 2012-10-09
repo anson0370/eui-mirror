@@ -163,13 +163,18 @@ E.Options.args.euiscript = {
 					type = "toggle",
 					name = L["Auto Disenchant confirmation"],
 				},
-				bloodshield = {
+				oldtopinfobar = {
 					order = 34,
 					type = "toggle",
-					name = L["BloodShield"],
-					desc = L["BloodShield desc"],
-					set = function(info, value) E.db.euiscript.bloodshield = value; E:GetModule('EuiScript'):ToggleBloodShield(); end,
+					name = L["Top Infobar"],
 				},
+				-- bloodshield = {
+					-- order = 34,
+					-- type = "toggle",
+					-- name = L["BloodShield"],
+					-- desc = L["BloodShield desc"],
+					-- set = function(info, value) E.db.euiscript.bloodshield = value; E:GetModule('EuiScript'):ToggleBloodShield(); end,
+				-- },
 				autobuy = {
 					order = 35,
 					type = "toggle",

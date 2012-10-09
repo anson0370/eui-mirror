@@ -2,7 +2,7 @@
 local L		= mod:GetLocalizedStrings()
 local sndWOP	= mod:NewSound(nil, "SoundWOP", true)
 
-mod:SetRevision(("$Revision: 7760 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 7898 $"):sub(12, -3))
 mod:SetCreatureID(60009)--60781 Soul Fragment
 mod:SetModelID(41192)
 mod:SetZone()
@@ -29,23 +29,23 @@ local warnPhase						= mod:NewAnnounce("WarnPhase", 1, "Interface\\Icons\\Spell_
 --Nature/Fist
 local warnLightningLash				= mod:NewStackAnnounce(131788, 3, nil, mod:IsTank())
 local warnLightningFists			= mod:NewSpellAnnounce(116157, 3)
-local warnEpicenter					= mod:NewSpellAnnounce(116018, 4)
+local warnEpicenter					= mod:NewCountAnnounce(116018, 4)
 
 --Fire/Spear
 local warnFlamingSpear				= mod:NewStackAnnounce(116942, 3, nil, mod:IsTank())
 local warnWildSpark					= mod:NewTargetCountAnnounce(116784, 4)
 local yellWildSpark					= mod:NewYell(116784)
-local warnDrawFlame					= mod:NewSpellAnnounce(116711, 4)
+local warnDrawFlame					= mod:NewCountAnnounce(116711, 4)
 
 --Arcane/Staff
 local warnArcaneShock				= mod:NewStackAnnounce(131790, 3, nil, mod:IsTank())
 local warnArcaneResonance			= mod:NewTargetAnnounce(116417, 4)
-local warnArcaneVelocity			= mod:NewSpellAnnounce(116364, 4)
+local warnArcaneVelocity			= mod:NewCountAnnounce(116364, 4)
 
 --Shadow/Shield (Heroic Only)
 local warnShadowBurn				= mod:NewStackAnnounce(131792, 3, nil, mod:IsTank())
 local warnChainsOfShadow			= mod:NewSpellAnnounce(118783, 2, nil, false)
-local warnSiphoningShield			= mod:NewSpellAnnounce(117203, 4)
+local warnSiphoningShield			= mod:NewCountAnnounce(117203, 4)
 
 --Nature/Fist
 local specWarnLightningLash			= mod:NewSpecialWarningStack(131788, mod:IsTank(), 3)
@@ -107,6 +107,7 @@ local timerNullBarriorCD			= mod:NewCDTimer(60, 115817, nil, mod:IsTank() or mod
 local phase = 0
 local sparkCount = 0
 local fragmentCount = 5
+local specialCount = 0
 local arcaneResonanceTargets = {}
 
 local AVPlayer = false
@@ -132,6 +133,7 @@ end
 function mod:OnCombatStart(delay)
 	phase = 0
 	sparkCount = 0
+	specialCount = 0
 	table.wipe(arcaneResonanceTargets)
 	table.wipe(WildSparkPrisonMarkers)
 	table.wipe(arcaneResonanceMarkers)
@@ -199,7 +201,8 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif args:IsSpellID(116711) then
 		sparkCount = 0
-		warnDrawFlame:Show()
+		specialCount = specialCount + 1
+		warnDrawFlame:Show(specialCount)
 		specWarnDrawFlame:Show()
 		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_qyhy.mp3") --牽引火焰
 	elseif args:IsSpellID(116417) then
@@ -222,7 +225,8 @@ function mod:SPELL_AURA_APPLIED(args)
 			end
 		end
 	elseif args:IsSpellID(116364) then
-		warnArcaneVelocity:Show()
+		specialCount = specialCount + 1
+		warnArcaneVelocity:Show(specialCount)
 		specWarnArcaneVelocity:Show()
 		timerArcaneVelocity:Start()
 		if not AVPlayer then
@@ -325,7 +329,8 @@ end
 
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(116018) then
-		warnEpicenter:Show()
+		specialCount = specialCount + 1
+		warnEpicenter:Show(specialCount)
 		specWarnEpicenter:Show()
 		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_yldz.mp3") --遠離地震
 --		soundEpicenter:Play()
@@ -361,26 +366,38 @@ mod.SPELL_MISSED = mod.SPELL_DAMAGE
 
 function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L.Nature or msg:find(L.Nature) then
+		self:SendSync("Earth")
+	elseif msg == L.Fire or msg:find(L.Fire) then
+		self:SendSync("Flame")
+	elseif msg == L.Arcane or msg:find(L.Arcane) then
+		self:SendSync("Purple")
+	elseif msg == L.Shadow or msg:find(L.Shadow) then
+		self:SendSync("Dark")
+	end
+end
+
+function mod:OnSync(msg)
+	if msg == "Earth" then
 		phase = phase + 1
 		warnPhase:Show(phase)
 		timerLightningLashCD:Start(7)
 		timerLightningFistsCD:Start(12)
 		timerEpicenterCD:Start(18)--It's either this, or this +10. Not yet sure what causes the +10
 		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_zrxt.mp3") --自然形态
-	elseif msg == L.Fire or msg:find(L.Fire) then
+	elseif msg == "Flame" then
 		phase = phase + 1
 		warnPhase:Show(phase)
 		timerFlamingSpearCD:Start(5.5)
 		timerDrawFlameCD:Start(35)--No variation, or not enough logs of fire phase.
 		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_hyxt.mp3") --火焰形态
-	elseif msg == L.Arcane or msg:find(L.Arcane) then
+	elseif msg == "Purple" then
 		phase = phase + 1
 		warnPhase:Show(phase)
 		timerArcaneShockCD:Start(7)
 		timerArcaneResonanceCD:Start(14)
 		timerArcaneVelocityCD:Start(16.5)--It's either this, or this +10. Not yet sure what causes the +10
 		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_mfxt.mp3") --秘法形态
-	elseif msg == L.Shadow or msg:find(L.Shadow) then
+	elseif msg == "Dark" then
 		phase = phase + 1
 		warnPhase:Show(phase)
 		timerSiphoningShieldCD:Start(4)--either this, or this +5. Not yet sure what causes the +5
@@ -391,14 +408,16 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 end
 
 function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, _, _, spellId)
-	if spellId == 117203 and self:AntiSpam(2, 1) then--Siphoning Shield:
-		warnSiphoningShield:Show()
+	if spellId == 117203 and self:AntiSpam(2, 1) then--Siphoning Shield
+		specialCount = specialCount + 1
+		warnSiphoningShield:Show(specialCount)
 		specWarnSiphoningShield:Show()
 		timerSiphoningShieldCD:Start()
 		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_yldp.mp3") --遠離盾牌
 		sndWOP:Schedule(13, "Interface\\AddOns\\DBM-Core\\extrasounds\\killspirit.mp3") --靈魂快打
 	elseif spellId == 121631 and self:AntiSpam(2, 2) then--Draw Essence.
 		--Best place to cancel timers, vs duplicating cancel code in all 4 yells above.
+		specialCount = 0
 		timerFlamingSpearCD:Cancel()
 		timerDrawFlameCD:Cancel()
 		timerArcaneShockCD:Cancel()

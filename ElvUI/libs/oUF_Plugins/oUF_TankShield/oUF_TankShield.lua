@@ -1,8 +1,8 @@
 --[[
 	Project.: oUF_TankShield
 	File....: oUF_TankShield.lua
-	Version.: 50001.1
-	Rev Date: 10/03/2012
+	Version.: 50001.2
+	Rev Date: 10/08/2012
 	Authors.: Eui.cc
 ]]
 
@@ -10,7 +10,7 @@ local _, ns = ...
 local oUF = oUF or ns.oUF
 
 local _, class = UnitClass("player")
-local BS_Name
+local BS_Name, BS_Icon
 local BS_Value = false
 
 if class == "DRUID" then
@@ -25,8 +25,11 @@ elseif class == "PALADIN" then
 elseif class == 'WARRIOR' then
 	BS_Name = GetSpellInfo(132404)
 elseif class == 'MONK' then
-	BS_Name = GetSpellInfo(115307)
+	BS_Name, _, BS_Icon = GetSpellInfo(115307)
 	BS_Value = GetSpellInfo(124275)
+	BS_Spell = GetSpellInfo(119582)
+	BS_Shield = GetSpellInfo(118604)
+	BS_Spell2 = GetSpellInfo(115203)
 end
 
 local UnitAura = UnitAura
@@ -46,11 +49,11 @@ local function OnUpdate(self, elapsed)
 	local time = GetTime();
 
 	if (time > self.expires) then
-		self:Hide()
-		self.sb:Hide()
+		self:SetAlpha(0)
+		self.sb:SetAlpha(0)
 		self.text:SetText('')
 		self.time:SetText('')
-		self.expires = nil
+		self.expires = 0
 		self:SetScript("OnUpdate", nil)
 	else
 		local remaining = self.expires - time
@@ -58,6 +61,64 @@ local function OnUpdate(self, elapsed)
 	end
 end
 
+local function doubleValueChanged(self, event, unit)
+	if unit ~= "player" or not BS_Name then return end
+	local bar = self.TankShield
+
+	if bar.PreUpdate then
+		return bar:PreUpdate(name)
+	end
+	
+	if UnitBuff('player', BS_Name) then
+		local _, _, icon, _, _, _, expires, _, _, _, _, _, _, value = UnitBuff('player', BS_Name)
+		if icon then
+			bar:SetAlpha(1)
+			bar.Icon:SetDesaturated(false)
+			bar.expires = expires
+			if (expires > 0) then
+				OnUpdate(bar, 0)
+				bar:SetScript("OnUpdate", OnUpdate)
+			end
+		end
+	else
+		bar.Icon:SetDesaturated(true)
+		bar.time:SetText('')
+		bar.expires = 0
+		bar:SetScript("OnUpdate", nil)
+	end
+	
+	if UnitDebuff('player', BS_Value) then
+		local _, _, icon, _, _, etime, eexpires, _, _, _, _, _, _, evalue = UnitDebuff('player', BS_Value)	
+		if etime then
+			bar.text:SetText(ShortValue(evalue))
+			bar.sb:SetMinMaxValues(0, etime)
+			bar.sb:SetValue(math.floor(eexpires - GetTime()))
+			bar.sb:SetAlpha(1)
+			bar:SetAlpha(1)
+		end
+	else
+		bar.sb:SetAlpha(0);
+		bar.text:SetText('');
+		bar.sb:SetMinMaxValues(0, 0)
+		bar.sb:SetValue(0)
+	end
+	
+	if UnitBuff('player', BS_Shield) then
+		bar:SetBackdropBorderColor(1, 1, 0)
+	else
+		bar:SetBackdropBorderColor(.31, .31, .31)
+	end		
+	
+	if not UnitBuff('player', BS_Name) and not UnitDebuff('player', BS_Value) then
+		bar:SetAlpha(0);
+		bar.sb:SetAlpha(0);
+	end
+	
+	if bar.PostUpdate then
+		return bar:PostUpdate(name)
+	end	
+end
+	
 local function valueChanged(self, event, unit)
 	if unit ~= "player" or not BS_Name then return end
 	local bar = self.TankShield
@@ -74,24 +135,10 @@ local function valueChanged(self, event, unit)
 			bar.sb:SetMinMaxValues(0, bar.sb.max)
 			bar.sb:SetValue(value)
 			bar.text:SetText(ShortValue(value))
-			bar.sb:Show()
-		end
-		if class == 'MONK' then
-			local _, _, icon, _, _, etime, eexpires, _, _, _, _, _, _, evalue = UnitDebuff('player', BS_Value)
-			if etime then
-				bar.text:SetText(evalue)
-				bar.sb:SetMinMaxValues(0, etime)
-				bar.sb:SetValue(math.floor(eexpires - GetTime()))
-				bar.sb:Show()
-			else
-				bar.text:SetText('')
-				bar.sb:SetMinMaxValues(0, 0)
-				bar.sb:SetValue(0)
-				bar.sb:Hide()
-			end
+			bar.sb:SetAlpha(1)
 		end
 		if icon then
-			bar:Show()
+			bar:SetAlpha(1)
 			bar.Icon:SetTexture(icon)
 			bar.expires = expires
 			if (expires > 0) then
@@ -100,11 +147,11 @@ local function valueChanged(self, event, unit)
 			end
 		end
 	else
-		bar:Hide()
-		bar.sb:Hide()
+		bar:SetAlpha(0)
+		bar.sb:SetAlpha(0)
 		bar.text:SetText('')
 		bar.time:SetText('')
-		bar.expires = nil
+		bar.expires = 0
 		bar:SetScript("OnUpdate", nil)
 	end
 	
@@ -136,15 +183,26 @@ local function Enable(self, unit)
 	local f = self.TankShield
 	
 	if f and unit == "player" and BS_Name then
-		self:RegisterEvent("UNIT_AURA", valueChanged)
+		if class == 'MONK' then
+			self:RegisterEvent("UNIT_AURA", doubleValueChanged)
+			f:SetAttribute("type1", "spell")
+			f:SetAttribute("spell1", BS_Spell)
+			f:SetAttribute("type2", "spell")
+			f:SetAttribute("spell2", BS_Shield)
+			f:SetAttribute("type3", "spell")
+			f:SetAttribute("spell3", BS_Spell2)
+			f.Icon:SetTexture(BS_Icon)
+		else
+			self:RegisterEvent("UNIT_AURA", valueChanged)
+		end
 		
 		if BS_Value then
 			self:RegisterEvent("UNIT_MAXHEALTH", maxChanged)
 			self:RegisterEvent("UNIT_LEVEL", maxChanged)
 		end
 		
-		f:Hide()
-		f.sb:Hide()
+		f:SetAlpha(0)
+		f.sb:SetAlpha(0)
 		
 		return true
 	end
@@ -154,7 +212,11 @@ local function Disable(self)
 	local f = self.TankShield
 	
 	if f and BS_Name then
-		self:UnregisterEvent("UNIT_AURA", valueChanged)
+		if class == 'MONK' then
+			self:UnregisterEvent("UNIT_AURA", doubleValueChanged)
+		else
+			self:UnregisterEvent("UNIT_AURA", valueChanged)
+		end
 		if BS_Value then
 			self:UnregisterEvent("UNIT_MAXHEALTH", maxChanged)
 			self:UnregisterEvent("UNIT_LEVEL", maxChanged)

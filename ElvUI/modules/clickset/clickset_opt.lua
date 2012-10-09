@@ -29,10 +29,18 @@ E.Options.args.clickset = {
 			desc = L['Swap to an alternative layout when changing talent specs. If turned off only the spec #1 layout will be used.'],
 			set = function(info, value) E.db.clickset[ info[#info] ] = value; E:StaticPopup_Show("CONFIG_RL") end,
 		},
+		dispel = {
+			order = 4,
+			type = "toggle",
+			name = L["mousedispel"],
+			desc = L["MOUSEDISPEL_DESC"],
+			get = function() return E.db.euiscript.dispel end,
+			set = function(info, value) E.db.euiscript.dispel = value; E:StaticPopup_Show("CONFIG_RL") end,
+		},		
 		spec1 = {
 			type = 'group',
 			name = L['Primary Talents'],
-			order = 4,
+			order = 10,
 			get = function(info) return E.db.clickset.spec1[ info[#info] ] end,
 			set = function(info, value) E.db.clickset.spec1[ info[#info] ] = value; UF:CreateAndUpdateHeaderGroup('raid25'); UF:CreateAndUpdateHeaderGroup('party') end,			
 			args = {		
@@ -306,7 +314,7 @@ E.Options.args.clickset = {
 		spec2 = {
 			type = 'group',
 			name = L['Secondary Talents'],
-			order = 5,
+			order = 20,
 			get = function(info) return E.db.clickset.spec2[ info[#info] ] end,
 			set = function(info, value) E.db.clickset.spec2[ info[#info] ] = value; UF:CreateAndUpdateHeaderGroup('raid25'); UF:CreateAndUpdateHeaderGroup('party')  end,
 			disabled = function() return not E.db.clickset.specswap end,
@@ -579,7 +587,7 @@ E.Options.args.clickset = {
 			},
 		},		
 		CustomClickSetSpell = {
-			order = 9,
+			order = 30,
 			type = "group",
 			name = L["CustomClickSetSpell"],
 			disabled = function() return not E.db.clickset.enable end,

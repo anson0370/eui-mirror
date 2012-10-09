@@ -2,7 +2,7 @@
 local L		= mod:GetLocalizedStrings()
 local sndWOP	= mod:NewSound(nil, "SoundWOP", true)
 
-mod:SetRevision(("$Revision: 7834 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 7902 $"):sub(12, -3))
 mod:SetCreatureID(59479)
 mod:SetModelID(42969)
 mod:SetZone()
@@ -15,7 +15,8 @@ mod:RegisterEventsInCombat(
 	"SPELL_AURA_REMOVED",
 	"SPELL_CAST_START",
 	"SPELL_CAST_SUCCESS",
-	"SPELL_DAMAGE"
+	"SPELL_DAMAGE",
+	"SPELL_MISSED"
 )
 
 
@@ -89,6 +90,7 @@ function mod:SPELL_CAST_START(args)
 		warnCarbonation:Show()
 		timerCarbonation:Start()
 		timerCarbonationCD:Start()
+		specWarnFizzyBubbles:Show()
 	end
 end
 
@@ -103,6 +105,7 @@ function mod:SPELL_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
 		specWarnFizzyBubbles:Show()
 	end
 end
+mod.SPELL_MISSED = mod.SPELL_DAMAGE
 
 --[[
 Notes:

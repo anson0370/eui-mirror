@@ -61,6 +61,7 @@ P['auras'].fontSize = 12
 P['auras'].consolidatedBuffs.consolidateTo = false
 P['auras'].consolidatedBuffs.font = 'EUI'
 P['auras'].consolidatedBuffs.fontOutline = 'OUTLINE'
+P['auras'].consolidatedBuffs.fontSize = 11
 
 P['chat'].font = 'EUI'
 P['chat'].tabFont = 'EUI'
@@ -103,6 +104,9 @@ for i = 6, 9 do
 		['visibility'] = "[vehicleui] hide; [overridebar] hide; [petbattle] hide; show",
 	}
 end
+
+P['datatexts']['panels']['EuiTopLeftDataTexts'] = ''
+P['datatexts']['panels']['EuiTopRightDataTexts'] = ''
 
 P['datatexts']['panels']['MainABInfobar'] = {
 	['left'] = '',
@@ -407,6 +411,7 @@ P["clickset"] = {
 }
 
 P["euiscript"] = {
+	["oldtopinfobar"] = false;
 	["bossnotes"] = true,
 	["castby"] = true,
 	["chatmod"] = true,

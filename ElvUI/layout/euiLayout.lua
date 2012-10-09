@@ -2,6 +2,8 @@ local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, Priv
 local LO = E:GetModule('Layout');
 local LSM = LibStub("LibSharedMedia-3.0")
 
+local PANEL_HEIGHT = 22;
+
 local menuList = {
 	{text = CHARACTER_BUTTON,
 	func = function() ToggleCharacter("PaperDollFrame") end},
@@ -94,7 +96,7 @@ local function CreateButton(name, func, parent)
 	if not name then return end
 
 	local f = CreateFrame("Button", nil, parent)
-	f:SetHeight(28)
+	f:SetHeight(PANEL_HEIGHT)
 	f:SetWidth(74)
 	f:SetToplevel(true)
 	f:SetFrameStrata("DIALOG")	
@@ -122,7 +124,7 @@ local function CreateMenu(parent)
 	for k, v in pairs(menuList) do
 		if menuList[k].text then
 			local f = CreateButton(menuList[k].text, menuList[k].func, parent)
-			f:SetPoint("TOP", parent, "TOP", 0, -(k * 30))
+			f:SetPoint("TOP", parent, "TOP", 0, -(k * (PANEL_HEIGHT + 2)))
 		end
 	end
 end
@@ -131,7 +133,7 @@ local function CreateRaidTool(parent)
 	for i = 1, 4 do
 		local f = CreateButton("raidtool".. i, nil, parent)
 		parent['raidtool'..i] = f
-		f:SetPoint("TOP", parent, "TOP", 0, -(i * 30))
+		f:SetPoint("TOP", parent, "TOP", 0, -(i * (PANEL_HEIGHT + 2)))
 	end
 end
 
@@ -169,15 +171,14 @@ end
 
 local function CreateInfoBarButton(id, name, parent)
 	local f = CreateFrame("Button", nil, parent)
-	f:SetHeight(28)
+	f:SetHeight(PANEL_HEIGHT)
 	f:SetWidth(74)
 	f:SetFrameLevel(2)
 	f:StyleButton()
-	f:SetTemplate("Transparent")
+	f:SetTemplate("Transparent", true)
 	f:Point("LEFT", parent, "RIGHT", (id - 1) * 74 + id * 2, 0)
 	f.text = f:CreateFontString(nil, "OVERLAY")
 	f.text:FontTemplate(LSM:Fetch("font", E.db.datatexts.font), E.db.datatexts.fontSize, E.db.datatexts.fontOutline)
-	f.text:SetTextColor(23/255, 132/255, 209/255)
 	f.text:SetPoint("CENTER")
 	f.text:SetText(name)
 	f:SetScript("OnClick", function(self)
@@ -198,7 +199,7 @@ end
 
 function LO:InfoBar()
 	local f = CreateFrame("Frame", "EuiInfoBar", E.UIParent)
-	f:SetHeight(28)
+	f:SetHeight(PANEL_HEIGHT)
 	f:SetWidth(E.UIParent:GetWidth() + (E.mult * 2))
 	f:SetPoint("TOPLEFT", E.UIParent, "TOPLEFT", -E.mult, -E.mult)
 	f:SetPoint("TOPRIGHT", E.UIParent, "TOPRIGHT", E.mult, -E.mult)
@@ -206,7 +207,7 @@ function LO:InfoBar()
 	f:SetFrameLevel(0)
 	
 	local anchor = CreateFrame("Button", nil, E.UIParent)
-	anchor:SetHeight(28)
+	anchor:SetHeight(PANEL_HEIGHT)
 	anchor:SetWidth(14)
 	anchor:SetFrameLevel(2)
 	anchor:SetTemplate("Transparent")

@@ -10,7 +10,7 @@ function LO:Initialize()
 	self:CreateChatPanels()
 	self:CreateMinimapPanels()
 	self:CreateActionbarInfobar()
---	self:LocXY()
+	self:LocXY()
 	self:InfoBar()
 end
 
@@ -93,6 +93,8 @@ local menuList = {
 }
 
 function LO:LocXY()
+	if not E.db.euiscript.oldtopinfobar then return end
+	
 	local f = CreateFrame("Frame", "ElvuiTopPanel", E.UIParent)
 	f:SetHeight(16)
 	f:SetWidth(E.UIParent:GetWidth() + (E.mult * 2))

@@ -4,7 +4,7 @@ local sndWOP	= mod:NewSound(nil, "SoundWOP", true)
 local sndCC	= mod:NewSound(nil, "SoundCC", true)
 local sndDD = mod:NewSound(nil, "SoundDD", false)
 
-mod:SetRevision(("$Revision: 7834 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 7899 $"):sub(12, -3))
 mod:SetCreatureID(60410)--Energy Charge (60913), Emphyreal Focus (60776), Cosmic Spark (62618), Celestial Protector (60793)
 mod:SetModelID(41399)
 mod:SetZone()
@@ -27,7 +27,7 @@ spellid = 116994 or spell = "Icy Touch"  and targetname = "Elegon" and sourcenam
 
 local warnPhase1					= mod:NewPhaseAnnounce(1, 2)--117727 Charge Vortex
 local warnBreath					= mod:NewSpellAnnounce(117960, 3)
-local warnProtector					= mod:NewSpellAnnounce(117954, 3)
+local warnProtector					= mod:NewCountAnnounce(117954, 3)
 local warnArcingEnergy				= mod:NewSpellAnnounce(117945, 2)--Cast randomly at 2 players, it is avoidable.
 local warnClosedCircuit				= mod:NewTargetAnnounce(117949, 3, nil, mod:IsHealer())--what happens if you fail to avoid the above
 local warnTotalAnnihilation			= mod:NewCastAnnounce(129711, 4)--Protector dying(exploding)
@@ -50,13 +50,14 @@ local timerBreathCD					= mod:NewCDTimer(18, 117960)
 local timerProtectorCD				= mod:NewCDTimer(35.5, 117954)
 local timerArcingEnergyCD			= mod:NewCDTimer(11.5, 117945)
 local timerCharge					= mod:NewNextTimer(15, 119358)
-local timerDespawnFloor				= mod:NewTimer(13, "timerDespawnFloor", 116994)
+local timerDespawnFloor				= mod:NewTimer(10, "timerDespawnFloor", 116994)
 --Some timer work needs to be added for the adds spawning and reaching outer bubble
 --(ie similar to yorsahj oozes reach, only for how long you have to kill adds before you fail and phase 2 ends)
 
 local berserkTimer					= mod:NewBerserkTimer(570)
 
 local phase2Started = false
+local protectorCount = 0
 local closedCircuitTargets = {}
 local LowHP = {}
 local sentAEHP = {}
@@ -90,6 +91,7 @@ local function warnClosedCircuitTargets()
 end
 
 function mod:OnCombatStart(delay)
+	protectorCount = 0
 	table.wipe(closedCircuitTargets)
 	timerBreathCD:Start(8-delay)
 	table.wipe(LowHP)
@@ -144,7 +146,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(118310) then--Below 50% health
 		warnRadiatingEnergies:Show()
 		specWarnRadiatingEnergies:Show()--Give a good warning so people standing outside barrior don't die.
-	elseif args:IsSpellID(132265) and self:AntiSpam(30, 2) then
+	elseif args:IsSpellID(132265, 116598) and self:AntiSpam(30, 2) then
 		warnPhase3:Show()
 		coresCount = 6
 		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\pthree.mp3") --P3
@@ -198,7 +200,8 @@ function mod:SPELL_CAST_START(args)
 			end
 		end
 	elseif args:IsSpellID(117954) then
-		warnProtector:Show()
+		protectorCount = protectorCount + 1
+		warnProtector:Show(protectorCount)
 		specWarnProtector:Show()
 		timerProtectorCD:Start()
 		warnedPH = false
@@ -234,9 +237,9 @@ end
 function mod:RAID_BOSS_EMOTE(msg)
 	if msg == L.Floor or msg:find(L.Floor) then
 		if UnitDebuff("player", GetSpellInfo(117870)) then
-			sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_lkzc.mp3") --離開中場
+			sndWOP:Schedule(2, "Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_lkzc.mp3") --離開中場
 		else
-			sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_zcxs.mp3") --中場即將消失
+			sndWOP:Schedule(2, "Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_zcxs.mp3") --中場即將消失
 		end
 		specWarnDespawnFloor:Show()
 	end

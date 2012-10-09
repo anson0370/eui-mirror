@@ -844,12 +844,14 @@ function UF:Construct_AuraBarHeader(frame)
 end
 
 function UF:Construct_TankShield(frame)
-	local bs = CreateFrame("Frame", nil, frame)
+	local bs = CreateFrame("Button", nil, frame, "SecureActionButtonTemplate")
+	bs:RegisterForClicks('AnyUp')
 	bs:SetTemplate("Default")
+	bs:StyleButton()
 	bs:SetFrameStrata('LOW')
 	bs:SetFrameLevel(frame:GetFrameLevel() + 2)
-	bs:Hide()
-
+	bs:SetAlpha(0)
+	
 	bs.Icon = bs:CreateTexture(nil, 'ARTWORK')
 	bs.Icon:Point("TOPLEFT", 2, -2)
 	bs.Icon:Point("BOTTOMRIGHT", -2, 2)
@@ -869,7 +871,7 @@ function UF:Construct_TankShield(frame)
 	bs.sb:SetStatusBarTexture(E["media"].normTex)
 	bs.sb:SetStatusBarColor(0.8, 0.1, 0.1)
 	bs.sb:CreateBackdrop('Default')	
-	bs.sb:Hide()
+	bs.sb:SetAlpha(0)
 	
 	return bs
 end
