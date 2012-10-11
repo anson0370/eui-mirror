@@ -3,6 +3,7 @@ local LO = E:GetModule('Layout');
 local LSM = LibStub("LibSharedMedia-3.0")
 
 local PANEL_HEIGHT = 22;
+local MAX_BUTTON = 4;
 
 local menuList = {
 	{text = CHARACTER_BUTTON,
@@ -164,9 +165,47 @@ local function CreateShortcuts(parent)
 	for k, v in pairs(ShortcutsList) do
 		if ShortcutsList[k].text then
 			local f = CreateButton(ShortcutsList[k].text, ShortcutsList[k].func, parent)
-			f:SetPoint("TOP", parent, "TOP", 0, -(k * 30))
+			f:SetPoint("TOP", parent, "TOP", 0, -(k * (PANEL_HEIGHT + 2)))
 		end
 	end
+end
+
+local function GetLocTextColor()
+	local pvpType = GetZonePVPInfo()
+	if pvpType == "arena" then
+		return 0.84, 0.03, 0.03
+	elseif pvpType == "friendly" then
+		return 0.05, 0.85, 0.03
+	elseif pvpType == "contested" then
+		return 0.9, 0.85, 0.05
+	elseif pvpType == "hostile" then 
+		return 0.84, 0.03, 0.03
+	elseif pvpType == "sanctuary" then
+		return 0.035, 0.58, 0.84
+	elseif pvpType == "combat" then
+		return 0.84, 0.03, 0.03
+	else
+		return 0.84, 0.03, 0.03
+	end	
+end
+
+local function CreateLoc(parent)
+	parent:SetScript("OnUpdate", function(self, elapsed)
+		if(self.elapsed and self.elapsed > 0.2) then
+			local x,y = GetPlayerMapPosition("player")
+			
+			x = math.floor(100 * x)
+			y = math.floor(100 * y)
+			if x ==0 and y==0 then
+				self.text:SetText(E:RGBToHex(GetLocTextColor()).. '??, ??|r')
+			else
+				self.text:SetText(E:RGBToHex(GetLocTextColor()).. x.. ', '.. y.. '|r')
+			end
+			self.elapsed = 0
+		else
+			self.elapsed = (self.elapsed or 0) + elapsed
+		end	
+	end)
 end
 
 local function CreateInfoBarButton(id, name, parent)
@@ -194,19 +233,47 @@ local function CreateInfoBarButton(id, name, parent)
 	f:HookScript("OnEnter", ButtonEnter)
 	f:HookScript("OnLeave", ButtonLeave)
 	
+	parent['button'..id] = f
 	return f
+end
+
+local function anchorClick(self)
+	if self then
+		if self.text:GetText() == '>' then
+			E.db.InfoBarStep = E.db.InfoBarStep + 1
+		else
+			E.db.InfoBarStep = E.db.InfoBarStep - 1
+		end
+	else
+		self = EuiInfoBar.anchor
+	end
+	
+	for i = 1, MAX_BUTTON do
+		if i <= E.db.InfoBarStep then
+			self['button'..i]:Show()
+		else
+			self['button'..i]:Hide()
+		end
+	end
+	
+	if E.db.InfoBarStep == 0 then
+		self.text:SetText('>')
+		self.text:SetTextColor(23/255, 132/255, 209/255)
+	elseif E.db.InfoBarStep == MAX_BUTTON then
+		self.text:SetText('<')
+		self.text:SetTextColor(1, 1, 1)
+	end
 end
 
 function LO:InfoBar()
 	local f = CreateFrame("Frame", "EuiInfoBar", E.UIParent)
 	f:SetHeight(PANEL_HEIGHT)
-	f:SetWidth(E.UIParent:GetWidth() + (E.mult * 2))
+	f:SetWidth(MAX_BUTTON * 74)
 	f:SetPoint("TOPLEFT", E.UIParent, "TOPLEFT", -E.mult, -E.mult)
-	f:SetPoint("TOPRIGHT", E.UIParent, "TOPRIGHT", E.mult, -E.mult)
 	f:SetFrameStrata("BACKGROUND")
 	f:SetFrameLevel(0)
 	
-	local anchor = CreateFrame("Button", nil, E.UIParent)
+	local anchor = CreateFrame("Button", nil, EuiInfoBar)
 	anchor:SetHeight(PANEL_HEIGHT)
 	anchor:SetWidth(14)
 	anchor:SetFrameLevel(2)
@@ -215,45 +282,15 @@ function LO:InfoBar()
 	anchor:Point("LEFT", EuiInfoBar, "LEFT", 2, 0)
 	anchor.text = anchor:CreateFontString(nil, "OVERLAY")
 	anchor.text:FontTemplate(nil, 12, 'OUTLINE')
-	anchor.text:SetTextColor(23/255, 132/255, 209/255)
+	anchor.text:SetTextColor(1, 1, 1)
 	anchor.text:SetPoint("CENTER")
 	anchor.text:SetText('<')
 	
 	if not E.db.InfoBarStep then
-		E.db.InfoBarStep = 3
-	end
-
-	if E.db.InfoBarStep < 3 then
-		anchor.text:SetText('>')
-	elseif E.db.InfoBarStep == 3 then
-		anchor.text:SetText('<')
+		E.db.InfoBarStep = MAX_BUTTON
 	end
 	
-	anchor:SetScript("OnClick", function(self)
-		if E.db.InfoBarStep == 3 and self.text:GetText() == '<' then
-			FadeShow(EuiInfoBar.RaidTool);
-			E.db.InfoBarStep = 2;
-		elseif E.db.InfoBarStep == 2 and self.text:GetText() == '<' then
-			FadeShow(EuiInfoBar.Shortcuts);
-			E.db.InfoBarStep = 1;
-		elseif E.db.InfoBarStep == 1 and self.text:GetText() == '<' then
-			FadeShow(EuiInfoBar.Menu);
-			E.db.InfoBarStep = 0;
-			self.text:SetText('>');
-		elseif E.db.InfoBarStep == 0 then
-			FadeShow(EuiInfoBar.Menu);
-			E.db.InfoBarStep = 1;
-		elseif E.db.InfoBarStep == 1 and self.text:GetText() == '>' then
-			FadeShow(EuiInfoBar.Shortcuts);
-			E.db.InfoBarStep = 2;
-		elseif E.db.InfoBarStep == 2 and self.text:GetText() == '>' then
-			FadeShow(EuiInfoBar.RaidTool);
-			E.db.InfoBarStep = 3;
-			self.text:SetText('<');
-		end
-	end)
-	
-	E:CreateMover(anchor, 'EuiInfoBarMover', L['EuiInfoBar'], nil, nil, nil, 'ALL,GENERAL')
+	E:CreateMover(f, 'EuiInfoBarMover', L['EuiInfoBar'], nil, nil, nil, 'ALL,GENERAL')
 	
 	local menu = CreateInfoBarButton(1, L["Menu"], anchor)
 	CreateMenu(menu);
@@ -264,18 +301,14 @@ function LO:InfoBar()
 	local raid = CreateInfoBarButton(3, L["RaidTool"], anchor)
 	CreateRaidTool(raid);	
 	
+	local loc = CreateInfoBarButton(4, "?, ?", anchor)
+	CreateLoc(loc)
+
 	EuiInfoBar.Menu = menu
 	EuiInfoBar.Shortcuts = shortcuts
 	EuiInfoBar.RaidTool = raid
+	EuiInfoBar.anchor = anchor
 	
-	if E.db.InfoBarStep == 1 then
-		EuiInfoBar.RaidTool:Hide()
-		EuiInfoBar.Shortcuts:Hide()
-	elseif E.db.InfoBarStep == 2 then
-		EuiInfoBar.RaidTool:Hide()
-	elseif E.db.InfoBarStep == 0 then
-		EuiInfoBar.RaidTool:Hide()
-		EuiInfoBar.Shortcuts:Hide()
-		EuiInfoBar.Menu:Hide()		
-	end	
+	anchor:SetScript("OnClick", anchorClick)
+	anchorClick();	
 end

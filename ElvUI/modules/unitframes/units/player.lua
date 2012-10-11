@@ -5,6 +5,7 @@ local _, ns = ...
 local ElvUF = ns.oUF
 assert(ElvUF, "ElvUI was unable to locate oUF.")
 local CAN_HAVE_CLASSBAR = (E.myclass == "PALADIN" or E.myclass == "DRUID" or E.myclass == "DEATHKNIGHT" or E.myclass == "WARLOCK" or E.myclass == "PRIEST" or E.myclass == "MONK" or E.myclass == 'MAGE')
+local CAN_HAVE_TANKSHIELD = (E.myclass == "PALADIN" or E.myclass == "DRUID" or E.myclass == "DEATHKNIGHT" or E.myclass == "WARRIOR" or E.myclass == "PRIEST" or E.myclass == "MONK")
 
 function UF:Construct_PlayerFrame(frame)
 	frame.Threat = self:Construct_ThreatGlow(frame, true)
@@ -28,7 +29,10 @@ function UF:Construct_PlayerFrame(frame)
 
 	frame.Swing = self:ConstructSwingBar(frame)	
 	frame.CPoints = self:Construct_Combobar(frame, true)
-	frame.TankShield = self:Construct_TankShield(frame)
+	
+	if CAN_HAVE_TANKSHIELD then
+		frame.TankShield = self:Construct_TankShield(frame)
+	end
 	
 	if E.myclass == "PALADIN" then
 		frame.HolyPower = self:Construct_PaladinResourceBar(frame)
@@ -1154,35 +1158,37 @@ function UF:Update_PlayerFrame(frame, db)
 	
 	--TankShield
 	do
-		local TankShield = frame.TankShield
-		if db.tankshield.enable then
-			if not frame:IsElementEnabled('TankShield') then
-				frame:EnableElement('TankShield')
-			end
-
-			TankShield:ClearAllPoints()
-			TankShield.sb:ClearAllPoints()
-			if db.tankshield.position == 'RIGHT' then
-				TankShield:Point("TOPLEFT", frame.Health.backdrop, "TOPRIGHT", SPACING + db.power.offset, 0)
-				TankShield:Point("BOTTOMRIGHT", frame.Power.backdrop, "BOTTOMRIGHT", SPACING + UNIT_HEIGHT - db.power.offset, 0)
-				TankShield.sb:Point("TOPLEFT", TankShield, "TOPRIGHT", (BORDER + SPACING), -BORDER)
-				TankShield.sb:Point("BOTTOMRIGHT", TankShield, "BOTTOMRIGHT", 12, BORDER)
-			else
-				if (USE_PORTRAIT and not USE_PORTRAIT_OVERLAY) then
-					TankShield:Point("TOPRIGHT", frame.Portrait.backdrop, "TOPLEFT", -(SPACING), 0)
-					TankShield:Point("BOTTOMLEFT", frame.Portrait.backdrop, "BOTTOMLEFT", -(SPACING + UNIT_HEIGHT), 0)
-				else
-					TankShield:Point("TOPRIGHT", frame.Health.backdrop, "TOPLEFT", -(SPACING), 0)
-					TankShield:Point("BOTTOMLEFT", frame.Power.backdrop, "BOTTOMLEFT", -(SPACING + UNIT_HEIGHT), 0)
+		if CAN_HAVE_TANKSHIELD then
+			local TankShield = frame.TankShield
+			if db.tankshield.enable then
+				if not frame:IsElementEnabled('TankShield') then
+					frame:EnableElement('TankShield')
 				end
-				TankShield.sb:Point("TOPRIGHT", TankShield, "TOPLEFT", -(BORDER + SPACING), -BORDER)
-				TankShield.sb:Point("BOTTOMLEFT", TankShield, "BOTTOMLEFT", -12, BORDER)
-			end
-		else
-			if frame:IsElementEnabled('TankShield') then
-				frame:DisableElement('TankShield')
-			end
-		end		
+
+				TankShield:ClearAllPoints()
+				TankShield.sb:ClearAllPoints()
+				if db.tankshield.position == 'RIGHT' then
+					TankShield:Point("TOPLEFT", frame.Health.backdrop, "TOPRIGHT", SPACING + db.power.offset, 0)
+					TankShield:Point("BOTTOMRIGHT", frame.Power.backdrop, "BOTTOMRIGHT", SPACING + UNIT_HEIGHT - db.power.offset, 0)
+					TankShield.sb:Point("TOPLEFT", TankShield, "TOPRIGHT", (BORDER + SPACING), -BORDER)
+					TankShield.sb:Point("BOTTOMRIGHT", TankShield, "BOTTOMRIGHT", 12, BORDER)
+				else
+					if (USE_PORTRAIT and not USE_PORTRAIT_OVERLAY) then
+						TankShield:Point("TOPRIGHT", frame.Portrait.backdrop, "TOPLEFT", -(SPACING), 0)
+						TankShield:Point("BOTTOMLEFT", frame.Portrait.backdrop, "BOTTOMLEFT", -(SPACING + UNIT_HEIGHT), 0)
+					else
+						TankShield:Point("TOPRIGHT", frame.Health.backdrop, "TOPLEFT", -(SPACING), 0)
+						TankShield:Point("BOTTOMLEFT", frame.Power.backdrop, "BOTTOMLEFT", -(SPACING + UNIT_HEIGHT), 0)
+					end
+					TankShield.sb:Point("TOPRIGHT", TankShield, "TOPLEFT", -(BORDER + SPACING), -BORDER)
+					TankShield.sb:Point("BOTTOMLEFT", TankShield, "BOTTOMLEFT", -12, BORDER)
+				end
+			else
+				if frame:IsElementEnabled('TankShield') then
+					frame:DisableElement('TankShield')
+				end
+			end	
+		end
 	end
 	
 	E:SetMoverSnapOffset(frame:GetName()..'Mover', -(12 + db.castbar.height))

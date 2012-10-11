@@ -27,6 +27,8 @@ elseif class == 'WARRIOR' then
 elseif class == 'MONK' then
 	BS_Name, _, BS_Icon = GetSpellInfo(115307)
 	BS_Value = GetSpellInfo(124275)
+	BS_Value2 = GetSpellInfo(124274)
+	BS_Value3 = GetSpellInfo(124273)
 	BS_Spell = GetSpellInfo(119582)
 	BS_Shield = GetSpellInfo(118604)
 	BS_Spell2 = GetSpellInfo(115203)
@@ -87,9 +89,17 @@ local function doubleValueChanged(self, event, unit)
 		bar:SetScript("OnUpdate", nil)
 	end
 	
+	local bs_value
 	if UnitDebuff('player', BS_Value) then
-		local _, _, icon, _, _, etime, eexpires, _, _, _, _, _, _, evalue = UnitDebuff('player', BS_Value)	
-		if etime then
+		bs_value = BS_Value
+	elseif UnitDebuff('player', BS_Value2) then
+		bs_value = BS_Value2
+	elseif UnitDebuff('player', BS_Value3) then
+		bs_value = BS_Value3
+	end
+	if bs_value then
+		local _, _, icon, _, _, etime, eexpires, _, _, _, _, _, _, evalue = UnitDebuff('player', bs_value)	
+		if evalue then
 			bar.text:SetText(ShortValue(evalue))
 			bar.sb:SetMinMaxValues(0, etime)
 			bar.sb:SetValue(math.floor(eexpires - GetTime()))
@@ -182,6 +192,12 @@ end
 local function Enable(self, unit)
 	local f = self.TankShield
 	
+	if f and not BS_Name then
+		f:SetAlpha(0)
+		f.sb:SetAlpha(0)
+		return
+	end
+	
 	if f and unit == "player" and BS_Name then
 		if class == 'MONK' then
 			self:RegisterEvent("UNIT_AURA", doubleValueChanged)
@@ -221,6 +237,8 @@ local function Disable(self)
 			self:UnregisterEvent("UNIT_MAXHEALTH", maxChanged)
 			self:UnregisterEvent("UNIT_LEVEL", maxChanged)
 		end
+		f:SetAlpha(0)
+		f.sb:SetAlpha(0)
 	end
 end
 

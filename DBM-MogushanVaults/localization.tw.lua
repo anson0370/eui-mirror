@@ -92,7 +92,9 @@ L:SetOptionLocalization({
 L = DBM:GetModLocalization(726)
 
 L:SetWarningLocalization({
-	specWarnDespawnFloor		= "中場即將消失!"
+	specWarnDespawnFloor		= "中場即將消失!",
+	specWarnCharge				= "能量電荷 [%d] - 轉換目標",
+	specWarnProtector			= "星穹保衛者 [%d] - 轉換目標"
 })
 
 L:SetTimerLocalization({
@@ -105,6 +107,8 @@ L:SetOptionLocalization({
 	SoundDD						= "語音警告：為消掉$spell:117878播放額外音效",
 	optDBPull					= "語音警告：為正在坦$journal:6178的坦克播放$spell:117960警告",
 	specWarnDespawnFloor		= "特殊警告：中場地板消失前",
+	specWarnCharge				= "特殊警告：能量電荷",
+	specWarnProtector			= "特殊警告：$journal:6178",
 	timerDespawnFloor			= "計時器：中場地板消失",
 	InfoFrame					= "資訊框：$spell:117878層數最高的5名團員",
 	optOC						= "\"超載\"疊加幾層時，開始報警(每三層報警一次)",

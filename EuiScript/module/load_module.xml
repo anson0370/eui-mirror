@@ -3,7 +3,6 @@
 	<Script file="InspectFix.lua"/>
 	<!--Script file="achievementpoint.lua"/-->
 	<Script file='drag.lua'/>
-	<!--Script file="mapmove.lua"/-->
 	<Script file='Durability.lua'/>
 	<Script file="tradetabs.lua"/>
 	<Script file="RaidCD.lua"/>
@@ -19,22 +18,18 @@
 	<Script file="Recipients.lua"/>
 	<Script file="dispel.lua"/>
 	<Script file="bossnotes.lua"/>
-	<!--Script file="MozzFullWorldMap.lua"/-->
 	<Script file="EmbedFocuser.lua"/>
 	<Script file="compare.lua"/>
 	<Script file="openall.lua"/>
 	<Script file="autodez.lua"/>
-	<!--Script file="reminder.lua"/-->
 	<Script file="error.lua"/>
 	<Script file="AlreadyKnown.lua"/>
 	<Script file="PRIEST.lua"/>
 	<Script file="ClassColors.lua"/>
 	<Script file="DoomCooldownPulse.lua"/>
 	<Script file="CombatText.lua"/>
-	<!--Script file="BloodShield.lua"/-->
 	<Script file="AutoBuy.lua"/>
 	<Script file="AutoButton.lua"/>
 	<Script file="FindIt.lua"/>
-	<!--Script file="aurabarMovers.lua"/-->
 	<Script file="Symbols.lua"/>
 </Ui>

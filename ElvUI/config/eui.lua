@@ -105,9 +105,6 @@ for i = 6, 9 do
 	}
 end
 
-P['datatexts']['panels']['EuiTopLeftDataTexts'] = ''
-P['datatexts']['panels']['EuiTopRightDataTexts'] = ''
-
 P['datatexts']['panels']['MainABInfobar'] = {
 	['left'] = '',
 	['middle'] = '',
@@ -147,7 +144,6 @@ P["nameplate"].trackauras = true
 P["nameplate"].trackfilter = ''
 P["nameplate"].iconsize = 20
 P["nameplate"].fontsize = 9
-P["nameplate"].combat = true
 P["nameplate"].healthtext = 'CURRENT_PERCENT'
 
 P["unitframe"].number = "K"

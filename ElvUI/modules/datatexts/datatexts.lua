@@ -189,11 +189,6 @@ function DT:LoadDataTexts()
 		LDB:UnregisterAllCallbacks(self)
 	end	
 	
-	if E.db.euiscript.oldtopinfobar then
-		if self.db.panels.EuiTopLeftDataTexts == '' then EuiTopLeftDataTexts:Hide() else EuiTopLeftDataTexts:Show() end
-		if self.db.panels.EuiTopRightDataTexts == '' then EuiTopRightDataTexts:Hide() else EuiTopRightDataTexts:Show() end	
-	end
-	
 	if self.db.panels.MainABInfobar.left == '' and self.db.panels.MainABInfobar.middle == '' and self.db.panels.MainABInfobar.right == '' then
 		MainABInfobar:Hide()
 	else

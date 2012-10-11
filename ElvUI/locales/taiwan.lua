@@ -263,6 +263,7 @@ end
 
 --NamePlate Config
 do
+	L['Mistweaver'] = '織霧';
 	L['Background Multiplier'] = "背景色透明度";
 	L['The backdrop of the nameplates color is scaled to match the color of the nameplate by this percentage. Set to zero to have no color in the nameplate backdrop.'] = "姓名版背景色透明度, 設為0時姓名版背景沒有顏色(黑色)";
 	L['Additional Filter'] = '額外的過濾器';

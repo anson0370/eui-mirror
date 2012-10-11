@@ -93,7 +93,9 @@ L:SetOptionLocalization({
 L = DBM:GetModLocalization(726)
 
 L:SetWarningLocalization({
-	specWarnDespawnFloor		= "Watch your step!"
+	specWarnDespawnFloor		= "Watch your step!",
+	specWarnCharge				= "Charge [%d]",
+	specWarnProtector			= "Protector [%d]"
 })
 
 L:SetTimerLocalization({
@@ -106,6 +108,8 @@ L:SetOptionLocalization({
 	SoundDD						= "Voice warning: when you Disappear $spell:117878",
 	optDBPull					= "Voice warning: warning $spell:117960 for tank who is pulling $journal:6178",
 	specWarnDespawnFloor		= "Show special warning before floor vanishes",
+	specWarnCharge				= "Show special warning: Charges",
+	specWarnProtector			= "Show special warning: $journal:6178",
 	timerDespawnFloor			= "show timer for when floor vanishes",
 	InfoFrame					= "InfoFrame: $spell:117878 Stacks",
 	optOC						= "How many \"OverLoad\" Stacks，Beginning warning",

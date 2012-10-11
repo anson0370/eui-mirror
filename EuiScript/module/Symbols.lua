@@ -28,7 +28,7 @@ local menuList = {
 }
 
 WorldFrame:HookScript("OnMouseDown", function(self, button)
-	if button == "LeftButton" and IsShiftKeyDown() and UnitExists("mouseover") then
+	if button == "LeftButton" and IsAltKeyDown() and UnitExists("mouseover") then
 		if ((IsInGroup() and not IsInRaid()) or UnitIsGroupLeader('player') or UnitIsGroupAssistant("player")) and not (inInstance and (instanceType == "pvp" or instanceType == "arena")) then
 			EasyMenu(menuList, menuFrame, "cursor", 0, 0, "MENU", 1)
 		end

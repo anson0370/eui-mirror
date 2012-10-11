@@ -10,6 +10,8 @@
 ## Author: Tandanu and Nitram
 ## X-Website: http://www.deadlybossmods.com
 
+embeds.xml
+
 localization.en.lua
 localization.cn.lua
 localization.tw.lua
@@ -21,3 +23,4 @@ DBM-RangeCheck.lua
 DBM-BossHealth.lua
 DBM-BossHealth.xml
 DBM-InfoFrame.lua
+DBM-HudMap.lua

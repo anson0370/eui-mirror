@@ -178,5 +178,11 @@ function B:AlertMovers()
 	self:SecureHook('AlertFrame_SetScenarioAnchors')
 	self:SecureHook('AlertFrame_SetGuildChallengeAnchors')
 	
+	hooksecurefunc(GroupLootContainer, 'SetPoint', function(self, point, anchorTo, attachPoint, xOffset, yOffset)
+		if _G[anchorTo] == UIParent then
+			AlertFrame_FixAnchors()
+		end
+	end)	
+	
 	E:CreateMover(AlertFrameHolder, "AlertFrameMover", L["Alert Frames"], nil, nil, PostAlertMove)
 end

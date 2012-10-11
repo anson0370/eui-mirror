@@ -90,9 +90,9 @@ imsg.text:SetJustifyH("CENTER")
 --  Globals/Default Options  --
 -------------------------------
 DBM = {
-	Revision = tonumber(("$Revision: 7886 $"):sub(12, -3)),
+	Revision = tonumber(("$Revision: 7918 $"):sub(12, -3)),
 	DisplayVersion = "5.0.0 語音增強版", -- the string that is shown as version
-	ReleaseRevision = 7846 -- the revision of the latest stable version that is available
+	ReleaseRevision = 7916 -- the revision of the latest stable version that is available
 }
 
 -- Legacy crap; that stupid "Version" field was never a good idea.
@@ -1064,6 +1064,15 @@ do
 			sendSync("U", ("%s\t%s"):format(time, text))
 		end
 		if sender then DBM:ShowPizzaInfo(text, sender) end
+		if text == DBM_CORE_TIMER_PULL then
+			PlaySoundFile("Interface\\AddOns\\DBM-Core\\Sounds\\win.ogg", "Master")
+			if time > 5 then DBM:Schedule(time-4.5, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\Sounds\\Mosh\\5.mp3", "Master") end
+			if time > 5 then DBM:Schedule(time-3.5, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\Sounds\\Mosh\\4.mp3", "Master") end
+			if time > 3 then DBM:Schedule(time-2.5, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\Sounds\\Mosh\\3.mp3", "Master") end
+			if time > 3 then DBM:Schedule(time-1.5, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\Sounds\\Mosh\\2.mp3", "Master") end
+			if time > 3 then DBM:Schedule(time-0.5, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\Sounds\\Mosh\\1.mp3", "Master") end
+			if time > 3 then DBM:Schedule(time, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\extrasounds\\com_go.mp3", "Master") end
+		end
 	end
 
 	function DBM:AddToPizzaIgnore(name)
@@ -1911,7 +1920,7 @@ do
 						else 
 							DBM:AddMsg(DBM_CORE_UPDATEREMINDER_HEADER:match("([^\n]*)"))
 							DBM:AddMsg(DBM_CORE_UPDATEREMINDER_HEADER:match("\n(.*)"):format(displayVersion, revision))
-							DBM:AddMsg(("|HDBM:update:%s:%s|h|cff3588ff[http://deadlybossmods.com]"):format(displayVersion, revision))
+							DBM:AddMsg(("|HDBM:update:%s:%s|h|cff3588ff[http://dev.deadlybossmods.com]"):format(displayVersion, revision))
 						end
 					end
 				end
@@ -2267,10 +2276,10 @@ function DBM:ShowUpdateReminder(newVersion, newRevision)
 	editBox:SetFontObject("GameFontHighlight")
 	editBox:SetTextInsets(0, 0, 0, 1)
 	editBox:SetFocus()
-	editBox:SetText("http://www.deadlybossmods.com")
+	editBox:SetText("http://dev.deadlybossmods.com")
 	editBox:HighlightText()
 	editBox:SetScript("OnTextChanged", function(self)
-		editBox:SetText("http://www.deadlybossmods.com")
+		editBox:SetText("http://dev.deadlybossmods.com")
 		editBox:HighlightText()
 	end)
 	local fontstring = frame:CreateFontString(nil, "ARTWORK", "GameFontNormal")
@@ -4518,7 +4527,7 @@ do
 		if moving then
 			return
 		end
-		font:SetText("")
+		font:SetText('')
 		frame:Show()
 		frame:SetAlpha(1)
 		frame:SetFrameStrata("TOOLTIP")

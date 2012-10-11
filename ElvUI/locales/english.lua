@@ -508,6 +508,7 @@ L["Experience Bar"] = true;
 L["Reputation Bar"] = true;
 
 --NamePlates
+L['Mistweaver'] = true;
 L['Background Multiplier'] = true;
 L['The backdrop of the nameplates color is scaled to match the color of the nameplate by this percentage. Set to zero to have no color in the nameplate backdrop.'] = true;
 L["Add Name"] = true;

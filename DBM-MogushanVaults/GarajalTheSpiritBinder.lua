@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 local sndWOP	= mod:NewSound(nil, "SoundWOP", true)
 local sndTT		= mod:NewSound(nil, "SoundTT", false)
 
-mod:SetRevision(("$Revision: 7901 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 7921 $"):sub(12, -3))
 mod:SetCreatureID(60143)
 mod:SetModelID(41256)
 mod:SetZone()
@@ -52,7 +52,7 @@ local warnPhase2Soon					= mod:NewPrePhaseAnnounce(2, 3)
 
 local berserkTimer					= mod:NewBerserkTimer(360)
 
-mod:AddBoolOption("SetIconOnVoodoo", false)
+mod:AddBoolOption("SetIconOnVoodoo", true)
 
 local voodooDollTargets = {}
 local spiritualInnervationTargets = {}
@@ -84,6 +84,7 @@ local function removeIcon(target)
 		if j == target then
 			table.remove(voodooDollTargetIcons, i)
 			mod:SetIcon(target, 0)
+			break
 		end
 	end
 end
@@ -265,7 +266,7 @@ function mod:OnSync(msg, guid)
 			end
 		end
 	elseif msg == "VoodooGoneTargets" and guids[guid] and self.Options.SetIconOnVoodoo then
-		removeIcon(guids[guid])
+		removeIcon(DBM:GetRaidUnitId(guids[guid]))
 	elseif msg == "SpiritualTargets" and guids[guid] then
 		spiritualInnervationTargets[#spiritualInnervationTargets + 1] = guids[guid]
 		self:Unschedule(warnSpiritualInnervationTargets)
