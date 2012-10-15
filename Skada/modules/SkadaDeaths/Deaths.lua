@@ -54,8 +54,8 @@ local function Resurrect(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGU
 	-- Resurrection.
 	local spellId, spellName, spellSchool = ...
 
-	log_resurrect(Skada.current, dstGUID, dstName, spellId, srcName..L["'s "]..(spellName or ""), timestamp)
-	log_resurrect(Skada.total, dstGUID, dstName, spellId, srcName..L["'s "]..(spellName or ""), timestamp)
+	log_resurrect(Skada.current, dstGUID, dstName, spellId, srcName..L["'s "]..spellName, timestamp)
+	log_resurrect(Skada.total, dstGUID, dstName, spellId, srcName..L["'s "]..spellName, timestamp)
 end
 
 local function SpellDamage(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, ...)
@@ -64,8 +64,8 @@ local function SpellDamage(timestamp, eventtype, srcGUID, srcName, srcFlags, dst
 	
 	dstGUID, dstName = Skada:FixMyPets(dstGUID, dstName)
 	if srcName then
-		log_deathlog(Skada.current, dstGUID, dstName, spellId, srcName..L["'s "]..(spellName or ""), 0-samount, timestamp)
-		log_deathlog(Skada.total, dstGUID, dstName, spellId, srcName..L["'s "]..(spellName or ""), 0-samount, timestamp)
+		log_deathlog(Skada.current, dstGUID, dstName, spellId, srcName..L["'s "]..spellName, 0-samount, timestamp)
+		log_deathlog(Skada.total, dstGUID, dstName, spellId, srcName..L["'s "]..spellName, 0-samount, timestamp)
 	else
 		log_deathlog(Skada.current, dstGUID, dstName, spellId, spellName, 0-samount, timestamp)
 		log_deathlog(Skada.total, dstGUID, dstName, spellId, spellName, 0-samount, timestamp)
@@ -80,8 +80,8 @@ local function SwingDamage(timestamp, eventtype, srcGUID, srcName, srcFlags, dst
 	
 	dstGUID, dstName = Skada:FixMyPets(dstGUID, dstName)
 	if srcName then
-		log_deathlog(Skada.current, dstGUID, dstName, spellid, srcName..L["'s "]..(spellName or ""), 0-samount, timestamp)
-		log_deathlog(Skada.total, dstGUID, dstName, spellid, srcName..L["'s "]..(spellName or ""), 0-samount, timestamp)
+		log_deathlog(Skada.current, dstGUID, dstName, spellid, srcName..L["'s "]..spellname, 0-samount, timestamp)
+		log_deathlog(Skada.total, dstGUID, dstName, spellid, srcName..L["'s "]..spellname, 0-samount, timestamp)
 	else
 		log_deathlog(Skada.current, dstGUID, dstName, spellid, spellname, 0-samount, timestamp)
 		log_deathlog(Skada.total, dstGUID, dstName, spellid, spellname, 0-samount, timestamp)
@@ -93,12 +93,15 @@ local function SpellHeal(timestamp, eventtype, srcGUID, srcName, srcFlags, dstGU
 	local spellId, spellName, spellSchool, samount, soverhealing, absorbed, scritical = ...
 	samount = min(0, samount - soverhealing)
 	
-	if not srcName then srcName = "anonymouse" end -- by ljxx.net
-	
 	srcGUID, srcName_modified = Skada:FixMyPets(srcGUID, srcName)
 	dstGUID, dstName = Skada:FixMyPets(dstGUID, dstName)
-	log_deathlog(Skada.current, dstGUID, dstName, spellId, (srcName_modified or srcName)..L["'s "]..(spellName or ""), samount, timestamp)
-	log_deathlog(Skada.total, dstGUID, dstName, spellId, srcName..L["'s "]..(spellName or ""), samount, timestamp)
+	if srcName then
+		log_deathlog(Skada.current, dstGUID, dstName, spellId, (srcName_modified or srcName)..L["'s "]..spellName, samount, timestamp)
+		log_deathlog(Skada.total, dstGUID, dstName, spellId, srcName..L["'s "]..spellName, samount, timestamp)
+	else
+		log_deathlog(Skada.current, dstGUID, dstName, spellId, spellName, samount, timestamp)
+		log_deathlog(Skada.total, dstGUID, dstName, spellId, spellName, samount, timestamp)
+	end
 end
 
 -- Death meter.

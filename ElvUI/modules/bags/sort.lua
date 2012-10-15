@@ -132,6 +132,7 @@ local function PrimarySort(a, b)
 	if aPrice ~= bPrice then
 		return aPrice > bPrice
 	end
+	if not aName or not bName then return false end; --eui.cc
 	return aName < bName
 end
 

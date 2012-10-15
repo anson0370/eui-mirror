@@ -347,9 +347,11 @@ function TT:GetItemLvL(unit)
 
 	for i in pairs(SlotName) do
 		local slot = GetInventoryItemLink(unit, GetInventorySlotInfo(SlotName[i].."Slot"))
+		if not slot then break; end
+		local itemLevel = select(4, GetItemInfo(slot)) or UnitLevel(unit)
 		if (slot ~= nil) then
 			item = item + 1
-			total = total + select(4, GetItemInfo(slot))
+			total = total + itemLevel
 		end
 	end
 	if (total < 1 or item < 1) then

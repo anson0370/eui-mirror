@@ -1,3 +1,4 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">	
 	<Script file='ace3.lua'/>
+	<Script file='reforgelite.lua'/>
 </Ui>

@@ -118,6 +118,7 @@ L.RaidCheckBuffQS1 = GetSpellInfo(20217)
 L.RaidCheckBuffQS2 = GetSpellInfo(19740)
 L.RaidCheckBuffXD = GetSpellInfo(1126)
 L.RaidCheckBuffFOOD = GetSpellInfo(87564)
+L.RaidCheckBuffMONK = GetSpellInfo(115921)
 
 -------------------------------------------------------------------------------------------------------------------
 --	团队Buff检查
@@ -128,6 +129,7 @@ function RC:CheckRaidBuff()
 		qs = 0,
 		xd = false,
 		fs = false,
+		monk = false,
 	}
 
 	local NoMSBuffName = {}
@@ -135,6 +137,7 @@ function RC:CheckRaidBuff()
 	local NoQS1BuffName = {}
 	local NoQS2BuffName = {}
 	local NoXDBuffName = {}
+	local NoMONKBuffName = {}
 	local NoFOODBuffName = {}
 
 	local inInstance, instanceType = IsInInstance()
@@ -149,9 +152,10 @@ function RC:CheckRaidBuff()
 			if class == 'PALADIN' then HasClass.qs = HasClass.qs + 1 end
 			if class == 'MAGE' then HasClass.fs = true end
 			if class == 'DRUID' then HasClass.xd = true end
+			if class == 'MONK' then HasClass.monk = true end
 		end
 	end
-	
+	if HasClass.monk then print("MONK") end
 	for i = 1, raidNum do
 		local name, _, subgroup = GetRaidRosterInfo(i)
 		local HasBuffMS = false
@@ -160,6 +164,7 @@ function RC:CheckRaidBuff()
 		local HasBuffQS2 = false
 		local HasBuffXD = false
 		local HasBuffFOOD = false
+		local HasBuffMONK = false
 		
 		if subgroup <= math.floor(raidNum / 5) then
 			local unit = "raid"..i
@@ -172,14 +177,18 @@ function RC:CheckRaidBuff()
 				if find(BuffTEXT, L.RaidCheckBuffQS2) then HasBuffQS2 = true end --力量
 				if find(BuffTEXT, L.RaidCheckBuffXD) then HasBuffXD = true end
 				if find(BuffTEXT, L.RaidCheckBuffFOOD) then HasBuffFOOD = true end
+				if find(BuffTEXT, L.RaidCheckBuffMONK) then HasBuffMONK = true end
 				j = j + 1
 			end
 			
 			if HasClass.ms and HasBuffMS == false then table.insert(NoMSBuffName, name) end
 			if HasClass.fs and HasBuffFS == false then table.insert(NoFSBuffName, name) end
-
-			if HasClass.gs == 0 and HasClass.xd then
-				if HasBuffXD == false then table.insert(NoXDBuffName, name) end		
+			
+			if HasClass.qs == 0 and HasClass.xd then
+				if HasBuffXD == false then table.insert(NoXDBuffName, name) end	
+			elseif HasClass.qs == 0 and HasClass.xd == false and HasClass.monk then
+				if HasBuffMONK == false then table.insert(NoMONKBuffName, name) end
+				print(name)
 			elseif HasClass.qs == 1 and HasClass.xd then
 				if HasBuffQS2 == false then table.insert(NoQS2BuffName, name) end
 				if HasBuffXD == false then table.insert(NoXDBuffName, name) end
@@ -194,7 +203,7 @@ function RC:CheckRaidBuff()
 		end
 	end
 	
-	if next(NoMSBuffName) == nil and next(NoFSBuffName) == nil and next(NoQS1BuffName) == nil and next(NoQS2BuffName) == nil and next(NoXDBuffName) == nil and next(NoFOODBuffName) == nil then
+	if next(NoMONKBuffName) == nil and next(NoMSBuffName) == nil and next(NoFSBuffName) == nil and next(NoQS1BuffName) == nil and next(NoQS2BuffName) == nil and next(NoXDBuffName) == nil and next(NoFOODBuffName) == nil then
 		SendChatMessage(L.RaidCheckMsgFullBuff, "RAID")
 	else
 		SendChatMessage(L.RaidCheckMsgNoBuff, "RAID")
@@ -204,6 +213,7 @@ function RC:CheckRaidBuff()
 		if next(NoQS2BuffName) then SendChatMessage(L.RaidCheckBuffQS2.. ": ".. table.concat(NoQS2BuffName, ","), "RAID") end
 		if next(NoXDBuffName) then SendChatMessage(L.RaidCheckBuffXD.. ": ".. table.concat(NoXDBuffName, ","), "RAID") end
 		if next(NoFOODBuffName) then SendChatMessage(L.RaidCheckBuffFOOD.. ": ".. table.concat(NoFOODBuffName, ","), "RAID") end
+		if next(NoMONKBuffName) then SendChatMessage(L.RaidCheckBuffFOOD.. ": ".. table.concat(NoMONKBuffName, ","), "RAID") end
 	end
 end
 

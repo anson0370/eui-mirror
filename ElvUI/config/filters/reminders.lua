@@ -78,22 +78,56 @@ G['reminder']['filters'] = {
 		},		
 	},
 	PALADIN = {
-		["Righteous Fury"] = { -- righteous fury group
+		["Righteous Fury"] = {	-- Righteous Fury group
 			["spellGroup"] = {
-				[25780] = true, 
+				[25780] = true,	-- Righteous Fury
 			},
 			["role"] = "Tank",
 			["instance"] = true,
-			["talentTreeException"] = 2, --Don't run reverse check for prot paladins, holy paladins you have to disable this if it annoys you sorry.
-			['enable'] = true,
-			['strictFilter'] = true,
+			["reversecheck"] = true,
+			["negate_reversecheck"] = 1,	-- Holy paladins use RF sometimes
+			["enable"] = true,
+			["strictFilter"] = true,
+		},
+		["Blessing of Kings"] = {	-- Blessing of Kings group
+			["spellGroup"] = {
+				[20217] = true,	-- Blessing of Kings
+			},
+			["negateGroup"] = {
+				[1126] = true,	-- Mark of the Wild
+				[117666] = true,	-- Legacy of the Emperor
+				[90363] = true,	-- Embrace of the Shale Spider
+				[19740] = true,	-- Blessing of Might
+			},
+			["combat"] = true,
+			["instance"] = true,
+			["pvp"] = true,
+			["enable"] = true,
+			["strictFilter"] = true,
+		},
+		["Blessing of Might"] = {	-- Blessing of Might group
+			["spellGroup"] = {
+				[19740] = true,	-- Blessing of Might
+			},
+			["negateGroup"] = {
+				[116956] = true,	-- Grace of Air
+				[93435] = true,	-- Roar of Courage
+				[127830] = true,	-- Spirit Beast Blessing
+				[20217] = true,	-- Blessing of Kings
+			},
+			["combat"] = true,
+			["instance"] = true,
+			["pvp"] = true,
+			["enable"] = true,
+			["strictFilter"] = true,
 		},
 	},
 	SHAMAN = {
 		["Shields"] = { --shields group
 			["spellGroup"] = {
 				[52127] = true, -- water shield
-				[324] = true, -- lightning shield			
+				[324] = true, -- lightning shield	
+				[974] = true,	-- Earth Shield
 			},
 			["instance"] = true,
 			["pvp"] = true,
@@ -117,7 +151,8 @@ G['reminder']['filters'] = {
 				[6307] = true, -- Blood Pact
 				[90364] = true, -- Qiraji Fortitude
 				[72590] = true, -- Drums of fortitude
-				[21562] = true, -- Fortitude				
+				[21562] = true, -- Fortitude	
+				[6673] = true,	-- Battle Shout
 			},
 			["role"] = "Tank",
 			["instance"] = true,
@@ -132,6 +167,7 @@ G['reminder']['filters'] = {
 			["negateGroup"] = {
 				[19506] = true, -- Trueshot Aura
 				[57330] = true, -- horn of Winter
+				[469] = true,	-- Commanding Shout
 			},
 			["instance"] = true,
 			["pvp"] = true,	
@@ -180,6 +216,8 @@ G['reminder']['filters'] = {
 				[2823] = true,
 				[3408] = true,
 				[5761] = true,
+				[108211] = true,	-- Leeching Poison
+				[108215] = true,	-- Paralytic Poison				
 			},
 			["personal"] = true,
 			["size"] = 50,
@@ -187,9 +225,71 @@ G['reminder']['filters'] = {
 		},	
 	},
 	WARLOCK = {
+		["Dark Intent"] = {	-- Dark Intent group
+			["spellGroup"] = {
+				[109773] = true,	-- Dark Intent
+			},
+			["negateGroup"] = {
+				[1459] = true,	-- Arcane Brilliance
+				[61316] = true,	-- Dalaran Brilliance
+				[77747] = true,	-- Burning Wrath
+			},
+			["combat"] = true,
+			["instance"] = true,
+			["pvp"] = true,
+			["enable"] = true,
+			["strictFilter"] = true,
+		},	
 	},	
 	DRUID = {
+		["mark of the Wild"] = {	-- Mark of the Wild group
+			["spellGroup"] = {
+				[1126] = true,	-- Mark of the Wild
+			},
+			["negateGroup"] = {
+				[20217] = true,	-- Blessing of Kings
+				[117666] = true,	-- Legacy of the Emperor
+				[90363] = true,	-- Embrace of the Shale Spider
+			},
+			["combat"] = true,
+			["instance"] = true,
+			["pvp"] = true,
+			["enable"] = true,
+			["strictFilter"] = true,
+		},	
 	},
 	MONK = {
+		["Legacy of the Emperor"] = {	-- Legacy of the Emperor group
+			["spellGroup"] = {
+				[117666] = true,	-- Legacy of the Emperor
+			},
+			["negateGroup"] = {
+				[1126] = true,	-- Mark of the Wild
+				[20217] = true,	-- Blessing of Kings
+				[90363] = true,	-- Embrace of the Shale Spider
+			},
+			["combat"] = true,
+			["instance"] = true,
+			["pvp"] = true,
+			["enable"] = true,
+			["strictFilter"] = true,
+		},
+		["Legacy of the White Tiger"] = {	-- Legacy of the White Tiger group
+			["spellGroup"] = {
+				[116781] = true,	-- Legacy of the White Tiger
+			},
+			["negateGroup"] = {
+				[1459] = true,	-- Arcane Brilliance
+				[61316] = true,	-- Dalaran Brilliance
+				[24932] = true,	-- Leader of the Pack
+				[90309] = true,	-- Terrifying Roar
+				[24604] = true,	-- Furious Howl
+			},
+			["combat"] = true,
+			["instance"] = true,
+			["pvp"] = true,
+			["enable"] = true,
+			["strictFilter"] = true,
+		},	
 	},
 }

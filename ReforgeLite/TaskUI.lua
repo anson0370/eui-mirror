@@ -236,10 +236,10 @@ function ReforgeLite:AddPriorityItem(loading)
   self:PrioToWeights(self.pdb)
 end
 function ReforgeLite:RemovePriorityItem(row, loading)
-  self.task.prio:DeleteRow(row)
+  self.task.prio:DeleteRow(#self.pdb.prio)
   if not loading then
     table.remove(self.pdb.prio, row)
-    self:UpdateCapPoints(i)
+    self:UpdatePriorities(i)
     self:UpdateContentSize()
 
     self:PrioToWeights(self.pdb)
@@ -409,8 +409,7 @@ function ReforgeLite:CreateTaskUI()
     StaticPopup_Show ("REFORGE_LITE_SAVE_PRESET")
   end)
   self:SetAnchor (self.savePresetButton, "LEFT", self.presetsButton.tip, "RIGHT", 8, 0)
-  unpack(ElvUI).Skins:HandleButton(self.savePresetButton)
-  
+
   self.deletePresetButton = CreateFrame ("Button", "ReforgeLiteDeletePresetButton", self.content, "UIPanelButtonTemplate")
   self.statWeightsCategory:AddFrame (self.deletePresetButton)
   self.deletePresetButton:SetWidth (114)
@@ -422,8 +421,6 @@ function ReforgeLite:CreateTaskUI()
     end
   end)
   self:SetAnchor (self.deletePresetButton, "LEFT", self.savePresetButton, "RIGHT", 5, 0)
-  unpack(ElvUI).Skins:HandleButton(self.deletePresetButton)
-  
   if next (self.db.customPresets) == nil then
     self.deletePresetButton:Disable ()
   end
@@ -439,7 +436,7 @@ function ReforgeLite:CreateTaskUI()
     StaticPopup_Show ("REFORGE_LITE_PARSE_PAWN")
   end)
   self:SetAnchor (self.pawnButton, "TOPLEFT", self.presetsButton, "BOTTOMLEFT", 0, -5)
-  unpack(ElvUI).Skins:HandleButton(self.pawnButton)
+
   ------------------------
 
   self.convertSpirit = CreateFrame ("Frame", nil, self.content)
@@ -462,7 +459,7 @@ function ReforgeLite:CreateTaskUI()
 
   ------------------------
 
-  self.isWeights = GUI:CreateCheckButton(self.content, L["Specify weights"],
+  self.isWeights = GUI:CreateCheckButton(self.content, L["Advanced mode"],
       not self.pdb.prio, function (val)
     if val then
       self:PrioToWeights(self.pdb)

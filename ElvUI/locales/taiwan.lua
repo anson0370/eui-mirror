@@ -834,9 +834,9 @@ do
 'deficit' - 缺少值
 
 姓名格式:
-'name-short' - 最多顯示10個字符
-'name-medium' - 最多顯示15個字符
-'name-long' - 最多顯示20個字符
+'name:short' - 最多顯示4個字符
+'name:medium' - 最多顯示15個字符
+'name:long' - 最多顯示20個字符
 
 更多的信息請訪問 http://eui.cc]=];	
 end

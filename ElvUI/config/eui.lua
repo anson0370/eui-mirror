@@ -608,6 +608,11 @@ E.ClickSets_Sets = {
 	},
 	MONK = {
 			["shift-type1"] = 115450, -- 化瘀术
+			["alt-type1"]	= 116849, 
+			["ctrl-type1"]	= 115175,
+			["type2"]		= 124682,
+			["alt-type2"]	= 116841,
+			["shift-type2"]	= 115151,
 	},	
 }
 

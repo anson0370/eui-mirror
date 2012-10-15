@@ -1,9 +1,9 @@
 local E, L, V, P, G = unpack(select(2, ...)); --Engine
 
 G['extracd']['data'] = {
-	-- talent
-		-- type = "talent" 
-		-- talent = the location of the talent(from 1 to 18)
+-- talent
+	-- type = "talent" 
+	-- talent = the location of the talent(from 1 to 18)
 	-- monk
 	[121283] = {
 		desc = "",
@@ -107,6 +107,23 @@ G['extracd']['data'] = {
 		cd = 45,
 		duration = 8,
 	}, -- Will of the Necropolis	
+	
+	--warlock
+	[104317] = {
+		desc = "",
+		type = "spec",
+		class = "WARLOCK",
+		spec = {2},
+		cd = 20,
+	}, --
+	[34936] = {
+		desc = "",
+		type = "spec",
+		class = "WARLOCK",
+		spec = {3},
+		cd = 8,
+	}, --
+	
 
 	
 -- item

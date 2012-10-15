@@ -6,13 +6,19 @@
 L= DBM:GetModLocalization(679)
 
 L:SetWarningLocalization({
-	SpecWarnOverloadSoon	= "%s castable in 7s!"
+	SpecWarnOverloadSoon		= "%s castable in 7s!",
+	specWarnMySD 				= "you pull the BOSS point of the group of petrochemical",
+	specWarnBreakJasperChains	= "Break Jasper Chains!"
 })
 
 L:SetOptionLocalization({
 	SoundWOP				= "Voice warning: important skills",
-	InfoFrame				= "InfoFrame: Overload Energy",
-	SpecWarnOverloadSoon	= "Show special warning before overload",
+	SpecWarnOverloadSoon		= "Show special warning before overload",
+	specWarnMySD		= "Show special warning when you pull the BOSS point of the group of petrochemical",
+	specWarnBreakJasperChains	= "Show special warning when it is safe to break $spell:130395",
+	ArrowOnJasperChains			= "Show DBM Arrow when you are affected by $spell:130395 ",
+	InfoFrame					= "Show info frame for active petrification",
+	AInfoFrame					= "Show simple info frame for active petrification"
 })
 
 L:SetMiscLocalization({

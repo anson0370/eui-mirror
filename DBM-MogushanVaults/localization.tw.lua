@@ -7,13 +7,19 @@ local L
 L= DBM:GetModLocalization(679)
 
 L:SetWarningLocalization({
-	SpecWarnOverloadSoon	= "七秒後：%s"
+	SpecWarnOverloadSoon		= "七秒後：%s",
+	specWarnMySD				= "你拉的王點了全團石化",
+	specWarnBreakJasperChains	= "拉斷晶紅鎖鏈!"
 })
 
 L:SetOptionLocalization({
 	SoundWOP			= "語音警告：重要技能",
 	InfoFrame			= "信息框：超載能量監視器",
-	SpecWarnOverloadSoon	= "特殊警報：即將超載"
+	AInfoFrame			= "信息框：簡化超載監視器(不要和上邊重選)",
+	SpecWarnOverloadSoon	= "特殊警報：即將超載",
+	specWarnMySD		= "特殊警報：你拉的王點了石化時(坦克)",
+	specWarnBreakJasperChains	= "特殊警報：當安全時拉斷$spell:130395",
+	ArrowOnJasperChains			= "DBM箭頭：當你獲得$spell:130395時"
 })
 
 L:SetMiscLocalization({
@@ -51,7 +57,7 @@ L:SetMiscLocalization({
 	Fire		= "噢，至高的神啊!藉由我來融化他們的血肉吧!",
 	Arcane		= "噢，上古的賢者!賜予我秘法的智慧!",
 	Nature		= "噢，偉大的靈魂!賜予我大地之力!",--I did not log this one, text is probably not right
-	Shadow		= "Great soul of champions past! Bear to me your shield!"
+	Shadow		= "英雄之靈!以盾護我之身!"
 })
 
 

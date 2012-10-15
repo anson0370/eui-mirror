@@ -27,7 +27,7 @@ local function GetTemplate(t)
 		borderr, borderg, borderb = RAID_CLASS_COLORS[E.myclass].r, RAID_CLASS_COLORS[E.myclass].g, RAID_CLASS_COLORS[E.myclass].b
 	end
 	if E.db.general.transparent and t ~= 'notrans' then
-		backdropa = 0.2
+		backdropa = E.db.general.backdropfadecolor.a or 0.2
 		E["media"].blankTex = "Interface\\ChatFrame\\ChatFrameBackground"
 	end	
 end

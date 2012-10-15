@@ -1,7 +1,5 @@
--- ReforgeLite v1.15 by d07.RiV (Iroared)
+-- ReforgeLite v1.17 by d07.RiV (Iroared)
 -- All rights reserved
-local E, L, V, P, G, _ = unpack(ElvUI); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
-
 
 local function DeepCopy (t, cache)
   if type (t) ~= "table" then
@@ -692,7 +690,7 @@ end
 
 function ReforgeLite:CreateFrame (title, width, height)
   self.initialized = true
-  local title = "EUI Reforge Lite "..(GetAddOnMetadata("ReforgeLite", "Version") or '');
+  local title = "Reforge Lite"
   self:SetFrameStrata ("DIALOG")
   self:ClearAllPoints ()
   self:SetWidth (self.db.windowWidth)
@@ -711,7 +709,7 @@ function ReforgeLite:CreateFrame (title, width, height)
   })
   self:SetBackdropBorderColor (unpack (self.db.activeWindowTitle))
   self:SetBackdropColor (0.1, 0.1, 0.1)
-  self:SetTemplate("Transparent")
+
   self:EnableMouse (true)
   self:SetMovable (true)
   self:SetResizable (true)
@@ -750,7 +748,7 @@ function ReforgeLite:CreateFrame (title, width, height)
   self.close:SetScript ("OnClick", function (self)
     self:GetParent ():Hide ()
   end)
-  unpack(ElvUI).Skins:HandleCloseButton(self.close)
+
   self.leftGrip = CreateFrame ("Button", nil, self)
   self.leftGrip:SetNormalTexture (AddonPath .. "textures\\leftgrip")
   self.leftGrip:SetHighlightTexture (AddonPath .. "textures\\leftgrip")
@@ -821,7 +819,7 @@ function ReforgeLite:CreateFrame (title, width, height)
     ReforgeLite:SetScroll (value)
   end)
   self.scrollBar:Hide ()
-  unpack(ElvUI).Skins:HandleScrollBar(self.scrollBar)
+
   self.scrollBg = self.scrollBar:CreateTexture (nil, "BACKGROUND")
   self.scrollBg:SetAllPoints (self.scrollBar)
   self.scrollBg:SetTexture (0, 0, 0, 0.4)
@@ -936,7 +934,7 @@ function ReforgeLite:CreateOptionList ()
       self:UpdateMethodCategory()
     end
   end)
-  unpack(ElvUI).Skins:HandleButton(self.computeButton)
+
   self:UpdateTask ()
 
   self.quality = CreateFrame ("Slider", nil, self.content)
@@ -1027,7 +1025,6 @@ function ReforgeLite:FillSettings ()
   self.debugButton:SetScript ("OnClick", function (self)
     ReforgeLite:DebugMethod ()
   end)
-  unpack(ElvUI).Skins:HandleButton(self.debugButton)
   self.settings:SetCell (5, 0, self.debugButton, "LEFT")
 end
 function ReforgeLite:GetCurrentScore ()
@@ -1095,7 +1092,7 @@ function ReforgeLite:UpdateMethodCategory ()
     end)
     self.methodCategory:AddFrame (self.methodShow)
     self:SetAnchor (self.methodShow, "TOPLEFT", self.methodStats, "BOTTOMLEFT", 0, -5)
-    unpack(ElvUI).Skins:HandleButton(self.methodShow)
+
     self.methodReset = CreateFrame ("Button", "ReforgeLiteMethodResetButton", self.content, "UIPanelButtonTemplate")
     self.methodReset:SetWidth (114)
     self.methodReset:SetHeight (22)
@@ -1105,7 +1102,7 @@ function ReforgeLite:UpdateMethodCategory ()
     end)
     self.methodCategory:AddFrame (self.methodReset)
     self:SetAnchor (self.methodReset, "BOTTOMLEFT", self.methodShow, "BOTTOMRIGHT", 8, 0)
-	unpack(ElvUI).Skins:HandleButton(self.methodReset)
+
     self.methodTank = CreateFrame ("Frame", nil, self.content)
     self.methodCategory:AddFrame (self.methodTank)
     self.methodTank:SetPoint ("TOPLEFT", self.methodStats, "TOPRIGHT", 10, 0)
@@ -1159,7 +1156,7 @@ function ReforgeLite:UpdateMethodCategory ()
       StaticPopup_Show ("REFORGE_LITE_SAVE_METHOD_PRESET")
     end)
     self:SetAnchor (self.saveMethodPresetButton, "LEFT", self.methodPresetsButton.tip, "RIGHT", 8, 0)
-	unpack(ElvUI).Skins:HandleButton(self.saveMethodPresetButton)
+
     self.deleteMethodPresetButton = CreateFrame ("Button", "ReforgeLiteDeleteMethodPresetButton", self.content, "UIPanelButtonTemplate")
     self.methodCategory:AddFrame (self.deleteMethodPresetButton)
     self.deleteMethodPresetButton:SetWidth (114)
@@ -1171,7 +1168,6 @@ function ReforgeLite:UpdateMethodCategory ()
       end
     end)
     self:SetAnchor (self.deleteMethodPresetButton, "LEFT", self.saveMethodPresetButton, "RIGHT", 5, 0)
-	unpack(ElvUI).Skins:HandleButton(self.deleteMethodPresetButton)
     if next (self.pdb.customMethodPresets) == nil then
       self.deleteMethodPresetButton:Disable ()
     end
@@ -1242,10 +1238,10 @@ function ReforgeLite:UpdateItems ()
     local texture = GetInventoryItemTexture ("player", v.slotId)
     local stats = {}
     local reforgeSrc, reforgeDst = nil, nil
-    if texture then
+    if item and texture then
       v.item = item
       v.texture:SetTexture (texture)
-      stats = GetItemStats (item)
+      stats = GetItemStats (item) or {}
       local reforge = self:GetReforgeID (item)
       if reforge then
         reforgeSrc, reforgeDst = self.itemStats[self.reforgeTable[reforge][1]].name, self.itemStats[self.reforgeTable[reforge][2]].name
@@ -1277,55 +1273,6 @@ function ReforgeLite:UpdateItems ()
     self.statTotals[i]:SetText (v.getter ())
   end
   self:UpdateTask()
-
-  self.s2hFactor = 0
-  self.s2eFactor = 0
-  local _, unitClass = UnitClass ("player")
-  if MOP then
-    local lvl = UnitLevel("player")
-    if unitClass == "PRIEST" then
-      if GetSpecialization() == 3 and lvl >= 20 then
-        self.s2hFactor = 100
-      end
-    elseif unitClass == "DRUID" then
-      if GetSpecialization() == 1 and lvl >= 64 then
-        self.s2hFactor = 100
-      end
-    elseif unitClass == "SHAMAN" then
-      if GetSpecialization() == 1 and lvl >= 10 then
-        self.s2hFactor = 100
-      end
-    elseif unitClass == "MONK" then
-      if GetSpecialization() == 2 and lvl >= 10 then
-        self.s2hFactor = 50
-        self.s2eFactor = 50
-      end
-    end
-  else
-    if unitClass == "PRIEST" then
-      local _, _, _, _, pts = GetTalentInfo (3, 7, false, false)
-      self.s2hFactor = pts * 50
-    elseif unitClass == "DRUID" and GetPrimaryTalentTree (false, false) ~= 2 then
-      local _, _, _, _, pts = GetTalentInfo (1, 6, false, false)
-      self.s2hFactor = pts * 50
-    elseif unitClass == "SHAMAN" and GetPrimaryTalentTree (false, false) ~= 2 then
-      local _, _, _, _, pts = GetTalentInfo (1, 7, false, false)
-      self.s2hFactor = (pts == 3 and 100 or pts * 33)
-    elseif unitClass == "PALADIN" then
-      local _, _, _, _, pts = GetTalentInfo (1, 11, false, false)
-      self.s2hFactor = pts * 50
-    end
-  end
-  if self.s2hFactor and self.s2hFactor > 0 then
-    if self.s2eFactor and self.s2eFactor > 0 then
-      self.convertSpirit.text:SetText (L["Spirit to hit and expertise"] .. ": " .. self.s2hFactor .. "%")
-    else
-      self.convertSpirit.text:SetText (L["Spirit to hit"] .. ": " .. self.s2hFactor .. "%")
-    end
-    self.convertSpirit.text:Show ()
-  else
-    self.convertSpirit.text:Hide ()
-  end
 
   self:RefreshMethodStats ()
 end
@@ -1367,7 +1314,7 @@ function ReforgeLite:ShowMethodWindow ()
     })
     self.methodWindow:SetBackdropBorderColor (unpack (self.db.activeWindowTitle))
     self.methodWindow:SetBackdropColor (0.1, 0.1, 0.1)
-	self.methodWindow:SetTemplate("Transparent")
+
     self.methodWindow:EnableMouse (true)
     self.methodWindow:SetMovable (true)
     self.methodWindow:SetScript ("OnMouseDown", function (self, arg)
@@ -1406,7 +1353,7 @@ function ReforgeLite:ShowMethodWindow ()
       self:GetParent ():Hide ()
       ReforgeLite:SetBackdropBorderColor (unpack (ReforgeLite.db.activeWindowTitle))
     end)
-	unpack(ElvUI).Skins:HandleCloseButton(self.methodWindow.close)
+
     self.methodWindow.itemTable = GUI:CreateTable (#self.itemSlots + 1, 3, 0, 0, nil, self.methodWindow)
     self.methodWindow:ClearAllPoints ()
     self.methodWindow.itemTable:SetPoint ("TOPLEFT", self.methodWindow, "TOPLEFT", 12, -40)
@@ -1476,7 +1423,6 @@ function ReforgeLite:ShowMethodWindow ()
     self.methodWindow.reforge:SetScript ("OnClick", function (self)
       ReforgeLite:DoReforge ()
     end)
-	unpack(ElvUI).Skins:HandleButton(self.methodWindow.reforge)
     self.methodWindow.reforgeTip = CreateFrame ("Frame", nil, self.methodWindow)
     self.methodWindow.reforgeTip:SetAllPoints (self.methodWindow.reforge)
     self.methodWindow.reforgeTip:EnableMouse (true)
@@ -1557,8 +1503,11 @@ function ReforgeLite:IsReforgeMatching (item, reforge, override)
     deltas[dst] = deltas[dst] + amount
   end
 
+  local conv = self:GetConversion()
   deltas[self.STATS.SPIRIT] = math.floor (deltas[self.STATS.SPIRIT] * self.spiritBonus + 0.5)
-  deltas[self.STATS.HIT] = deltas[self.STATS.HIT] + math.floor (deltas[self.STATS.SPIRIT] * self.s2hFactor / 100 + 0.5)
+  deltas[self.STATS.HIT] = deltas[self.STATS.HIT] + math.floor(deltas[self.STATS.SPIRIT] * conv.s2h + 0.5) +
+                                                    math.floor(deltas[self.STATS.EXP] * conv.e2h + 0.5)
+  deltas[self.STATS.EXP] = deltas[self.STATS.EXP] + math.floor(deltas[self.STATS.SPIRIT] * conv.s2e + 0.5)
 
   for i = 1, #self.itemStats do
     if self:GetStatScore (i, self.pdb.method.stats[i]) ~= self:GetStatScore (i, self.pdb.method.stats[i] - deltas[i]) then

@@ -87,10 +87,10 @@ local function makeButton(id, text, w, h, x, y)
 	button:SetText(text)
 	return button
 end
-button = makeButton("OpenAllButton", "All", 60, 25, -50, -410)
+button = makeButton("OpenAllButton", "All", 60, 25, -60, -400)
 button:SetScript("OnClick", openAll)
 button:SetScript("OnEvent", onEvent)
-button2 = makeButton("OpenAllButton2", "Cash", 60, 25, 20, -410)
+button2 = makeButton("OpenAllButton2", "Cash", 60, 25, 10, -400)
 button2:SetScript("OnClick", openAllCash)
 S:HandleButton(button)
 S:HandleButton(button2)

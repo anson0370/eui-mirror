@@ -32,6 +32,7 @@ elseif class == 'MONK' then
 	BS_Spell = GetSpellInfo(119582)
 	BS_Shield = GetSpellInfo(118604)
 	BS_Spell2 = GetSpellInfo(115203)
+	BS_Spell3 = 115308
 end
 
 local UnitAura = UnitAura
@@ -118,6 +119,17 @@ local function doubleValueChanged(self, event, unit)
 	else
 		bar:SetBackdropBorderColor(.31, .31, .31)
 	end		
+	
+	if UnitBuff('player', GetSpellInfo(115308)) then
+		local BS_Id = select(11, UnitBuff('player', GetSpellInfo(115308)))
+		if BS_Id == 115308 then
+			bar.Icon:SetVertexColor(1, .8, 0, .6)
+		else
+			bar.Icon:SetVertexColor(1, 1, 1, 1)				
+		end
+	else
+		bar.Icon:SetVertexColor(1, 1, 1, 1)		
+	end
 	
 	if not UnitBuff('player', BS_Name) and not UnitDebuff('player', BS_Value) then
 		bar:SetAlpha(0);

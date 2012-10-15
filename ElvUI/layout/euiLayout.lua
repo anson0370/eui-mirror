@@ -3,7 +3,7 @@ local LO = E:GetModule('Layout');
 local LSM = LibStub("LibSharedMedia-3.0")
 
 local PANEL_HEIGHT = 22;
-local MAX_BUTTON = 4;
+local MAX_BUTTON = 5;
 
 local menuList = {
 	{text = CHARACTER_BUTTON,
@@ -63,13 +63,17 @@ local menuList = {
 	func = function() ToggleHelpFrame() end},
 }
 
-local function HideChildren(parent)
+local function HideChildren(...)
+	local parent = select(1, ...)
 	for i = 1, parent:GetNumChildren() do
 		local f = select(i, parent:GetChildren())
 		if f:IsShown() then
 			UIFrameFadeOut(f, 0.3)
 			f.fadeInfo.finishedFunc = function() f:Hide(); f:SetAlpha(1); end
 		end
+	end
+	if select(2, ...) then
+		HideChildren(select(2, ...))
 	end
 end
 
@@ -93,10 +97,10 @@ local function ButtonLeave(self)
 	self:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 end
 
-local function CreateButton(name, func, parent)
+local function CreateButton(name, func, parent, template)
 	if not name then return end
-
-	local f = CreateFrame("Button", nil, parent)
+	
+	local f = CreateFrame("Button", nil, parent, template)
 	f:SetHeight(PANEL_HEIGHT)
 	f:SetWidth(74)
 	f:SetToplevel(true)
@@ -108,12 +112,16 @@ local function CreateButton(name, func, parent)
 	f.text:FontTemplate(LSM:Fetch("font", E.db.datatexts.font), E.db.datatexts.fontSize - 2, E.db.datatexts.fontOutline)
 	f.text:SetPoint("CENTER")
 	f.text:SetText(name)
-	f:SetScript("OnClick", function()
-		if func then func(); end
-		HideChildren(EuiInfoBar.Menu);
-		HideChildren(EuiInfoBar.RaidTool);
-		HideChildren(EuiInfoBar.Shortcuts);
-	end)
+	if template then
+		f:HookScript("OnClick", function()
+			HideChildren(EuiInfoBar.Menu, EuiInfoBar.RaidTool, EuiInfoBar.Shortcuts);
+		end)
+	else
+		f:SetScript("OnClick", function()
+			if func then func(); end
+			HideChildren(EuiInfoBar.Menu, EuiInfoBar.RaidTool, EuiInfoBar.Shortcuts);
+		end)
+	end
 	f:HookScript("OnEnter", ButtonEnter)
 	f:HookScript("OnLeave", ButtonLeave)
 	f:Hide()
@@ -130,11 +138,42 @@ local function CreateMenu(parent)
 	end
 end
 
+local function CheckRaidStatus()
+	local inInstance, instanceType = IsInInstance()
+	if ((IsInGroup() and not IsInRaid()) or UnitIsGroupLeader('player') or UnitIsGroupAssistant("player")) and not (inInstance and (instanceType == "pvp" or instanceType == "arena")) then
+		return true
+	else
+		return false
+	end
+end
+
+local raidfunc = {}
+raidfunc.disbandRaid = function() if CheckRaidStatus() then E:StaticPopup_Show("DISBAND_RAID") end end
+raidfunc.role = function() if CheckRaidStatus() then InitiateRolePoll() end end
+raidfunc.raidcheck = function() if CheckRaidStatus() then DoReadyCheck() end end
+
 local function CreateRaidTool(parent)
-	for i = 1, 4 do
-		local f = CreateButton("raidtool".. i, nil, parent)
+	local f
+	for i = 1, 8 do
+		if i < 5 then
+			f = CreateButton("raidtool".. i, nil, parent)
+		elseif i == 5 then
+			f = CreateButton(L['Disband Group'], raidfunc.disbandRaid, parent)
+		elseif i == 6 then
+			f = CreateButton(ROLE_POLL, raidfunc.role, parent)
+		elseif i == 7 then
+			f = CreateButton(MAINTANK, nil, parent, "UIPanelButtonTemplate, SecureActionButtonTemplate")
+			f:SetAttribute("type", "maintank")
+			f:SetAttribute("unit", "target")
+			f:SetAttribute("action", "toggle")
+		elseif i == 8 then
+			f = CreateButton(MAINASSIST, nil, parent, "UIPanelButtonTemplate, SecureActionButtonTemplate")
+			f:SetAttribute("type", "mainassist")
+			f:SetAttribute("unit", "target")
+			f:SetAttribute("action", "toggle")
+		end
 		parent['raidtool'..i] = f
-		f:SetPoint("TOP", parent, "TOP", 0, -(i * (PANEL_HEIGHT + 2)))
+		f:SetPoint("TOP", parent, "TOP", 0, -(i * (PANEL_HEIGHT + 2)))			
 	end
 end
 
@@ -215,7 +254,11 @@ local function CreateInfoBarButton(id, name, parent)
 	f:SetFrameLevel(2)
 	f:StyleButton()
 	f:SetTemplate("Transparent", true)
-	f:Point("LEFT", parent, "RIGHT", (id - 1) * 74 + id * 2, 0)
+	if id == 1 then
+		f:Point("LEFT", parent, "RIGHT", 2, 0)
+	else
+		f:Point("LEFT", parent['button'..(id-1)], "RIGHT", 2, 0)
+	end
 	f.text = f:CreateFontString(nil, "OVERLAY")
 	f.text:FontTemplate(LSM:Fetch("font", E.db.datatexts.font), E.db.datatexts.fontSize, E.db.datatexts.fontOutline)
 	f.text:SetPoint("CENTER")
@@ -240,26 +283,26 @@ end
 local function anchorClick(self)
 	if self then
 		if self.text:GetText() == '>' then
-			E.db.InfoBarStep = E.db.InfoBarStep + 1
+			E.db.infoBarStep = E.db.infoBarStep + 1
 		else
-			E.db.InfoBarStep = E.db.InfoBarStep - 1
+			E.db.infoBarStep = E.db.infoBarStep - 1
 		end
 	else
 		self = EuiInfoBar.anchor
 	end
 	
 	for i = 1, MAX_BUTTON do
-		if i <= E.db.InfoBarStep then
+		if i <= E.db.infoBarStep then
 			self['button'..i]:Show()
 		else
 			self['button'..i]:Hide()
 		end
 	end
 	
-	if E.db.InfoBarStep == 0 then
+	if E.db.infoBarStep == 0 then
 		self.text:SetText('>')
 		self.text:SetTextColor(23/255, 132/255, 209/255)
-	elseif E.db.InfoBarStep == MAX_BUTTON then
+	elseif E.db.infoBarStep == MAX_BUTTON then
 		self.text:SetText('<')
 		self.text:SetTextColor(1, 1, 1)
 	end
@@ -286,11 +329,11 @@ function LO:InfoBar()
 	anchor.text:SetPoint("CENTER")
 	anchor.text:SetText('<')
 	
-	if not E.db.InfoBarStep then
-		E.db.InfoBarStep = MAX_BUTTON
+	if not E.db.infoBarStep then
+		E.db.infoBarStep = MAX_BUTTON
 	end
 	
-	E:CreateMover(f, 'EuiInfoBarMover', L['EuiInfoBar'], nil, nil, nil, 'ALL,GENERAL')
+	E:CreateMover(f, 'EuiInfoBarMover', L['EuiInfoBar'], nil, nil, nil, 'ALL,EUI')
 	
 	local menu = CreateInfoBarButton(1, L["Menu"], anchor)
 	CreateMenu(menu);
@@ -298,10 +341,19 @@ function LO:InfoBar()
 	local shortcuts = CreateInfoBarButton(2, L["Shortcuts"], anchor)
 	CreateShortcuts(shortcuts);
 
-	local raid = CreateInfoBarButton(3, L["RaidTool"], anchor)
+	--Reposition/Resize and Reuse the World Marker Button
+	CompactRaidFrameManagerDisplayFrameLeaderOptionsRaidWorldMarkerButton:ClearAllPoints()
+	CompactRaidFrameManagerDisplayFrameLeaderOptionsRaidWorldMarkerButton:SetPoint("LEFT", shortcuts, "RIGHT", 2, 0)
+	CompactRaidFrameManagerDisplayFrameLeaderOptionsRaidWorldMarkerButton:SetParent(anchor)
+	CompactRaidFrameManagerDisplayFrameLeaderOptionsRaidWorldMarkerButton:SetFrameLevel(4)
+	CompactRaidFrameManagerDisplayFrameLeaderOptionsRaidWorldMarkerButton:SetSize(PANEL_HEIGHT, PANEL_HEIGHT)
+	CompactRaidFrameManagerDisplayFrameLeaderOptionsRaidWorldMarkerButton:SetTemplate("Defautl", true)	
+	anchor['button3'] = CompactRaidFrameManagerDisplayFrameLeaderOptionsRaidWorldMarkerButton
+	
+	local raid = CreateInfoBarButton(4, L["RaidTool"], anchor)
 	CreateRaidTool(raid);	
 	
-	local loc = CreateInfoBarButton(4, "?, ?", anchor)
+	local loc = CreateInfoBarButton(5, "?, ?", anchor)
 	CreateLoc(loc)
 
 	EuiInfoBar.Menu = menu

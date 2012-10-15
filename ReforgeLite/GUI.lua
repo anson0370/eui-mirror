@@ -311,7 +311,7 @@ function GUI:CreateTable (rows, cols, firstRow, firstColumn, gridColor, parent)
   t:SetWidth (400)
   t:SetHeight (400)
   t:SetPoint ("TOPLEFT")
-  t:SetTemplate("Transparent")
+
   t.rows = rows
   t.cols = cols
   t.gridColor = gridColor
