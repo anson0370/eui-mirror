@@ -1,4 +1,4 @@
-local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB, Localize Underscore
 local UF = E:GetModule('UnitFrames');
 local LSM = LibStub("LibSharedMedia-3.0");
 
@@ -42,7 +42,6 @@ function UF:Construct_TargetGlow(frame)
 end
 
 local UpdaterOnUpdateH = function(Updater)
---	Updater:Hide()
 	local b = Updater:GetParent()
 	local tex = b:GetStatusBarTexture()
 	tex:ClearAllPoints()
@@ -50,7 +49,6 @@ local UpdaterOnUpdateH = function(Updater)
 	tex:SetPoint("TOPLEFT", b, "TOPRIGHT", ((b:GetValue()/select(2,b:GetMinMaxValues())-1)*b:GetWidth()) or 0, 0)
 end
 local UpdaterOnUpdateV = function(Updater)
---	Updater:Hide()
 	local b = Updater:GetParent()
 	local tex = b:GetStatusBarTexture()
 	tex:ClearAllPoints()
@@ -65,7 +63,6 @@ function E:TranseBar(f, orientation)
 	
 	local bar = CreateFrame("StatusBar", nil, f, nil) --separate frame for OnUpdates
 	bar.Updater = CreateFrame("Frame", nil, bar)
---	bar.Updater:Hide()
 	if orientation == "HORIZONTAL" then
 		bar.Updater:SetScript("OnUpdate", UpdaterOnUpdateH)
 	else
@@ -78,7 +75,12 @@ function E:TranseBar(f, orientation)
 end
 
 function UF:Construct_HealthBar(frame, bg, text, textPos, orientation)
-	local health = E.db.unitframe.transparent and E:TranseBar(frame, orientation) or CreateFrame('StatusBar', nil, frame)
+	local health
+	if E.db.unitframe.transparent then
+		health = E:TranseBar(frame, orientation)
+	else
+		health = CreateFrame('StatusBar', nil, frame)
+	end
 	
 	UF['statusbars'][health] = true
 	
@@ -224,7 +226,7 @@ function UF:Construct_AuraIcon(button)
 		GameTooltip.auraBarLine = nil;
 		GameTooltip.numLines = nil
 	end)		
-	
+
 	button:RegisterForClicks('RightButtonUp')
 	button:SetScript('OnClick', function(self)
 		if not IsShiftKeyDown() then return; end
@@ -244,7 +246,7 @@ end
 
 function UF:Construct_Buffs(frame)
 	local buffs = CreateFrame('Frame', nil, frame)
-	buffs.spacing = E:Scale(1)
+	buffs.spacing = E.Spacing
 	buffs.PostCreateIcon = self.Construct_AuraIcon
 	buffs.PostUpdateIcon = self.PostUpdateAura
 	buffs.CustomFilter = self.AuraFilter
@@ -255,7 +257,7 @@ end
 
 function UF:Construct_Debuffs(frame)
 	local debuffs = CreateFrame('Frame', nil, frame)
-	debuffs.spacing = E:Scale(1)
+	debuffs.spacing = E.Spacing
 	debuffs.PostCreateIcon = self.Construct_AuraIcon
 	debuffs.PostUpdateIcon = self.PostUpdateAura
 	debuffs.CustomFilter = self.AuraFilter
@@ -304,13 +306,13 @@ function UF:Construct_Castbar(self, direction, moverName)
 	button:SetTemplate("Default")
 	
 	if direction == "LEFT" then
-		holder:Point("TOPRIGHT", self, "BOTTOMRIGHT", 0, -6)
-		castbar:Point('BOTTOMRIGHT', holder, 'BOTTOMRIGHT', -2, 2)
-		button:Point("RIGHT", castbar, "LEFT", -3, 0)
+		holder:Point("TOPRIGHT", self, "BOTTOMRIGHT", 0, -(E.Border * 3))
+		castbar:Point('BOTTOMRIGHT', holder, 'BOTTOMRIGHT', -E.Border, E.Border)
+		button:Point("RIGHT", castbar, "LEFT", E.PixelMode and 0 or -3, 0)
 	else
-		holder:Point("TOPLEFT", self, "BOTTOMLEFT", 0, -6)
-		castbar:Point('BOTTOMLEFT', holder, 'BOTTOMLEFT', 2, 2)
-		button:Point("LEFT", castbar, "RIGHT", 3, 0)
+		holder:Point("TOPLEFT", self, "BOTTOMLEFT", 0, -(E.Border * 3))
+		castbar:Point('BOTTOMLEFT', holder, 'BOTTOMLEFT', E.Border, E.Border)
+		button:Point("LEFT", castbar, "RIGHT", E.PixelMode and 0 or 3, 0)
 	end
 	
 	castbar.Holder = holder
@@ -330,28 +332,6 @@ function UF:Construct_Castbar(self, direction, moverName)
 	return castbar
 end
 
-function UF:Construct_MageResourceBar(frame)
-	local bars = CreateFrame("Frame", nil, frame)
-	bars:CreateBackdrop('Default')
-
-	for i = 1, UF['classMaxResourceBar'][E.myclass] do					
-		bars[i] = CreateFrame("StatusBar", nil, bars)
-		bars[i]:SetStatusBarTexture(E['media'].blankTex) --Dummy really, this needs to be set so we can change the color
-		bars[i]:GetStatusBarTexture():SetHorizTile(false)
-		
-		bars[i].bg = bars[i]:CreateTexture(nil, 'ARTWORK')
-		
-		UF['statusbars'][bars[i]] = true
-
-		bars[i]:CreateBackdrop('Default')
-		bars[i].backdrop:SetParent(bars)
-	end
-	
-	bars.PostUpdate = UF.UpdateArcaneCharges
-	
-	return bars
-end
-
 function UF:Construct_PaladinResourceBar(frame)
 	local bars = CreateFrame("Frame", nil, frame)
 	bars:CreateBackdrop('Default')
@@ -363,7 +343,7 @@ function UF:Construct_PaladinResourceBar(frame)
 		UF['statusbars'][bars[i]] = true
 
 		bars[i]:CreateBackdrop('Default')
-		bars[i].backdrop:SetParent(bars)			
+		bars[i].backdrop:SetParent(bars)
 	end
 	
 	bars.Override = UF.UpdateHoly
@@ -390,6 +370,28 @@ function UF:Construct_MonkResourceBar(frame)
 	return bars
 end
 
+function UF:Construct_MageResourceBar(frame)
+	local bars = CreateFrame("Frame", nil, frame)
+	bars:CreateBackdrop('Default')
+
+	for i = 1, UF['classMaxResourceBar'][E.myclass] do					
+		bars[i] = CreateFrame("StatusBar", nil, bars)
+		bars[i]:SetStatusBarTexture(E['media'].blankTex) --Dummy really, this needs to be set so we can change the color
+		bars[i]:GetStatusBarTexture():SetHorizTile(false)
+		
+		bars[i].bg = bars[i]:CreateTexture(nil, 'ARTWORK')
+		
+		UF['statusbars'][bars[i]] = true
+
+		bars[i]:CreateBackdrop('Default')
+		bars[i].backdrop:SetParent(bars)
+	end
+	
+	bars.PostUpdate = UF.UpdateArcaneCharges
+	
+	return bars
+end
+
 function UF:Construct_WarlockResourceBar(frame)
 	local bars = CreateFrame("Frame", nil, frame)
 	bars:CreateBackdrop('Default')
@@ -407,7 +409,7 @@ function UF:Construct_WarlockResourceBar(frame)
 
 	bars[1].Text = bars[1]:CreateFontString(nil, 'OVERLAY')
 	UF:Configure_FontString(bars[1].Text)
-	bars[1].Text:SetPoint("CENTER")
+	bars[1].Text:SetPoint("CENTER")	
 	
 	bars.PostUpdate = UF.UpdateShardBar
 	
@@ -473,9 +475,9 @@ function UF:Construct_DruidResourceBar(frame)
 	UF['statusbars'][solarBar] = true
 	eclipseBar.SolarBar = solarBar
 	
-	eclipseBar.Text = lunarBar:CreateFontString(nil, 'OVERLAY')
+	eclipseBar.Text = eclipseBar:CreateFontString(nil, 'OVERLAY')
 	UF:Configure_FontString(eclipseBar.Text)
-	eclipseBar.Text:SetPoint("CENTER", lunarBar:GetStatusBarTexture(), "RIGHT")
+	eclipseBar.Text:SetPoint("CENTER")
 	
 	return eclipseBar
 end
@@ -493,7 +495,7 @@ function UF:Construct_DruidAltManaBar(frame)
 	dpower.ManaBar = CreateFrame('StatusBar', nil, dpower)
 	UF['statusbars'][dpower.ManaBar] = true
 	dpower.ManaBar:SetStatusBarTexture(E["media"].blankTex)
-	dpower.ManaBar:SetInside(dpower)	
+	dpower.ManaBar:SetInside(dpower)
 	
 	dpower.bg = dpower:CreateTexture(nil, "BORDER")
 	dpower.bg:SetAllPoints(dpower.ManaBar)
@@ -557,12 +559,11 @@ function UF:Construct_NameText(frame)
 	return name
 end
 
-function UF:Construct_Combobar(frame, isPlayer)
+function UF:Construct_Combobar(frame)
 	local CPoints = CreateFrame("Frame", nil, frame)
 	CPoints:CreateBackdrop('Default')
 	CPoints.Override = UF.UpdateComboDisplay
-	if isPlayer then CPoints.Override = UF.UpdatePlayerComboDisplay end
-	
+
 	for i = 1, MAX_COMBO_POINTS do
 		CPoints[i] = CreateFrame("StatusBar", nil, CPoints)
 		UF['statusbars'][CPoints[i]] = true
@@ -741,33 +742,6 @@ function UF:Construct_RaidRoleFrames(frame)
 	return anchor
 end
 
-local function CreateSwingStatusBar(parent)
-	local sbar = CreateFrame("Statusbar", nil, parent)
-	sbar:SetPoint("TOPLEFT")
-	sbar:SetPoint("BOTTOMRIGHT")
-	sbar:SetStatusBarTexture(E["media"].normTex)
-	sbar:SetStatusBarColor(unpack(E["media"].bordercolor))
-	sbar:SetFrameLevel(20)
-	sbar:SetFrameStrata("LOW")
-	sbar:Hide()
-		
-	sbar.backdrop = CreateFrame("Frame", nil, sbar)
-	sbar.backdrop:SetFrameLevel(sbar:GetFrameLevel() - 1)
-	sbar.backdrop:Point("TOPLEFT", parent, "TOPLEFT", -2, 2)
-	sbar.backdrop:Point("BOTTOMRIGHT", parent, "BOTTOMRIGHT", 2, -2)
-	sbar.backdrop:SetTemplate("Default")
-	return sbar
-end
-
-function UF:ConstructSwingBar(frame)
-	local swing = CreateFrame("Frame", nil, frame)
-	swing.Twohand = CreateSwingStatusBar(swing)
-	swing.Mainhand = CreateSwingStatusBar(swing)
-	swing.Offhand = CreateSwingStatusBar(swing)
-	swing.hideOoc = true
-	return swing
-end
-
 function UF:Construct_AuraBars()
 	local bar = self.statusBar
 	
@@ -810,7 +784,6 @@ function UF:Construct_AuraBars()
 				['enable'] = true,
 				['priority'] = 0,			
 			}
-
 			UF:Update_AllFrames()
 		end
 	end)
@@ -819,8 +792,8 @@ end
 function UF:Construct_AuraBarHeader(frame)
 	local auraBar = CreateFrame('Frame', nil, frame)
 	auraBar.PostCreateBar = UF.Construct_AuraBars
-	auraBar.gap = 1
-	auraBar.spacing = 1
+	auraBar.gap = (E.PixelMode and -1 or 1)
+	auraBar.spacing = (E.PixelMode and -1 or 1)
 	auraBar.spark = true
 	auraBar.sort = true
 	auraBar.filter = UF.AuraBarFilter
@@ -832,8 +805,8 @@ function UF:Construct_AuraBarHeader(frame)
 				self.numLines = self:NumLines()
 			end
 		end
-	end)
-	
+	end)	
+
 	local holder = CreateFrame('Frame', nil, auraBar)
 	holder:Point("BOTTOM", frame, "TOP", 0, 0)
 	holder:SetSize(360, 20)
@@ -841,6 +814,33 @@ function UF:Construct_AuraBarHeader(frame)
 	auraBar.Holder = holder
 	
 	return auraBar
+end
+
+local function CreateSwingStatusBar(parent)
+	local sbar = CreateFrame("Statusbar", nil, parent)
+	sbar:SetPoint("TOPLEFT")
+	sbar:SetPoint("BOTTOMRIGHT")
+	sbar:SetStatusBarTexture(E["media"].normTex)
+	sbar:SetStatusBarColor(unpack(E["media"].bordercolor))
+	sbar:SetFrameLevel(20)
+	sbar:SetFrameStrata("LOW")
+	sbar:Hide()
+		
+	sbar.backdrop = CreateFrame("Frame", nil, sbar)
+	sbar.backdrop:SetFrameLevel(sbar:GetFrameLevel() - 1)
+	sbar.backdrop:Point("TOPLEFT", parent, "TOPLEFT", -2, 2)
+	sbar.backdrop:Point("BOTTOMRIGHT", parent, "BOTTOMRIGHT", 2, -2)
+	sbar.backdrop:SetTemplate("Default")
+	return sbar
+end
+
+function UF:ConstructSwingBar(frame)
+	local swing = CreateFrame("Frame", nil, frame)
+	swing.Twohand = CreateSwingStatusBar(swing)
+	swing.Mainhand = CreateSwingStatusBar(swing)
+	swing.Offhand = CreateSwingStatusBar(swing)
+	swing.hideOoc = true
+	return swing
 end
 
 function UF:Construct_TankShield(frame)

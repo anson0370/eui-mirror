@@ -6,7 +6,7 @@ local oUF = ns.oUF or oUF
 
 local SPELL_POWER_LIGHT_FORCE = SPELL_POWER_LIGHT_FORCE
 
-oUF.colors.harmony = { 
+oUF.colors.Harmony = { 
 	[1] = {.57, .63, .35, 1},
 	[2] = {.47, .63, .35, 1},
 	[3] = {.37, .63, .35, 1},

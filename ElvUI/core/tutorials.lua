@@ -1,7 +1,7 @@
 local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB, Localize Underscore
 
 E.TutorialList = {
-	L['For technical support visit us at www.tukui.org.'],
+	L['For technical support visit us at http://www.tukui.org.'],
 	L['You can toggle the microbar by using your middle mouse button on the minimap you can also accomplish this by enabling the actual microbar located in the actionbar settings.'],
 	L['A raid marker feature is available by pressing Escape -> Keybinds scroll to the bottom under ElvUI and setting a keybind for the raid marker.'],
 	L['You can set your keybinds quickly by typing /kb.'],
@@ -10,13 +10,13 @@ E.TutorialList = {
 	L['ElvUI has a dual spec feature which allows you to load different profiles based on your current spec on the fly. You can enable this from the profiles tab.'],
 	L['You can access copy chat and chat menu functions by mouse over the top right corner of chat panel and left/right click on the button that will appear.'],
 	L['If you are experiencing issues with ElvUI try disabling all your addons except ElvUI, remember ElvUI is a full UI replacement addon, you cannot run two addons that do the same thing.'],
-	L['If your experience and reputation bars disappear, mouse over the place where they were and click them again.'],
 	L['The buff panel to the right of minimap is a list of your consolidated buffs. You can disable it in Buffs and Debuffs options of ElvUI.'],
 	L['If you accidently remove a chat frame you can always go the in-game configuration menu, press install, go to the chat portion and reset them.'],
 	L['To setup which channels appear in which chat frame, right click the chat tab and go to settings.'],
 	L['You can use the /resetui command to reset all of your movers. You can also use the command to reset a specific mover, /resetui <mover name>.\nExample: /resetui Player Frame'],
 	L['Using the /farmmode <size> command will spawn a larger minimap on your screen that can be moved around, very useful when farming.'],
-	L['To move abilities on the actionbars by default hold shift + drag. You can change the modifier key from the blizzard actionbar options menu.'],
+	L['To move abilities on the actionbars by default hold shift + drag. You can change the modifier key from the actionbar options menu.'],
+	L['You can see someones average item level of their gear by holding shift and mousing over them. It should appear inside the tooltip.']
 }
 
 if E.zhlocale then
@@ -117,7 +117,7 @@ function E:Tutorials(forceShow)
 	if not f then
 		f = E:SpawnTutorialFrame()
 	end
-	
+
 	E:StaticPopupSpecial_Show(f)
 	
 	self:SetNextTutorial()

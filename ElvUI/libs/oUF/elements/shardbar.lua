@@ -33,7 +33,7 @@ local Update = function(self, event, unit, powerType)
 		if not wsb:IsShown() then 
 			wsb:Show()
 		end
-		
+
 		for i = 1, 4 do
 			wsb[i]:Show()
 			wsb[i]:SetStatusBarColor(unpack(oUF.colors.WarlockResource[spec]))
@@ -41,7 +41,7 @@ local Update = function(self, event, unit, powerType)
 				wsb[i].bg:SetTexture(unpack(oUF.colors.WarlockResource[spec]))
 			end
 		end
-		
+
 		if (spec == SPEC_WARLOCK_DESTRUCTION) then	
 			local maxPower = UnitPowerMax("player", SPELL_POWER_BURNING_EMBERS, true)
 			local power = UnitPower("player", SPELL_POWER_BURNING_EMBERS, true)

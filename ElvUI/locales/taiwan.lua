@@ -962,6 +962,10 @@ end
 
 --Tooltip
 do
+	L['Spell/Item IDs'] = '技能/物品ID';
+	L['Display the spell or item ID when mousing over a spell or item tooltip.'] = '在鼠標提示中顯示技能或物品的ID';
+	L['Item Count'] = '物品數量';
+	L['Display how many of a certain item you have in your possession.'] = '顯示當前物品在你身上有多少個';
 	L["Your Status: Completed on "] = "你的狀態: 完成 ";
 	L["Your Status: Incomplete"] = "你的狀態: 未完成";
 	L["Your Status:"] = "你的狀態:";
@@ -1432,7 +1436,7 @@ do
 	L['Only Save current talnet actionbar button, DoubleTalnet use double profile file to save.'] = "只保存當前天賦狀態下的動作條技能位置和快捷鍵設置,雙天賦建議使用多配置來分別保存";
 	L["Button is Saved!"] = "動作條按鍵和技能保存成功!";
 	L["MySlot Support"] = "以下功能需要MySlot插件支持,可到EUI自動更新器的可選插件中下載.";	
-	L["shift marking"] = "Shift+左鍵快速標記";
+	L["alt marking"] = "Alt+左鍵快速標記";
 end
 
 --Mover

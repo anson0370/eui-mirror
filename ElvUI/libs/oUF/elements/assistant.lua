@@ -4,7 +4,7 @@ local oUF = ns.oUF
 local Update = function(self, event)
 	if not self.unit then return; end
 	local assistant = self.Assistant
-
+	
 	if(assistant.PreUpdate) then
 		assistant:PreUpdate()
 	end

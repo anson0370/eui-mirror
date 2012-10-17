@@ -87,16 +87,6 @@ function TOTEMS:OnLeave()
 	GameTooltip:Hide()
 end
 
-local function closeFunc()
-	E.db.general.totems.enable = false
-	TOTEMS:ToggleEnable()
-end
-
-local function openFunc()
-	E.db.general.totems.enable = true
-	TOTEMS:ToggleEnable()
-end
-
 function TOTEMS:Initialize()
 	self.db = E.db.general.totems
 	
@@ -128,8 +118,8 @@ function TOTEMS:Initialize()
 	
 	self:ToggleEnable()
 	self:PositionAndSize()
-	
-	E:CreateMover(bar, 'TotemBarMover', L['Totems'], nil, nil, nil, 'ALL,GENERAL', closeFunc, openFunc);
+
+	E:CreateMover(bar, 'TotemBarMover', L['Totems']);
 end
 
 E:RegisterModule(TOTEMS:GetName())

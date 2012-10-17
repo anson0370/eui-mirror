@@ -58,7 +58,7 @@ function UF:Construct_UF(frame, unit)
 	frame.menu = self.SpawnMenu
 	
 	frame:SetFrameLevel(5)
-
+	
 	frame.RaisedElementParent = CreateFrame('Frame', nil, frame)
 	frame.RaisedElementParent:SetFrameLevel(frame:GetFrameLevel() + 10)	
 	
@@ -141,7 +141,7 @@ function UF:UpdateColors()
 	local good = E:GetColorTable(db.reaction.GOOD)
 	local bad = E:GetColorTable(db.reaction.BAD)
 	local neutral = E:GetColorTable(db.reaction.NEUTRAL)
-
+	
 	ElvUF.colors.tapped = E:GetColorTable(db.tapped);
 	ElvUF.colors.disconnected = E:GetColorTable(db.disconnected);
 	ElvUF.colors.health = E:GetColorTable(db.health);
@@ -261,7 +261,7 @@ end
 
 function UF:CreateAndUpdateUFGroup(group, numGroup)
 	if InCombatLockdown() then self:RegisterEvent('PLAYER_REGEN_ENABLED'); return end
-		
+
 	for i=1, numGroup do
 		local unit = group..i
 		local frameName = E:StringTitle(unit)
@@ -295,7 +295,7 @@ end
 
 function UF:CreateAndUpdateHeaderGroup(group, groupFilter, template)
 	if InCombatLockdown() then self:RegisterEvent('PLAYER_REGEN_ENABLED'); return end
-	
+
 	local db = self.db['units'][group]
 	if not self[group] then
 		ElvUF:RegisterStyle("ElvUF_"..E:StringTitle(group), UF["Construct_"..E:StringTitle(group).."Frames"])
@@ -334,7 +334,7 @@ function UF:CreateAndUpdateHeaderGroup(group, groupFilter, template)
 				'startingIndex', startingIndex,
 				'groupFilter', groupFilter)
 		end
-
+		
 		self[group]:SetParent(ElvUF_Parent)
 		RegisterAttributeDriver(self[group], 'state-visibility', 'show')	
 		self[group].dirtyWidth, self[group].dirtyHeight = self[group]:GetSize()
@@ -386,7 +386,7 @@ end
 function UF:CreateAndUpdateUF(unit)
 	assert(unit, 'No unit provided to create or update.')
 	if InCombatLockdown() then self:RegisterEvent('PLAYER_REGEN_ENABLED'); return end
-	
+
 	local frameName = E:StringTitle(unit)
 	frameName = frameName:gsub('t(arget)', 'T%1')
 	if not self[unit] then
@@ -477,6 +477,7 @@ function UF:DisableBlizzard(event)
 	hooksecurefunc("CompactRaidFrameManager_UpdateShown", HideRaid)
 	CompactRaidFrameManager:HookScript('OnShow', HideRaid)
 	CompactRaidFrameContainer:UnregisterAllEvents()
+	
 	HideRaid()
 	hooksecurefunc("CompactUnitFrame_RegisterEvents", CompactUnitFrame_UnregisterEvents)
 end
@@ -598,14 +599,14 @@ function UF:UnitFrameThreatIndicator_Initialize(_, unitFrame)
 end
 
 CompactUnitFrameProfiles:UnregisterEvent('VARIABLES_LOADED') 	--Re-Register this event only if disableblizzard is turned off.
-function UF:Initialize()		
+function UF:Initialize()	
 	self.db = E.db["unitframe"]
 	
 	CompactUnitFrameProfiles:RegisterEvent('VARIABLES_LOADED')
 	if E.private["unitframe"].enable ~= true then return; end
 	E.UnitFrames = UF;
 	E.AttentionList = {};
-
+	
 	local ElvUF_Parent = CreateFrame('Frame', 'ElvUF_Parent', E.UIParent, 'SecureHandlerStateTemplate');
 	ElvUF_Parent:SetAllPoints(E.UIParent)
 	ElvUF_Parent:SetAttribute("_onstate-show", [[		
@@ -622,11 +623,12 @@ function UF:Initialize()
 	ElvUF:RegisterStyle('ElvUF', function(frame, unit)
 		self:Construct_UF(frame, unit)
 	end)
-		
+	
 	self:LoadUnits()
 	self:RegisterEvent('PLAYER_ENTERING_WORLD')
 	self:RegisterEvent('ARENA_PREP_OPPONENT_SPECIALIZATIONS', 'UpdatePrep')
 	self:RegisterEvent('ARENA_OPPONENT_UPDATE', 'UpdatePrep')
+
 	if E.private["unitframe"].disableBlizzard then
 		self:DisableBlizzard()	
 		self:SecureHook('UnitFrameThreatIndicator_Initialize')
@@ -639,15 +641,15 @@ function UF:Initialize()
 		else
 			ElvUF:DisableBlizzard('arena')
 		end
-
+			
 		for _, menu in pairs(UnitPopupMenus) do
 			for index = #menu, 1, -1 do
 				if removeMenuOptions[menu[index]] then
 					table.remove(menu, index)
 				end
 			end
-		end	
-		
+		end				
+
 		self:RegisterEvent('GROUP_ROSTER_UPDATE', 'DisableBlizzard')
 	else
 		CompactUnitFrameProfiles:RegisterEvent('VARIABLES_LOADED')
@@ -724,5 +726,6 @@ function UF:MergeUnitSettings(fromUnit, toUnit)
 	E:SetupTheme(E.db.theme, true)
 	self:Update_AllFrames()
 end
+
 
 E:RegisterInitialModule(UF:GetName())

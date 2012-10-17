@@ -52,5 +52,5 @@
 	<Script file='voidstorage.lua'/>
 	<Script file='stable.lua'/>
 	<Script file='blackmarket.lua'/>
-	<Script file='itemupgrade.lua'/>	
+	<Script file='itemupgrade.lua'/>
 </Ui>

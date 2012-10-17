@@ -3,14 +3,14 @@
 
 To load the AddOn engine add this to the top of your file:
 	
-	local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+	local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB, Localize Underscore
 	
 To load the AddOn engine inside another addon add this to the top of your file:
 	
-	local E, L, V, P, G, _ = unpack(ElvUI); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+	local E, L, V, P, G, _ = unpack(ElvUI); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB, Localize Underscore
 ]]
 
-BINDING_HEADER_ELVUI = GetAddOnMetadata(..., "Title")
+BINDING_HEADER_ELVUI = GetAddOnMetadata(..., "Title");
 
 local AddOnName, Engine = ...;
 local AddOn = LibStub("AceAddon-3.0"):NewAddon(AddOnName, "AceConsole-3.0", "AceEvent-3.0", 'AceTimer-3.0', 'AceHook-3.0');
@@ -73,7 +73,14 @@ function AddOn:OnInitialize()
 			self:CopyTable(self.private, ElvPrivateData.profiles[profileKey])
 		end
 	end	
-
+	
+	if self.private.general.pixelPerfect then
+		self.Border = 1;
+		self.Spacing = 0;
+		self.PixelMode = true;
+	end
+		
+	
 	self:UIScale();
 	self:UpdateMedia();
 	
@@ -141,13 +148,13 @@ function AddOn:LoadConfig()
 	LibDualSpec:EnhanceOptions(self.Options.args.profiles, self.data)
 end
 
-function AddOn:ToggleConfig()
+function AddOn:ToggleConfig() 
 	if InCombatLockdown() then
 		self:Print(ERR_NOT_IN_COMBAT)
 		self:RegisterEvent('PLAYER_REGEN_ENABLED')
 		return;
 	end
-	
+
 	local mode = 'Close'
 	if not ACD.OpenFrames[AddOnName] then
 		mode = 'Open'
@@ -160,6 +167,5 @@ function AddOn:ToggleConfig()
 	end
 	
 	ACD[mode](ACD, AddOnName) 
-	
 	GameTooltip:Hide() --Just in case you're mouseovered something and it closes.
 end

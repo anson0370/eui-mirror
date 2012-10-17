@@ -93,7 +93,7 @@ end
 
 function B:ResetAndClear()
 	self:GetParent().detail:Show();
-
+	
 	self:ClearFocus();
 	B:SearchReset();
 end
@@ -122,7 +122,7 @@ function B:UpdateSlot(bagID, slotID)
 	if (self.Bags[bagID] and self.Bags[bagID].numSlots ~= GetContainerNumSlots(bagID)) or not self.Bags[bagID] or not self.Bags[bagID][slotID] then		
 		return; 
 	end
-	
+
 	local slot = self.Bags[bagID][slotID];
 	local bagType = self.Bags[bagID].type;
 	local texture, count, locked = GetContainerItemInfo(bagID, slotID);
@@ -239,14 +239,14 @@ function B:Layout(isBank)
 	if not f then return; end
 	local buttonSize = isBank and self.db.bankSize or self.db.bagSize;
 	local buttonSpacing = self.db.spacing;
-	local containerWidth = self.db.alignToChat == true and (E.db.chat.panelWidth - 10) or isBank and self.db.bankWidth or self.db.bagWidth
+	local containerWidth = self.db.alignToChat == true and (E.db.chat.panelWidth - (E.PixelMode and 6 or 10)) or isBank and self.db.bankWidth or self.db.bagWidth
 	local numContainerColumns = math.floor(containerWidth / (buttonSize + buttonSpacing));
 	local holderWidth = ((buttonSize + buttonSpacing) * numContainerColumns) - buttonSpacing;
 	local numContainerRows = 0;
 	local bottomPadding = (containerWidth - holderWidth) / 2;
 	f.holderFrame:Width(holderWidth);
-
-	f.totalSlots = 0;
+	
+	f.totalSlots = 0
 	local lastButton;
 	local lastRowButton;
 	local lastContainerButton;
@@ -269,7 +269,8 @@ function B:Layout(isBank)
 				f.ContainerHolder[i]:SetScript('OnClick', nil)
 				f.ContainerHolder[i].id = isBank and bagID or bagID + 1
 				f.ContainerHolder[i]:HookScript("OnEnter", function(self) B.SetSlotAlphaForBag(self, f) end)
-				f.ContainerHolder[i]:HookScript("OnLeave", function(self) B.ResetSlotAlphaForBags(self, f) end)				
+				f.ContainerHolder[i]:HookScript("OnLeave", function(self) B.ResetSlotAlphaForBags(self, f) end)
+
 				
 				if isBank then
 					f.ContainerHolder[i]:SetID(bagID)
@@ -301,7 +302,7 @@ function B:Layout(isBank)
 			lastContainerButton = f.ContainerHolder[i];	
 		end
 		
-		--Bag Slots	
+		--Bag Slots
 		local numSlots = GetContainerNumSlots(bagID);
 		if numSlots > 0 then
 			if not f.Bags[bagID] then
@@ -320,7 +321,7 @@ function B:Layout(isBank)
 					f.Bags[bagID][i]:Hide();
 				end
 			end			
-
+			
 			for slotID = 1, numSlots do
 				f.totalSlots = f.totalSlots + 1;
 				if not f.Bags[bagID][slotID] then
@@ -438,11 +439,13 @@ function B:UpdateTokens()
 		button:ClearAllPoints();
 		if name then
 			button.icon:SetTexture(icon);
+			
 			if self.db.currencyFormat == 'ICON_TEXT' then
 				button.text:SetText(name..': '..count);
 			elseif self.db.currencyFormat == 'ICON' then
 				button.text:SetText(count);
 			end
+			
 			button.currencyID = currencyID;
 			button:Show();
 			numTokens = numTokens + 1;
@@ -560,28 +563,6 @@ function B:VendorGrayCheck()
 	end
 end
 
-local function StartMoving(self)
-	if InCombatLockdown() then return end
---	for i = 1, self:GetNumChildren() do
---		local f = select(i, self:GetChildren())
---		if f:IsShown() then f:Hide() end
---	end
-	self:StartMoving()
-end
-
-local function StopMoving(self)
-	self:StopMovingOrSizing()
-	self:SetUserPlaced(false)
---	for i = 1, self:GetNumChildren() do
---		local f = select(i, self:GetChildren())
---		if not f:IsShown() then f:Show() end
---	end	
---	if self.editBox then self.editBox:Hide() end
---	self.ContainerHolder:Hide()
-	if not B.db.point[self:GetName()] then B.db.point[self:GetName()] = {} end
-	B.db.point[self:GetName()].p1, B.db.point[self:GetName()].p2, B.db.point[self:GetName()].p3, B.db.point[self:GetName()].p4, B.db.point[self:GetName()].p5 = self:GetPoint();
-end
-
 function B:ContructContainerFrame(name, isBank)
 	local f = CreateFrame('Button', name, E.UIParent);
 	f:SetTemplate('Transparent');
@@ -595,14 +576,21 @@ function B:ContructContainerFrame(name, isBank)
 	f:RegisterEvent('BAG_UPDATE_COOLDOWN')
 	f:RegisterEvent('BAG_UPDATE');
 	f:RegisterEvent('PLAYERBANKSLOTS_CHANGED');
+	f:SetMovable(true)
+	f:RegisterForDrag("LeftButton", "RightButton")
+	f:RegisterForClicks("AnyUp");
+	f:SetScript("OnDragStart", function(self) self:StartMoving() end)
+	f:SetScript("OnDragStop", function(self) 
+		self:StopMovingOrSizing()
+		local p = B.db.point[self:GetName()]
+		if not p then p = {} end
+		p.p1, p.p2, p.p3, p.p4, p.p5 = self:GetPoint();
+	end)
+	f:SetScript("OnClick", function(self) if IsControlKeyDown() then wipe(B.db.point); B:PositionBagFrames() end end)
 	f.isBank = isBank
 	
 	f:SetScript('OnEvent', B.OnEvent);	
 	f:Hide();
-	
-	f:SetMovable(1)
-	f:SetScript("OnMouseDown", StartMoving)
-	f:SetScript("OnMouseUp", StopMoving)	
 	
 	f.bottomOffset = isBank and 8 or 28;
 	f.topOffset = isBank and 45 or 50;
@@ -611,13 +599,13 @@ function B:ContructContainerFrame(name, isBank)
 	
 	f.closeButton = CreateFrame('Button', name..'CloseButton', f, 'UIPanelCloseButton');
 	f.closeButton:Point('TOPRIGHT', -4, -4);
-	
+
 	E:GetModule('Skins'):HandleCloseButton(f.closeButton);
 	
 	f.holderFrame = CreateFrame('Frame', nil, f);
 	f.holderFrame:Point('TOP', f, 'TOP', 0, -f.topOffset);
 	f.holderFrame:Point('BOTTOM', f, 'BOTTOM', 0, 8);
-
+	
 	f.ContainerHolder = CreateFrame('Button', name..'ContainerHolder', f)
 	f.ContainerHolder:Point('BOTTOMLEFT', f, 'TOPLEFT', 0, 1)
 	f.ContainerHolder:SetTemplate('Transparent')
@@ -644,8 +632,8 @@ function B:ContructContainerFrame(name, isBank)
 			else
 				E:StaticPopup_Show("CANNOT_BUY_BANK_SLOT")
 			end
-		end)
-		
+		end)	
+	
 		--Sort Button
 		f.sortButton = CreateFrame('Button', nil, f)
 		f.sortButton:Point('TOPRIGHT', f, 'TOP', 0, -4)

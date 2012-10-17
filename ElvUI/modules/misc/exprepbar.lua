@@ -220,26 +220,6 @@ function M:EnableDisable_ReputationBar()
 	end
 end
 
-local function expcloseFunc(name)
-	E.db.general.experience.enable = false
-	M:EnableDisable_ExperienceBar()
-end
-
-local function repcloseFunc(name)
-	E.db.general.reputation.enable = false
-	M:EnableDisable_ReputationBar()
-end
-
-local function expopenFunc(name)
-	E.db.general.experience.enable = true
-	M:EnableDisable_ExperienceBar()
-end
-
-local function repopenFunc(name)
-	E.db.general.reputation.enable = true
-	M:EnableDisable_ReputationBar()
-end
-
 function M:LoadExpRepBar()
 	self.expBar = self:CreateBar('ElvUI_ExperienceBar', ExperienceBar_OnEnter, 'TOP', E.UIParent, 'TOP', 0, -1)
 	self.expBar.statusBar:SetStatusBarColor(0, 0.4, 1, .8)
@@ -255,8 +235,8 @@ function M:LoadExpRepBar()
 	self:EnableDisable_ExperienceBar()
 	self:EnableDisable_ReputationBar()
 
-	E:CreateMover(self.expBar, "ExperienceBarMover", L["Experience Bar"], nil, nil, nil, nil, expcloseFunc, expopenFunc)
-	E:CreateMover(self.repBar, "ReputationBarMover", L["Reputation Bar"], nil, nil, nil, nil, repcloseFunc, repopenFunc)
+	E:CreateMover(self.expBar, "ExperienceBarMover", L["Experience Bar"])
+	E:CreateMover(self.repBar, "ReputationBarMover", L["Reputation Bar"])
 	
 	self:UpdateExpRepAnchors()
 end

@@ -1,4 +1,4 @@
-local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB, Localize Underscore
 local UF = E:GetModule('UnitFrames');
 
 local _, ns = ...
@@ -6,16 +6,6 @@ local ElvUF = ns.oUF
 assert(ElvUF, "ElvUI was unable to locate oUF.")
 
 local ArenaHeader = CreateFrame('Frame', 'ArenaHeader', UIParent)
-
-local function closeFunc()
-	E.db.unitframe.units['arena'].enable = false
-	UF:CreateAndUpdateUFGroup('arena', 5)
-end
-
-local function openFunc()
-	E.db.unitframe.units['arena'].enable = true
-	UF:CreateAndUpdateUFGroup('arena', 5)
-end
 
 function UF:Construct_ArenaFrames(frame)	
 	frame.Health = self:Construct_HealthBar(frame, true, true, 'RIGHT')
@@ -34,6 +24,7 @@ function UF:Construct_ArenaFrames(frame)
 	frame.PVPSpecIcon = self:Construct_PVPSpecIcon(frame)
 	
 	frame:SetAttribute("type2", "focus")
+
 	
 	if not frame.PrepFrame then
 		frame.prepFrame = CreateFrame('Frame', frame:GetName()..'PrepFrame', UIParent)
@@ -58,16 +49,16 @@ function UF:Construct_ArenaFrames(frame)
 		frame.prepFrame.SpecClass:SetPoint("CENTER")
 		UF:Configure_FontString(frame.prepFrame.SpecClass)
 		--frame.prepFrame:Hide()
-	end	
+	end
 	
 	ArenaHeader:Point('BOTTOMRIGHT', E.UIParent, 'RIGHT', -105, -165) 
-	E:CreateMover(ArenaHeader, ArenaHeader:GetName()..'Mover', L['Arena Frames'], nil, nil, nil, 'ALL,ARENA', closeFunc, openFunc)	
+	E:CreateMover(ArenaHeader, ArenaHeader:GetName()..'Mover', L['Arena Frames'], nil, nil, nil, 'ALL,ARENA')	
 end
 
 function UF:Update_ArenaFrames(frame, db)
 	frame.db = db
-	local BORDER = E:Scale(2)
-	local SPACING = E:Scale(1)
+	local BORDER = E.Border;
+	local SPACING = E.Spacing;
 	local INDEX = frame.index
 	local UNIT_WIDTH = db.width
 	local UNIT_HEIGHT = db.height
@@ -106,7 +97,7 @@ function UF:Update_ArenaFrames(frame, db)
 		health.value:ClearAllPoints()
 		health.value:Point(db.health.position, health, db.health.position, x, y)
 		frame:Tag(health.value, db.health.text_format)
-		
+	
 		--Colors
 		health.colorSmooth = nil
 		health.colorHealth = nil
@@ -174,7 +165,6 @@ function UF:Update_ArenaFrames(frame, db)
 			power.value:Point(db.power.position, frame.Health, db.power.position, x, y)		
 			frame:Tag(power.value, db.power.text_format)
 			
-			
 			--Colors
 			power.colorClass = nil
 			power.colorReaction = nil	
@@ -200,7 +190,7 @@ function UF:Update_ArenaFrames(frame, db)
 				power:SetFrameStrata("MEDIUM")
 				power:SetFrameLevel(frame:GetFrameLevel() + 3)
 			else
-				power:Point("TOPLEFT", frame.Health.backdrop, "BOTTOMLEFT", BORDER, -(BORDER + SPACING))
+				power:Point("TOPLEFT", frame.Health.backdrop, "BOTTOMLEFT", BORDER, -(E.PixelMode and 0 or (BORDER + SPACING)))
 				power:Point("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -(BORDER + PVPINFO_WIDTH), BORDER)
 			end
 		elseif frame:IsElementEnabled('Power') then
@@ -249,7 +239,7 @@ function UF:Update_ArenaFrames(frame, db)
 		local attachTo = self:GetAuraAnchorFrame(frame, db.buffs.attachTo)
 		
 		buffs:Point(E.InversePoints[db.buffs.anchorPoint], attachTo, db.buffs.anchorPoint, x + db.buffs.xOffset, y + db.buffs.yOffset)
- 		buffs:Height(buffs.size * rows)
+		buffs:Height(buffs.size * rows)
 		buffs["growth-y"] = db.buffs.anchorPoint:find('TOP') and 'UP' or 'DOWN'
 		buffs["growth-x"] = db.buffs.anchorPoint == 'LEFT' and 'LEFT' or  db.buffs.anchorPoint == 'RIGHT' and 'RIGHT' or (db.buffs.anchorPoint:find('LEFT') and 'RIGHT' or 'LEFT')
 		buffs.initialAnchor = E.InversePoints[db.buffs.anchorPoint]
@@ -299,14 +289,14 @@ function UF:Update_ArenaFrames(frame, db)
 	--Castbar
 	do
 		local castbar = frame.Castbar
-		castbar:Width(db.castbar.width - 4)
+		castbar:Width(db.castbar.width - (E.Border * 2))
 		castbar:Height(db.castbar.height)
 		
 		--Icon
 		if db.castbar.icon then
 			castbar.Icon = castbar.ButtonIcon
-			castbar.Icon.bg:Width(db.castbar.height + 4)
-			castbar.Icon.bg:Height(db.castbar.height + 4)
+			castbar.Icon.bg:Width(db.castbar.height + (E.Border * 2))
+			castbar.Icon.bg:Height(db.castbar.height + (E.Border * 2))
 			
 			castbar:Width(db.castbar.width - castbar.Icon.bg:GetWidth() - 5)
 			castbar.Icon.bg:Show()
@@ -365,7 +355,7 @@ function UF:Update_ArenaFrames(frame, db)
 			frame:DisableElement('PVPSpecIcon')	
 		end					
 	end
-
+	
 	if db.customTexts then
 		for objectName, _ in pairs(db.customTexts) do
 			if not frame[objectName] then
@@ -381,8 +371,8 @@ function UF:Update_ArenaFrames(frame, db)
 			frame[objectName]:ClearAllPoints()
 			frame[objectName]:SetPoint(objectDB.justifyH or 'CENTER', frame, 'CENTER', objectDB.xOffset, objectDB.yOffset)
 		end
-	end	
-
+	end
+	
 	frame:ClearAllPoints()
 	if INDEX == 1 then
 		if db.growthDirection == 'UP' then

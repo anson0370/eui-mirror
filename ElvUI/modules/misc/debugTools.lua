@@ -1,4 +1,4 @@
-local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB, Localize Underscore
 local D = E:NewModule('DebugTools', 'AceEvent-3.0', 'AceHook-3.0');
 
 E.DebugTools = D
@@ -44,7 +44,7 @@ function D:ModifyErrorFrame()
 	local BUTTON_WIDTH = 75
 	local BUTTON_HEIGHT = 24
 	local BUTTON_SPACING = 2
-	
+
 	--Add Eui version label
 	local verLabel = ScriptErrorsFrame:CreateFontString(nil, "Overlay")
 	verLabel:FontTemplate(nil, 14, 'OUTLINE')
@@ -137,7 +137,7 @@ function D:TaintError(event, addonName, addonFunc)
 		E:StaticPopup_Show('TALENT_TAINT')
 	end
 
-	if GetCVarBool('scriptErrors') ~= 1 or E.db.euiscript.TaintError ~= true then return end
+	if GetCVarBool('scriptErrors') ~= 1 or E.db.general.taintLog ~= true then return end
 	ScriptErrorsFrame_OnError(L["%s: %s tried to call the protected function '%s'."]:format(event, addonName or "<name>", addonFunc or "<func>"), false)
 end
 

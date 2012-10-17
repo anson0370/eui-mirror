@@ -99,7 +99,7 @@ end
 
 -- Auto invite by whisper
 function S:AutoInvite(...)
-	local self, event, arg1, arg2 = ...
+	local event, arg1, arg2 = ...
 	if ((not UnitExists("party1") or UnitIsGroupLeader("player") or UnitIsGroupAssistant("player")) and (arg1:lower() == E.db.euiscript.ainvkeyword:lower())) and E.db.euiscript.autoinvenable == true then
 		InviteUnit(arg2)
 	end

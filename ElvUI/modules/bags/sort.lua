@@ -276,7 +276,7 @@ local function ConvertLinkToID(link)
 	else
 		return tonumber(string.match(link, "battlepet:(%d+)")), true;
 	end
-end
+end 
 
 local function DefaultCanMove()
 	return true;

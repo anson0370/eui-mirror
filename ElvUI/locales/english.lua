@@ -643,6 +643,10 @@ L["You have changed your UIScale, however you still have the AutoScale option en
 L["You must purchase a bank slot first!"] = true;
 
 --Tooltip
+L['Spell/Item IDs'] = true;
+L['Display the spell or item ID when mousing over a spell or item tooltip.'] = true;
+L['Item Count'] = true;
+L['Display how many of a certain item you have in your possession.'] = true;
 L['Always Hide'] = true;
 L['Never Hide'] = true;
 L["Your Status: Completed on "] = true;
@@ -1232,7 +1236,7 @@ do
 	L['Only Save current talnet actionbar button, DoubleTalnet use double profile file to save.'] = true;
 	L["Button is Saved!"] = true;
 	L["MySlot Support"] = true;
-	L["shift marking"] = true;
+	L["alt marking"] = true;
 end
 
 --Mover

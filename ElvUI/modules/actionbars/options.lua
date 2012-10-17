@@ -1,4 +1,4 @@
-local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB, Localize Underscore
 local AB = E:GetModule('ActionBars')
 local group
 
@@ -20,7 +20,7 @@ local function BuildABConfig()
 			guiInline = false,
 			disabled = function() return not E.private.actionbar.enable end,
 			get = function(info) return E.db.actionbar['bar'..i][ info[#info] ] end,
-			set = function(info, value) E.db.actionbar['bar'..i][ info[#info] ] = value; AB:UpdateButtonSettings(); E:GetModule('Layout'):UpdateActionbarInfobar() end,
+			set = function(info, value) E.db.actionbar['bar'..i][ info[#info] ] = value; AB:PositionAndSizeBar('bar'..i) end,
 			args = {
 				enabled = {
 					order = 1,
@@ -32,7 +32,7 @@ local function BuildABConfig()
 					type = 'execute',
 					name = L['Restore Bar'],
 					desc = L['Restore the actionbars default settings'],
-					func = function() E:CopyTable(E.db.actionbar['bar'..i], P.actionbar['bar'..i]); E:ResetMovers('Bar '..i); AB:UpdateButtonSettings() end,
+					func = function() E:CopyTable(E.db.actionbar['bar'..i], P.actionbar['bar'..i]); E:ResetMovers('Bar '..i); AB:PositionAndSizeBar('bar'..i) end,
 				},	
 				point = {
 					order = 3,
@@ -97,9 +97,16 @@ local function BuildABConfig()
 					desc = L['Multiply the backdrops height or width by this value. This is usefull if you wish to have more than one bar behind a backdrop.'],
 					min = 1, max = 5, step = 1,					
 				},
+				alpha = {
+					order = 12,
+					type = 'range',
+					name = L['Alpha'],
+					isPercent = true,
+					min = 0, max = 1, step = 0.01,
+				},
 				paging = {
 					type = 'input',
-					order = 12,
+					order = 13,
 					name = L['Action Paging'],
 					desc = L["This works like a macro, you can run different situations to get the actionbar to page differently.\n Example: '[combat] 2;'"],
 					width = 'full',
@@ -116,7 +123,7 @@ local function BuildABConfig()
 				},
 				visibility = {
 					type = 'input',
-					order = 13,
+					order = 14,
 					name = L['Visibility State'],
 					desc = L["This works like a macro, you can run different situations to get the actionbar to show/hide differently.\n Example: '[combat] show;hide'"],
 					width = 'full',
@@ -138,7 +145,7 @@ local function BuildABConfig()
 		guiInline = false,
 		disabled = function() return not E.private.actionbar.enable end,
 		get = function(info) return E.db.actionbar['barPet'][ info[#info] ] end,
-		set = function(info, value) E.db.actionbar['barPet'][ info[#info] ] = value; AB:UpdateButtonSettings() end,
+		set = function(info, value) E.db.actionbar['barPet'][ info[#info] ] = value; AB:PositionAndSizeBarPet() end,
 		args = {
 			enabled = {
 				order = 1,
@@ -150,7 +157,7 @@ local function BuildABConfig()
 				type = 'execute',
 				name = L['Restore Bar'],
 				desc = L['Restore the actionbars default settings'],
-				func = function() E:CopyTable(E.db.actionbar['barPet'], P.actionbar['barPet']); E:ResetMovers('Pet Bar'); AB:UpdateButtonSettings() end,
+				func = function() E:CopyTable(E.db.actionbar['barPet'], P.actionbar['barPet']); E:ResetMovers('Pet Bar'); AB:PositionAndSizeBarPet() end,
 			},	
 			point = {
 				order = 3,
@@ -215,9 +222,16 @@ local function BuildABConfig()
 				desc = L['Multiply the backdrops height or width by this value. This is usefull if you wish to have more than one bar behind a backdrop.'],
 				min = 1, max = 5, step = 1,					
 			},
+			alpha = {
+				order = 12,
+				type = 'range',
+				name = L['Alpha'],
+				isPercent = true,
+				min = 0, max = 1, step = 0.01,
+			},			
 			visibility = {
 				type = 'input',
-				order = 12,
+				order = 13,
 				name = L['Visibility State'],
 				desc = L["This works like a macro, you can run different situations to get the actionbar to show/hide differently.\n Example: '[combat] show;hide'"],
 				width = 'full',
@@ -237,7 +251,7 @@ local function BuildABConfig()
 		guiInline = false,
 		disabled = function() return not E.private.actionbar.enable end,
 		get = function(info) return E.db.actionbar['stanceBar'][ info[#info] ] end,
-		set = function(info, value) E.db.actionbar['stanceBar'][ info[#info] ] = value; AB:UpdateButtonSettings() end,
+		set = function(info, value) E.db.actionbar['stanceBar'][ info[#info] ] = value; AB:PositionAndSizeBarShapeShift() end,
 		args = {
 			enabled = {
 				order = 1,
@@ -249,7 +263,7 @@ local function BuildABConfig()
 				type = 'execute',
 				name = L['Restore Bar'],
 				desc = L['Restore the actionbars default settings'],
-				func = function() E:CopyTable(E.db.actionbar['stanceBar'], P.actionbar['stanceBar']); E:ResetMovers('Stance Bar'); AB:UpdateButtonSettings() end,
+				func = function() E:CopyTable(E.db.actionbar['stanceBar'], P.actionbar['stanceBar']); E:ResetMovers('Stance Bar'); AB:PositionAndSizeBarShapeShift() end,
 			},	
 			point = {
 				order = 3,
@@ -314,6 +328,13 @@ local function BuildABConfig()
 				desc = L['Multiply the backdrops height or width by this value. This is usefull if you wish to have more than one bar behind a backdrop.'],
 				min = 1, max = 5, step = 1,					
 			},
+			alpha = {
+				order = 12,
+				type = 'range',
+				name = L['Alpha'],
+				isPercent = true,
+				min = 0, max = 1, step = 0.01,
+			},			
 		},
 	}
 	
@@ -437,7 +458,7 @@ end
 
 E.Options.args.actionbar = {
 	type = "group",
-	name = '03.'..L["ActionBars"],
+	name = '03.'.. L["ActionBars"],
 	childGroups = "tree",
 	get = function(info) return E.db.actionbar[ info[#info] ] end,
 	set = function(info, value) E.db.actionbar[ info[#info] ] = value; AB:UpdateButtonSettings() end,
@@ -483,7 +504,7 @@ E.Options.args.actionbar = {
 			desc = OPTION_TOOLTIP_ALWAYS_SHOW_MULTIBARS,
 			order = 8,
 			disabled = function() return not E.private.actionbar.enable end,
-		},		
+		},
 		movementModifier = {
 			type = 'select',
 			name = PICKUP_ACTION_KEY_TEXT,
@@ -527,7 +548,7 @@ E.Options.args.actionbar = {
 				t.r, t.g, t.b = r, g, b
 				AB:UpdateButtonSettings();
 			end,			
-		},		
+		},
 		euiabstyle = {
 			order = 11,
 			type = 'select',
@@ -544,9 +565,9 @@ E.Options.args.actionbar = {
 				E.db.actionbar[ info[#info] ] = value;
 				E:SetupActionbar(value)
 			end,
-		},			
+		},		
 		fontGroup = {
-			order = 12,
+			order = 11,
 			type = 'group',
 			guiInline = true,
 			disabled = function() return not E.private.actionbar.enable end,
@@ -572,13 +593,13 @@ E.Options.args.actionbar = {
 					values = {
 						['NONE'] = L['None'],
 						['OUTLINE'] = 'OUTLINE',
-					--	['MONOCHROME'] = 'MONOCHROME',
+						['MONOCHROME'] = 'MONOCHROME',
 						['MONOCHROMEOUTLINE'] = 'MONOCROMEOUTLINE',
 						['THICKOUTLINE'] = 'THICKOUTLINE',
 					},
 				},	
 			},
-		},	
+		},		
 		microbar = {
 			type = "group",
 			name = L['Micro Bar'],
@@ -612,7 +633,7 @@ E.Options.args.actionbar = {
 					min = 1, max = #MICRO_BUTTONS, step = 1,					
 				},				
 			},
-		},	
+		},
 	},
 }
 group = E.Options.args.actionbar.args

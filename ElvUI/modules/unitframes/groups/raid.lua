@@ -1,21 +1,12 @@
-local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB, Localize Underscore
 local UF = E:GetModule('UnitFrames');
 
 local _, ns = ...
 local ElvUF = ns.oUF
 assert(ElvUF, "ElvUI was unable to locate oUF.")
 
-local function closeFunc()
-	E.db.unitframe.units['raid25'].enable = false
-	UF:CreateAndUpdateHeaderGroup('raid25')
-end
-
-local function openFunc()
-	E.db.unitframe.units['raid25'].enable = true
-	UF:CreateAndUpdateHeaderGroup('raid25')
-end
-
-for i=25, 25 do
+do
+	local i = 25
 	UF['Construct_Raid'..i..'Frames'] = function (self, unitGroup)
 		self:RegisterForClicks("AnyUp")
 		self:SetScript('OnEnter', UnitFrame_OnEnter)
@@ -25,16 +16,16 @@ for i=25, 25 do
 
 		self.RaisedElementParent = CreateFrame('Frame', nil, self)
 		self.RaisedElementParent:SetFrameLevel(self:GetFrameLevel() + 10)		
-		
+
 		if E.db["clickset"].enable then  
 			self.ClickSet = E.db["clickset"]
-		end	
+		end
 		
 		self.Health = UF:Construct_HealthBar(self, true, true, 'RIGHT')
 		
 		self.Power = UF:Construct_PowerBar(self, true, true, 'LEFT', false)
 		self.Power.frequentUpdates = false;
-		
+			
 		self.Name = UF:Construct_NameText(self)
 		self.Buffs = UF:Construct_Buffs(self)
 		self.Debuffs = UF:Construct_Debuffs(self)
@@ -69,17 +60,15 @@ for i=25, 25 do
 		local _, _, _, _, maxPlayers, _, _ = GetInstanceInfo()
 		if event == "PLAYER_REGEN_ENABLED" then self:UnregisterEvent("PLAYER_REGEN_ENABLED") end
 		if not InCombatLockdown() then		
-			if inInstance and instanceType == "raid" and maxPlayers == 10 then
-				self:SetAttribute("groupFilter", "1,2")
-			elseif inInstance and instanceType == "raid" and maxPlayers == 25 then
-				self:SetAttribute("groupFilter", "1,2,3,4,5")
-			else
-				self:SetAttribute("groupFilter", "1,2,3,4,5,6,7,8")
+			if inInstance and instanceType == "raid" then
+				RegisterAttributeDriver(self, 'state-visibility', 'show')
+			elseif self.db.visibility then
+				UF:ChangeVisibility(self, 'custom '..self.db.visibility)
 			end
 		else
 			self:RegisterEvent("PLAYER_REGEN_ENABLED")
 			return
-		end		
+		end
 	end
 
 	UF['Update_Raid'..i..'Header'] = function (self, header, db)
@@ -142,7 +131,7 @@ for i=25, 25 do
 		if not header.positioned then
 			header:ClearAllPoints()
 			header:Point("BOTTOMLEFT", E.UIParent, "BOTTOMLEFT", 4, 195)	
-			E:CreateMover(header, header:GetName()..'Mover', L['Raid-25 Frames'], nil, nil, nil, 'ALL,RAID', closeFunc, openFunc)
+			E:CreateMover(header, header:GetName()..'Mover', L['Raid-25 Frames'], nil, nil, nil, 'ALL,RAID'..i)
 			
 			header:SetAttribute('minHeight', header.dirtyHeight)
 			header:SetAttribute('minWidth', header.dirtyWidth)
@@ -158,8 +147,9 @@ for i=25, 25 do
 
 	UF['Update_Raid'..i..'Frames'] = function (self, frame, db)
 		frame.db = db
-		local BORDER = E:Scale(2)
-		local SPACING = E:Scale(1)
+		local BORDER = E.Border;
+		local SPACING = E.Spacing;
+		local SHADOW_SPACING = E.PixelMode and 3 or 4
 		local UNIT_WIDTH = db.width
 		local UNIT_HEIGHT = db.height
 		
@@ -193,7 +183,7 @@ for i=25, 25 do
 			local health = frame.Health
 			health.Smooth = self.db.smoothbars
 			health.frequentUpdates = db.health.frequentUpdates
-					
+			
 			--Position this even if disabled because resurrection icon depends on the position
 			local x, y = self:GetPositionOffset(db.health.position)
 			health.value:ClearAllPoints()
@@ -277,12 +267,11 @@ for i=25, 25 do
 				elseif USE_MINI_POWERBAR then
 					power:Width(POWERBAR_WIDTH)
 					power:Height(POWERBAR_HEIGHT - BORDER*2)
-				--	power:Point("LEFT", frame, "BOTTOMLEFT", (BORDER*2 + 4), BORDER + (POWERBAR_HEIGHT/2))
 					power:Point("CENTER", frame.Health, "BOTTOM", 0, -BORDER)
 					power:SetFrameStrata("MEDIUM")
 					power:SetFrameLevel(frame:GetFrameLevel() + 3)
 				else
-					power:Point("TOPLEFT", frame.Health.backdrop, "BOTTOMLEFT", BORDER, -(BORDER + SPACING))
+					power:Point("TOPLEFT", frame.Health.backdrop, "BOTTOMLEFT", BORDER, -(E.PixelMode and 0 or (BORDER + SPACING)))
 					power:Point("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -(BORDER), BORDER)
 				end
 			else
@@ -297,22 +286,22 @@ for i=25, 25 do
 		do
 			local tGlow = frame.TargetGlow
 			tGlow:ClearAllPoints()
-			tGlow:Point("TOPLEFT", -4, 4)
-			tGlow:Point("TOPRIGHT", 4, 4)
+			tGlow:Point("TOPLEFT", -SHADOW_SPACING, SHADOW_SPACING)
+			tGlow:Point("TOPRIGHT", SHADOW_SPACING, SHADOW_SPACING)
 			
 			if USE_MINI_POWERBAR then
-				tGlow:Point("BOTTOMLEFT", -4, -4 + (POWERBAR_HEIGHT/2))
-				tGlow:Point("BOTTOMRIGHT", 4, -4 + (POWERBAR_HEIGHT/2))		
+				tGlow:Point("BOTTOMLEFT", -SHADOW_SPACING, -SHADOW_SPACING + (POWERBAR_HEIGHT/2))
+				tGlow:Point("BOTTOMRIGHT", SHADOW_SPACING, -SHADOW_SPACING + (POWERBAR_HEIGHT/2))		
 			else
-				tGlow:Point("BOTTOMLEFT", -4, -4)
-				tGlow:Point("BOTTOMRIGHT", 4, -4)
+				tGlow:Point("BOTTOMLEFT", -SHADOW_SPACING, -SHADOW_SPACING)
+				tGlow:Point("BOTTOMRIGHT", SHADOW_SPACING, -SHADOW_SPACING)
 			end
 			
 			if USE_POWERBAR_OFFSET then
-				tGlow:Point("TOPLEFT", -4+POWERBAR_OFFSET, 4)
-				tGlow:Point("TOPRIGHT", 4, 4)
-				tGlow:Point("BOTTOMLEFT", -4+POWERBAR_OFFSET, -4+POWERBAR_OFFSET)
-				tGlow:Point("BOTTOMRIGHT", 4, -4+POWERBAR_OFFSET)				
+				tGlow:Point("TOPLEFT", -SHADOW_SPACING+POWERBAR_OFFSET, SHADOW_SPACING)
+				tGlow:Point("TOPRIGHT", SHADOW_SPACING, SHADOW_SPACING)
+				tGlow:Point("BOTTOMLEFT", -SHADOW_SPACING+POWERBAR_OFFSET, -SHADOW_SPACING+POWERBAR_OFFSET)
+				tGlow:Point("BOTTOMRIGHT", SHADOW_SPACING, -SHADOW_SPACING+POWERBAR_OFFSET)				
 			end				
 		end			
 
@@ -520,7 +509,7 @@ for i=25, 25 do
 		
 		frame:EnableElement('ReadyCheck')		
 		frame:UpdateAllElements()
-
+		
 		if db.customTexts then
 			for objectName, _ in pairs(db.customTexts) do
 				if not frame[objectName] then
@@ -533,10 +522,10 @@ for i=25, 25 do
 				frame[objectName]:FontTemplate(UF.LSM:Fetch("font", objectDB.font or UF.db.font), objectDB.size or UF.db.fontSize, objectDB.fontOutline or UF.db.fontOutline)
 				frame:Tag(frame[objectName], objectDB.text_format or '')
 				frame[objectName]:SetJustifyH(objectDB.justifyH or 'CENTER')
-				frame[objectName]:ClearAllPoints()
-				frame[objectName]:SetPoint(objectDB.justifyH or 'CENTER', frame, 'CENTER', objectDB.xOffset, objectDB.yOffset)
+			frame[objectName]:ClearAllPoints()
+			frame[objectName]:SetPoint(objectDB.justifyH or 'CENTER', frame, 'CENTER', objectDB.xOffset, objectDB.yOffset)
 			end
-		end			
+		end		
 	end
 
 	UF['headerstoload']['raid'..i] = true

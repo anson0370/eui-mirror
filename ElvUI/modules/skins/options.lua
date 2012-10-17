@@ -3,7 +3,7 @@ local S = E:GetModule('Skins')
 
 E.Options.args.skins = {
 	type = "group",
-	name = '09.'.. L["Skins"],
+	name = '09.'..L["Skins"],
 	childGroups = "tree",
 	args = {
 		intro = {
@@ -38,7 +38,7 @@ E.Options.args.skins = {
 					type = 'toggle',
 					name = L['Black Market AH'],
 					desc = L['TOGGLESKIN_DESC'],
-				},			
+				},
 				transmogrify = {
 					type = 'toggle',
 					name = L['Transmogrify Frame'],

@@ -807,6 +807,7 @@ local function LoadSkin()
         "UnitFramePanelArenaEnemyCastBar",
         "UnitFramePanelArenaEnemyPets",
         "UnitFramePanelFullSizeFocusFrame",
+		
 		--Watev
 		"NamesPanelUnitNameplatesNameplateClassColors",
     }
@@ -1031,7 +1032,7 @@ local function LoadSkin()
 	MacOptionsFrameOkay:SetPoint("LEFT", MacOptionsButtonKeybindings, "RIGHT", 2, 0)
 	MacOptionsFrameCancel:ClearAllPoints()
 	MacOptionsFrameCancel:SetPoint("LEFT", MacOptionsFrameOkay, "RIGHT", 2, 0)
-	MacOptionsFrameCancel:SetWidth(MacOptionsFrameCancel:GetWidth() - 6)
+	MacOptionsFrameCancel:SetWidth(MacOptionsFrameCancel:GetWidth() - 6)	
 	
 	ReportCheatingDialog:StripTextures()
 	ReportCheatingDialogCommentFrame:StripTextures()

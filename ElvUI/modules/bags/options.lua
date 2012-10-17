@@ -3,7 +3,7 @@ local B = E:GetModule('Bags')
 
 E.Options.args.bags = {
 	type = 'group',
-	name = '10.'..L['Bags'],
+	name = '10.'.. L['Bags'],
 	get = function(info) return E.db.bags[ info[#info] ] end,
 	set = function(info, value) E.db.bags[ info[#info] ] = value end,
 	args = {
@@ -49,9 +49,9 @@ E.Options.args.bags = {
 					name = L['Spacing'],
 					min = 1, max = 10, step = 1,
 					set = function(info, value) E.db.bags[ info[#info] ] = value; B:Layout(); B:Layout(true) end,
-				},				
+				},
 				sortInverted = {
-					order = 4,
+					order = 3,
 					type = 'toggle',
 					name = L['Sort Inverted'],
 					desc = L['Direction the bag sorting will use to allocate the items.'],
@@ -111,7 +111,7 @@ E.Options.args.bags = {
 					type = 'execute',
 					name = L["Restore Defaults"],
 					func = function() wipe(E.db.bags.point); B:PositionBagFrames(); end,
-				},
+				},				
 			},
 		},
 		bagBar = {
@@ -119,7 +119,6 @@ E.Options.args.bags = {
 			type = "group",
 			name = L["Bag-Bar"],
 			guiInline = true,
-			disabled = function() return E.bags end,
 			get = function(info) return E.db.bags.bagBar[ info[#info] ] end,
 			set = function(info, value) E.db.bags.bagBar[ info[#info] ] = value; B:SizeAndPositionBagBar() end,
 			args = {
@@ -160,7 +159,7 @@ E.Options.args.bags = {
 					order = 6,
 					type = 'select',
 					name = L["Sort Direction"],
-					desc = L['The direction that the bag frames be (Horizontal or Vertical).'],
+					desc = L['The direction that the bag frames will grow from the anchor.'],
 					values = {
 						['ASCENDING'] = L['Ascending'],
 						['DESCENDING'] = L['Descending'],
@@ -170,13 +169,13 @@ E.Options.args.bags = {
 					order = 7,
 					type = 'select',
 					name = L['Bar Direction'],
-					desc = L['The direction that the bag frames will grow from the anchor.'],
+					desc = L['The direction that the bag frames be (Horizontal or Vertical).'],
 					values = {
 						['VERTICAL'] = L['Vertical'],
 						['HORIZONTAL'] = L['Horizontal'],
 					},
 				},
 			},
-		},
+		},			
 	},
 }

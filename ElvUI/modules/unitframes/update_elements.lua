@@ -1,4 +1,4 @@
-local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB, Localize Underscore
 local UF = E:GetModule('UnitFrames');
 local LSM = LibStub("LibSharedMedia-3.0");
 
@@ -36,10 +36,9 @@ function UF:PostUpdateHealth(unit, min, max)
 		self:GetParent().ResurrectIcon:SetAlpha(1)
 	elseif self:GetParent().ResurrectIcon then
 		self:GetParent().ResurrectIcon:SetAlpha(0)
-	end	
+	end
 	
 	local r, g, b = self:GetStatusBarColor()
-
 	if (E.db['unitframe']['colors'].healthclass == true and E.db['unitframe']['colors'].colorhealthbyvalue == true) or (E.db['unitframe']['colors'].colorhealthbyvalue and self:GetParent().isForced) and not (UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit)) then
 		local newr, newg, newb = ElvUF.ColorGradient(min, max, 1, 0, 0, 1, 1, 0, r, g, b)
 
@@ -104,16 +103,14 @@ function UF:PostUpdatePower(unit, min, max)
 		color = ElvUF['colors'].power[pToken]
 	end	
 	
-		
 	local perc
 	if max == 0 then
 		perc = 0
 	else
 		perc = floor(min / max * 100)
 	end
-	
+
 	local db = self:GetParent().db
-	
 	if self.LowManaText and db then
 		if pToken == 'MANA' then
 			if perc <= db.lowmana and not dead and not ghost then
@@ -216,7 +213,7 @@ function UF:PostUpdateAura(unit, button, index, offset, filter, isDebuff, durati
 	if db and db[self.type] then
 		button.text:FontTemplate(LSM:Fetch("font", E.db['unitframe'].font), db[self.type].fontSize, 'OUTLINE')
 		button.count:FontTemplate(LSM:Fetch("font", E.db['unitframe'].font), db[self.type].fontSize, 'OUTLINE')
-	
+		
 		if db[self.type].clickThrough and button:IsMouseEnabled() then
 			button:EnableMouse(false)
 		elseif not db[self.type].clickThrough and not button:IsMouseEnabled() then
@@ -509,7 +506,7 @@ end
 function UF:UpdateHoly(event, unit, powerType)
 	if(self.unit ~= unit or (powerType and powerType ~= 'HOLY_POWER')) then return end
 	local db = self.db
-	
+	if not db then return; end
 	local BORDER = 2
 	local numHolyPower = UnitPower('player', SPELL_POWER_HOLY_POWER);
 	local maxHolyPower = UnitPowerMax('player', SPELL_POWER_HOLY_POWER);	
@@ -524,7 +521,7 @@ function UF:UpdateHoly(event, unit, powerType)
 		PORTRAIT_WIDTH = 0		
 	end	
 	
-	local CLASSBAR_WIDTH = db.width - 4
+	local CLASSBAR_WIDTH = db.width - (E.Border * 2)
 	if USE_PORTRAIT then
 		CLASSBAR_WIDTH = math.ceil((db.width - (BORDER*2)) - PORTRAIT_WIDTH)
 	end
@@ -546,7 +543,7 @@ function UF:UpdateHoly(event, unit, powerType)
 			self.HolyPower[i]:SetAlpha(.2)
 		end
 		
-		self.HolyPower[i]:SetWidth(E:Scale(self.HolyPower:GetWidth() - 2)/maxHolyPower)	
+		self.HolyPower[i]:SetWidth(E:Scale(self.HolyPower:GetWidth() - (E.PixelMode and 4 or 2))/maxHolyPower)	
 		self.HolyPower[i]:ClearAllPoints()
 		if i == 1 then
 			self.HolyPower[i]:SetPoint("LEFT", self.HolyPower)
@@ -666,7 +663,7 @@ function UF:UpdateHarmony()
 			end
 		else
 			self[i]:Point("LEFT", self[i-1], "RIGHT", SPACING , 0)
-		end		
+		end
 		self[i]:SetStatusBarColor(unpack(ElvUF.colors.harmony[i]))
 	end	
 end
@@ -713,13 +710,12 @@ function UF:UpdateShardBar(spec)
 		self[1].Text:SetText(power or '')
 	else
 		self[1].Text:SetText('')
-	end
+	end	
 	
 	UF:UpdatePlayerFrameAnchors(frame, self:IsShown())
 end
 
 function UF:EclipseDirection()
-	local direction = GetEclipseDirection()
 	local power = UnitPower('player', SPELL_POWER_ECLIPSE)
 	local db = self:GetParent().db
 	
@@ -728,7 +724,8 @@ function UF:EclipseDirection()
 	else
 		power = '' 
 	end
-		
+
+	local direction = GetEclipseDirection()
 	if direction == "sun" then
 		self.Text:SetText(power.. ">")
 		self.Text:SetTextColor(0,.5,1,1)
@@ -902,14 +899,14 @@ function UF:UpdateComboDisplay(event, unit)
 		end	
 	end
 	
-	local BORDER = E:Scale(2)
-	local SPACING = E:Scale(1)
+	local BORDER = E.Border;
+	local SPACING = E.Spacing;
 	local db = E.db['unitframe']['units'].target
 	local USE_COMBOBAR = db.combobar.enable
 	local USE_MINI_COMBOBAR = db.combobar.fill == "spaced" and USE_COMBOBAR
 	local COMBOBAR_HEIGHT = db.combobar.height
 	local USE_PORTRAIT = db.portrait.enable
-	local USE_PORTRAIT_OVERLAY = db.portrait.overlay and USE_PORTRAIT	
+	local USE_PORTRAIT_OVERLAY = db.portrait.overlay and USE_PORTRAIT
 	local PORTRAIT_WIDTH = db.portrait.width
 	
 
@@ -934,88 +931,18 @@ function UF:UpdateComboDisplay(event, unit)
 	end
 end
 
-function UF:UpdatePlayerComboDisplay(event, unit)
-	if(unit == 'pet') then return end
-	local db = UF.player.db
-	local cpoints = self.CPoints
-	local cp
-	if (UnitHasVehicleUI("player") or UnitHasVehicleUI("vehicle")) then
-		cp = GetComboPoints('vehicle', 'target')
-	else
-		cp = GetComboPoints('player', 'target')
-	end
-
-
-	for i=1, MAX_COMBO_POINTS do
-		if(i <= cp) then
-			cpoints[i]:SetAlpha(1)
-			
-			if i == MAX_COMBO_POINTS and db.classbar.fill == 'spaced' then
-				for c = 1, MAX_COMBO_POINTS do
-					cpoints[c].backdrop.shadow:Show()
-					cpoints[c]:SetScript('OnUpdate', function(self)
-						E:Flash(self.backdrop.shadow, 0.6)
-					end)
-				end
-			else
-				for c = 1, MAX_COMBO_POINTS do
-					cpoints[c].backdrop.shadow:Hide()
-					cpoints[c]:SetScript('OnUpdate', nil)
-				end
-			end
-		else
-			cpoints[i]:SetAlpha(.15)
-			for c = 1, MAX_COMBO_POINTS do
-				cpoints[c].backdrop.shadow:Hide()
-				cpoints[c]:SetScript('OnUpdate', nil)
-			end		
-		end	
-	end
-	
-	local BORDER = E:Scale(2)
-	local SPACING = E:Scale(1)
-	local db = E.db['unitframe']['units'].player
-	local USE_COMBOBAR = db.combobar.enable
-	local USE_MINI_COMBOBAR = db.combobar.fill == "spaced" and USE_COMBOBAR
-	local COMBOBAR_HEIGHT = db.combobar.height
-	local USE_PORTRAIT = db.portrait.enable
-	local USE_PORTRAIT_OVERLAY = db.portrait.overlay and USE_PORTRAIT	
-	local PORTRAIT_WIDTH = db.portrait.width
-	
-
-	if USE_PORTRAIT_OVERLAY or not USE_PORTRAIT then
-		PORTRAIT_WIDTH = 0
-	end
-	
-	if cpoints[1]:GetAlpha() == 1 then
-		cpoints:Show()
-		if USE_MINI_COMBOBAR then
-			self.Portrait.backdrop:SetPoint("TOPLEFT", self, "TOPLEFT", 0, -((COMBOBAR_HEIGHT/2) + SPACING - BORDER))
-			self.Health:Point("TOPLEFT", self, "TOPLEFT", -(BORDER+PORTRAIT_WIDTH), -(SPACING + (COMBOBAR_HEIGHT/2)))
-		else
-			self.Portrait.backdrop:SetPoint("TOPLEFT", self, "TOPLEFT")
-			self.Health:Point("TOPLEFT", self, "TOPLEFT", -(BORDER+PORTRAIT_WIDTH), -(BORDER + SPACING + COMBOBAR_HEIGHT))
-		end		
-
-	else
-		cpoints:Hide()
-		self.Portrait.backdrop:SetPoint("TOPLEFT", self, "TOPLEFT")
-		self.Health:Point("TOPLEFT", self, "TOPLEFT", -(BORDER+PORTRAIT_WIDTH), -BORDER)
-	end
-end
-
 function UF:AuraFilter(unit, icon, name, rank, texture, count, dtype, duration, timeLeft, caster, isStealable, shouldConsolidate, spellID, canApplyAura, isBossDebuff)	
 	if E.global.unitframe.InvalidSpells[spellID] then
 		return false;
 	end
-	
+
 	local isPlayer, isFriend
 
 	local db = self:GetParent().db
 	if not db or not db[self.type] then return true; end
 	
 	db = db[self.type]
-	
+
 	local returnValue = true;
 	local returnValueChanged = false;
 	if caster == 'player' or caster == 'vehicle' then isPlayer = true end
@@ -1036,7 +963,7 @@ function UF:AuraFilter(unit, icon, name, rank, texture, count, dtype, duration, 
 		end
 		returnValueChanged = true;
 	end
-
+	
 	if CheckFilter(db.onlyDispellable, isFriend) then
 		if (self.type == 'buffs' and isStealable) or (self.type == 'debuffs' and dtype and E:IsDispellableByMe(dtype)) then
 			returnValue = true;
@@ -1307,7 +1234,6 @@ function UF:RaidRoleUpdate()
 	end
 end
 
-
 local function CheckFilterArguement(option, optionArgs)
 	if option ~= true then
 		return true
@@ -1323,7 +1249,7 @@ function UF:AuraBarFilter(unit, name, rank, icon, count, debuffType, duration, e
 	local returnValueChanged = false
 	local isPlayer, isFriend
 	local auraType
-
+	--print(name..': '..spellID, E.global.unitframe.InvalidSpells[spellID])
 	if E.global.unitframe.InvalidSpells[spellID] then
 		return false;
 	end
@@ -1347,7 +1273,7 @@ function UF:AuraBarFilter(unit, name, rank, icon, count, debuffType, duration, e
 		end
 		returnValueChanged = true;
 	end
-
+	
 	if CheckFilter(db.onlyDispellable, isFriend) then
 		if (auraType == 'HELPFUL' and isStealable) or (auraType == 'HARMFUL' and debuffType and E:IsDispellableByMe(debuffType)) then
 			returnValue = true;
@@ -1485,7 +1411,7 @@ function UF:SmartAuraDisplay()
 		local x, y = E:GetXYOffset(db.debuffs.anchorPoint)
 		
 		debuffs:ClearAllPoints()
-		debuffs:Point(E.InversePoints[db.debuffs.anchorPoint], self, db.debuffs.anchorPoint, x + db.debuffs.xOffset, y + db.debuffs.yOffset)
+		debuffs:Point(E.InversePoints[db.debuffs.anchorPoint], self, db.debuffs.anchorPoint, x + db.debuffs.xOffset, y + db.debuffs.yOffset)	
 
 		local anchorPoint, anchorTo = 'BOTTOM', 'TOP'
 		if db.aurabar.anchorPoint == 'BELOW' then

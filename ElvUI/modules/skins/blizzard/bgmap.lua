@@ -74,7 +74,8 @@ local function LoadSkin()
 			BattlefieldMinimap_UpdateOpacity(oldAlpha)
 			oldAlpha = nil;
 		end
-	end)
+	end)	
+	
 end
 
 S:RegisterSkin("Blizzard_BattlefieldMinimap", LoadSkin)

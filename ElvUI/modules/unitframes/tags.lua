@@ -6,6 +6,7 @@ assert(ElvUF, "ElvUI was unable to locate oUF.")
 ------------------------------------------------------------------------
 --	Tags
 ------------------------------------------------------------------------
+
 ElvUF.Tags.Events['afk'] = 'PLAYER_FLAGS_CHANGED'
 ElvUF.Tags.Methods['afk'] = function(unit)
 	local isAFK = UnitIsAFK(unit)

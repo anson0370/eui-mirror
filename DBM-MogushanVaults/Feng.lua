@@ -55,26 +55,26 @@ local warnNullBarrior				= mod:NewSpellAnnounce(115817, 2)
 --Nature/Fist
 local specWarnLightningLash			= mod:NewSpecialWarningStack(131788, mod:IsTank(), 3)
 local specWarnLightningLashOther	= mod:NewSpecialWarningTarget(131788, mod:IsTank())
-local specWarnEpicenter				= mod:NewSpecialWarningRun(116018, nil, nil, nil, true)
+local specWarnEpicenter				= mod:NewSpecialWarning("specWarnEpicenter")
 
 --Fire/Spear
 local specWarnFlamingSpear			= mod:NewSpecialWarningStack(116942, mod:IsTank(), 3)
 local specWarnFlamingSpearOther		= mod:NewSpecialWarningTarget(116942, mod:IsTank())
 local specWarnWildSpark				= mod:NewSpecialWarningYou(116784)
 local specWarnWildfire				= mod:NewSpecialWarningMove(116793)
-local specWarnDrawFlame				= mod:NewSpecialWarningSpell(116711, nil, nil, nil, true)
+local specWarnDrawFlame				= mod:NewSpecialWarning("specWarnDrawFlame")
 
 --Arcane/Staff
 local specWarnArcaneShock			= mod:NewSpecialWarningStack(131790, mod:IsTank(), 3)
 local specWarnArcaneShockOther		= mod:NewSpecialWarningTarget(131790, mod:IsTank())
 local specWarnArcaneResonance		= mod:NewSpecialWarningYou(116417)
 local yellArcaneResonance			= mod:NewYell(116417)
-local specWarnArcaneVelocity		= mod:NewSpecialWarningSpell(116364, nil, nil, nil, true)
+local specWarnArcaneVelocity		= mod:NewSpecialWarning("specWarnArcaneVelocity")
 
 --Shadow/Shield (Heroic Only)
 local specWarnShadowBurn			= mod:NewSpecialWarningStack(131792, mod:IsTank(), 3)
 local specWarnShadowBurnOther		= mod:NewSpecialWarningTarget(131792, mod:IsTank())
-local specWarnSiphoningShield		= mod:NewSpecialWarningSpell(117203)
+local specWarnSiphoningShield		= mod:NewSpecialWarning("specWarnSiphoningShield")
 
 --Tank Abilities
 local specWarnNullBarrior			= mod:NewSpecialWarningSpell(115817) -- Null Barrier is important all members, espcially Earth and Arcane Phase.
@@ -223,7 +223,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		sparkCount = 0
 		specialCount = specialCount + 1
 		warnDrawFlame:Show(specialCount)
-		specWarnDrawFlame:Show()
+		specWarnDrawFlame:Show(specialCount)
 		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_qyhy.mp3") --牽引火焰
 	elseif args:IsSpellID(116821) then
 		wildfireCount = 1
@@ -250,7 +250,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(116364) then
 		specialCount = specialCount + 1
 		warnArcaneVelocity:Show(specialCount)
-		specWarnArcaneVelocity:Show()
+		specWarnArcaneVelocity:Show(specialCount)
 		timerArcaneVelocity:Start()
 		if not AVPlayer then
 			sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\gather.mp3")--快集合
@@ -359,7 +359,7 @@ function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(116018) then
 		specialCount = specialCount + 1
 		warnEpicenter:Show(specialCount)
-		specWarnEpicenter:Show()
+		specWarnEpicenter:Show(specialCount)
 		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_yldz.mp3") --遠離地震
 --		soundEpicenter:Play()
 		timerEpicenter:Start()
@@ -448,7 +448,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, _, _, spellId)
 	if spellId == 117203 and self:AntiSpam(2, 1) then--Siphoning Shield
 		specialCount = specialCount + 1
 		warnSiphoningShield:Show(specialCount)
-		specWarnSiphoningShield:Show()
+		specWarnSiphoningShield:Show(specialCount)
 		timerSiphoningShieldCD:Start(nil, specialCount + 1)
 		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_yldp.mp3") --遠離盾牌
 		sndWOP:Schedule(1.5, "Interface\\AddOns\\DBM-Core\\extrasounds\\countfour.mp3")

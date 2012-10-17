@@ -1,11 +1,24 @@
 local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 
+G['skins'] = {
+	['embedRight'] = '',
+	['embedcombat'] = false,
+}
+G['reminder'] = {}
+G['extracd'] = {}
+
+V['reminder'] = {
+	['enable'] = true,
+	['sound'] = "Warning",
+}
+
+
+
 P['general'].bordercolor = { r = .31,g = .31,b = .31 }
 P['general'].backdropfadecolor = { r = .06,g = .06,b = .06, a = 0.9 }
 P['general'].stickyFrames = false
 P['unitframe'].colors.health = P.general.bordercolor
 P['unitframe'].colors.auraBarBuff = P.general.bordercolor
-P['unitframe'].colors.castColor = P.general.bordercolor
 
 P['bags'].alignToChat = false
 P['bags'].spacing = 4
@@ -99,7 +112,8 @@ for i = 6, 9 do
 		['heightMult'] = 1,
 		['widthMult'] = 1,
 		["buttonsize"] = 30,
-		["buttonspacing"] = 4,
+		["buttonspacing"] = 4,		
+		['alpha'] = 1,
 		['paging'] = {},
 		['visibility'] = "[vehicleui] hide; [overridebar] hide; [petbattle] hide; show",
 	}
@@ -126,9 +140,9 @@ P["skins"] = {
 
 V['chat'].embedright = "None"
 V['chat'].embedcombat = false
-P['chat'].leftpanelWidth = 360
+P['chat'].leftpanelWidth = 362
 P['chat'].leftpanelHeight = 180
-P['chat'].rightpanelWidth = 360
+P['chat'].rightpanelWidth = 362
 P['chat'].rightpanelHeight = 180
 P['chat'].throttleInterval = 0
 P['chat'].autojoin = true
@@ -154,6 +168,7 @@ P["unitframe"].transparent = false
 
 P['unitframe'].units.target.smartAuraDisplay = 'DISABLED'
 P['unitframe'].units.target.debuffs.useWhitelist = {friendly = false, enemy = true}
+P['unitframe'].units.target.buffs.playerOnly = {friendly = false, enemy = false}
 P['unitframe'].units.player.classbar.text = true
 P['unitframe'].units.player.aurabar.auraBarWidth = 270
 P['unitframe'].units.player.aurabar.auraBarHeight = 20
@@ -191,6 +206,7 @@ P["unitframe"].colors.castColor = { r = .78,g = .67,b = .35 }
 P["unitframe"].units.target.portrait.enable = true
 P["unitframe"].units.target.portrait.overlay = true
 P["unitframe"].units.target.debuffs.enable = true
+P["unitframe"].units.raid25.width = 70
 P["unitframe"].units.raid25.power.width = 'fill'
 P["unitframe"].units.raid25.showParty = false
 P["unitframe"].units.raid25.maxColumns = 8

@@ -1,4 +1,4 @@
-local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB, Localize Underscore
 local AB = E:GetModule('ActionBars');
 
 local ceil = math.ceil;
@@ -69,7 +69,7 @@ function AB:UpdatePet()
 			button:SetChecked(0);
 		end		
 		
-		checked:SetAlpha(0.3);
+		checked:SetAlpha(0.3)
 	end
 end
 
@@ -98,7 +98,7 @@ function AB:PositionAndSizeBarPet()
 	bar.mouseover = self.db['barPet'].mouseover
 	if self.db['barPet'].enabled then
 		bar:SetScale(1);
-		bar:SetAlpha(1);
+		bar:SetAlpha(bar.db.alpha);
 	else
 		bar:SetScale(0.000001);
 		bar:SetAlpha(0);
@@ -151,7 +151,7 @@ function AB:PositionAndSizeBarPet()
 				self:HookScript(button, 'OnLeave', 'Button_OnLeave');					
 			end
 		else
-			bar:SetAlpha(1);
+			bar:SetAlpha(bar.db.alpha);
 			if self.hooks[bar] then
 				self:Unhook(bar, 'OnEnter');
 				self:Unhook(bar, 'OnLeave');	
@@ -204,11 +204,11 @@ function AB:PositionAndSizeBarPet()
 			button:SetAlpha(0);
 		else
 			button:SetScale(1);
-			button:SetAlpha(1);
+			button:SetAlpha(bar.db.alpha);
 		end
 		
 		self:StyleButton(button);
-
+		
 		--wtf lol
 		if not button.CheckFixed then 
 			hooksecurefunc(button:GetCheckedTexture(), 'SetAlpha', function(self, value)
@@ -217,7 +217,7 @@ function AB:PositionAndSizeBarPet()
 				end
 			end)
 			button.CheckFixed = true;
-		end		
+		end
 	end
 	possibleButtons = nil;
 	
@@ -254,6 +254,6 @@ function AB:CreateBarPet()
 	self:RegisterEvent('PLAYER_FARSIGHT_FOCUS_CHANGED', 'UpdatePet');
 	self:RegisterEvent('PET_BAR_UPDATE_COOLDOWN', PetActionBar_UpdateCooldowns);
 	
-	E:CreateMover(bar, 'PetAB', L['Pet Bar'], nil, nil, nil,'ALL,ACTIONBARS');
+	E:CreateMover(bar, 'PetAB',  L['Pet Bar'], nil, nil, nil, 'ALL,ACTIONBARS');
 	self:PositionAndSizeBarPet();
 end

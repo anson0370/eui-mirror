@@ -1,4 +1,4 @@
-local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB, Localize Underscore
 local LSM = LibStub("LibSharedMedia-3.0")
 local _, ns = ...
 local ElvUF = ns.oUF
@@ -9,13 +9,12 @@ E.myname, _ = UnitName("player");
 E.myguid = UnitGUID('player');
 E.version = GetAddOnMetadata("ElvUI", "Version"); 
 E.myrealm = GetRealmName();
-_, E.wowbuild = GetBuildInfo(); E.wowbuild = tonumber(E.wowbuild)
+_, E.wowbuild = GetBuildInfo(); E.wowbuild = tonumber(E.wowbuild);
 E.resolution = GetCVar("gxResolution")
 E.screenheight = tonumber(string.match(E.resolution, "%d+x(%d+)"))
 E.screenwidth = tonumber(string.match(E.resolution, "(%d+)x+%d"))
 E.ValColor = '|cff1784d1' -- DEPRECIATED SOON, REMEMBER TO REMOVE THIS AND CODE AROUND IT
 if ((GetLocale() == 'zhCN') or (GetLocale() == 'zhTW')) then E.zhlocale = true; else E.zhlocale = false; end;
-E['valueColorUpdateFuncs'] = {};
 
 --Tables
 E["media"] = {};
@@ -28,6 +27,9 @@ E['valueColorUpdateFuncs'] = {};
 E.TexCoords = {.08, .92, .08, .92}
 E.FrameLocks = {}
 E.CreditsList = {};
+E.Spacing = 1;
+E.Border = 2;
+E.PixelMode = tr;
 
 E.InversePoints = {
 	TOP = 'BOTTOM',
@@ -175,7 +177,7 @@ function E:UpdateMedia()
 
 	--Backdrop Fade Color
 	self["media"].backdropfadecolor = E:GetColorTable(self.db['general'].backdropfadecolor)
-		
+	
 	--Value Color
 	local value = self.db['general'].valuecolor
 	if CheckClassColor(value.r, value.g, value.b) then
@@ -193,8 +195,8 @@ function E:UpdateMedia()
 		
 		RightChatPanel.tex:SetTexture(E.db.chat.panelBackdropNameRight)
 		RightChatPanel.tex:SetAlpha(E.db.general.backdropfadecolor.a - 0.55 > 0 and E.db.general.backdropfadecolor.a - 0.55 or 0.5)		
-	end	
-	
+	end
+
 	self:ValueFuncCall()
 	self:UpdateBlizzardFonts()
 end
@@ -276,6 +278,8 @@ function E:UpdateFontTemplates()
 	end
 end
 
+
+
 --This frame everything in ElvUI should be anchored to for Eyefinity support.
 E.UIParent = CreateFrame('Frame', 'ElvUIParent', UIParent);
 E.UIParent:SetFrameLevel(UIParent:GetFrameLevel());
@@ -342,43 +346,43 @@ function E:CheckRole()
 	
 	if not self.role then
 		local playerint = select(2, UnitStat("player", 4));
-		local playeragi = select(2, UnitStat("player", 2));
+		local playeragi	= select(2, UnitStat("player", 2));
 		local base, posBuff, negBuff = UnitAttackPower("player");
 		local playerap = base + posBuff + negBuff;
-		
+
 		if (playerap > playerint) or (playeragi > playerint) then
 			self.role = "Melee";
 		else
 			self.role = "Caster";
-		end
+		end		
 	end
-	
+
 	if self.HealingClasses[self.myclass] ~= nil and self.myclass ~= 'PRIEST' then
 		if self:CheckTalentTree(self.HealingClasses[self.myclass]) then
 			self.DispelClasses[self.myclass].Magic = true;
 		else
 			self.DispelClasses[self.myclass].Magic = false;
 		end
-	end	
+	end
 end
 
 function E:CheckIncompatible()
 	if IsAddOnLoaded('Prat-3.0') and E.private.chat.enable then
-		E:Print(format(L['INCOMPATIBLE_ADDON'], 'Prat', L['Chat']))
+		E:Print(format(L['INCOMPATIBLE_ADDON'], 'Prat', 'Chat'))
 	elseif IsAddOnLoaded('Chatter') and E.private.chat.enable then
-		E:Print(format(L['INCOMPATIBLE_ADDON'], 'Chatter', L['Chat']))
+		E:Print(format(L['INCOMPATIBLE_ADDON'], 'Chatter', 'Chat'))
 	end
 	
 	if IsAddOnLoaded('Bartender4') and E.private.actionbar.enable then
-		E:Print(format(L['INCOMPATIBLE_ADDON'], 'Bartender', L['ActionBars']))
+		E:Print(format(L['INCOMPATIBLE_ADDON'], 'Bartender', 'ActionBar'))
 	elseif IsAddOnLoaded('Dominos') and E.private.actionbar.enable then
-		E:Print(format(L['INCOMPATIBLE_ADDON'], 'Dominos', L['ActionBars']))
+		E:Print(format(L['INCOMPATIBLE_ADDON'], 'Dominos', 'ActionBar'))
 	end	
 	
 	if IsAddOnLoaded('TidyPlates') and E.private.nameplate.enable then
-		E:Print(format(L['INCOMPATIBLE_ADDON'], 'TidyPlates', L['NamePlates']))
+		E:Print(format(L['INCOMPATIBLE_ADDON'], 'TidyPlates', 'NamePlate'))
 	elseif IsAddOnLoaded('Aloft') and E.private.nameplate.enable then
-		E:Print(format(L['INCOMPATIBLE_ADDON'], 'Aloft', L['NamePlates']))
+		E:Print(format(L['INCOMPATIBLE_ADDON'], 'Aloft', 'NamePlate'))
 	end	
 	
 	if IsAddOnLoaded('ArkInventory') and E.private.bags.enable then
@@ -469,10 +473,10 @@ function E:UpdateAll(ignoreInstall)
 	self.global = self.data.global;
 	
 	self:SetMoversPositions()
-	
+
 	local UF = self:GetModule('UnitFrames')
 	UF.db = self.db.unitframe
-	UF:Update_AllFrames()	
+	UF:Update_AllFrames()
 	
 	local CH = self:GetModule('Chat')
 	CH.db = self.db.chat
@@ -482,21 +486,21 @@ function E:UpdateAll(ignoreInstall)
 	AB.db = self.db.actionbar
 	AB:UpdateButtonSettings()
 	AB:UpdateMicroPositionDimensions()
-	
+	 
 	local bags = E:GetModule('Bags'); 
 	bags.db = self.db.bags
 	bags:Layout(); 
 	bags:Layout(true); 
 	bags:PositionBagFrames()
 	bags:SizeAndPositionBagBar()
-
+	
 	local totems = E:GetModule('Totems'); 
 	totems.db = self.db.general.totems
 	totems:PositionAndSize()
 	totems:ToggleEnable()
 	
 	self:GetModule('Layout'):ToggleChatPanels()
-		
+	
 	local DT = self:GetModule('DataTexts')
 	DT.db = self.db.datatexts
 	DT:LoadDataTexts()
@@ -504,12 +508,12 @@ function E:UpdateAll(ignoreInstall)
 	local NP = self:GetModule('NamePlates')
 	NP.db = self.db.nameplate
 	NP:UpdateAllPlates()
-
+		
 	local M = self:GetModule("Misc")
 	M:UpdateExpRepDimensions()
 	M:EnableDisable_ExperienceBar()
 	M:EnableDisable_ReputationBar()	
-
+	
 	local T = self:GetModule('Threat')
 	T.db = self.db.general.threat
 	T:UpdatePosition()
@@ -517,8 +521,8 @@ function E:UpdateAll(ignoreInstall)
 	
 	self:GetModule('Auras').db = self.db.auras
 	self:GetModule('Tooltip').db = self.db.tooltip
-
-	E:GetModule('Auras'):UpdateAllHeaders()	
+	
+	E:GetModule('Auras'):UpdateAllHeaders()
 	
 	if self.db.install_complete == nil or (self.db.install_complete and type(self.db.install_complete) == 'boolean') or (self.db.install_complete and type(tonumber(self.db.install_complete)) == 'number' and tonumber(self.db.install_complete) <= 3.83) then
 		if not ignoreInstall then
@@ -534,6 +538,7 @@ function E:UpdateAll(ignoreInstall)
 	self:UpdateFrameTemplates()
 	
 	self:GetModule('Layout'):ToggleChatPanels()	
+	self:GetModule('Layout'):BottomPanelVisibility()
 	
 	collectgarbage('collect');
 end
@@ -736,7 +741,7 @@ function E:DBConversions()
 				end
 			end
 		end
-
+		
 		if self.db.unitframe.units[unit] and self.db.unitframe.units[unit].castbar then
 			if unit == 'player' then
 				if self.db.unitframe.units[unit].castbar.color then
@@ -752,7 +757,7 @@ function E:DBConversions()
 				self.db.unitframe.units[unit].castbar.color = nil;
 				self.db.unitframe.units[unit].castbar.interruptcolor = nil;
 			end
-		end		
+		end
 	end	
 end
 
@@ -775,7 +780,7 @@ function E:Initialize()
 	
 	self:CheckRole()
 	self:UIScale('PLAYER_LOGIN');
-	
+
 	self:LoadConfig(); --Load In-Game Config
 	self:LoadCommands(); --Load Commands
 	self:InitializeModules(); --Load Modules	
@@ -817,14 +822,14 @@ function E:Initialize()
 	self:RegisterEvent('UI_SCALE_CHANGED', 'UIScale')
 	self:RegisterEvent('PLAYER_ENTERING_WORLD')
 	self:RegisterEvent("PET_BATTLE_CLOSE", 'AddNonPetBattleFrames')
-	self:RegisterEvent('PET_BATTLE_OPENING_START', "RemoveNonPetBattleFrames")		
-	self:Tutorials()
+	self:RegisterEvent('PET_BATTLE_OPENING_START', "RemoveNonPetBattleFrames")	
 	
+	self:Tutorials()
 	self:GetModule('Minimap'):UpdateSettings()
 	self:RefreshModulesDB()
 	collectgarbage("collect");
 	
 	if self.db.general.loginmessage then
 		print(select(2, E:GetModule('Chat'):FindURL(nil, format(L['LOGIN_MSG'], self["media"].hexvaluecolor, self["media"].hexvaluecolor, self.version)))..'.')
-	end		
+	end	
 end

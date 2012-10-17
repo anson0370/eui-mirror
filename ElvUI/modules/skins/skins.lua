@@ -1,4 +1,4 @@
-local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB, Localize Underscore
 local S = E:NewModule('Skins', 'AceTimer-3.0', 'AceHook-3.0', 'AceEvent-3.0')
 
 E.Skins = S
@@ -24,7 +24,7 @@ function S:HandleButton(f, strip)
 	if f.Left then f.Left:SetAlpha(0) end
 	if f.Middle then f.Middle:SetAlpha(0) end
 	if f.Right then f.Right:SetAlpha(0) end
-
+	
 	if f.SetNormalTexture then f:SetNormalTexture("") end
 	
 	if f.SetHighlightTexture then f:SetHighlightTexture("") end
@@ -38,22 +38,6 @@ function S:HandleButton(f, strip)
 	f:SetTemplate("Default", true)
 	f:HookScript("OnEnter", SetModifiedBackdrop)
 	f:HookScript("OnLeave", SetOriginalBackdrop)
-end
-
-function S:HandleButtonB(f, strip)
-	if f.Left then f.Left:SetAlpha(0) end
-	if f.Middle then f.Middle:SetAlpha(0) end
-	if f.Right then f.Right:SetAlpha(0) end
-
-	if f.SetNormalTexture then f:SetNormalTexture("") end
-	
-	if f.SetPushedTexture then f:SetPushedTexture("") end
-	
-	if f.SetDisabledTexture then f:SetDisabledTexture("") end
-	
-	if strip then f:StripTextures() end
-	
-	f:SetTemplate("Default", true)
 end
 
 function S:HandleScrollBar(frame, thumbTrim)
@@ -79,7 +63,7 @@ function S:HandleScrollBar(frame, thumbTrim)
 			_G[frame:GetName().."ScrollUpButton"].texture = _G[frame:GetName().."ScrollUpButton"]:CreateTexture(nil, 'OVERLAY')
 			_G[frame:GetName().."ScrollUpButton"].texture:SetInside()
 			_G[frame:GetName().."ScrollUpButton"].texture:SetTexture([[Interface\AddOns\ElvUI\media\textures\arrowup.tga]])
-			_G[frame:GetName().."ScrollUpButton"].texture:SetVertexColor(unpack(E['media'].bordercolor))
+			_G[frame:GetName().."ScrollUpButton"].texture:SetVertexColor(0.5, 0.5, 0.5)
 		end
 		_G[frame:GetName().."ScrollUpButton"]:HookScript('OnEnter', function(self)
 			SetModifiedBackdrop(self)
@@ -87,7 +71,7 @@ function S:HandleScrollBar(frame, thumbTrim)
 		end)	
 		_G[frame:GetName().."ScrollUpButton"]:HookScript('OnLeave', function(self)
 			SetOriginalBackdrop(self)
-			self.texture:SetVertexColor(unpack(E['media'].bordercolor))	
+			self.texture:SetVertexColor(0.5, 0.5, 0.5)	
 		end)		
 		
 		_G[frame:GetName().."ScrollDownButton"]:StripTextures()
@@ -98,7 +82,7 @@ function S:HandleScrollBar(frame, thumbTrim)
 			_G[frame:GetName().."ScrollDownButton"].texture = _G[frame:GetName().."ScrollDownButton"]:CreateTexture(nil, 'OVERLAY')
 			_G[frame:GetName().."ScrollDownButton"].texture:SetInside()
 			_G[frame:GetName().."ScrollDownButton"].texture:SetTexture([[Interface\AddOns\ElvUI\media\textures\arrowdown.tga]])
-			_G[frame:GetName().."ScrollDownButton"].texture:SetVertexColor(unpack(E['media'].bordercolor))
+			_G[frame:GetName().."ScrollDownButton"].texture:SetVertexColor(0.5, 0.5, 0.5)
 		end
 		
 		_G[frame:GetName().."ScrollDownButton"]:HookScript('OnEnter', function(self)
@@ -107,7 +91,7 @@ function S:HandleScrollBar(frame, thumbTrim)
 		end)	
 		_G[frame:GetName().."ScrollDownButton"]:HookScript('OnLeave', function(self)
 			SetOriginalBackdrop(self)
-			self.texture:SetVertexColor(unpack(E['media'].bordercolor))	
+			self.texture:SetVertexColor(0.5, 0.5, 0.5)	
 		end)				
 		
 		if not frame.trackbg then
@@ -226,7 +210,7 @@ function S:HandleNextPrevButton(btn, horizonal)
 				btn:GetDisabledTexture():SetTexCoord(0.3, 0.29, 0.3, 0.75, 0.65, 0.29, 0.65, 0.75)
 			end
 		end
-		
+
 		btn:GetNormalTexture():SetInside()
 		if btn:GetDisabledTexture() then
 			btn:GetDisabledTexture():SetAllPoints(btn:GetNormalTexture())
@@ -322,7 +306,7 @@ function S:HandleCheckBox(frame)
 		else
 			self:SetDisabledTexture("")
 		end
-	end)	
+	end)
 	
 	frame.SetNormalTexture = E.noop
 	frame.SetPushedTexture = E.noop
@@ -340,7 +324,7 @@ function S:HandleItemButton(b, shrinkIcon)
 	if b:GetName() and _G[b:GetName()..'IconTexture'] then
 		icon = _G[b:GetName()..'IconTexture']
 	elseif b:GetName() and _G[b:GetName()..'Icon'] then
-		icon = _G[b:GetName()..'Icon']	
+		icon = _G[b:GetName()..'Icon']
 	end
 	
 	if icon then
@@ -391,7 +375,7 @@ function S:HandleSliderFrame(frame)
 	frame.backdrop:SetAllPoints()
 	frame.SetBackdrop = E.noop
 	frame:SetThumbTexture(E["media"].blankTex)
-	frame:GetThumbTexture():SetVertexColor(unpack(E["media"].bordercolor))
+	frame:GetThumbTexture():SetVertexColor(0.5, 0.5, 0.5)
 	frame:GetThumbTexture():Size(SIZE-2,SIZE-2)
 	if orientation == 'VERTICAL' then
 		frame:Width(SIZE)

@@ -193,10 +193,10 @@ function A:PostDrag(position)
 			if not position then position = E:GetScreenQuadrant(header) end
 			if string.find(position, "LEFT") then
 				header:SetAttribute("point", "TOPLEFT")
-				header:SetAttribute("xOffset", (E.private.auras.size + 10))
+				header:SetAttribute("xOffset", (E.private.auras.size + (E.PixelMode and 6 or 10)))
 			else
 				header:SetAttribute("point", "TOPRIGHT")
-				header:SetAttribute("xOffset", -(E.private.auras.size + 10))		
+				header:SetAttribute("xOffset", -(E.private.auras.size + (E.PixelMode and 6 or 10)))		
 			end
 			
 			header:ClearAllPoints()
@@ -204,16 +204,16 @@ function A:PostDrag(position)
 	end
 	
 	if string.find(position, "LEFT") then
-		ElvUIPlayerBuffs:Point("TOPLEFT", AurasHolder, "TOPLEFT", 2, -2)
+		ElvUIPlayerBuffs:Point("TOPLEFT", AurasHolder, "TOPLEFT", E.Border, -E.Border)
 		
 		if ElvUIPlayerDebuffs then
-			ElvUIPlayerDebuffs:Point("BOTTOMLEFT", AurasHolder, "BOTTOMLEFT", 2, 2)
+			ElvUIPlayerDebuffs:Point("BOTTOMLEFT", AurasHolder, "BOTTOMLEFT", E.Border, E.Border)
 		end
 	else
-		ElvUIPlayerBuffs:Point("TOPRIGHT", AurasHolder, "TOPRIGHT", -2, -2)
+		ElvUIPlayerBuffs:Point("TOPRIGHT", AurasHolder, "TOPRIGHT", -E.Border, -E.Border)
 		
 		if ElvUIPlayerDebuffs then
-			ElvUIPlayerDebuffs:Point("BOTTOMRIGHT", AurasHolder, "BOTTOMRIGHT", -2, 2)	
+			ElvUIPlayerDebuffs:Point("BOTTOMRIGHT", AurasHolder, "BOTTOMRIGHT", -E.Border, E.Border)	
 		end
 	end
 end
@@ -259,8 +259,9 @@ end
 
 function A:Initialize()
 	if self.db then return; end --IDK WHY BUT THIS IS GETTING CALLED TWICE FROM SOMEWHERE...
-	self.db = E.db.auras
 	
+	self.db = E.db.auras
+
 	BuffFrame:Kill()
 	ConsolidatedBuffs:Kill()
 	InterfaceOptionsFrameCategoriesButton12:SetScale(0.0001)
@@ -269,7 +270,7 @@ function A:Initialize()
 	if E.private.auras.enable ~= true then TemporaryEnchantFrame:Kill(); return end
 	
 	local holder = CreateFrame("Frame", "AurasHolder", E.UIParent)
-	holder:SetPoint("TOPRIGHT", Minimap, "TOPLEFT", -8, 2)
+	holder:SetPoint("TOPRIGHT", Minimap, "TOPLEFT", -8, (E.PixelMode and 6 or 2))
 	holder:Width(456)
 	holder:Height(E.MinimapHeight)
 	
@@ -292,9 +293,9 @@ function A:Initialize()
 	TemporaryEnchantFrame:SetParent(self.EnchantHeader)
 	
 	for i = 1, 2 do
-		A:UpdateWeapon(_G["TempEnchant"..i])
+		A:UpdateWeapon(_G["TempEnchant"..i])	
 	end
-	
+
 	E:CreateMover(AurasHolder, "AurasMover", L["Auras Frame"], false, nil, A.PostDrag)
 	E:CreateMover(self.EnchantHeader, 'TempEnchantMover', L['Weapons'], nil, nil, A.WeaponPostDrag)
 end

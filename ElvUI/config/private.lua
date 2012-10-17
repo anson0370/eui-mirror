@@ -1,4 +1,4 @@
-local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB, Localize Underscore
 
 --Locked Settings, These settings are stored for your character only regardless of profile options.
 
@@ -10,10 +10,12 @@ V['general'] = {
 	["dmgfont"] = "ElvUI Combat",
 	["namefont"] = "ElvUI Font",
 	['bubbles'] = true,
+	['pixelPerfect'] = false, --USE AT YOUR OWN RISK!! NOT EVEN CLOSE TO DONE!
+	["raidIconStyle"] = "classic",
 	
 	['minimap'] = {
 		['enable'] = true,
-	},	
+	},
 }
 
 V['bags'] = {
@@ -23,11 +25,6 @@ V['bags'] = {
 
 V["nameplate"] = {
 	["enable"] = true,
-}
-
-V['reminder'] = {
-	['enable'] = true,
-	['sound'] = "Warning",
 }
 
 V['auras'] = {
@@ -42,7 +39,7 @@ V['chat'] = {
 V['skins'] = {
 	['ace3'] = {
 		['enable'] = true,
-	},
+	},	
 	['blizzard'] = {
 		['enable'] = true,
 		["bags"] = true,

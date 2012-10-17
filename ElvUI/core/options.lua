@@ -1,4 +1,4 @@
-﻿local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+﻿local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB, Localize Underscore
 
 E.Options.args = {
 	ElvUI_Header = {
@@ -13,7 +13,7 @@ E.Options.args = {
 		name = L['Login Message'],
 		get = function(info) return E.db.general.loginmessage end,
 		set = function(info, value) E.db.general.loginmessage = value end,
-	},
+	},	
 	ToggleTutorial = {
 		order = 3,
 		type = 'execute',
@@ -80,7 +80,7 @@ E.Options.args.general = {
 					get = function() return tonumber(format('%.2f', GetCVar('uiScale'))) end,
 				},			
 				interruptAnnounce = {
-					order = 2,
+					order = 11,
 					name = L['Announce Interrupts'],
 					desc = L['Announce when you interrupt a spell to the specified chat channel.'],
 					type = 'select',
@@ -92,7 +92,7 @@ E.Options.args.general = {
 					},
 				},
 				autoRepair = {
-					order = 8,
+					order = 2,
 					name = L['Auto Repair'],
 					desc = L['Automatically repair using the following method when visiting a merchant.'],
 					type = 'select',
@@ -101,7 +101,7 @@ E.Options.args.general = {
 						['GUILD'] = GUILD,
 						['PLAYER'] = PLAYER,
 					},				
-				},	
+				},
 				mapAlpha = {
 					order = 3,
 					name = L['Map Alpha While Moving'],
@@ -109,21 +109,28 @@ E.Options.args.general = {
 					type = 'range',
 					isPercent = true,
 					min = 0, max = 1, step = 0.01,
-				},				
+				},		
 				autoAcceptInvite = {
-					order = 4,
+					order = 5,
 					name = L['Accept Invites'],
 					desc = L['Automatically accept invites from guild/friends.'],
 					type = 'toggle',
 				},
-				vendorGrays = {
-					order = 5,
-					name = L['Vendor Grays'],
-					desc = L['Automatically vendor gray items when visiting a vendor.'],
-					type = 'toggle',				
-				},				
+				-- vendorGrays = {
+					-- order = 6,
+					-- name = L['Vendor Grays'],
+					-- desc = L['Automatically vendor gray items when visiting a vendor.'],
+					-- type = 'toggle',				
+				-- },
+				-- autoRoll = {
+					-- order = 8,
+					-- name = L['Auto Greed/DE'],
+					-- desc = L['Automatically select greed or disenchant (when available) on green quality items. This will only work if you are the max level.'],
+					-- type = 'toggle',		
+					-- disabled = function() return not E.private.general.lootRoll end
+				-- },
 				loot = {
-					order = 6,
+					order = 9,
 					type = "toggle",
 					name = L['Loot'],
 					desc = L['Enable/Disable the loot frame.'],
@@ -131,7 +138,7 @@ E.Options.args.general = {
 					set = function(info, value) E.private.general.loot = value; E:StaticPopup_Show("PRIVATE_RL") end
 				},
 				lootRoll = {
-					order = 7,
+					order = 10,
 					type = "toggle",
 					name = L['Loot Roll'],
 					desc = L['Enable/Disable the loot roll frame.'],
@@ -139,42 +146,37 @@ E.Options.args.general = {
 					set = function(info, value) E.private.general.lootRoll = value; E:StaticPopup_Show("PRIVATE_RL") end
 				},
 				bubbles = {
-					order = 13,
+					order = 12,
 					type = "toggle",
 					name = L['Chat Bubbles'],
 					desc = L['Skin the blizzard chat bubbles.'],
 					get = function(info) return E.private.general.bubbles end,
 					set = function(info, value) E.private.general.bubbles = value; E:StaticPopup_Show("PRIVATE_RL") end
 				},	
-				-- taintLog = {
-					-- order = 14,
-					-- type = "toggle",
-					-- name = L["Log Taints"],
-					-- desc = L["Send ADDON_ACTION_BLOCKED errors to the Lua Error frame. These errors are less important in most cases and will not effect your game performance. Also a lot of these errors cannot be fixed. Please only report these errors if you notice a Defect in gameplay."],
-				-- },
+				taintLog = {
+					order = 13,
+					type = "toggle",
+					name = L["Log Taints"],
+					desc = L["Send ADDON_ACTION_BLOCKED errors to the Lua Error frame. These errors are less important in most cases and will not effect your game performance. Also a lot of these errors cannot be fixed. Please only report these errors if you notice a Defect in gameplay."],
+				},
 				-- tinyWorldMap = {
-					-- order = 15,
+					-- order = 14,
 					-- type = "toggle",
 					-- name = L["Tiny Map"],
 					-- desc = L["Don't scale the large world map to block out sides of the screen."],
 					-- get = function(info) return E.db.general.tinyWorldMap end,
 					-- set = function(info, value) E.db.general.tinyWorldMap = value; E:GetModule('WorldMap'):ToggleTinyWorldMapSetting() end					
+				-- },	
+				-- bottomPanel = {
+					-- order = 15,
+					-- type = 'toggle',
+					-- name = L['Bottom Panel'],
+					-- desc = L['Display a panel across the bottom of the screen. This is for cosmetic only.'],
+					-- get = function(info) return E.db.general.bottomPanel end,
+					-- set = function(info, value) E.db.general.bottomPanel = value; E:GetModule('Layout'):BottomPanelVisibility() end						
 				-- },
-				-- minimapLocationText = {
-					-- order = 16,
-					-- type = 'select',
-					-- name = L['Location Text'],
-					-- desc = L['Change settings for the display of the location text that is on the minimap.'],
-					-- get = function(info) return E.db.general.minimapLocationText end,
-					-- set = function(info, value) E.db.general.minimapLocationText = value; E:GetModule('Minimap'):UpdateSettings() end,
-					-- values = {
-						-- ['MOUSEOVER'] = L['Minimap Mouseover'],
-						-- ['SHOW'] = L['Always Display'],
-						-- ['HIDE'] = L['Hide'],
-					-- },
-				-- },		
 			},
-		},
+		},	
 		minimap = {
 			order = 2,
 			get = function(info) return E.db.general.minimap[ info[#info] ] end,	
@@ -199,20 +201,20 @@ E.Options.args.general = {
 					set = function(info, value) E.db.general.minimap[ info[#info] ] = value; E:GetModule('Minimap'):UpdateSettings() end,	
 					disabled = function() return not E.private.general.minimap.enable end,
 				},	
-				-- locationText = {
-					-- order = 3,
-					-- type = 'select',
-					-- name = L['Location Text'],
-					-- desc = L['Change settings for the display of the location text that is on the minimap.'],
-					-- get = function(info) return E.db.general.minimap.locationText end,
-					-- set = function(info, value) E.db.general.minimap.locationText = value; E:GetModule('Minimap'):UpdateSettings() end,
-					-- values = {
-						-- ['MOUSEOVER'] = L['Minimap Mouseover'],
-						-- ['SHOW'] = L['Always Display'],
-						-- ['HIDE'] = L['Hide'],
-					-- },
-					-- disabled = function() return not E.private.general.minimap.enable end,
-				-- },				
+				locationText = {
+					order = 3,
+					type = 'select',
+					name = L['Location Text'],
+					desc = L['Change settings for the display of the location text that is on the minimap.'],
+					get = function(info) return E.db.general.minimap.locationText end,
+					set = function(info, value) E.db.general.minimap.locationText = value; E:GetModule('Minimap'):UpdateSettings() end,
+					values = {
+						['MOUSEOVER'] = L['Minimap Mouseover'],
+						['SHOW'] = L['Always Display'],
+						['HIDE'] = L['Hide'],
+					},
+					disabled = function() return not E.private.general.minimap.enable end,
+				},				
 			},		
 		},
 		experience = {
@@ -233,7 +235,7 @@ E.Options.args.general = {
 					order = 2,
 					type = "range",
 					name = L["Width"],
-					min = 10, max = 800, step = 1,
+					min = 100, max = 800, step = 1,
 				},
 				height = {
 					order = 3,
@@ -279,7 +281,7 @@ E.Options.args.general = {
 					order = 2,
 					type = "range",
 					name = L["Width"],
-					min = 10, max = 800, step = 1,
+					min = 100, max = 800, step = 1,
 				},
 				height = {
 					order = 3,
@@ -306,9 +308,9 @@ E.Options.args.general = {
 					min = 6, max = 22, step = 1,		
 				},				
 			},
-		},		
+		},	
 		threat = {
-			order = 5,
+			order = 4,
 			get = function(info) return E.db.general.threat[ info[#info] ] end,
 			set = function(info, value) E.db.general.threat[ info[#info] ] = value; E:GetModule('Threat'):ToggleEnable()end,		
 			type = "group",
@@ -389,7 +391,7 @@ E.Options.args.general = {
 					},
 				},
 			},
-		},			
+		},					
 	},
 }
 
@@ -439,7 +441,7 @@ E.Options.args.media = {
 					values = AceGUIWidgetLSMlists.font,
 					get = function(info) return E.private.general[ info[#info] ] end,							
 					set = function(info, value) E.private.general[ info[#info] ] = value; E:UpdateMedia(); E:UpdateFontTemplates(); E:StaticPopup_Show("PRIVATE_RL"); end,
-				},				
+				}
 			},
 		},	
 		textures = {
@@ -555,7 +557,7 @@ E.Options.args.media = {
 						E.db.unitframe.transparent = value
 						if value then E:SetupTheme("transparent") else E:SetupTheme("classic") end
 					end,
-				},					
+				},				
 				resetbutton = {
 					type = "execute",
 					order = 6,

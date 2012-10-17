@@ -1,4 +1,4 @@
-local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB, Localize Underscore
 local NP = E:GetModule('NamePlates')
 
 --[[
@@ -133,27 +133,40 @@ function NP:CreateAuraIcon(parent)
 		end
 	end)
 	
-	button.bg = button:CreateTexture(nil, "BACKGROUND")
-	button.bg:SetTexture(0, 0, 0, 1)
-	button.bg:SetAllPoints(button)
-	
-	button.bord = button:CreateTexture(nil, "BACKGROUND")
-	button.bord:SetDrawLayer('BACKGROUND', 2)
-	button.bord:SetTexture(unpack(E["media"].bordercolor))
-	button.bord:SetPoint("TOPLEFT",button,"TOPLEFT", noscalemult,-noscalemult)
-	button.bord:SetPoint("BOTTOMRIGHT",button,"BOTTOMRIGHT",-noscalemult,noscalemult)
-	
-	button.bg2 = button:CreateTexture(nil, "BACKGROUND")
-	button.bg2:SetDrawLayer('BACKGROUND', 3)
-	button.bg2:SetTexture(0, 0, 0, 1)
-	button.bg2:SetPoint("TOPLEFT",button,"TOPLEFT", noscalemult*2,-noscalemult*2)
-	button.bg2:SetPoint("BOTTOMRIGHT",button,"BOTTOMRIGHT",-noscalemult*2,noscalemult*2)	
-	
-	button.Icon = button:CreateTexture(nil, "BORDER")
-	button.Icon:SetPoint("TOPLEFT",button,"TOPLEFT", noscalemult*3,-noscalemult*3)
-	button.Icon:SetPoint("BOTTOMRIGHT",button,"BOTTOMRIGHT",-noscalemult*3,noscalemult*3)
-	button.Icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
-	
+	if E.PixelMode then
+		button.bord = button:CreateTexture(nil, "BACKGROUND")
+		button.bord:SetDrawLayer('BACKGROUND', 2)
+		button.bord:SetTexture(unpack(E["media"].bordercolor))
+		button.bord:SetPoint("TOPLEFT",button,"TOPLEFT", noscalemult,-noscalemult)
+		button.bord:SetPoint("BOTTOMRIGHT",button,"BOTTOMRIGHT",-noscalemult,noscalemult)
+		
+		button.Icon = button:CreateTexture(nil, "BORDER")
+		button.Icon:SetPoint("TOPLEFT",button,"TOPLEFT", noscalemult*2,-noscalemult*2)
+		button.Icon:SetPoint("BOTTOMRIGHT",button,"BOTTOMRIGHT",-noscalemult*2,noscalemult*2)
+		button.Icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)		
+	else
+		button.bg = button:CreateTexture(nil, "BACKGROUND")
+		button.bg:SetTexture(0, 0, 0, 1)
+		button.bg:SetAllPoints(button)
+		
+		button.bord = button:CreateTexture(nil, "BACKGROUND")
+		button.bord:SetDrawLayer('BACKGROUND', 2)
+		button.bord:SetTexture(unpack(E["media"].bordercolor))
+		button.bord:SetPoint("TOPLEFT",button,"TOPLEFT", noscalemult,-noscalemult)
+		button.bord:SetPoint("BOTTOMRIGHT",button,"BOTTOMRIGHT",-noscalemult,noscalemult)
+		
+		button.bg2 = button:CreateTexture(nil, "BACKGROUND")
+		button.bg2:SetDrawLayer('BACKGROUND', 3)
+		button.bg2:SetTexture(0, 0, 0, 1)
+		button.bg2:SetPoint("TOPLEFT",button,"TOPLEFT", noscalemult*2,-noscalemult*2)
+		button.bg2:SetPoint("BOTTOMRIGHT",button,"BOTTOMRIGHT",-noscalemult*2,noscalemult*2)	
+
+		button.Icon = button:CreateTexture(nil, "BORDER")
+		button.Icon:SetPoint("TOPLEFT",button,"TOPLEFT", noscalemult*3,-noscalemult*3)
+		button.Icon:SetPoint("BOTTOMRIGHT",button,"BOTTOMRIGHT",-noscalemult*3,noscalemult*3)
+		button.Icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)		
+	end
+		
 	button.TimeLeft = button:CreateFontString(nil, 'OVERLAY')
 	button.TimeLeft:Point('CENTER', 1, 1)
 	button.TimeLeft:SetJustifyH('CENTER')	
@@ -297,28 +310,28 @@ end
 function NP:SetAuraInstance(guid, spellid, expiration, stacks, caster, duration, texture, auratype, auratarget)
 	local filter = false
 	if (self.db.trackauras and caster == UnitGUID('player')) then
-		if self.db.trackfilter and #self.db.trackfilter > 1 and E.global['unitframe']['aurafilters'][self.db.trackfilter] then
-			local name = GetSpellInfo(spellid)
-			local spellList = E.global['unitframe']['aurafilters'][self.db.trackfilter].spells
-			local type = E.global['unitframe']['aurafilters'][self.db.trackfilter].type
-			if type == 'Blacklist' then
-				if not spellList[name] and spellList[name].enable then
-					filter = true;
-				end
-			else
-				if spellList[name] and spellList[name].enable then
-					filter = true;
-				end
-			end
-		elseif self.db.trackfilter ~= true then
-			filter = true;
-		end
+		filter = true;
 	end
 
+	if self.db.trackfilter and #self.db.trackfilter > 1 and E.global['unitframe']['aurafilters'][self.db.trackfilter] then
+		local name = GetSpellInfo(spellid)
+		local spellList = E.global['unitframe']['aurafilters'][self.db.trackfilter].spells
+		local type = E.global['unitframe']['aurafilters'][self.db.trackfilter].type
+		if type == 'Blacklist' then
+			if spellList[name] and spellList[name].enable then
+				filter = false;
+			end
+		else
+			if spellList[name] and spellList[name].enable then
+				filter = true;
+			end
+		end
+	end
+	
 	if E.global.unitframe.InvalidSpells[spellid] then
 		filter = false;
-	end	
-	
+	end
+
 	if filter ~= true then
 		return;
 	end

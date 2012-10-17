@@ -1,4 +1,4 @@
-local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB, Localize Underscore
 local UF = E:GetModule('UnitFrames');
 
 local _, ns = ...
@@ -6,17 +6,6 @@ local ElvUF = ns.oUF
 assert(ElvUF, "ElvUI was unable to locate oUF.")
 
 local BossHeader = CreateFrame('Frame', 'BossHeader', UIParent)
-
-local function closeFunc()
-	E.db.unitframe.units['boss'].enable = false
-	UF:CreateAndUpdateUFGroup('boss', MAX_BOSS_FRAMES)
-end
-
-local function openFunc()
-	E.db.unitframe.units['boss'].enable = true
-	UF:CreateAndUpdateUFGroup('boss', MAX_BOSS_FRAMES)
-end
-
 function UF:Construct_BossFrames(frame)	
 	frame.Health = self:Construct_HealthBar(frame, true, true, 'RIGHT')
 	
@@ -38,12 +27,12 @@ function UF:Construct_BossFrames(frame)
 	frame:SetAttribute("type2", "focus")
 	
 	BossHeader:Point('BOTTOMRIGHT', E.UIParent, 'RIGHT', -105, -165) 
-	E:CreateMover(BossHeader, BossHeader:GetName()..'Mover', L['Boss Frames'], nil, nil, nil, 'ALL,PARTY,RAID25', closeFunc, openFunc)
+	E:CreateMover(BossHeader, BossHeader:GetName()..'Mover', L['Boss Frames'], nil, nil, nil, 'ALL,PARTY,RAID10,RAID25,RAID40')
 end
 
 function UF:Update_BossFrames(frame, db)
 	frame.db = db
-
+	
 	if frame.Portrait then
 		frame.Portrait:Hide()
 		frame.Portrait:ClearAllPoints()
@@ -51,8 +40,8 @@ function UF:Update_BossFrames(frame, db)
 	end
 	frame.Portrait = db.portrait.style == '2D' and frame.Portrait2D or frame.Portrait3D
 	
-	local BORDER = E:Scale(2)
-	local SPACING = E:Scale(1)
+	local BORDER = E.Border;
+	local SPACING = E.Spacing;
 	local INDEX = frame.index
 	local UNIT_WIDTH = db.width
 	local UNIT_HEIGHT = db.height
@@ -192,7 +181,7 @@ function UF:Update_BossFrames(frame, db)
 				power:SetFrameStrata("MEDIUM")
 				power:SetFrameLevel(frame:GetFrameLevel() + 3)
 			else
-				power:Point("TOPLEFT", frame.Health.backdrop, "BOTTOMLEFT", BORDER, -(BORDER + SPACING))
+				power:Point("TOPLEFT", frame.Health.backdrop, "BOTTOMLEFT", BORDER, -(E.PixelMode and 0 or (BORDER + SPACING)))
 				power:Point("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -(BORDER + PORTRAIT_WIDTH), BORDER)
 			end
 		elseif frame:IsElementEnabled('Power') then
@@ -266,6 +255,7 @@ function UF:Update_BossFrames(frame, db)
 		frame.Debuffs:ClearAllPoints()
 	end
 	
+	
 	--Buffs
 	do
 		local buffs = frame.Buffs
@@ -322,7 +312,7 @@ function UF:Update_BossFrames(frame, db)
 		
 		local x, y = E:GetXYOffset(db.debuffs.anchorPoint)
 		local attachTo = self:GetAuraAnchorFrame(frame, db.debuffs.attachTo, db.debuffs.attachTo == 'BUFFS' and db.buffs.attachTo == 'DEBUFFS')
-				
+		
 		debuffs:Point(E.InversePoints[db.debuffs.anchorPoint], attachTo, db.debuffs.anchorPoint, x + db.debuffs.xOffset, y + db.debuffs.yOffset)
 		debuffs:Height(debuffs.size * rows)
 		debuffs["growth-y"] = db.debuffs.anchorPoint:find('TOP') and 'UP' or 'DOWN'
@@ -334,19 +324,19 @@ function UF:Update_BossFrames(frame, db)
 		else
 			debuffs:Hide()
 		end
-	end
+	end	
 	
 	--Castbar
 	do
 		local castbar = frame.Castbar
-		castbar:Width(db.castbar.width - 4)
+		castbar:Width(db.castbar.width - (E.Border * 2))
 		castbar:Height(db.castbar.height)
 		
 		--Icon
 		if db.castbar.icon then
 			castbar.Icon = castbar.ButtonIcon
-			castbar.Icon.bg:Width(db.castbar.height + 4)
-			castbar.Icon.bg:Height(db.castbar.height + 4)
+			castbar.Icon.bg:Width(db.castbar.height + (E.Border * 2))
+			castbar.Icon.bg:Height(db.castbar.height + (E.Border * 2))
 			
 			castbar:Width(db.castbar.width - castbar.Icon.bg:GetWidth() - 5)
 			castbar.Icon.bg:Show()
@@ -370,7 +360,7 @@ function UF:Update_BossFrames(frame, db)
 			frame:DisableElement('Castbar')	
 		end			
 	end
-
+	
 	--Raid Icon
 	do
 		local RI = frame.RaidIcon
@@ -386,7 +376,7 @@ function UF:Update_BossFrames(frame, db)
 			frame:DisableElement('RaidIcon')	
 			RI:Hide()
 		end
-	end			
+	end		
 	
 	--AltPowerBar
 	do
@@ -425,7 +415,7 @@ function UF:Update_BossFrames(frame, db)
 			altpower:Hide()
 		end
 	end
-
+	
 	if db.customTexts then
 		for objectName, _ in pairs(db.customTexts) do
 			if not frame[objectName] then
@@ -441,8 +431,8 @@ function UF:Update_BossFrames(frame, db)
 			frame[objectName]:ClearAllPoints()
 			frame[objectName]:SetPoint(objectDB.justifyH or 'CENTER', frame, 'CENTER', objectDB.xOffset, objectDB.yOffset)
 		end
-	end		
-	
+	end	
+
 	frame:ClearAllPoints()
 	if INDEX == 1 then
 		if db.growthDirection == 'UP' then

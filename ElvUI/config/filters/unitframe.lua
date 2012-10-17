@@ -389,7 +389,7 @@ G.unitframe.aurafilters['Blacklist'] = {
 		[SpellName(36032)] = Defaults(), --arcane blast
 		[SpellName(58539)] = Defaults(), --watchers corpse
 		[SpellName(26013)] = Defaults(), --deserter
-	--	[SpellName(6788)] = Defaults(), --weakended soul
+		[SpellName(6788)] = Defaults(), --weakended soul
 		[SpellName(71041)] = Defaults(), --dungeon deserter
 		[SpellName(41425)] = Defaults(), --"Hypothermia"
 		[SpellName(55711)] = Defaults(), --Weakened Heart
@@ -412,9 +412,8 @@ G.unitframe.aurafilters['Whitelist'] = {
 	['spells'] = {
 		[SpellName(2825)] = Defaults(), -- Bloodlust
 		[SpellName(32182)] = Defaults(), -- Heroism	
-		[SpellName(109257)] = Defaults(),
 		[SpellName(80353)] = Defaults(), --Time Warp
-		[SpellName(90355)] = Defaults(), --Ancient Hysteria			
+		[SpellName(90355)] = Defaults(), --Ancient Hysteria		
 	},
 }
 

@@ -1,4 +1,4 @@
-local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB, Localize Underscore
 local AB = E:NewModule('ActionBars', 'AceHook-3.0', 'AceEvent-3.0');
 --/run E, C, L = unpack(ElvUI); AB = E:GetModule('ActionBars'); AB:ToggleMovers()
 
@@ -41,30 +41,30 @@ AB["barDefaults"] = {
 		['bindButtons'] = "MULTIACTIONBAR3BUTTON",
 		['conditions'] = "",
 		['position'] = "RIGHT,ElvUI_Bar1,LEFT,-4,0",
-	},	
+	},
 	["bar6"] = {
 		['page'] = 8,
 		['bindButtons'] = "MULTIACTIONBAR5BUTTON",
 		['conditions'] = "",
-		['position'] = "BOTTOM,ElvUI_Bar1,TOP,0,10",
+		['position'] = "BOTTOM,ElvUI_Bar1,TOP,0,100",
 	},	
 	["bar7"] = {
 		['page'] = 9,
 		['bindButtons'] = "MULTIACTIONBAR6BUTTON",
 		['conditions'] = "",
-		['position'] = "BOTTOM,ElvUI_Bar1,TOP,0,110",
+		['position'] = "BOTTOM,ElvUI_Bar1,TOP,0,150",
 	},	
 	["bar8"] = {
 		['page'] = 10,
 		['bindButtons'] = "MULTIACTIONBAR7BUTTON",
 		['conditions'] = "",
-		['position'] = "BOTTOM,ElvUI_Bar1,TOP,0,210",
+		['position'] = "BOTTOM,ElvUI_Bar1,TOP,0,200",
 	},	
 	["bar9"] = {
 		['page'] = 7,
 		['bindButtons'] = "MULTIACTIONBAR8BUTTON",
 		['conditions'] = "",
-		['position'] = "BOTTOM,ElvUI_Bar1,TOP,0,310",
+		['position'] = "BOTTOM,ElvUI_Bar1,TOP,0,250",
 	},	
 }
 
@@ -104,7 +104,7 @@ function AB:PositionAndSizeBar(barName)
 
 	bar:SetWidth(spacing + ((size * (buttonsPerRow * widthMult)) + ((spacing * (buttonsPerRow - 1)) * widthMult) + (spacing * widthMult)));
 	bar:SetHeight(spacing + ((size * (numColumns * heightMult)) + ((spacing * (numColumns - 1)) * heightMult) + (spacing * heightMult)));
-	
+
 	bar.mouseover = self.db[barName].mouseover
 	
 	if self.db[barName].backdrop == true then
@@ -152,7 +152,7 @@ function AB:PositionAndSizeBar(barName)
 				self:HookScript(button, 'OnLeave', 'Button_OnLeave');					
 			end
 		else
-			bar:SetAlpha(1);
+			bar:SetAlpha(self.db[barName].alpha);
 			if self.hooks[bar] then
 				self:Unhook(bar, 'OnEnter');
 				self:Unhook(bar, 'OnLeave');
@@ -215,7 +215,7 @@ function AB:PositionAndSizeBar(barName)
 		bar:SetScale(1);
 		
 		if not self.db[barName].mouseover then
-			bar:SetAlpha(1);
+			bar:SetAlpha(self.db[barName].alpha);
 		end
 	else
 		bar:SetScale(0.000001);
@@ -228,19 +228,8 @@ function AB:PositionAndSizeBar(barName)
 	E:SetMoverSnapOffset('ElvAB_'..bar.id, bar.db.buttonspacing / 2)
 end
 
-local function closeFunc(name)
-	E.db.actionbar[string.gsub(name, 'ElvAB_', 'bar')].enabled = false
-	AB:UpdateButtonSettings()
-end
-
-local function openFunc(name)
-	E.db.actionbar[string.gsub(name, 'ElvAB_', 'bar')].enabled = true
-	AB:UpdateButtonSettings()
-end
-
 function AB:CreateBar(id)
 	local bar = CreateFrame('Frame', 'ElvUI_Bar'..id, E.UIParent, 'SecureHandlerStateTemplate');
-
 	local point, anchor, attachTo, x, y = string.split(',', self['barDefaults']['bar'..id].position)
 	bar:Point(point, anchor, attachTo, x, y)
 	bar.id = id
@@ -273,11 +262,11 @@ function AB:CreateBar(id)
 		else
 			self:Show();
 		end	
-	]])	
+	]])
 	
 	self["handledBars"]['bar'..id] = bar;
 	self:PositionAndSizeBar('bar'..id);
-	E:CreateMover(bar, 'ElvAB_'..id, L['Bar '..id], nil, nil, nil,'ALL,ACTIONBARS', closeFunc, openFunc)
+	E:CreateMover(bar, 'ElvAB_'..id, L['Bar '..id], nil, nil, nil,'ALL,ACTIONBARS')
 	return bar
 end
 
@@ -376,7 +365,7 @@ function AB:UpdateButtonSettings()
 			self["handledbuttons"][button] = nil
 		end
 	end
-	
+
 	for i=1, 9 do
 		self:PositionAndSizeBar('bar'..i)
 	end	
@@ -447,7 +436,7 @@ function AB:StyleButton(button, noBackdrop)
 	
 	--Extra Action Button
 	if button.style then
-	--	button.style:SetParent(button.backdrop)
+		--button.style:SetParent(button.backdrop)
 		button.style:SetDrawLayer('BACKGROUND', -7)	
 	end
 	
@@ -458,7 +447,7 @@ function AB:StyleButton(button, noBackdrop)
 end
 
 function AB:Bar_OnEnter(bar)
-	E:UIFrameFadeIn(bar, 0.2, bar:GetAlpha(), 1)
+	E:UIFrameFadeIn(bar, 0.2, bar:GetAlpha(), bar.db.alpha)
 end
 
 function AB:Bar_OnLeave(bar)
@@ -467,7 +456,7 @@ end
 
 function AB:Button_OnEnter(button)
 	local bar = button:GetParent()
-	E:UIFrameFadeIn(bar, 0.2, bar:GetAlpha(), 1)
+	E:UIFrameFadeIn(bar, 0.2, bar:GetAlpha(), bar.db.alpha)
 end
 
 function AB:Button_OnLeave(button)
@@ -535,7 +524,7 @@ function AB:DisableBlizzard()
 		_G['MultiCastActionButton'..i]:UnregisterAllEvents()
 		_G['MultiCastActionButton'..i]:SetAttribute("statehidden", true)
 	end
-	
+
 	ActionBarController:UnregisterAllEvents()
 	ActionBarController:RegisterEvent('UPDATE_EXTRA_ACTIONBAR')
 	
@@ -544,7 +533,7 @@ function AB:DisableBlizzard()
 	MainMenuExpBar:UnregisterAllEvents()
 	MainMenuExpBar:Hide()
 	MainMenuExpBar:SetParent(UIHider)
-
+	
 	for i=1, MainMenuBar:GetNumChildren() do
 		local child = select(i, MainMenuBar:GetChildren())
 		if child then
@@ -552,12 +541,12 @@ function AB:DisableBlizzard()
 			child:Hide()
 			child:SetParent(UIHider)
 		end
-	end	
-	
+	end
+
 	ReputationWatchBar:UnregisterAllEvents()
 	ReputationWatchBar:Hide()
 	ReputationWatchBar:SetParent(UIHider)	
-	
+
 	MainMenuBarArtFrame:UnregisterEvent("ACTIONBAR_PAGE_CHANGED")
 	MainMenuBarArtFrame:UnregisterEvent("ADDON_LOADED")
 	MainMenuBarArtFrame:Hide()
@@ -582,11 +571,11 @@ function AB:DisableBlizzard()
 	MultiCastActionBarFrame:UnregisterAllEvents()
 	MultiCastActionBarFrame:Hide()
 	MultiCastActionBarFrame:SetParent(UIHider)
-
+	
 	--This frame puts spells on the damn actionbar, fucking obliterate that shit
 	IconIntroTracker:UnregisterAllEvents()
 	IconIntroTracker:Hide()
-	IconIntroTracker:SetParent(UIHider)	
+	IconIntroTracker:SetParent(UIHider)
 	
 	InterfaceOptionsCombatPanelActionButtonUseKeyDown:SetScale(0.0001)
 	InterfaceOptionsCombatPanelActionButtonUseKeyDown:SetAlpha(0)
@@ -600,7 +589,7 @@ function AB:DisableBlizzard()
 	InterfaceOptionsActionBarsPanelLockActionBars:SetAlpha(0)
 	InterfaceOptionsActionBarsPanelPickupActionKeyDropDown:SetAlpha(0)
 	InterfaceOptionsActionBarsPanelPickupActionKeyDropDown:SetScale(0.00001)
-	
+
 	self:SecureHook('BlizzardOptionsPanel_OnEvent')
 	--InterfaceOptionsFrameCategoriesButton6:SetScale(0.00001)
 	if PlayerTalentFrame then
@@ -778,6 +767,35 @@ function AB:StyleFlyout(button)
 	end
 end
 
+function AB:VehicleFix()
+	local barName = 'bar1'
+	local bar = self["handledBars"][barName]
+	local spacing = E:Scale(self.db[barName].buttonspacing);
+	local numButtons = self.db[barName].buttons;
+	local buttonsPerRow = self.db[barName].buttonsPerRow;		
+	local size = E:Scale(self.db[barName].buttonsize);
+	local point = self.db[barName].point;
+	local numColumns = ceil(numButtons / buttonsPerRow);
+		
+	if (HasOverrideActionBar() or HasVehicleActionBar()) and numButtons == 12 then
+		local widthMult = 1;
+		local heightMult = 1;
+	
+		bar.backdrop:ClearAllPoints()
+		bar.backdrop:SetPoint(self.db[barName].point, bar, self.db[barName].point)
+		bar.backdrop:SetWidth(spacing + ((size * (buttonsPerRow * widthMult)) + ((spacing * (buttonsPerRow - 1)) * widthMult) + (spacing * widthMult)));
+		bar.backdrop:SetHeight(spacing + ((size * (numColumns * heightMult)) + ((spacing * (numColumns - 1)) * heightMult) + (spacing * heightMult)));			
+	else
+		bar.backdrop:SetAllPoints()
+	end
+end
+
+function AB:ActionButton_ShowOverlayGlow(frame)
+	if not frame.overlay then return; end
+	local size =  frame:GetWidth() / 3
+	frame.overlay:SetOutside(frame, size, size)
+end
+
 function AB:EuiStyle(value)
 	if E.db.movers == nil then E.db.movers = {} end
 	if not value then value = self.db.euiabstyle end
@@ -809,36 +827,6 @@ function AB:EuiStyle(value)
 	end
 end
 
-function AB:VehicleFix()
-	local barName = 'bar1'
-	local bar = self["handledBars"][barName]
-	if HasOverrideActionBar() or HasVehicleActionBar() then
-		local widthMult = 1;
-		local heightMult = 1;
-		local spacing = E:Scale(self.db[barName].buttonspacing);
-		local buttonsPerRow = self.db[barName].buttonsPerRow;
-		local numButtons = self.db[barName].buttons;
-		local size = E:Scale(self.db[barName].buttonsize);
-		local point = self.db[barName].point;
-		local numColumns = ceil(numButtons / buttonsPerRow);
-	
-		widthMult = 1
-		heightMult = 1
-		bar.backdrop:ClearAllPoints()
-		bar.backdrop:SetPoint(self.db[barName].point, bar, self.db[barName].point)
-		bar.backdrop:SetWidth(spacing + ((size * (buttonsPerRow * widthMult)) + ((spacing * (buttonsPerRow - 1)) * widthMult) + (spacing * widthMult)));
-		bar.backdrop:SetHeight(spacing + ((size * (numColumns * heightMult)) + ((spacing * (numColumns - 1)) * heightMult) + (spacing * heightMult)));			
-	else
-		bar.backdrop:SetAllPoints()
-	end
-end
-
-function AB:ActionButton_ShowOverlayGlow(frame)
-	if not frame.overlay then return; end
-	local size =  frame:GetWidth() / 3
-	frame.overlay:SetOutside(frame, size, size)
-end
-
 function AB:Initialize()
 	self.db = E.db.actionbar
 	if E.private.actionbar.enable ~= true then return; end
@@ -865,13 +853,12 @@ function AB:Initialize()
 	self:RegisterEvent('PET_BATTLE_OPENING_DONE', 'RemoveBindings')
 	self:RegisterEvent('UPDATE_VEHICLE_ACTIONBAR', 'VehicleFix')
 	self:RegisterEvent('UPDATE_OVERRIDE_ACTIONBAR', 'VehicleFix')
-	self:ReassignBindings()
-
+	
 	if C_PetBattles.IsInBattle() then
 		self:RemoveBindings()
 	else
 		self:ReassignBindings()
-	end	
+	end
 	
 	self:SecureHook('ActionButton_ShowOverlayGlow')
 	

@@ -1,4 +1,4 @@
-local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB, Localize Underscore
 
 --Return short value of a number
 function E:ShortValue(v)
@@ -121,7 +121,8 @@ function E:GetScreenQuadrant(frame)
 end
 
 function E:GetXYOffset(position, override)
-	local x, y = override or 1, override or 1
+	local default = E.PixelMode and -1 or 1
+	local x, y = override or default, override or default
 	
 	if position == 'TOP' or position == 'TOPLEFT' or position == 'TOPRIGHT' then
 		return 0, y

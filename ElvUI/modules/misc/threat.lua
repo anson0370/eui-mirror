@@ -4,8 +4,6 @@ local THREAT = E:NewModule('Threat', 'AceEvent-3.0');
 E.Threat = THREAT
 
 function THREAT:UpdatePosition()
-	self.bar:ClearAllPoints()
-	
 	if self.db.position == 'RIGHTCHAT' then
 		self.bar:SetInside(RightChatDataPanel)
 		self.bar:SetParent(RightChatDataPanel)

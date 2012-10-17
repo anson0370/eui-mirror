@@ -1,4 +1,4 @@
-local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB, Localize Underscore
 local LSM = LibStub("LibSharedMedia-3.0")
 
 local floor = math.floor
@@ -23,9 +23,7 @@ local function GetTemplate(t)
 		borderr, borderg, borderb = unpack(E["media"].bordercolor)
 		backdropr, backdropg, backdropb = unpack(E["media"].backdropcolor)
 	end
-	if E.db.general.classcolor then
-		borderr, borderg, borderb = RAID_CLASS_COLORS[E.myclass].r, RAID_CLASS_COLORS[E.myclass].g, RAID_CLASS_COLORS[E.myclass].b
-	end
+
 	if E.db.general.transparent and t ~= 'notrans' then
 		backdropa = E.db.general.backdropfadecolor.a or 0.2
 		E["media"].blankTex = "Interface\\ChatFrame\\ChatFrameBackground"
@@ -56,8 +54,8 @@ local function Point(obj, arg1, arg2, arg3, arg4, arg5)
 end
 
 local function SetOutside(obj, anchor, xOffset, yOffset)
-	xOffset = xOffset or 2
-	yOffset = yOffset or 2
+	xOffset = xOffset or E.Border
+	yOffset = yOffset or E.Border
 	anchor = anchor or obj:GetParent()
 	
 	if obj:GetPoint() then
@@ -69,8 +67,8 @@ local function SetOutside(obj, anchor, xOffset, yOffset)
 end
 
 local function SetInside(obj, anchor, xOffset, yOffset)
-	xOffset = xOffset or 2
-	yOffset = yOffset or 2
+	xOffset = xOffset or E.Border
+	yOffset = yOffset or E.Border
 	anchor = anchor or obj:GetParent()
 	
 	if obj:GetPoint() then
@@ -83,18 +81,27 @@ end
 
 local function SetTemplate(f, t, glossTex, ignoreUpdates, trans)
 	GetTemplate(t)
-	
 	if E.db.general.transparent then glossTex = "Interface\\AddOns\\ElvUI\\media\\textures\\glow" end
-	
+		
 	f.template = t
 	f.glossTex = glossTex
-
-	f:SetBackdrop({
-	  bgFile = E["media"].blankTex, 
-	  edgeFile = E["media"].blankTex, 
-	  tile = false, tileSize = 0, edgeSize = E.mult, 
-	  insets = { left = -E.mult, right = -E.mult, top = -E.mult, bottom = -E.mult}
-	})
+	
+	
+	if E.private.general.pixelPerfect then
+		f:SetBackdrop({
+		  bgFile = E["media"].blankTex, 
+		  edgeFile = E["media"].blankTex, 
+		  tile = false, tileSize = 0, edgeSize = E.mult, 
+		  insets = { left = 0, right = 0, top = 0, bottom = 0}
+		})	
+	else
+		f:SetBackdrop({
+		  bgFile = E["media"].blankTex, 
+		  edgeFile = E["media"].blankTex, 
+		  tile = false, tileSize = 0, edgeSize = E.mult, 
+		  insets = { left = -E.mult, right = -E.mult, top = -E.mult, bottom = -E.mult}
+		})
+	end
 
 	if not f.backdropTexture and t ~= 'Transparent' then
 		local backdropTexture = f:CreateTexture(nil, "BORDER")
@@ -102,7 +109,8 @@ local function SetTemplate(f, t, glossTex, ignoreUpdates, trans)
 		f.backdropTexture = backdropTexture
 	elseif t == 'Transparent' then
 		f:SetBackdropColor(backdropr, backdropg, backdropb, trans and .7 or backdropa)
-		if not f.oborder and not f.iborder then
+		
+		if not f.oborder and not f.iborder and not E.private.general.pixelPerfect then
 			local border = CreateFrame("Frame", nil, f)
 			border:SetInside(f, E.mult, E.mult)
 			border:SetBackdrop({
@@ -136,14 +144,17 @@ local function SetTemplate(f, t, glossTex, ignoreUpdates, trans)
 		else
 			f.backdropTexture:SetTexture(E["media"].blankTex)
 		end
-		f.backdropTexture:SetInside(f)	
+		
+		f.backdropTexture:SetInside(f)
 	end
 	
 	f:SetBackdropBorderColor(borderr, borderg, borderb, E.db.general.transparent and backdropa or nil)
-	if E.db.general.transparent then f:CreateShadow("Default") end
+	
 	if not ignoreUpdates then
 		E["frames"][f] = true
 	end
+	
+	frame = nil;
 end
 
 local function CreateBackdrop(f, t, tex)
@@ -206,7 +217,7 @@ local function StripTextures(object, kill)
 				region:SetTexture(nil)
 			end
 		end
-	end		
+	end
 end
 
 local function FontTemplate(fs, font, fontSize, fontStyle)
@@ -215,7 +226,7 @@ local function FontTemplate(fs, font, fontSize, fontStyle)
 	fs.fontStyle = fontStyle
 	if E.db.general.transparent and fontStyle == nil then fontStyle = 'OUTLINE' end
 	
-	if not font then font = LSM:Fetch("font", E.db["general"].font) end
+	if not font then font = LSM:Fetch("font", E.db['general'].font) end
 	if not fontSize then fontSize = E.db.general.fontSize end
 	if fontStyle == 'OUTLINE' and E.db.general.font:lower():find('pixel') then
 		if (fontSize > 10 and not fs.fontSize) then
@@ -261,7 +272,7 @@ local function StyleButton(button)
 		button:SetCheckedTexture(checked)
 	end
 	
-	local cooldown = button:GetName() and _G[button:GetName().."Cooldown"]
+	local cooldown = button:GetName() and _G[button:GetName().."Cooldown"] 
 	if cooldown then
 		cooldown:ClearAllPoints()
 		cooldown:SetInside()
@@ -273,7 +284,7 @@ local function addapi(object)
 	if not object.Size then mt.Size = Size end
 	if not object.Point then mt.Point = Point end
 	if not object.SetOutside then mt.SetOutside = SetOutside end
-	if not object.SetInside then mt.SetInside = SetInside end	
+	if not object.SetInside then mt.SetInside = SetInside end
 	if not object.SetTemplate then mt.SetTemplate = SetTemplate end
 	if not object.CreateBackdrop then mt.CreateBackdrop = CreateBackdrop end
 	if not object.CreateShadow then mt.CreateShadow = CreateShadow end

@@ -5,63 +5,7 @@ local LSM = LibStub("LibSharedMedia-3.0")
 local PANEL_HEIGHT = 22;
 local MAX_BUTTON = 5;
 
-local menuList = {
-	{text = CHARACTER_BUTTON,
-	func = function() ToggleCharacter("PaperDollFrame") end},
-	{text = SPELLBOOK_ABILITIES_BUTTON,
-	func = function() if not SpellBookFrame:IsShown() then ShowUIPanel(SpellBookFrame) else HideUIPanel(SpellBookFrame) end end},
-	{text = MOUNTS_AND_PETS,
-	func = function()
-		TogglePetJournal();
-	end},
-	{text = TALENTS_BUTTON,
-	func = function()
-		if not PlayerTalentFrame then
-			TalentFrame_LoadUI()
-		end
-
-		if not GlyphFrame then
-			GlyphFrame_LoadUI()
-		end
-		
-		if not PlayerTalentFrame:IsShown() then
-			ShowUIPanel(PlayerTalentFrame)
-		else
-			HideUIPanel(PlayerTalentFrame)
-		end
-	end},
-	{text = TIMEMANAGER_TITLE,
-	func = function() ToggleFrame(TimeManagerFrame) end},		
-	{text = ACHIEVEMENT_BUTTON,
-	func = function() ToggleAchievementFrame() end},
-	{text = QUESTLOG_BUTTON,
-	func = function() ToggleFrame(QuestLogFrame) end},
-	{text = SOCIAL_BUTTON,
-	func = function() ToggleFriendsFrame(1) end},
-	{text = L["calendar_string"],
-	func = function() GameTimeFrame:Click() end},
-	{text = PLAYER_V_PLAYER,
-	func = function() ToggleFrame(PVPFrame) end},
-	{text = ACHIEVEMENTS_GUILD_TAB,
-	func = function()
-		if IsInGuild() then
-			if not GuildFrame then GuildFrame_LoadUI() end
-			GuildFrame_Toggle()
-		else
-			if not LookingForGuildFrame then LookingForGuildFrame_LoadUI() end
-			if not LookingForGuildFrame then return end
-			LookingForGuildFrame_Toggle()
-		end
-	end},
-	{text = LFG_TITLE,
-	func = function() PVEFrame_ToggleFrame(); end},
-	{text = ENCOUNTER_JOURNAL, 
-	func = function() if not IsAddOnLoaded('Blizzard_EncounterJournal') then EncounterJournal_LoadUI(); end ToggleFrame(EncounterJournal) end},	
-	{text = L["GameMenu"],
-    func = function() ToggleFrame(GameMenuFrame) end},	
-	{text = HELP_BUTTON,
-	func = function() ToggleHelpFrame() end},
-}
+local menuList = LO.menuList
 
 local function HideChildren(...)
 	local parent = select(1, ...)
@@ -209,25 +153,6 @@ local function CreateShortcuts(parent)
 	end
 end
 
-local function GetLocTextColor()
-	local pvpType = GetZonePVPInfo()
-	if pvpType == "arena" then
-		return 0.84, 0.03, 0.03
-	elseif pvpType == "friendly" then
-		return 0.05, 0.85, 0.03
-	elseif pvpType == "contested" then
-		return 0.9, 0.85, 0.05
-	elseif pvpType == "hostile" then 
-		return 0.84, 0.03, 0.03
-	elseif pvpType == "sanctuary" then
-		return 0.035, 0.58, 0.84
-	elseif pvpType == "combat" then
-		return 0.84, 0.03, 0.03
-	else
-		return 0.84, 0.03, 0.03
-	end	
-end
-
 local function CreateLoc(parent)
 	parent:SetScript("OnUpdate", function(self, elapsed)
 		if(self.elapsed and self.elapsed > 0.2) then
@@ -236,9 +161,9 @@ local function CreateLoc(parent)
 			x = math.floor(100 * x)
 			y = math.floor(100 * y)
 			if x ==0 and y==0 then
-				self.text:SetText(E:RGBToHex(GetLocTextColor()).. '??, ??|r')
+				self.text:SetText(E:RGBToHex(LO:GetLocTextColor()).. '??, ??|r')
 			else
-				self.text:SetText(E:RGBToHex(GetLocTextColor()).. x.. ', '.. y.. '|r')
+				self.text:SetText(E:RGBToHex(LO:GetLocTextColor()).. x.. ', '.. y.. '|r')
 			end
 			self.elapsed = 0
 		else

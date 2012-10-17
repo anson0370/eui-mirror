@@ -1,4 +1,4 @@
-local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB, Localize Underscore
 local AB = E:GetModule('ActionBars');
 
 function AB:SetupExtraButton()
@@ -28,5 +28,5 @@ function AB:SetupExtraButton()
 		end
 	end
 	
-	E:CreateMover(holder, 'BossButton', L['Boss Button'], nil, nil, nil,'ALL,ACTIONBARS');
+	E:CreateMover(holder, 'BossButton', L['Boss Button'], nil, nil, nil, 'ALL,ACTIONBARS');
 end

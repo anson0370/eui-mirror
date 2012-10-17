@@ -150,62 +150,11 @@ E.Options.args.unitframe.args.focus.args.aurabar.args.auraBarHeight = {
 	set = function(info,value) E.db.unitframe.units['focus']['aurabar'].auraBarHeight = value; UF:CreateAndUpdateUF('focus'); E:StaticPopup_Show("CONFIG_RL"); end	
 }
 
-E.Options.args.unitframe.args.player.args.combobar = {
-	order = 900,
-	type = 'group',
-	name = L['Combobar'],
-	get = function(info) return E.db.unitframe.units['player']['combobar'][ info[#info] ] end,
-	set = function(info, value) E.db.unitframe.units['player']['combobar'][ info[#info] ] = value; UF:CreateAndUpdateUF('player') end,
-	args = {
-		enable = {
-			type = 'toggle',
-			order = 1,
-			name = L['Enable'],
-			set = function(info, value)
-				E.db.unitframe.units['player']['combobar'].enable = value;
-				if value then
-					E.db.unitframe.units['target']['combobar'].enable = false;
-					UF:CreateAndUpdateUF('target');
-				end
-				UF:CreateAndUpdateUF('player');
-			end,
-		},
-		height = {
-			type = 'range',
-			order = 2,
-			name = L['Height'],
-			min = 5, max = 15, step = 1,
-		},	
-		fill = {
-			type = 'select',
-			order = 3,
-			name = L['Fill'],
-			values = {
-				['fill'] = L['Filled'],
-				['spaced'] = L['Spaced'],
-			},
-		},				
-	},
-}
-E.Options.args.unitframe.args.target.args.combobar.args.enable = {
-	type = 'toggle',
-	order = 1,
-	name = L['Enable'],
-	set = function(info, value)
-		E.db.unitframe.units['target']['combobar'].enable = value;
-		if value then
-			E.db.unitframe.units['player']['combobar'].enable = false;
-			UF:CreateAndUpdateUF('player');
-		end
-		UF:CreateAndUpdateUF('target');
-	end,
-}
-
 E.Options.args.unitframe.args['raid10'] = nil
 E.Options.args.unitframe.args['raid40'] = nil
 
 --Attention Frames
-E.Options.args.unitframe.args.attention = {
+--[[ E.Options.args.unitframe.args.attention = {
 	name = L['Attention Frames'],
 	type = 'group',
 	order = 1300,
@@ -245,4 +194,4 @@ E.Options.args.unitframe.args.attention = {
 			},
 		},	
 	},
-}
+} ]]

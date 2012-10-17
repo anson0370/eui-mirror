@@ -180,15 +180,10 @@ E.Options.args.euiscript = {
 					type = "toggle",
 					name = L["autobuy reagents"],
 				},
-				TaintError = {
-					order = 38,
-					type = "toggle",
-					name = L["TaintError"],
-				},
 				shift_marking = {
 					order = 39,
 					type = "toggle",
-					name = L["shift marking"],
+					name = L["alt marking"],
 				},
 				camerafactor = {
 					order = 40,

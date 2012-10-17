@@ -1,4 +1,4 @@
-local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB, Localize Underscore
 local UF = E:GetModule('UnitFrames');
 
 local _, ns = ...
@@ -15,15 +15,15 @@ function UF:Construct_TargetTargetFrame(frame)
 	frame.Buffs = self:Construct_Buffs(frame)
 	frame.RaidIcon = UF:Construct_RaidIcon(frame)
 	frame.Debuffs = self:Construct_Debuffs(frame)
-	
+		
 	frame:Point('BOTTOM', E.UIParent, 'BOTTOM', 0, 162) --Set to default position
-	E:CreateMover(frame, frame:GetName()..'Mover', L['TargetTarget Frame'], nil, nil, nil, 'ALL,SOLO', UF.closeFunc)
+	E:CreateMover(frame, frame:GetName()..'Mover', L['TargetTarget Frame'], nil, nil, nil, 'ALL,SOLO')
 end
 
 function UF:Update_TargetTargetFrame(frame, db)
 	frame.db = db
-	local BORDER = E:Scale(2)
-	local SPACING = E:Scale(1)
+	local BORDER = E.Border;
+	local SPACING = E.Spacing;
 	local UNIT_WIDTH = db.width
 	local UNIT_HEIGHT = db.height
 	
@@ -146,12 +146,12 @@ function UF:Update_TargetTargetFrame(frame, db)
 				power:SetFrameStrata("MEDIUM")
 				power:SetFrameLevel(frame:GetFrameLevel() + 3)
 			else
-				power:Point("TOPLEFT", frame.Health.backdrop, "BOTTOMLEFT", BORDER, -(BORDER + SPACING))
+				power:Point("TOPLEFT", frame.Health.backdrop, "BOTTOMLEFT", BORDER, -(E.PixelMode and 0 or (BORDER + SPACING)))
 				power:Point("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -BORDER, BORDER)
 			end
 		elseif frame:IsElementEnabled('Power') then
 			frame:DisableElement('Power')
-			power:Hide()
+			power:Hide()	
 		end
 	end
 	
@@ -240,7 +240,7 @@ function UF:Update_TargetTargetFrame(frame, db)
 		else
 			debuffs:Hide()
 		end
-	end	
+	end
 
 	--Raid Icon
 	do
@@ -257,7 +257,7 @@ function UF:Update_TargetTargetFrame(frame, db)
 			frame:DisableElement('RaidIcon')	
 			RI:Hide()
 		end
-	end
+	end		
 	
 	if db.customTexts then
 		for objectName, _ in pairs(db.customTexts) do
@@ -274,7 +274,7 @@ function UF:Update_TargetTargetFrame(frame, db)
 			frame[objectName]:ClearAllPoints()
 			frame[objectName]:SetPoint(objectDB.justifyH or 'CENTER', frame, 'CENTER', objectDB.xOffset, objectDB.yOffset)
 		end
-	end		
+	end	
 
 	E:SetMoverSnapOffset(frame:GetName()..'Mover', -(12 + self.db['units'].player.castbar.height))
 	frame:UpdateAllElements()

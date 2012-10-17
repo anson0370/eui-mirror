@@ -1,4 +1,4 @@
-local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB, Localize Underscore
 local M = E:NewModule('Misc', 'AceEvent-3.0', 'AceTimer-3.0');
 
 E.Misc = M;
@@ -14,24 +14,18 @@ end
 
 function M:COMBAT_LOG_EVENT_UNFILTERED(_, _, event, _, sourceGUID, sourceName, _, _, _, destName, _, _, _, _, _, spellID, spellName)
 	if (event ~= "SPELL_INTERRUPT") or (select(2, IsInInstance()) == "pvp") then return end
-		
-	if E.db.general.interruptAnnounce == "PARTY" then
-		if IsInGroup() then
-			SendChatMessage(sourceName.. " ".. INTERRUPT.." "..destName.."'s \124cff71d5ff\124Hspell:"..spellID.."\124h["..spellName.."]\124h\124r!", "PARTY", nil, nil)
-		end
-	elseif E.db.general.interruptAnnounce == "RAID" then
-		if sourceGUID ~= UnitGUID('player') and not(UnitIsGroupLeader('player') or UnitIsGroupAssistant("player")) then return end
-		if IsInRaid() then
+	
+	local inGroup, inRaid = IsInGroup(), IsInRaid()
+	if E.db.general.interruptAnnounce == "PARTY" and inGroup then
+		SendChatMessage(sourceName.. " ".. INTERRUPT.." "..destName.."'s \124cff71d5ff\124Hspell:"..spellID.."\124h["..spellName.."]\124h\124r!", "PARTY", nil, nil)
+	elseif E.db.general.interruptAnnounce == "RAID" and inGroup then
+		if inRaid then
 			SendChatMessage(sourceName.. " ".. INTERRUPT.." "..destName.."'s \124cff71d5ff\124Hspell:"..spellID.."\124h["..spellName.."]\124h\124r!", "RAID", nil, nil)		
-		elseif IsInGroup() then
+		else
 			SendChatMessage(sourceName.. " ".. INTERRUPT.." "..destName.."'s \124cff71d5ff\124Hspell:"..spellID.."\124h["..spellName.."]\124h\124r!", "PARTY", nil, nil)
 		end	
-	elseif E.db.general.interruptAnnounce == "SAY" then
-		if IsInRaid() then
-			SendChatMessage(sourceName.. " ".. INTERRUPT.." "..destName.."'s \124cff71d5ff\124Hspell:"..spellID.."\124h["..spellName.."]\124h\124r!", "SAY", nil, nil)		
-		elseif IsInGroup() then
-			SendChatMessage(sourceName.. " ".. INTERRUPT.." "..destName.."'s \124cff71d5ff\124Hspell:"..spellID.."\124h["..spellName.."]\124h\124r!", "SAY", nil, nil)
-		end		
+	elseif E.db.general.interruptAnnounce == "SAY" and inGroup then
+		SendChatMessage(sourceName.. " ".. INTERRUPT.." "..destName.."'s \124cff71d5ff\124Hspell:"..spellID.."\124h["..spellName.."]\124h\124r!", "SAY", nil, nil)	
 	end
 end
 
@@ -173,7 +167,6 @@ function M:Initialize()
 	self:LoadLoot()
 	self:LoadLootRoll()
 	self:LoadChatBubbles()
-
 	self:RegisterEvent('MERCHANT_SHOW')
 	self:RegisterEvent('PLAYER_REGEN_DISABLED', 'ErrorFrameToggle')
 	self:RegisterEvent('PLAYER_REGEN_ENABLED', 'ErrorFrameToggle')

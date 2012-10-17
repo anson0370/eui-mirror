@@ -1,4 +1,4 @@
-local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB, Localize Underscore
 local M = E:NewModule('Minimap', 'AceHook-3.0', 'AceEvent-3.0', 'AceTimer-3.0');
 E.Minimap = M
 
@@ -39,7 +39,7 @@ local menuList = {
 	func = function() ToggleFrame(QuestLogFrame) end},
 	{text = SOCIAL_BUTTON,
 	func = function() ToggleFriendsFrame(1) end},
-	{text = L["calendar_string"],
+	{text = calendar_string,
 	func = function() GameTimeFrame:Click() end},
 	{text = PLAYER_V_PLAYER,
 	func = function() ToggleFrame(PVPFrame) end},
@@ -62,9 +62,7 @@ local menuList = {
 	func = function()
 	if(not CalendarFrame) then Calendar_LoadUI() end
 		Calendar_Toggle()
-	end},
-	{text = L["GameMenu"],
-    func = function() ToggleFrame(GameMenuFrame) end},	
+	end},			
 	{text = HELP_BUTTON,
 	func = function() ToggleHelpFrame() end},
 }
@@ -152,14 +150,14 @@ function M:UpdateSettings()
 	E.MinimapSize = E.private.general.minimap.enable and E.db.general.minimap.size or Minimap:GetWidth() + 10
 	
 	if E.db.auras.consolidatedBuffs.enable then
-		E.ConsolidatedBuffsWidth = ((E.MinimapSize - (E.db.auras.consolidatedBuffs.filter and 6 or 8)) / (E.db.auras.consolidatedBuffs.filter and 6 or 8)) + 4
+		E.ConsolidatedBuffsWidth = ((E.MinimapSize - (E.db.auras.consolidatedBuffs.filter and 6 or 8)) / (E.db.auras.consolidatedBuffs.filter and 6 or 8)) + (E.PixelMode and 3 or 4)-- 4 needs to be 3
 	else
 		E.ConsolidatedBuffsWidth = 0;
 	end
 	
 	E.MinimapWidth = E.MinimapSize	
 	E.MinimapHeight = E.MinimapSize + 5
-
+	
 	if E.private.general.minimap.enable then
 		Minimap:Size(E.MinimapSize, E.MinimapSize)
 	end
@@ -175,12 +173,12 @@ function M:UpdateSettings()
 	end	
 	
 	if MMHolder then
-		MMHolder:Width((Minimap:GetWidth() + 4) + E.ConsolidatedBuffsWidth)
+		MMHolder:Width((Minimap:GetWidth() + (E.PixelMode and 3 or 4)) + E.ConsolidatedBuffsWidth)
 		
 		if E.db.datatexts.minimapPanels then
-			MMHolder:Height(Minimap:GetHeight() + 27)
+			MMHolder:Height(Minimap:GetHeight() + (E.PixelMode and 22 or 27))
 		else
-			MMHolder:Height(Minimap:GetHeight() + 5)	
+			MMHolder:Height(Minimap:GetHeight() + (E.PixelMode and 2 or 5))	
 		end
 	end
 	
@@ -230,7 +228,7 @@ function M:Initialize()
 	if not E.private.general.minimap.enable then 
 		Minimap:SetMaskTexture('Textures\\MinimapMask')
 		return; 
-	end
+	end	
 	
 	local mmholder = CreateFrame('Frame', 'MMHolder', Minimap)
 	mmholder:Point("TOPRIGHT", E.UIParent, "TOPRIGHT", -3, -3)
@@ -286,7 +284,7 @@ function M:Initialize()
 	MiniMapMailFrame:Point("TOPRIGHT", Minimap, 3, 4)
 	MiniMapMailBorder:Hide()
 	MiniMapMailIcon:SetTexture("Interface\\AddOns\\ElvUI\\media\\textures\\mail")
-	
+
 	QueueStatusMinimapButton:ClearAllPoints()
 	QueueStatusMinimapButton:Point("BOTTOMRIGHT", Minimap, 3, 0)
 	QueueStatusMinimapButtonBorder:Hide()
@@ -314,7 +312,7 @@ function M:Initialize()
 --[[	Minimap.SetPoint = E.noop;
 	MMHolder.SetPoint = E.noop;
 	Minimap.ClearAllPoints = E.noop;
-	MMHolder.ClearAllPoints = E.noop;]]	
+	MMHolder.ClearAllPoints = E.noop;]]
 	Minimap:EnableMouseWheel(true)
 	Minimap:SetScript("OnMouseWheel", M.Minimap_OnMouseWheel)	
 	Minimap:SetScript("OnMouseUp", M.Minimap_OnMouseUp)
@@ -322,8 +320,7 @@ function M:Initialize()
 	self:RegisterEvent("PLAYER_ENTERING_WORLD", "Update_ZoneText")
 	self:RegisterEvent("ZONE_CHANGED_NEW_AREA", "Update_ZoneText")
 	self:RegisterEvent("ZONE_CHANGED", "Update_ZoneText")
-	self:RegisterEvent("ZONE_CHANGED_INDOORS", "Update_ZoneText")
-
+	self:RegisterEvent("ZONE_CHANGED_INDOORS", "Update_ZoneText")		
 	self:RegisterEvent('ADDON_LOADED')
 	self:UpdateSettings()
 	

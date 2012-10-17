@@ -1,4 +1,4 @@
-local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB, Localize Underscore
 local UF = E:GetModule('UnitFrames');
 
 local _, ns = ...
@@ -22,9 +22,9 @@ function UF:Construct_FocusFrame(frame)
 	frame.Debuffs = self:Construct_Debuffs(frame)
 	frame.HealPrediction = self:Construct_HealComm(frame)
 	frame.AuraBars = self:Construct_AuraBarHeader(frame)
-
+	
 	table.insert(frame.__elements, UF.SmartAuraDisplay)
-	frame:RegisterEvent('PLAYER_FOCUS_CHANGED', UF.SmartAuraDisplay)
+	frame:RegisterEvent('PLAYER_FOCUS_CHANGED', UF.SmartAuraDisplay)	
 	
 	frame:Point('BOTTOMRIGHT', ElvUF_Target, 'TOPRIGHT', 0, 220)
 	E:CreateMover(frame, frame:GetName()..'Mover', L['Focus Frame'], nil, nil, nil, 'ALL,SOLO')
@@ -33,8 +33,8 @@ end
 
 function UF:Update_FocusFrame(frame, db)
 	frame.db = db
-	local BORDER = E:Scale(2)
-	local SPACING = E:Scale(1)
+	local BORDER = E.Border;
+	local SPACING = E.Spacing;
 	local UNIT_WIDTH = db.width
 	local UNIT_HEIGHT = db.height
 	
@@ -157,12 +157,12 @@ function UF:Update_FocusFrame(frame, db)
 				power:SetFrameStrata("MEDIUM")
 				power:SetFrameLevel(frame:GetFrameLevel() + 3)
 			else
-				power:Point("TOPLEFT", frame.Health.backdrop, "BOTTOMLEFT", BORDER, -(BORDER + SPACING))
+				power:Point("TOPLEFT", frame.Health.backdrop, "BOTTOMLEFT", BORDER, -(E.PixelMode and 0 or (BORDER + SPACING)))
 				power:Point("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -BORDER, BORDER)
 			end
 		elseif frame:IsElementEnabled('Power') then
 			frame:DisableElement('Power')
-			power:Hide()
+			power:Hide()	
 		end
 	end
 	
@@ -253,28 +253,36 @@ function UF:Update_FocusFrame(frame, db)
 		end
 	end	
 	
-	--Castbar
 	do
 		local castbar = frame.Castbar
-		castbar:Width(db.castbar.width - 4)
+		castbar:Width(db.castbar.width - (E.PixelMode and 0 or (BORDER * 2)))
 		castbar:Height(db.castbar.height)
-		castbar.Holder:Width(db.castbar.width)
-		castbar.Holder:Height(db.castbar.height + 4)
+		castbar.Holder:Width(db.castbar.width + (E.PixelMode and 0 or (BORDER * 2)))
+		castbar.Holder:Height(db.castbar.height + (E.PixelMode and 0 or (BORDER * 2)))
 		castbar.Holder:GetScript('OnSizeChanged')(castbar.Holder)
+		
+		--Latency
+		if db.castbar.latency then
+			castbar.SafeZone = castbar.LatencyTexture
+			castbar.LatencyTexture:Show()
+		else
+			castbar.SafeZone = nil
+			castbar.LatencyTexture:Hide()
+		end
 		
 		--Icon
 		if db.castbar.icon then
 			castbar.Icon = castbar.ButtonIcon
-			castbar.Icon.bg:Width(db.castbar.height + 4)
-			castbar.Icon.bg:Height(db.castbar.height + 4)
+			castbar.Icon.bg:Width(db.castbar.height + (E.Border * 2))
+			castbar.Icon.bg:Height(db.castbar.height + (E.Border * 2))
 			
-			castbar:Width(db.castbar.width - castbar.Icon.bg:GetWidth() - 4)
+			castbar:Width(db.castbar.width - castbar.Icon.bg:GetWidth() - (E.PixelMode and 1 or 5))
 			castbar.Icon.bg:Show()
 		else
 			castbar.ButtonIcon.bg:Hide()
 			castbar.Icon = nil
 		end
-		
+
 		if db.castbar.spark then
 			castbar.Spark:Show()
 		else
@@ -286,7 +294,7 @@ function UF:Update_FocusFrame(frame, db)
 		elseif not db.castbar.enable and frame:IsElementEnabled('Castbar') then
 			frame:DisableElement('Castbar')	
 		end			
-	end	
+	end
 	
 	--OverHealing
 	do
@@ -312,7 +320,7 @@ function UF:Update_FocusFrame(frame, db)
 			end		
 		end
 	end	
-
+	
 	--Raid Icon
 	do
 		local RI = frame.RaidIcon
@@ -328,8 +336,8 @@ function UF:Update_FocusFrame(frame, db)
 			frame:DisableElement('RaidIcon')	
 			RI:Hide()
 		end
-	end
-	
+	end		
+
 	--AuraBars
 	do
 		local auraBars = frame.AuraBars
@@ -397,7 +405,7 @@ function UF:Update_FocusFrame(frame, db)
 			frame[objectName]:ClearAllPoints()
 			frame[objectName]:SetPoint(objectDB.justifyH or 'CENTER', frame, 'CENTER', objectDB.xOffset, objectDB.yOffset)
 		end
-	end		
+	end	
 		
 	frame:UpdateAllElements()
 end

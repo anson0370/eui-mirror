@@ -17,7 +17,7 @@ local function LoadSkin()
 	PVEFrame.shadows:Hide()
 	S:HandleButton(LFDQueueFramePartyBackfillBackfillButton)
 	S:HandleButton(LFDQueueFramePartyBackfillNoBackfillButton)
-		
+	
 	GroupFinderFrameGroupButton1.icon:SetTexture("Interface\\Icons\\INV_Helmet_08")
 	GroupFinderFrameGroupButton2.icon:SetTexture("Interface\\Icons\\inv_helmet_06")
 	GroupFinderFrameGroupButton3.icon:SetTexture("Interface\\Icons\\Icon_Scenarios")
@@ -139,7 +139,7 @@ local function LoadSkin()
 	for i = 1, NUM_LFD_CHOICE_BUTTONS do
 		S:HandleCheckBox(_G["LFDQueueFrameSpecificListButton"..i].enableButton)
 	end
-
+	
 	hooksecurefunc("ScenarioQueueFrameSpecific_Update", function()
 		
 		for i = 1, NUM_SCENARIO_CHOICE_BUTTONS do

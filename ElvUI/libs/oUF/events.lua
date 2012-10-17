@@ -53,7 +53,7 @@ do
 				RegisterFrameForUnit(frame, unit)
 				RegisterFrameForUnit(frame, realUnit)
 			end
-			
+
 			frame.alternativeUnit = alternativeUnits[unit]
 			frame.unit = unit
 			frame.realUnit = realUnit

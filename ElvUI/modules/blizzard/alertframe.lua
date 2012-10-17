@@ -19,7 +19,7 @@ SlashCmdList.TEST_ACHIEVEMENT = function()
 	AlertFrame_AnimateIn(CriteriaAlertFrame1)
 	AlertFrame_AnimateIn(DungeonCompletionAlertFrame1)
 	AlertFrame_AnimateIn(ScenarioAlertFrame1)
-
+	
 	local _, itemLink = GetItemInfo(6948)
 	LootWonAlertFrame_ShowAlert(itemLink, -1, 1, 1)
 	MoneyWonAlertFrame_ShowAlert(1)
@@ -168,7 +168,6 @@ end
 
 function B:AlertMovers()
 	self:SecureHook('AlertFrame_FixAnchors', E.PostAlertMove)
-	
 	self:SecureHook('AlertFrame_SetLootWonAnchors')
 	self:SecureHook('AlertFrame_SetMoneyWonAnchors')
 	self:SecureHook('AlertFrame_SetAchievementAnchors')
@@ -182,7 +181,7 @@ function B:AlertMovers()
 		if _G[anchorTo] == UIParent then
 			AlertFrame_FixAnchors()
 		end
-	end)	
+	end)
 	
-	E:CreateMover(AlertFrameHolder, "AlertFrameMover", L["Alert Frames"], nil, nil, PostAlertMove)
+	E:CreateMover(AlertFrameHolder, "AlertFrameMover", L["Loot / Alert Frames"], nil, nil, E.PostAlertMove)
 end

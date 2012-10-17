@@ -1,4 +1,4 @@
-local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB, Localize Underscore
 local Sticky = LibStub("LibSimpleSticky-1.0")
 
 E.CreatedMovers = {}
@@ -15,7 +15,7 @@ local function GetPoint(obj)
 	return string.format('%s\031%s\031%s\031%d\031%d', point, anchor:GetName(), secondaryPoint, E:Round(x), E:Round(y))
 end
 
-local function CreateMover(parent, name, text, overlay, snapOffset, postdrag, closeFunc, openFunc)
+local function CreateMover(parent, name, text, overlay, snapOffset, postdrag)
 	if not parent then return end --If for some reason the parent isnt loaded yet
 	if E.CreatedMovers[name].Created then return end
 	
@@ -32,58 +32,9 @@ local function CreateMover(parent, name, text, overlay, snapOffset, postdrag, cl
 	f.postdrag = postdrag
 	f.overlay = overlay
 	f.snapOffset = snapOffset or -2
-	f.closefunc = closeFunc
-	f.openfunc = openFunc
 	E.CreatedMovers[name].mover = f
 	
 	tinsert(E['snapBars'], f)
-	
-	--Create CloseButton X to close frame.
-	if closeFunc and (type(closeFunc) == "function") then
-		E.PopupDialogs[name] = {
-			text = CLOSE.. ' '.. text.. '?',
-			button1 = ACCEPT,
-			button2 = CANCEL,
-			OnAccept = function() f.closefunc(name); f:Hide(); end,
-			timeout = 0,
-			whileDead = 1,
-			hideOnEscape = false,
-		}	
-		local c = CreateFrame("Button", nil, f)
-		f.close = c
-		c:Size(8)
-		c:Point("TOPRIGHT", f, "TOPRIGHT", -1, -1)
-		c:SetFrameLevel(f:GetFrameLevel()+1)
-		E:GetModule('Skins'):HandleCloseButton(c)
-		c.text:SetTextColor(1,0,0)
-		c:SetScript("OnClick", function(self)
-			E:StaticPopup_Show(self:GetParent().name)
-		end)	
-	end
-	
-	--Create OpenButton O to enabled frame.
-	if openFunc and (type(openFunc) == 'function') then
-		E.PopupDialogs[name..'open'] = {
-			text = ENABLE.. ' '.. text.. '?',
-			button1 = ACCEPT,
-			button2 = CANCEL,
-			OnAccept = function() f.openfunc(name); end,
-			timeout = 0,
-			whileDead = 1,
-			hideOnEscape = false,
-		}	
-		local c = CreateFrame("Button", nil, f)
-		f.open = c
-		c:Size(8)
-		c:Point("BOTTOMLEFT", f, "BOTTOMLEFT", 1, 1)
-		c:SetFrameLevel(f:GetFrameLevel()+1)
-		E:GetModule('Skins'):HandleCloseButton(c)
-		c.text:SetText('O')
-		c.text:SetTextColor(.13,.69,.3)
-		c:SetScript("OnClick", function(self)
-			E:StaticPopup_Show(self:GetParent().name..'open')
-		end)	
-	end		
 	
 	if overlay == true then
 		f:SetFrameStrata("DIALOG")
@@ -245,7 +196,7 @@ function E:SaveMoverDefaultPosition(name)
 	E.CreatedMovers[name]["postdrag"](_G[name], E:GetScreenQuadrant(_G[name]))
 end
 
-function E:CreateMover(parent, name, text, overlay, snapoffset, postdrag, moverTypes, closeFunc, openFunc)
+function E:CreateMover(parent, name, text, overlay, snapoffset, postdrag, moverTypes)
 	if not moverTypes then moverTypes = 'ALL,GENERAL' end
 	local p, p2, p3, p4, p5 = parent:GetPoint()
 	
@@ -256,8 +207,6 @@ function E:CreateMover(parent, name, text, overlay, snapoffset, postdrag, moverT
 		E.CreatedMovers[name]["overlay"] = overlay
 		E.CreatedMovers[name]["postdrag"] = postdrag
 		E.CreatedMovers[name]["snapoffset"] = snapOffset
-		E.CreatedMovers[name]["closefunc"] = closeFunc
-		E.CreatedMovers[name]["openfunc"] = openFunc
 		E.CreatedMovers[name]["point"] = GetPoint(parent)
 
 		E.CreatedMovers[name]["type"] = {}
@@ -268,7 +217,7 @@ function E:CreateMover(parent, name, text, overlay, snapoffset, postdrag, moverT
 		end
 	end	
 	
-	CreateMover(parent, name, text, overlay, snapoffset, postdrag, closeFunc, openFunc)
+	CreateMover(parent, name, text, overlay, snapoffset, postdrag)
 end
 
 function E:ToggleMovers(show, moverType)
@@ -345,7 +294,7 @@ end
 --Called from core.lua
 function E:LoadMovers()
 	for n, _ in pairs(E.CreatedMovers) do
-		local p, t, o, so, pd, cf, of
+		local p, t, o, so, pd
 		for key, value in pairs(E.CreatedMovers[n]) do
 			if key == "parent" then
 				p = value
@@ -357,12 +306,8 @@ function E:LoadMovers()
 				so = value
 			elseif key == "postdrag" then
 				pd = value
-			elseif key == "closefunc" then
-				cf = value
-			elseif key == "openfunc" then
-				of = value
 			end
 		end
-		CreateMover(p, n, t, o, so, pd, cf, of)
+		CreateMover(p, n, t, o, so, pd)
 	end
 end

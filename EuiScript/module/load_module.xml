@@ -32,4 +32,5 @@
 	<Script file="AutoButton.lua"/>
 	<Script file="FindIt.lua"/>
 	<Script file="Symbols.lua"/>
+	<Script file='RaidCheck.lua'/>
 </Ui>

@@ -80,7 +80,7 @@ function AB:PositionAndSizeBarShapeShift()
 	bar.mouseover = self.db['stanceBar'].mouseover
 	if self.db['stanceBar'].enabled then
 		bar:SetScale(1);
-		bar:SetAlpha(1);
+		bar:SetAlpha(bar.db.alpha);
 	else
 		bar:SetScale(0.000001);
 		bar:SetAlpha(0);
@@ -129,7 +129,7 @@ function AB:PositionAndSizeBarShapeShift()
 				self:HookScript(button, 'OnLeave', 'Button_OnLeave');					
 			end
 		else
-			bar:SetAlpha(1);
+			bar:SetAlpha(bar.db.alpha);
 			if self.hooks[bar] then
 				self:Unhook(bar, 'OnEnter');
 				self:Unhook(bar, 'OnLeave');
@@ -182,7 +182,7 @@ function AB:PositionAndSizeBarShapeShift()
 			button:SetAlpha(0);
 		else
 			button:SetScale(1);
-			button:SetAlpha(1);
+			button:SetAlpha(bar.db.alpha);
 		end
 		
 		self:StyleButton(button);
@@ -233,7 +233,7 @@ end
 function AB:CreateBarShapeShift()
 	bar:CreateBackdrop('Default');
 	bar.backdrop:SetAllPoints();
-	bar:Point('TOPLEFT', E.UIParent, 'TOPLEFT', 4, -36);
+	bar:Point('TOPLEFT', E.UIParent, 'TOPLEFT', 4, -4);
 	bar.buttons = {};
 	bar:SetAttribute("_onstate-show", [[		
 		if newstate == "hide" then

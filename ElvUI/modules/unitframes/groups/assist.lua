@@ -1,19 +1,9 @@
-local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB, Localize Underscore
 local UF = E:GetModule('UnitFrames');
 
 local _, ns = ...
 local ElvUF = ns.oUF
 assert(ElvUF, "ElvUI was unable to locate oUF.")
-
-local function closeFunc()
-	E.db.unitframe.units['assist'].enable = false
-	UF:CreateAndUpdateHeaderGroup('assist')
-end
-
-local function openFunc()
-	E.db.unitframe.units['assist'].enable = true
-	UF:CreateAndUpdateHeaderGroup('assist')
-end
 
 function UF:Construct_AssistFrames(unitGroup)
 	self:RegisterForClicks("AnyUp")
@@ -69,7 +59,7 @@ function UF:Update_AssistHeader(header, db)
 	if not header.positioned then
 		header:ClearAllPoints()
 		header:Point("LEFT", E.UIParent, "LEFT", 6, 100)
-		E:CreateMover(header, header:GetName()..'Mover', L['MA Frames'], nil, nil, nil, 'ALL,RAID25', closeFunc, openFunc)
+		E:CreateMover(header, header:GetName()..'Mover', L['MA Frames'], nil, nil, nil, 'ALL,RAID10,RAID25,RAID40')
 		
 		header:SetAttribute('minHeight', header.dirtyHeight)
 		header:SetAttribute('minWidth', header.dirtyWidth)
@@ -79,9 +69,9 @@ function UF:Update_AssistHeader(header, db)
 end
 
 function UF:Update_AssistFrames(frame, db)
-	local BORDER = E:Scale(2)
-	local SPACING = E:Scale(1)
-
+	local BORDER = E.Border;
+	local SPACING = E.Spacing;
+	
 	frame.colors = ElvUF.colors
 	frame.Range = {insideAlpha = 1, outsideAlpha = E.db.unitframe.OORAlpha}
 
@@ -138,12 +128,12 @@ function UF:Update_AssistFrames(frame, db)
 	--Name
 	do
 		local name = frame.Name
-		name:Point('CENTER', frame.Health, 'CENTER')	
+		name:Point('CENTER', frame.Health, 'CENTER')
 		if UF.db.colors.healthclass then
 			frame:Tag(name, '[name:medium]')
 		else
 			frame:Tag(name, '[namecolor][name:medium]')
-		end		
+		end
 	end	
 	
 	frame:UpdateAllElements()

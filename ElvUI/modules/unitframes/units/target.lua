@@ -1,6 +1,5 @@
-local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB, Localize Underscore
 local UF = E:GetModule('UnitFrames');
-
 local _, ns = ...
 local ElvUF = ns.oUF
 assert(ElvUF, "ElvUI was unable to locate oUF.")
@@ -18,9 +17,9 @@ function UF:Construct_TargetFrame(frame)
 	frame.Portrait2D = self:Construct_Portrait(frame, 'texture')
 	
 	frame.Buffs = self:Construct_Buffs(frame)
-	
+
 	frame.Debuffs = self:Construct_Debuffs(frame)
-	
+
 	frame.Castbar = self:Construct_Castbar(frame, 'RIGHT', L['Target Castbar'])
 	frame.Castbar.SafeZone = nil
 	frame.Castbar.LatencyTexture:Hide()
@@ -28,7 +27,7 @@ function UF:Construct_TargetFrame(frame)
 	frame.CPoints = self:Construct_Combobar(frame)
 	frame.HealPrediction = self:Construct_HealComm(frame)
 	frame.DebuffHighlight = self:Construct_DebuffHighlight(frame)
-
+	
 	table.insert(frame.__elements, UF.SmartAuraDisplay)
 	frame:RegisterEvent('PLAYER_TARGET_CHANGED', UF.SmartAuraDisplay)
 	
@@ -48,9 +47,9 @@ function UF:Update_TargetFrame(frame, db)
 		frame.Portrait.backdrop:Hide()
 	end
 	frame.Portrait = db.portrait.style == '2D' and frame.Portrait2D or frame.Portrait3D	
-		
-	local BORDER = E:Scale(2)
-	local SPACING = E:Scale(1)	
+	
+	local BORDER = E.Border;
+	local SPACING = E.Spacing;	
 	local UNIT_WIDTH = db.width
 	local UNIT_HEIGHT = db.height
 	
@@ -136,6 +135,7 @@ function UF:Update_TargetFrame(frame, db)
 		--Position
 		health:ClearAllPoints()
 		health:Point("TOPRIGHT", frame, "TOPRIGHT", -BORDER, -BORDER)
+		
 		if USE_POWERBAR_OFFSET then			
 			health:Point("BOTTOMLEFT", frame, "BOTTOMLEFT", BORDER+POWERBAR_OFFSET, BORDER+POWERBAR_OFFSET)
 		elseif USE_MINI_POWERBAR then
@@ -143,7 +143,7 @@ function UF:Update_TargetFrame(frame, db)
 		else
 			health:Point("BOTTOMLEFT", frame, "BOTTOMLEFT", BORDER, BORDER + POWERBAR_HEIGHT)
 		end
-		
+
 		health.bg:ClearAllPoints()
 		if not USE_PORTRAIT_OVERLAY then
 			health:Point("TOPRIGHT", -(PORTRAIT_WIDTH+BORDER), -BORDER)
@@ -215,7 +215,7 @@ function UF:Update_TargetFrame(frame, db)
 				power:SetFrameStrata("MEDIUM")
 				power:SetFrameLevel(frame:GetFrameLevel() + 3)
 			else
-				power:Point("TOPLEFT", frame.Health.backdrop, "BOTTOMLEFT", BORDER, -(BORDER + SPACING))
+				power:Point("TOPLEFT", frame.Health.backdrop, "BOTTOMLEFT", BORDER, -(E.PixelMode and 0 or (BORDER + SPACING)))
 				power:Point("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -(BORDER + PORTRAIT_WIDTH), BORDER)
 			end
 		elseif frame:IsElementEnabled('Power') then
@@ -360,34 +360,42 @@ function UF:Update_TargetFrame(frame, db)
 		end
 	end	
 	
-	--Castbar
 	do
 		local castbar = frame.Castbar
-		castbar:Width(db.castbar.width - 4)
+		castbar:Width(db.castbar.width - (E.PixelMode and 0 or (BORDER * 2)))
 		castbar:Height(db.castbar.height)
-		castbar.Holder:Width(db.castbar.width)
-		castbar.Holder:Height(db.castbar.height + 4)
+		castbar.Holder:Width(db.castbar.width + (E.PixelMode and 0 or (BORDER * 2)))
+		castbar.Holder:Height(db.castbar.height + (E.PixelMode and 0 or (BORDER * 2)))
 		castbar.Holder:GetScript('OnSizeChanged')(castbar.Holder)
-				
+		
+		--Latency
+		if db.castbar.latency then
+			castbar.SafeZone = castbar.LatencyTexture
+			castbar.LatencyTexture:Show()
+		else
+			castbar.SafeZone = nil
+			castbar.LatencyTexture:Hide()
+		end
+		
 		--Icon
 		if db.castbar.icon then
 			castbar.Icon = castbar.ButtonIcon
-			castbar.Icon.bg:Width(db.castbar.height + 4)
-			castbar.Icon.bg:Height(db.castbar.height + 4)
+			castbar.Icon.bg:Width(db.castbar.height + (E.Border * 2))
+			castbar.Icon.bg:Height(db.castbar.height + (E.Border * 2))
 			
-			castbar:Width(db.castbar.width - castbar.Icon.bg:GetWidth() - 5)
+			castbar:Width(db.castbar.width - castbar.Icon.bg:GetWidth() - (E.PixelMode and 1 or 5))
 			castbar.Icon.bg:Show()
 		else
 			castbar.ButtonIcon.bg:Hide()
 			castbar.Icon = nil
 		end
-		
+
 		if db.castbar.spark then
 			castbar.Spark:Show()
 		else
 			castbar.Spark:Hide()
-		end		
-		
+		end
+
 		if db.castbar.enable and not frame:IsElementEnabled('Castbar') then
 			frame:EnableElement('Castbar')
 		elseif not db.castbar.enable and frame:IsElementEnabled('Castbar') then
@@ -396,7 +404,7 @@ function UF:Update_TargetFrame(frame, db)
 	end
 	
 	--Combo Bar
- 	do
+	do
 		local CPoints = frame.CPoints
 		CPoints:ClearAllPoints()
 		if USE_MINI_COMBOBAR then

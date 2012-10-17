@@ -1,4 +1,4 @@
-local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB, Localize Underscore
 
 function E:EnableAddon(addon)
 	local _, _, _, _, _, reason, _ = GetAddOnInfo(addon)
@@ -211,13 +211,13 @@ function E:EuiDt(input)
 end
 
 function E:LoadCommands()
+	self:RegisterChatCommand("in", "DelayScriptCall")
 	self:RegisterChatCommand("ec", "ToggleConfig")
 	self:RegisterChatCommand("elvui", "ToggleConfig")
+--	self:RegisterChatCommand('euiat', 'EuiAt')
+--	self:RegisterChatCommand('euidt', 'EuiDt')
 	self:RegisterChatCommand("eui", "ToggleConfig")
 	
-	self:RegisterChatCommand('in', 'DelayScriptCall')
-	self:RegisterChatCommand('euiat', 'EuiAt')
-	self:RegisterChatCommand('euidt', 'EuiDt')
 	self:RegisterChatCommand('bgstats', 'BGStats')
 	self:RegisterChatCommand('moreinfo', 'FoolsHowTo')
 	self:RegisterChatCommand('aprilfools', 'DisableAprilFools')

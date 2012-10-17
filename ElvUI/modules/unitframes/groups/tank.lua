@@ -1,19 +1,9 @@
-local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB, Localize Underscore
 local UF = E:GetModule('UnitFrames');
 
 local _, ns = ...
 local ElvUF = ns.oUF
 assert(ElvUF, "ElvUI was unable to locate oUF.")
-
-local function closeFunc()
-	E.db.unitframe.units['tank'].enable = false
-	UF:CreateAndUpdateHeaderGroup('tank')
-end
-
-local function openFunc()
-	E.db.unitframe.units['tank'].enable = true
-	UF:CreateAndUpdateHeaderGroup('tank')
-end
 
 function UF:Construct_TankFrames(unitGroup)
 	self:RegisterForClicks("AnyUp")
@@ -70,7 +60,7 @@ function UF:Update_TankHeader(header, db)
 		header:ClearAllPoints()
 		header:Point("LEFT", E.UIParent, "LEFT", 6, 250)
 		
-		E:CreateMover(header, header:GetName()..'Mover', L['MT Frames'], nil, nil, nil, 'ALL,RAID25', closeFunc, openFunc)
+		E:CreateMover(header, header:GetName()..'Mover', L['MT Frames'], nil, nil, nil, 'ALL,RAID10,RAID25,RAID40')
 
 		header:SetAttribute('minHeight', header.dirtyHeight)
 		header:SetAttribute('minWidth', header.dirtyWidth)
@@ -80,9 +70,9 @@ function UF:Update_TankHeader(header, db)
 end
 
 function UF:Update_TankFrames(frame, db)
-	local BORDER = E:Scale(2)
-	local SPACING = E:Scale(1)
-
+	local BORDER = E.Border;
+	local SPACING = E.Spacing;
+	
 	frame.colors = ElvUF.colors
 	frame.Range = {insideAlpha = 1, outsideAlpha = E.db.unitframe.OORAlpha}
 
@@ -108,7 +98,7 @@ function UF:Update_TankFrames(frame, db)
 		frame.db = db
 		frame:Size(db.width, db.height)
 	end
-
+	
 	--Health
 	do
 		local health = frame.Health

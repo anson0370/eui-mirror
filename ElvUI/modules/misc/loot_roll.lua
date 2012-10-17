@@ -215,7 +215,7 @@ function M:START_LOOT_ROLL(event, rollID, time)
 	f:SetPoint("CENTER", WorldFrame, "CENTER")
 	f:Show()
 	AlertFrame_FixAnchors()
-
+	
 	if E.db["euiscript"].autogreed and UnitLevel('player') == MAX_PLAYER_LEVEL and quality == 2 and not bop then
 		if canDisenchant then
 			RollOnLoot(rollID, 3)
@@ -245,6 +245,7 @@ function M:LoadLootRoll()
 	
 	self:RegisterEvent('LOOT_HISTORY_ROLL_CHANGED')
 	self:RegisterEvent("START_LOOT_ROLL")
+
 	UIParent:UnregisterEvent("START_LOOT_ROLL")
 	UIParent:UnregisterEvent("CANCEL_LOOT_ROLL")
 end

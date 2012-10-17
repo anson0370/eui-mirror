@@ -488,8 +488,12 @@ function TT:GameTooltip_OnTooltipSetUnit(tt)
 
 	local color = TT:GetColor(unit)	
 	if not color then color = "|CFFFFFFFF" end
-	GameTooltipTextLeft1:SetFormattedText("%s%s%s", color, title or name, realm and realm ~= "" and " - "..realm.."|r" or "|r")
-
+	if E.db.tooltip.titles then
+		GameTooltipTextLeft1:SetFormattedText("%s%s%s", color, title or name, realm and realm ~= "" and " - "..realm.."|r" or "|r")
+	else
+		GameTooltipTextLeft1:SetFormattedText("%s%s%s", color, name, realm and realm ~= "" and " - "..realm.."|r" or "|r")
+	end
+	
 	if(UnitIsPlayer(unit)) then
 		for index, _ in pairs(self.InspectCache) do
 			local inspectCache = self.InspectCache[index]
@@ -521,10 +525,18 @@ function TT:GameTooltip_OnTooltipSetUnit(tt)
 
 		local offset = 2
 		if guildName then
-			if UnitIsInMyGuild(unit) then
-				GameTooltipTextLeft2:SetText("<"..E["media"].hexvaluecolor..guildName.."|r> [".. guildRankIndex.. "] ["..E.ValColor.." "..guildRankName.."|r]")
+			if E.db.tooltip.guildranks then
+				if UnitIsInMyGuild(unit) then
+					GameTooltipTextLeft2:SetText("<"..E["media"].hexvaluecolor..guildName.."|r> ["..E["media"].hexvaluecolor..guildRankName.."|r]")
+				else
+					GameTooltipTextLeft2:SetText("<|cff00ff10"..guildName.."|r> [|cff00ff10"..guildRankName.."|r]")
+				end
 			else
-				GameTooltipTextLeft2:SetText("<|cff00ff10"..guildName.."|r> [".. guildRankIndex.. "] [|cff00ff10"..utf8sub(guildRankName, 10, true).."|r]")
+				if UnitIsInMyGuild(unit) then
+					GameTooltipTextLeft2:SetText("<"..E["media"].hexvaluecolor..guildName.."|r>")
+				else
+					GameTooltipTextLeft2:SetText("<|cff00ff10"..guildName.."|r>")
+				end			
 			end
 			offset = offset + 1
 		end
@@ -569,7 +581,7 @@ function TT:GameTooltip_OnTooltipSetUnit(tt)
 	end
 
 	-- Range line by eui.cc
-	if E.db.tooltip.range and UnitExists(unit) and unit ~= "player" then
+	if E.db.tooltip.range and UnitExists(unit) and unit ~= "player" and rc then
 		local minRange, maxRange = rc:getRange(unit)
 		local text = GetRangeColorText(minRange, maxRange)
 		GameTooltip:AddDoubleLine(L["Range"]..":", text)
@@ -636,11 +648,11 @@ function TT:GameTooltip_OnTooltipSetItem(tt)
 		local left = ""
 		local right = ""
 		
-		if link ~= nil then
+		if link ~= nil and TT.db.spellid then
 			left = "|cFFCA3C3C"..ID.."|r "..link:match(":(%w+)")
 		end
 		
-		if num > 1  then
+		if num > 1 and self.db.count then
 			right = "|cFFCA3C3C"..L['Count'].."|r "..num
 		end
 		
@@ -765,7 +777,7 @@ function TT:Initialize()
 	--SpellIDs
 	hooksecurefunc(GameTooltip, "SetUnitBuff", function(self,...)
 		local id = select(11,UnitBuff(...))
-		if id then
+		if id and TT.db.spellid then
 			self:AddLine("|cFFCA3C3C"..ID.."|r".." "..id)
 			self:Show()
 			self.forceRefresh = true;
@@ -774,7 +786,7 @@ function TT:Initialize()
 
 	hooksecurefunc(GameTooltip, "SetUnitDebuff", function(self,...)
 		local id = select(11,UnitDebuff(...))
-		if id then
+		if id and TT.db.spellid then
 			self:AddLine("|cFFCA3C3C"..ID.."|r".." "..id)
 			self:Show()
 			self.forceRefresh = true;
@@ -783,7 +795,7 @@ function TT:Initialize()
 
 	hooksecurefunc(GameTooltip, "SetUnitAura", function(self,...)
 		local id = select(11,UnitAura(...))
-		if id then
+		if id and TT.db.spellid then
 			self:AddLine("|cFFCA3C3C"..ID.."|r".." "..id)
 			self:Show()
 			self.forceRefresh = true;
@@ -791,7 +803,7 @@ function TT:Initialize()
 	end)
 
 	hooksecurefunc("SetItemRef", function(link, text, button, chatFrame)
-		if string.find(link,"^spell:") then
+		if string.find(link,"^spell:") and TT.db.spellid then
 			local id = string.sub(link,7)
 			ItemRefTooltip:AddLine("|cFFCA3C3C"..ID.."|r".." "..id)
 			ItemRefTooltip:Show()
@@ -800,7 +812,7 @@ function TT:Initialize()
 
 	GameTooltip:HookScript("OnTooltipSetSpell", function(self)
 		local id = select(3,self:GetSpell())
-		if id then
+		if id and TT.db.spellid then
 			self:AddLine("|cFFCA3C3C"..ID.."|r".." "..id)
 			self:Show()
 			self.forceRefresh = true;
