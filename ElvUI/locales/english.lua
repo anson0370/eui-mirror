@@ -418,6 +418,10 @@ L["No locals to dump"] = true;
 L['|cFFE30000Lua error recieved. You can view the error message when you exit combat.'] = true;
 
 --General
+L['Top Panel'] = true;
+L['Display a panel across the top of the screen. This is for cosmetic only.'] = true;
+L['Bottom Panel'] = true;
+L['Display a panel across the bottom of the screen. This is for cosmetic only.'] = true;
 L["Menu"] = true;
 L["RaidTool"] = true;
 L["Shortcuts"] = true;
@@ -1126,7 +1130,9 @@ do
 	L["Force Name Classcolor"] = true;
 end	
 
+--euiscript
 do
+	L["lfg notification"] = true;
 	L['Quset Button Number'] = true;
 	L['Slot Button Number'] = true;
 	L["euiscript"] = 'EUI Script';

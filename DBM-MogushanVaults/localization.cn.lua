@@ -57,6 +57,7 @@ L:SetOptionLocalization({
 	InfoFrame			= "资讯框：坦克减益状态层数监视",
 	HudMAP				= "高级定位监视(HUD)：$spell:116784的位置",
 	HudMAP2				= "高级定位监视(HUD)：$spell:116417",
+	HudMAP3				= "高级定位监视(HUD)：$spell:115817",
 	WarnPhase			= "警告：阶段转换",
 	specWarnDrawFlame 	= "特殊警告：$spell:116711",
 	specWarnArcaneVelocity 	= "特殊警告：$spell:116364",

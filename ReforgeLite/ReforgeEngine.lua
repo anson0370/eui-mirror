@@ -111,6 +111,21 @@ function ReforgeLite:GetMethodPenalty(method)
   return 0
 end
 
+function ReforgeLite:IsMethodValid(method)
+  for i = 1, #method.items do
+    local item = GetInventoryItemLink ("player", self.itemData[i].slotId)
+    local stats = (item and GetItemStats(item) or {})
+    if method.items[i].src and method.items[i].dst then
+      if (stats[self.itemStats[method.items[i].src].name] or 0) == 0 then
+        return false
+      end
+      if (stats[self.itemStats[method.items[i].dst].name] or 0) ~= 0 then
+        return false
+      end
+    end
+  end
+  return true
+end
 
 function ReforgeLite:UpdateMethodStats (method)
   method.stats = {}
@@ -195,7 +210,7 @@ function ReforgeLite:IsItemLocked(slot)
   if self.pdb.itemsLocked[slot] then return true end
   local item = GetInventoryItemLink ("player", self.itemData[slot].slotId)
   if not item then return true end
-  local ilvl = select (4, GetItemInfo (item))
+  local ilvl = select (4, GetItemInfo (item)) or 0
   return ilvl < 200
 end
 
@@ -217,25 +232,34 @@ function ReforgeLite:MakeReforgeOption(item, data, src, dst)
     end
     if src == self.STATS.SPIRIT then
       if data.conv.s2h > 0 then
+        local conv = math.floor(amount * data.conv.s2h + math.random())
         if data.caps[1].stat == self.STATS.HIT then
-          delta1 = delta1 - math.floor(amount * data.conv.s2h + math.random())
+          delta1 = delta1 - conv
         elseif data.caps[2].stat == self.STATS.HIT then
-          delta2 = delta2 - math.floor(amount * data.conv.s2h + math.random())
+          delta2 = delta2 - conv
+        else
+          dscore = dscore - data.weights[self.STATS.HIT] * conv
         end
       end
       if data.conv.s2e > 0 then
+        local conv = math.floor(amount * data.conv.s2e + math.random())
         if data.caps[1].stat == self.STATS.EXP then
-          delta1 = delta1 - math.floor(amount * data.conv.s2e + math.random())
+          delta1 = delta1 - conv
         elseif data.caps[2].stat == self.STATS.EXP then
-          delta2 = delta2 - math.floor(amount * data.conv.s2e + math.random())
+          delta2 = delta2 - conv
+        else
+          dscore = dscore - data.weights[self.STATS.EXP] * conv
         end
       end
     elseif src == self.STATS.EXP then
       if data.conv.e2h > 0 then
+        local conv = math.floor(amount * data.conv.e2h + math.random())
         if data.caps[1].stat == self.STATS.HIT then
-          delta1 = delta1 - math.floor(amount * data.conv.e2h + math.random())
+          delta1 = delta1 - conv
         elseif data.caps[2].stat == self.STATS.HIT then
-          delta2 = delta2 - math.floor(amount * data.conv.e2h + math.random())
+          delta2 = delta2 - conv
+        else
+          dscore = dscore - data.weights[self.STATS.HIT] * conv
         end
       end
     end
@@ -248,25 +272,34 @@ function ReforgeLite:MakeReforgeOption(item, data, src, dst)
     end
     if dst == self.STATS.SPIRIT then
       if data.conv.s2h > 0 then
+        local conv = math.floor(amount * data.conv.s2h + math.random())
         if data.caps[1].stat == self.STATS.HIT then
-          delta1 = delta1 + math.floor(amount * data.conv.s2h + math.random())
+          delta1 = delta1 + conv
         elseif data.caps[2].stat == self.STATS.HIT then
-          delta2 = delta2 + math.floor(amount * data.conv.s2h + math.random())
+          delta2 = delta2 + conv
+        else
+          dscore = dscore + data.weights[self.STATS.HIT] * conv
         end
       end
       if data.conv.s2e > 0 then
+        local conv = math.floor(amount * data.conv.s2e + math.random())
         if data.caps[1].stat == self.STATS.EXP then
-          delta1 = delta1 + math.floor(amount * data.conv.s2e + math.random())
+          delta1 = delta1 + conv
         elseif data.caps[2].stat == self.STATS.EXP then
-          delta2 = delta2 + math.floor(amount * data.conv.s2e + math.random())
+          delta2 = delta2 + conv
+        else
+          dscore = dscore + data.weights[self.STATS.HIT] * conv
         end
       end
-    elseif src == self.STATS.EXP then
+    elseif dst == self.STATS.EXP then
       if data.conv.e2h > 0 then
+        local conv = math.floor(amount * data.conv.e2h + math.random())
         if data.caps[1].stat == self.STATS.HIT then
-          delta1 = delta1 + math.floor(amount * data.conv.e2h + math.random())
+          delta1 = delta1 + conv
         elseif data.caps[2].stat == self.STATS.HIT then
-          delta2 = delta2 + math.floor(amount * data.conv.e2h + math.random())
+          delta2 = delta2 + conv
+        else
+          dscore = dscore + data.weights[self.STATS.HIT] * conv
         end
       end
     end

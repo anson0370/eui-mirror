@@ -170,7 +170,7 @@ if E.db["euiscript"].wgtimenoti == true then
 	CombatNotification:SetScript("OnUpdate",clocks_update)
 end
 
-if E.db["euiscript"].wgtimenoti == true then
+if E.db["euiscript"].lfgnoti == true then
 	local ina = 1
 	local str = ""
 	local f = CreateFrame("Frame")

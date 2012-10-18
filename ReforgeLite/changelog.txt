@@ -1,3 +1,13 @@
+** v1.19
+
+- Fixed a couple lua errors reported earlier
+- Fixed a couple settings not getting saved as reported by Tharai
+
+** v1.18
+
+- Fixed a critical bug that caused reforging to get stuck reforging the same item
+- Expertise to hit should be working now
+
 ** v1.17
 
 - Fixed bugs in ReforgeLite.lua:1257 and ReforgeEngine.lua:44

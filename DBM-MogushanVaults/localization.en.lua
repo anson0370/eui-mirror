@@ -53,6 +53,7 @@ L:SetOptionLocalization({
 	InfoFrame			= "InfoFrame: Tank Debuff($spell:131788 $spell:116942 $spell:131790)",
 	HudMAP				= "HUDMAP: $spell:116784",
 	HudMAP2				= "HUDMAP: $spell:116417",
+	HudMAP3				= "HUDMAP：$spell:115817",
 	WarnPhase	= "Announce Phase transition",
 	specWarnDrawFlame 	= "Voice warning: $spell:116711",
 	specWarnArcaneVelocity 	= "Voice warning: $spell:116364",

@@ -20,6 +20,15 @@ end
 
 --General
 do
+	L['Location Text'] = '地区文字';
+	L['Change settings for the display of the location text that is on the minimap.'] = '改变小地图上地区名称文字显示方式';
+	L['Minimap Mouseover'] = '鼠标滑过显示';
+	L['Always Display'] = '总是显示';
+	L['Hide'] = '隐藏';
+	L['Top Panel'] = '顶部面板';
+	L['Display a panel across the top of the screen. This is for cosmetic only.'] = '显示跨越屏幕顶部的面板,仅仅是用于装饰';
+	L['Bottom Panel'] = '底部面板';
+	L['Display a panel across the bottom of the screen. This is for cosmetic only.'] = '显示跨越屏幕底部的面板,仅仅是用于装饰';
 	L["Menu"] = '主菜单';
 	L["RaidTool"] = '团队工具';
 	L["Shortcuts"] = '快捷操作';
@@ -1329,7 +1338,9 @@ do
 	L["Force Name Classcolor"] = "强制名字职业色"
 end	
 
+--euiscript
 do
+	L["lfg notification"] = "随机本奖励提示";
 	L['Quset Button Number'] = '任务物品按钮数量';
 	L['Slot Button Number'] = '装备按钮数量';
 	L["euiscript"] = "增强功能"

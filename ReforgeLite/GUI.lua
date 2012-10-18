@@ -606,8 +606,6 @@ function GUI:CreateTable (rows, cols, firstRow, firstColumn, gridColor, parent)
     align = align or "CENTER"
     color = color or {1, 1, 1}
     font = font or "GameFontNormalSmall"
-    offsX = offsX or 0
-    offsY = offsY or 0
     
     if self.cells[i][j] and not self.cells[i][j].istag then
       if type (self.cells[i][j].Recycle) == "function" then
@@ -636,8 +634,8 @@ function GUI:CreateTable (rows, cols, firstRow, firstColumn, gridColor, parent)
     self.cells[i][j]:SetTextColor (color[1], color[2], color[3])
     self.cells[i][j]:SetText (text)
     self.cells[i][j].align = align
-    self.cells[i][j].offsX = offsX
-    self.cells[i][j].offsY = offsY
+    self.cells[i][j].offsX = 0
+    self.cells[i][j].offsY = 0
     self:AlignCell (i, j)
   end
   

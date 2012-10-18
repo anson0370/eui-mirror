@@ -46,6 +46,11 @@ E.Options.args.euiscript = {
 			--		type = "toggle",
 			--		name = L["mapmove"],
 			--	},
+				lfgnoti = {
+					order = 8,
+					type = "toggle",
+					name = L["lfg notification"],
+				},
 				tradetabs = {
 					order = 9,
 					type = "toggle",

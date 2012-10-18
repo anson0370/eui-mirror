@@ -143,8 +143,8 @@ end
 -- Our addon frame - A tiny button!
 ------------------------------------------------------------
 CreateFrame("Button", "RecipientsDropDownButton", SendMailNameEditBox);
-RecipientsDropDownButton:SetWidth(24);
-RecipientsDropDownButton:SetHeight(24);
+RecipientsDropDownButton:SetWidth(23);
+RecipientsDropDownButton:SetHeight(23);
 RecipientsDropDownButton:SetPoint("LEFT", SendMailNameEditBox, "RIGHT", -6, 0);
 RecipientsDropDownButton:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Up");
 RecipientsDropDownButton:SetPushedTexture("Interface\\ChatFrame\\UI-ChatIcon-ScrollDown-Down");
@@ -155,7 +155,7 @@ RecipientsDropDownButton:SetNormalTexture("Interface\\AddOns\\ElvUI\\media\\text
 RecipientsDropDownButton:SetPushedTexture(nil)
 
 RecipientsDropDownButton:ClearAllPoints()
-RecipientsDropDownButton:SetPoint("LEFT", SendMailNameEditBox, "RIGHT", 4, 0);
+RecipientsDropDownButton:SetPoint("LEFT", SendMailNameEditBox, "RIGHT", 4, 3);
 RecipientsDropDownButton:SetScript("OnShow", function(self)
 	if not self._menu then -- The menu won't be created until you open SendmailFrame, for resource saving...
 		self._menu = CreateFrame("Button", "Recipients_3FEF5056_BCA4_4B80_8D93_8FD3A0B70913", self, "UIDropDownMenuTemplate");

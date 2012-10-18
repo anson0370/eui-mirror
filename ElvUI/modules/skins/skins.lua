@@ -40,6 +40,22 @@ function S:HandleButton(f, strip)
 	f:HookScript("OnLeave", SetOriginalBackdrop)
 end
 
+function S:HandleButtonB(f, strip)
+	if f.Left then f.Left:SetAlpha(0) end
+	if f.Middle then f.Middle:SetAlpha(0) end
+	if f.Right then f.Right:SetAlpha(0) end
+
+	if f.SetNormalTexture then f:SetNormalTexture("") end
+	
+	if f.SetPushedTexture then f:SetPushedTexture("") end
+	
+	if f.SetDisabledTexture then f:SetDisabledTexture("") end
+	
+	if strip then f:StripTextures() end
+	
+	f:SetTemplate("Default", true)
+end
+
 function S:HandleScrollBar(frame, thumbTrim)
 	if _G[frame:GetName().."BG"] then _G[frame:GetName().."BG"]:SetTexture(nil) end
 	if _G[frame:GetName().."Track"] then _G[frame:GetName().."Track"]:SetTexture(nil) end

@@ -16,11 +16,20 @@ function LO:Initialize()
 	self.BottomPanel = CreateFrame('Frame', 'ElvUI_BottomPanel', E.UIParent)
 	self.BottomPanel:SetTemplate('Default', true)
 	self.BottomPanel:Point('BOTTOMLEFT', E.UIParent, 'BOTTOMLEFT', -1, -1)
-	self.BottomPanel:Point('BOTTOMRIGHT', E.UIParent, 'BOTTOMRIGHT', 1, 1)
+	self.BottomPanel:Point('BOTTOMRIGHT', E.UIParent, 'BOTTOMRIGHT', 1, -1)
 	self.BottomPanel:Height(PANEL_HEIGHT)
 	self.BottomPanel:SetFrameLevel(0)
 	self.BottomPanel:SetFrameStrata('BACKGROUND')
 	self:BottomPanelVisibility()
+	
+	self.TopPanel = CreateFrame('Frame', 'ElvUI_TopPanel', E.UIParent)
+	self.TopPanel:SetTemplate('Default', true)
+	self.TopPanel:Point('TOPLEFT', E.UIParent, 'TOPLEFT', -1, 1)
+	self.TopPanel:Point('TOPRIGHT', E.UIParent, 'TOPRIGHT', 1, 1)
+	self.TopPanel:Height(PANEL_HEIGHT)
+	self.TopPanel:SetFrameLevel(0)
+	self.TopPanel:SetFrameStrata('BACKGROUND')
+	self:TopPanelVisibility()		
 end
 
 function LO:BottomPanelVisibility()
@@ -31,6 +40,13 @@ function LO:BottomPanelVisibility()
 	end
 end
 
+function LO:TopPanelVisibility()
+	if E.db.general.topPanel then
+		self.TopPanel:Show()
+	else
+		self.TopPanel:Hide()
+	end
+end
 
 local function ChatPanelLeft_OnFade(self)
 	LeftChatPanel:Hide()

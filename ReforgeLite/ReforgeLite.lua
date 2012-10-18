@@ -1,4 +1,4 @@
--- ReforgeLite v1.17 by d07.RiV (Iroared)
+-- ReforgeLite v1.19 by d07.RiV (Iroared)
 -- All rights reserved
 
 local function DeepCopy (t, cache)
@@ -403,9 +403,6 @@ function ReforgeLite:GetCapScore (cap, value)
   return score
 end
 function ReforgeLite:GetStatScore (stat, value)
-  if self.pdb.tankingModel then
-    return self.pdb.weights[stat] * value
-  end
   if stat == self.pdb.caps[1].stat then
     return self:GetCapScore (self.pdb.caps[1], value)
   elseif stat == self.pdb.caps[2].stat then
@@ -929,9 +926,17 @@ function ReforgeLite:CreateOptionList ()
     local method = self:Compute ()
     local curScore = (method and (self:GetMethodScore(method) - self:GetMethodPenalty(method)) or -500000)
     local oldScore = (self.pdb.method and (self:GetMethodScore(self.pdb.method) - self:GetMethodPenalty(self.pdb.method)) or -500000)
+    if self.pdb.method and not self:IsMethodValid(self.pdb.method) then
+      oldScore = -1000000
+    end
     if curScore > oldScore then
       self.pdb.method = method
       self:UpdateMethodCategory()
+      self.methodOverride = {}
+      for i = 1, #self.itemSlots do
+        self.methodOverride[i] = 0
+      end
+      self:UpdateMethodChecks()
     end
   end)
 
@@ -996,9 +1001,9 @@ function ReforgeLite:CreateOptionList ()
 end
 function ReforgeLite:FillSettings ()
   self.settings:SetCell (1, 0, GUI:CreateCheckButton (self.settings, L["Open window when reforging"],
-    self.db.openOnReforge, function (val) self.db.openOnReforge = val end), "LEFT")
+    self.db.openOnReforge, function (val) self.db.openOnReforge = val or false end), "LEFT")
   self.settings:SetCell (2, 0, GUI:CreateCheckButton (self.settings, L["Show reforged stats in item tooltips"],
-    self.db.updateTooltip, function (val) self.db.updateTooltip = val end), "LEFT")
+    self.db.updateTooltip, function (val) self.db.updateTooltip = val or false end), "LEFT")
 
   self.settings:SetCellText (3, 0, L["Active window color"], "LEFT", nil, "GameFontNormal")
   self.settings:SetCell (3, 1, GUI:CreateColorPicker (self.settings, 20, 20, self.db.activeWindowTitle, function ()
@@ -1538,12 +1543,17 @@ function ReforgeLite:UpdateMethodChecks ()
       end
     end
     if anyDiffer then
-      if ReforgingFrame and ReforgingFrame:IsShown () then
+      if ReforgingFrame and ReforgingFrame:IsShown () and self:IsMethodValid(self.pdb.method) then
         self.methodWindow.reforge:Enable ()
         self.methodWindow.reforgeTip:Hide ()
       else
         self.methodWindow.reforge:Disable ()
         self.methodWindow.reforgeTip:Show ()
+        if self:IsMethodValid(self.pdb.method) then
+          GUI:SetTooltip (self.methodWindow.reforgeTip, L["Reforging window must be open"])
+        else
+          GUI:SetTooltip (self.methodWindow.reforgeTip, L["Please press Compute button to update the reforge."])
+        end
       end
       self.methodWindow.costTip:Show ()
       self.methodWindow.cost:Show ()
@@ -1560,7 +1570,7 @@ end
 --------------------------------------------------------------------------
 
 function ReforgeLite:DoReforgeUpdate ()
-  if self.curReforgeItem and self.pdb.method and self.methodWindow.reforge:IsShown () and ReforgingFrame and ReforgingFrame:IsShown () then
+  if self.curReforgeItem and self.pdb.method and self.methodWindow.reforge:IsShown () and ReforgingFrame and ReforgingFrame:IsShown () and self:IsMethodValid(self.pdb.method) then
     while self.curReforgeItem <= #self.methodWindow.items do
       local i = self.curReforgeItem
       if i ~= 0 then

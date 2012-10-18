@@ -167,14 +167,22 @@ E.Options.args.general = {
 					-- get = function(info) return E.db.general.tinyWorldMap end,
 					-- set = function(info, value) E.db.general.tinyWorldMap = value; E:GetModule('WorldMap'):ToggleTinyWorldMapSetting() end					
 				-- },	
-				-- bottomPanel = {
-					-- order = 15,
-					-- type = 'toggle',
-					-- name = L['Bottom Panel'],
-					-- desc = L['Display a panel across the bottom of the screen. This is for cosmetic only.'],
-					-- get = function(info) return E.db.general.bottomPanel end,
-					-- set = function(info, value) E.db.general.bottomPanel = value; E:GetModule('Layout'):BottomPanelVisibility() end						
-				-- },
+				bottomPanel = {
+					order = 15,
+					type = 'toggle',
+					name = L['Bottom Panel'],
+					desc = L['Display a panel across the bottom of the screen. This is for cosmetic only.'],
+					get = function(info) return E.db.general.bottomPanel end,
+					set = function(info, value) E.db.general.bottomPanel = value; E:GetModule('Layout'):BottomPanelVisibility() end						
+				},
+				topPanel = {
+					order = 16,
+					type = 'toggle',
+					name = L['Top Panel'],
+					desc = L['Display a panel across the top of the screen. This is for cosmetic only.'],
+					get = function(info) return E.db.general.topPanel end,
+					set = function(info, value) E.db.general.topPanel = value; E:GetModule('Layout'):TopPanelVisibility() end						
+				},					
 			},
 		},	
 		minimap = {

@@ -610,12 +610,14 @@ function ReforgeLite:PrioToWeights(pdb)
           local t = (pdb.caps[1].stat == pdb.prio[i].stat and 1 or 2)
           local n = #pdb.caps[t].points
           pdb.caps[t].points[n].after = value
-          pdb.caps[t].points[n + 1] = {
-            method = 3,
-            preset = pdb.prio[i].preset,
-            value = pdb.prio[i].value,
-            after = 0
-          }
+          if pdb.prio[i].capped then
+            pdb.caps[t].points[n + 1] = {
+              method = 3,
+              preset = pdb.prio[i].preset,
+              value = pdb.prio[i].value,
+              after = 0
+            }
+          end
         elseif pdb.prio[i].capped and (pdb.caps[1].stat == 0 or pdb.caps[2].stat == 0) then
           local t = (pdb.caps[1].stat == 0 and 1 or 2)
           pdb.weights[pdb.prio[i].stat] = value
