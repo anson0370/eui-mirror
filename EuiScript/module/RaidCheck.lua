@@ -184,18 +184,15 @@ function RC:CheckRaidBuff()
 			if HasClass.ms and HasBuffMS == false then table.insert(NoMSBuffName, name) end
 			if HasClass.fs and HasBuffFS == false then table.insert(NoFSBuffName, name) end
 			
-			if HasClass.qs == 0 and HasClass.xd then
-				if HasBuffXD == false then table.insert(NoXDBuffName, name) end	
-			elseif HasClass.qs == 0 and HasClass.xd == false and HasClass.monk then
-				if HasBuffMONK == false then table.insert(NoMONKBuffName, name) end
-				print(name)
-			elseif HasClass.qs == 1 and HasClass.xd then
+			if HasClass.qs == 0 and (HasClass.xd or HasClass.monk) then
+				if HasBuffXD == false and HasBuffMONK == false then table.insert((HasClass.xd and NoXDBuffName or NoMONKBuffName), name) end
+			elseif HasClass.qs == 1 and (HasClass.xd or HasClass.monk) then
 				if HasBuffQS2 == false then table.insert(NoQS2BuffName, name) end
-				if HasBuffXD == false then table.insert(NoXDBuffName, name) end
-			elseif HasClass.qs == 1 and HasClass.xd == false then
+				if HasBuffXD == false and HasBuffMONK == false then table.insert((HasClass.xd and NoXDBuffName or NoMONKBuffName), name) end
+			elseif HasClass.qs == 1 and HasClass.xd == false and HasClass.monk == false then
 				if HasBuffQS1 == false then table.insert(NoQS1BuffName, name) end
 			elseif HasClass.qs > 1 then
-				if HasBuffQS1 == false and HasBuffXD == false then table.insert(NoQS1BuffName, name) end
+				if HasBuffQS1 == false and HasBuffXD == false and HasBuffMONK == false then table.insert(NoQS1BuffName, name) end
 				if HasBuffQS2 == false then table.insert(NoQS2BuffName, name) end
 			end
 

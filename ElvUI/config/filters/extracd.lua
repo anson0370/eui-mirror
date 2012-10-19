@@ -1,5 +1,5 @@
 local E, L, V, P, G = unpack(select(2, ...)); --Engine
---Extracd 1.0.5
+--Extracd 1.0.6b
 G['extracd']['data'] = {
 -- talent
 	-- type = "talent" 
@@ -123,6 +123,8 @@ G['extracd']['data'] = {
 		spec = {3},
 		cd = 8,
 	}, --
+	
+
 	
 -- item
 	-- type = "item" 
@@ -338,14 +340,28 @@ G['extracd']['data'] = {
 	}, -- Searing Words
 	
 	-- 450 and others
-	[105574] = {
+	[60234] = {
 		desc = "",
 		type = "item",
 		item = {75274},
 		cd = 55,
 		duration = 15,
-	}, -- Zen Alchemist Stone
-
+	}, -- Zen Alchemist Stone(Intellect)
+	[60233] = {
+		desc = "",
+		type = "item",
+		item = {75274},
+		cd = 55,
+		duration = 15,
+	}, -- Zen Alchemist Stone(Agility)
+	[60229] = {
+		desc = "",
+		type = "item",
+		item = {75274},
+		cd = 55,
+		duration = 15,
+	}, -- Zen Alchemist Stone(Strength)
+	
 -- item set
 	-- type = "itemset"
 	-- items = {all items of this set(including all difficulties)}
@@ -450,7 +466,7 @@ G['extracd']['data'] = {
 	
 	-- MOP
 	[125488] = {
-		desc = "need test",
+		desc = "",
 		type = "enchant",
 		enchant = {4893, 4116, 3728},
 		slot = 15,
@@ -458,7 +474,7 @@ G['extracd']['data'] = {
 		duration = 15
 	},	-- Darkglow Embroidery
 	[125489] = {
-		desc = "need test",
+		desc = "",
 		type = "enchant",
 		enchant = {4894, 3730, 4118},
 		slot = 15,
@@ -466,11 +482,19 @@ G['extracd']['data'] = {
 		duration = 15
 	}, -- Swordguard Embroidery
 	[125487] = {
-		desc = "need test",
+		desc = "",
 		type = "enchant",
 		enchant = {4892, 3722, 4115},
 		slot = 15,
 		cd = 55,
 		duration = 15
 	}, -- Lightweave Embroidery
+	[104993] = {
+		desc = "",
+		type = "enchant",
+		enchant = {4442},
+		slot = 16,
+		cd = 50,
+		duration = 12
+	}, -- Jade Spirit
 }

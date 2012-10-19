@@ -475,9 +475,9 @@ function UF:Construct_DruidResourceBar(frame)
 	UF['statusbars'][solarBar] = true
 	eclipseBar.SolarBar = solarBar
 	
-	eclipseBar.Text = eclipseBar:CreateFontString(nil, 'OVERLAY')
+	eclipseBar.Text = lunarBar:CreateFontString(nil, 'OVERLAY')
 	UF:Configure_FontString(eclipseBar.Text)
-	eclipseBar.Text:SetPoint("CENTER")
+	eclipseBar.Text:SetPoint("CENTER", eclipseBar, "CENTER")
 	
 	return eclipseBar
 end
@@ -502,7 +502,8 @@ function UF:Construct_DruidAltManaBar(frame)
 	dpower.bg:SetTexture(E["media"].blankTex)
 	dpower.bg.multiplier = 0.3
 
-	dpower.Text = dpower:CreateFontString(nil, 'OVERLAY')
+	dpower.Text = dpower.ManaBar:CreateFontString(nil, 'OVERLAY')
+	dpower.Text:SetPoint("CENTER")
 	UF:Configure_FontString(dpower.Text)
 	
 	return dpower

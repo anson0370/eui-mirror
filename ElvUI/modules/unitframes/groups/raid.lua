@@ -60,10 +60,12 @@ do
 		local _, _, _, _, maxPlayers, _, _ = GetInstanceInfo()
 		if event == "PLAYER_REGEN_ENABLED" then self:UnregisterEvent("PLAYER_REGEN_ENABLED") end
 		if not InCombatLockdown() then		
-			if inInstance and instanceType == "raid" then
-				RegisterAttributeDriver(self, 'state-visibility', 'show')
-			elseif self.db.visibility then
-				UF:ChangeVisibility(self, 'custom '..self.db.visibility)
+			if inInstance and instanceType == "raid" and maxPlayers == 10 then
+				self:SetAttribute("groupFilter", "1,2")
+			elseif inInstance and instanceType == "raid" and maxPlayers == 25 then
+				self:SetAttribute("groupFilter", "1,2,3,4,5")
+			else
+				self:SetAttribute("groupFilter", "1,2,3,4,5,6,7,8")
 			end
 		else
 			self:RegisterEvent("PLAYER_REGEN_ENABLED")

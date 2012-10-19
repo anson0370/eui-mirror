@@ -108,7 +108,7 @@ if(GetLocale()=="zhCN") then
 	L.INFO_WOWTIME_TIP1 = localizedName.. "即将在1分钟内开始"
 	L.INFO_WOWTIME_TIP2 = localizedName.. "即将在5分钟内开始"
 	L.INFO_WOWTIME_TIP3 = localizedName.. "即将在15分钟内开始"
-	L.need = " 随机本有奖励包包了!!!"
+	L.need = " 有奖励包包了!!!"
 	L.Tank = "<坦克>"
 	L.Healer = "<治疗>"
 	L.DPS = "<输出>"
@@ -116,7 +116,7 @@ elseif (GetLocale()=="zhTW") then
 	L.INFO_WOWTIME_TIP1 = localizedName.. "即將在1分鐘內開始"
 	L.INFO_WOWTIME_TIP2 = localizedName.. "即將在5分鐘內開始"
 	L.INFO_WOWTIME_TIP3 = localizedName.. "即將在15分鐘內開始"
-	L.need = " 隨機本有獎勵包包了!!!"
+	L.need = " 有獎勵包包了!!!"
 	L.Tank = "<坦克>"
 	L.Healer = "<治療>"
 	L.DPS = "<輸出>"		
@@ -124,7 +124,7 @@ elseif (GetLocale()=="enUS") then
 	L.INFO_WOWTIME_TIP1 = localizedName.. "will start within 1 minute"
 	L.INFO_WOWTIME_TIP2 = localizedName.. "will start within 5 minute"
 	L.INFO_WOWTIME_TIP3 = localizedName.. "will start within 15 minute"
-	L.need = "LFG reward bags!"
+	L.need = " reward bags!"
 	L.Tank = "<Tank>"
 	L.Healer = "<Healer>"
 	L.DPS = "<DPS>"
@@ -184,12 +184,14 @@ if E.db["euiscript"].lfgnoti == true then
 		if ina > 0 then return end
 		if select(2, IsInInstance()) ~= 'none' then return end
 		
-		local eligible, forTank, forHealer, forDamage, itemCount, money, xp = GetLFGRoleShortageRewards(301, 1)
+		local id, name = GetLFGRandomDungeonInfo(9)
+		local eligible, forTank, forHealer, forDamage, itemCount, money, xp = GetLFGRoleShortageRewards(id, 1)
 		if eligible and (itemCount > 0) and self.noti == false then
 			if forTank then str = str.. L.Tank end
 			if forHealer then str = str.. L.Healer end
 			if forDamage then str = str.. L.DPS end
-			E.EuiAlertRun(str.. L.need)
+			E.EuiAlertRun(name.. str.. L.need)
+			if IsInGuild() then SendChatMessage('EUI:'.. name.. str.. L.need, "GUILD", nil, nil) end
 			self.noti = true
 			str = ""
 		end

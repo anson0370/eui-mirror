@@ -563,7 +563,7 @@ E.Options.args.media = {
 					set = function(info, value)
 						E.db.general.transparent = value
 						E.db.unitframe.transparent = value
-						if value then E:SetupTheme("transparent") else E:SetupTheme("classic") end
+						if value then E:SetupTheme("transparent", true) else E:SetupTheme("classic", true) end
 					end,
 				},				
 				resetbutton = {

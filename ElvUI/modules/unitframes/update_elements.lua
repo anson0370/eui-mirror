@@ -741,7 +741,7 @@ function UF:DruidResourceBarVisibilityUpdate(unit)
 	local eclipseBar = self:GetParent().EclipseBar
 	local druidAltMana = self:GetParent().DruidAltMana
 	
-	UF:UpdatePlayerFrameAnchors(self:GetParent(), eclipseBar:IsShown() or druidAltMana:IsShown())
+--	UF:UpdatePlayerFrameAnchors(self:GetParent(), eclipseBar:IsShown() or druidAltMana:IsShown())
 end
 
 function UF:DruidPostUpdateAltPower(unit, min, max)
@@ -751,17 +751,17 @@ function UF:DruidPostUpdateAltPower(unit, min, max)
 		local color = ElvUF['colors'].power['MANA']
 		color = E:RGBToHex(color[1], color[2], color[3])
 		
-		self.Text:ClearAllPoints()
+	--	self.Text:ClearAllPoints()
 		if powerText:GetText() then
 			if select(4, powerText:GetPoint()) < 0 then
-				self.Text:SetPoint("RIGHT", powerText, "LEFT", 3, 0)
-				self.Text:SetFormattedText(color.."%d%%|r |cffD7BEA5- |r", floor(min / max * 100))			
+			--	self.Text:SetPoint("RIGHT", powerText, "LEFT", 3, 0)
+				self.Text:SetFormattedText(color.."%d%%|r |cffD7BEA5|r", floor(min / max * 100))			
 			else
-				self.Text:SetPoint("LEFT", powerText, "RIGHT", -3, 0)
-				self.Text:SetFormattedText("|cffD7BEA5-|r"..color.." %d%%|r", floor(min / max * 100))
+			--	self.Text:SetPoint("LEFT", powerText, "RIGHT", -3, 0)
+				self.Text:SetFormattedText("|cffD7BEA5|r"..color.."%d%%|r", floor(min / max * 100))
 			end
 		else
-			self.Text:SetPoint(powerText:GetPoint())
+		--	self.Text:SetPoint(powerText:GetPoint())
 			self.Text:SetFormattedText(color.."%d%%|r", floor(min / max * 100))
 		end	
 	else
@@ -1387,6 +1387,15 @@ function UF:SmartAuraDisplay()
 		end
 	end
 	
+	local yOffset = 0;
+	if E.PixelMode then
+		if db.aurabar.anchorPoint == 'BELOW' then
+			yOffset = 1;
+		else
+			yOffset = -1;
+		end
+	end
+	
 	if buffs:IsShown() then
 		local x, y = E:GetXYOffset(db.buffs.anchorPoint)
 		
@@ -1399,11 +1408,11 @@ function UF:SmartAuraDisplay()
 		end		
 		auraBars:ClearAllPoints()
 		if db.aurabar.lock then
-			auraBars:SetPoint(anchorPoint..'LEFT', buffs, anchorTo..'LEFT', 0, 0)
-			auraBars:SetPoint(anchorPoint..'RIGHT', buffs, anchorTo..'RIGHT')
+			auraBars:SetPoint(anchorPoint..'LEFT', buffs, anchorTo..'LEFT', 0, yOffset)
+			auraBars:SetPoint(anchorPoint..'RIGHT', buffs, anchorTo..'RIGHT', 0, yOffset)
 		else
-			auraBars:SetPoint(anchorPoint..'LEFT', auraBars.Holder, anchorTo..'LEFT', 0, 0)
-			auraBars:SetPoint(anchorPoint..'RIGHT', auraBars.Holder, anchorTo..'RIGHT')
+			auraBars:SetPoint(anchorPoint..'LEFT', auraBars.Holder, anchorTo..'LEFT', 0, yOffset)
+			auraBars:SetPoint(anchorPoint..'RIGHT', auraBars.Holder, anchorTo..'RIGHT', 0, yOffset)
 		end
 	end
 	
@@ -1419,11 +1428,11 @@ function UF:SmartAuraDisplay()
 		end		
 		auraBars:ClearAllPoints()
 		if db.aurabar.lock then
-			auraBars:SetPoint(anchorPoint..'LEFT', debuffs, anchorTo..'LEFT', 0, 0)
-			auraBars:SetPoint(anchorPoint..'RIGHT', debuffs, anchorTo..'RIGHT')	
+			auraBars:SetPoint(anchorPoint..'LEFT', debuffs, anchorTo..'LEFT', 0, yOffset)
+			auraBars:SetPoint(anchorPoint..'RIGHT', debuffs, anchorTo..'RIGHT', 0, yOffset)	
 		else
-			auraBars:SetPoint(anchorPoint..'LEFT', auraBars.Holder, anchorTo..'LEFT', 0, 0)
-			auraBars:SetPoint(anchorPoint..'RIGHT', auraBars.Holder, anchorTo..'RIGHT')		
+			auraBars:SetPoint(anchorPoint..'LEFT', auraBars.Holder, anchorTo..'LEFT', 0, yOffset)
+			auraBars:SetPoint(anchorPoint..'RIGHT', auraBars.Holder, anchorTo..'RIGHT', 0, yOffset)		
 		end
 	end
 end
