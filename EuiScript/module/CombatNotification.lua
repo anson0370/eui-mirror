@@ -175,25 +175,27 @@ if E.db["euiscript"].lfgnoti == true then
 	local str = ""
 	local f = CreateFrame("Frame")
 	f:RegisterEvent("ZONE_CHANGED_NEW_AREA")
-	f:SetScript("OnEvent", function(self)
-		self.noti = false
-	end)
-	f:SetScript("OnUpdate", function(self, t)
-		ina = ina - t
-
-		if ina > 0 then return end
-		if select(2, IsInInstance()) ~= 'none' then return end
-		
+	
+	function f:lfgMsg()
 		local id, name = GetLFGRandomDungeonInfo(9)
+		if not id then id = 462; name = ''; end
 		local eligible, forTank, forHealer, forDamage, itemCount, money, xp = GetLFGRoleShortageRewards(id, 1)
-		if eligible and (itemCount > 0) and self.noti == false then
+		if eligible and (itemCount > 0) and f.noti == false then
 			if forTank then str = str.. L.Tank end
 			if forHealer then str = str.. L.Healer end
 			if forDamage then str = str.. L.DPS end
 			E.EuiAlertRun(name.. str.. L.need)
 			if IsInGuild() then SendChatMessage('EUI:'.. name.. str.. L.need, "GUILD", nil, nil) end
-			self.noti = true
+			f.noti = true
 			str = ""
+		else
+			E:ScheduleTimer(f.lfgMsg, 5)
 		end
-	end)
+	end
+	f:lfgMsg();
+	
+	f:SetScript("OnEvent", function(self)
+		self.noti = false
+		E:ScheduleTimer(f.lfgMsg, 5)
+	end)	
 end

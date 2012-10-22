@@ -1029,7 +1029,7 @@ E.Options.args.aurabar = {
 			guiInline = true,
 			get = function(info) return E.db.unitframe.units['focus']['aurabar'][ info[#info] ] end,
 			set = function(info, value) E.db.unitframe.units['focus']['aurabar'][ info[#info] ] = value; UF:CreateAndUpdateUF('focus') end,
-			args = E.Options.args.unitframe.args.target.args.aurabar.args,
+			args = E.Options.args.unitframe.args.focus.args.aurabar.args,
 		},
 		filters = {
 			name = L['Filters'],

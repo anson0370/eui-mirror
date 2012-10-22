@@ -1,6 +1,6 @@
 ﻿## Interface: 50001
 ## Author: Elv
-## Version: 4.52
+## Version: 4.56
 ## Title: |cffC495DDEUI|rCore
 ## Title-zhCN: |cffC495DDEUI|r核心
 ## Title-zhTW: |cffC495DDEUI|r核心

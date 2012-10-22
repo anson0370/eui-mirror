@@ -799,14 +799,6 @@ function UF:Construct_AuraBarHeader(frame)
 	auraBar.sort = true
 	auraBar.filter = UF.AuraBarFilter
 	auraBar.PostUpdate = UF.ColorizeAuraBars
-	hooksecurefunc(GameTooltip, "SetUnitAura", function(self,...)
-		if self.auraBarLine and self.numLines ~= self:NumLines() then
-			self:AddLine(L['Hold shift + right click to blacklist this aura.'])
-			if not self.numLines then
-				self.numLines = self:NumLines()
-			end
-		end
-	end)	
 
 	local holder = CreateFrame('Frame', nil, auraBar)
 	holder:Point("BOTTOM", frame, "TOP", 0, 0)

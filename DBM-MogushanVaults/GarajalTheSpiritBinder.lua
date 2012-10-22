@@ -198,7 +198,6 @@ function mod:SPELL_AURA_APPLIED(args)--We don't use spell cast success for actua
 	elseif args:IsSpellID(117752) then
 		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_kl.mp3") --狂亂	
 	end
-	--[[
 	if UnitDebuff("player", GetSpellInfo(122181)) then
 		if not inTotem then
 			specWarnGD:Show()
@@ -207,7 +206,7 @@ function mod:SPELL_AURA_APPLIED(args)--We don't use spell cast success for actua
 		inTotem = true
 	else
 		inTotem = false
-	end]]
+	end
 end
 
 function mod:SPELL_AURA_REMOVED(args)--We don't use spell cast success for actual debuff on >player< warnings since it has a chance to be resisted.

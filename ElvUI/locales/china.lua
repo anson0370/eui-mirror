@@ -372,7 +372,6 @@ end
 --oUF_AuraBar
 do	
 	L['The spell "%s" has been added to the DebuffBlacklist unitframe filter.'] = '技能 "%s" 将加被添加单位框体过滤器的DEBUFF黑名单中';
-	L['Hold shift + right click to blacklist this aura.'] = '按shift + 右键点击将添加此光环到黑名单列表中';
 	L['Aura Bars'] = '光环条';
 	L['The object you want to attach to.'] = '你想目标依附到哪';
 	L['No Duration'] = '无持续时间';

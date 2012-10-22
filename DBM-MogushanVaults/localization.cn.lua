@@ -148,7 +148,7 @@ L:SetOptionLocalization({
 })
 
 L:SetMiscLocalization({
-	Floor				= "能量漩涡的能量正在降低!"
+	Floor				= "能量涡流减弱了"
 })
 ------------
 -- Will of the Emperor --
