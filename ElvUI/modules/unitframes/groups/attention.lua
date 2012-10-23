@@ -5,16 +5,6 @@ local _, ns = ...
 local ElvUF = ns.oUF
 assert(ElvUF, "ElvUI was unable to locate oUF.")
 
-local function closeFunc()
-	E.db.unitframe.units['attention'].enable = false
-	UF:CreateAndUpdateHeaderGroup('attention')
-end
-
-local function openFunc()
-	E.db.unitframe.units['attention'].enable = true
-	UF:CreateAndUpdateHeaderGroup('attention')
-end
-
 function UF:Construct_AttentionFrames(unitGroup)
 	self:RegisterForClicks("AnyUp")
 	self:SetScript('OnEnter', UnitFrame_OnEnter)
@@ -68,7 +58,7 @@ function UF:Update_AttentionHeader(header, db)
 	if not header.positioned then
 		header:ClearAllPoints()
 		header:Point("LEFT", E.UIParent, "LEFT", 300, 250)	
-		E:CreateMover(header, header:GetName()..'Mover', L['Attention Frames'], nil, nil, nil, 'ALL,RAID25,EUI', closeFunc, openFunc)
+		E:CreateMover(header, header:GetName()..'Mover', L['Attention Frames'], nil, nil, nil, 'ALL,RAID25,EUI')
 		
 		header:SetAttribute('minHeight', header.dirtyHeight)
 		header:SetAttribute('minWidth', header.dirtyWidth)

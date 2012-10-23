@@ -251,9 +251,9 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 		if self.Options.HudMAP2 then
 			if args:IsPlayer() then
-				arcaneResonanceMarkers[args.destName] = register(DBMHudMap:PlaceRangeMarkerOnPartyMember("highlight", args.destName, 8, nil, 0, 1, 0, 0.4):Appear():RegisterForAlerts():Rotate(360, 3))
+				arcaneResonanceMarkers[args.destName] = register(DBMHudMap:PlaceRangeMarkerOnPartyMember("timer", args.destName, 8, nil, 0, 1, 0, 0.4):Appear():RegisterForAlerts():Rotate(360, 14))
 			else
-				arcaneResonanceMarkers[args.destName] = register(DBMHudMap:PlaceRangeMarkerOnPartyMember("highlight", args.destName, 8, nil, 0, 1, 0, 0.8):Appear():RegisterForAlerts():Rotate(360, 3))
+				arcaneResonanceMarkers[args.destName] = register(DBMHudMap:PlaceRangeMarkerOnPartyMember("timer", args.destName, 8, nil, 0, 1, 0, 0.8):Appear():RegisterForAlerts():Rotate(360, 14))
 			end
 		end
 	elseif args:IsSpellID(116364) then

@@ -9,9 +9,39 @@ for i = 1, 12 do
 	setglobal("BINDING_NAME_CLICK AutoQuestButton"..i..":LeftButton", L["Auto QuestItem Button"]..i)
 end
 ----------------------------------------------------------------------------------------
---	AutoButton (by eui.cc at 2012/10/05)
+--	AutoButton (by eui.cc at 2012/10/22)
 ----------------------------------------------------------------------------------------
+local frameItem = {
+	[79104] = true, --农具
+	[80513] = true,
+	[89880] = true,
+	[79102] = true, --种子
+	[80590] = true,
+	[80591] = true,
+	[80592] = true,
+	[80593] = true,
+	[80594] = true,
+	[80595] = true,
+	[89328] = true,
+	[89326] = true,
+	[89329] = true,
+	[85267] = true,
+	[85268] = true,
+	[85269] = true,
+	[85216] = true,
+	[85217] = true,
+	[89202] = true,
+	[85215] = true,
+	[89197] = true,
+	[89233] = true,	
+	['日歌农场'] = true,
+	['日歌農荘'] = true,
+	['Sunsong Ranch'] = true,
+}
+
 local function IsQuestItem(bagID, slotID)
+	if frameItem[GetSubZoneText()] then return false; end
+	
 	local isQuestItem, questId, isActiveQuest = GetContainerItemQuestInfo(bagID, slotID);
 	return (questId or isQuestItem)
 end
@@ -19,6 +49,16 @@ end
 local function IsUsableItem(itemId)
 	local itemSpell = GetItemSpell(itemId)
 	return itemSpell
+end
+
+local function IsFrameItem(itemId)
+	if not frameItem[GetSubZoneText()] then return false; end
+
+	if frameItem[itemId] then
+		return true
+	else
+		return false
+	end
 end
 
 local function AutoButtonHide(AutoButton)
@@ -115,16 +155,6 @@ local function CreateButton(name)
 	return AutoButton
 end
 
-local function closeFunc()
-	E.db.euiscript.autobutton.enable = false
-	S:ToggleAutoButton()
-end
-
-local function openFunc()
-	E.db.euiscript.autobutton.enable = true
-	S:ToggleAutoButton()
-end
-
 function S:ScanItem()
 	HideAllButton()
 	
@@ -135,7 +165,7 @@ function S:ScanItem()
 			for s = 1, GetContainerNumSlots(b) do
 				local itemID = GetContainerItemID(b, s)
 				itemID = tonumber(itemID)
-				if itemID and IsQuestItem(b, s) and IsUsableItem(itemID) then
+				if itemID and (IsQuestItem(b, s) or IsFrameItem(itemID)) and IsUsableItem(itemID) then
 					num = num + 1
 					if num > E.db.euiscript.autobutton.questNum then break; end
 					
@@ -211,11 +241,13 @@ function S:ToggleAutoButton()
 	if E.db.euiscript.autobutton.enable then
 		self:RegisterEvent("BAG_UPDATE", "ScanItem")
 		self:RegisterEvent("UNIT_INVENTORY_CHANGED", "ScanItem")
+		self:RegisterEvent("ZONE_CHANGED", "ScanItem")
 		self:ScanItem();
 	else
 		HideAllButton()
 		self:UnregisterEvent("BAG_UPDATE")
 		self:UnregisterEvent("UNIT_INVENTORY_CHANGED")	
+		self:UnregisterEvent("ZONE_CHANGED")
 	end
 end
 
@@ -256,13 +288,13 @@ function S:Initialize()
 	local AutoButtonAnchor = CreateFrame("Frame", "AutoButtonAnchor", UIParent)
 	AutoButtonAnchor:Point("BOTTOMLEFT", RightChatPanel or LeftChatPanel, "TOPLEFT", 0, 4)
 	AutoButtonAnchor:Size(db.questNum > 0 and db.size * db.questNum or 260, db.questNum > 0 and db.size or 40)
-	E:CreateMover(AutoButtonAnchor, "AutoButtonAnchorMover", L["Auto QuestItem Button"], nil, nil, nil, "ALL,EUI", closeFunc, openFunc)
+	E:CreateMover(AutoButtonAnchor, "AutoButtonAnchorMover", L["Auto QuestItem Button"], nil, nil, nil, "ALL,EUI")
 
 	-- Create anchor2
 	local AutoButtonAnchor2 = CreateFrame("Frame", "AutoButtonAnchor2", UIParent)
 	AutoButtonAnchor2:Point("BOTTOMLEFT", RightChatPanel or LeftChatPanel, "TOPLEFT", 0, 48)
 	AutoButtonAnchor2:Size(db.slotNum > 0 and db.size * db.slotNum or 260, db.slotNum > 0 and db.size or 40)
-	E:CreateMover(AutoButtonAnchor2, "AutoButtonAnchor2Mover", L["Auto InventoryItem Button"], nil, nil, nil, "ALL,EUI", closeFunc, openFunc)
+	E:CreateMover(AutoButtonAnchor2, "AutoButtonAnchor2Mover", L["Auto InventoryItem Button"], nil, nil, nil, "ALL,EUI")
 	
 	self:UpdateAutoButton()
 end

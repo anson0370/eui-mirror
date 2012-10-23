@@ -16,23 +16,11 @@ local timer = 0
 local bars = {}
 local addon = CreateFrame("Frame", "EuiPriestPet", UIParent)
 
-local function closeFunc()
-	E.db["euiscript"].priestpet = false
-	for i = 1, #bars do
-		if bars[i] then
-			bars[i]:SetScript("OnUpdate", nil)
-			bars[i]:Hide()
-		end
-	end
-	addon:SetScript("OnUpdate", nil)
-	wipe(bars)	
-end
-
 local PRIESTAnchor = CreateFrame("Frame", "PRIESTAnchor", UIParent)
 PRIESTAnchor:Point("TOPLEFT", Minimap, "BOTTOMLEFT", 0, -68)
 PRIESTAnchor:SetSize(E.db["euiscript"].priestpet_width, E.db["euiscript"].priestpet_height)
 
-E:CreateMover(PRIESTAnchor, "PRIESTAnchorMover", spellname, nil, nil, nil, "ALL,EUI", closeFunc)
+E:CreateMover(PRIESTAnchor, "PRIESTAnchorMover", spellname, nil, nil, nil, "ALL,EUI")
 
 local FormatTime = function(time)
 	if time >= 60 then

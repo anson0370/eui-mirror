@@ -1810,7 +1810,7 @@ function Skada:FixPets(action)
 	if action and not UnitIsPlayer(action.playername) then
 		local pet = pets[action.playerid]
 		if pet then
-		
+			if not action.playername then action.playername = pet.name end
 			if (self.db.profile.mergepets) then
 				if action.spellname then
 					action.spellname = action.playername..": "..action.spellname

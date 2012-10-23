@@ -277,22 +277,12 @@ function RD:UpdateSetting()
 	RaidCDAnchor:SetSize(E.db["euiscript"].raidcd_width, E.db["euiscript"].raidcd_height)
 end	
 
-local function closeFunc()
-	E.db.euiscript.raidcd = false
-	RD:ToggleRaidCD()
-end	
-
-local function openFunc()
-	E.db.euiscript.raidcd = true
-	RD:ToggleRaidCD()
-end
-
 function RD:Initialize()
 	local RaidCDAnchor = CreateFrame("Frame", "RaidCDAnchor", UIParent)
 	RaidCDAnchor:Point("TOPLEFT", Minimap, "BOTTOMLEFT", 0, -28)
 	RaidCDAnchor:SetSize(E.db["euiscript"].raidcd_width, E.db["euiscript"].raidcd_height)
 
-	E:CreateMover(RaidCDAnchor, "RaidCDAnchorMover", L["raidcd"], nil, nil, nil, "ALL,EUI", closeFunc, openFunc)
+	E:CreateMover(RaidCDAnchor, "RaidCDAnchorMover", L["raidcd"], nil, nil, nil, "ALL,EUI")
 	
 	self:ToggleRaidCD()
 end	

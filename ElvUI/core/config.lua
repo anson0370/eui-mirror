@@ -193,7 +193,7 @@ function E:CreateMoverPopup()
 	desc:SetJustifyH("LEFT")
 	desc:SetPoint("TOPLEFT", 18, -32)
 	desc:SetPoint("BOTTOMRIGHT", -18, 48)
-	desc:SetText(L["Movers unlocked. Move them now and click Lock when you are done. you can click 'X' to close or click 'O' to enable."])
+	desc:SetText(L["Movers unlocked. Move them now and click Lock when you are done."])
 
 	local snapping = CreateFrame("CheckButton", f:GetName()..'CheckButton', f, "OptionsCheckButtonTemplate")
 	_G[snapping:GetName() .. "Text"]:SetText(L["Sticky Frames"])

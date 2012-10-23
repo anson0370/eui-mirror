@@ -97,7 +97,7 @@ do
 	L['Panels'] = "面板(聊天框)";
 	L['Announce Interrupts'] = "打断通告";
 	L['Announce when you interrupt a spell to the specified chat channel.'] = "在指定频道通报技能打断信息";	
-	L["Movers unlocked. Move them now and click Lock when you are done. you can click 'X' to close or click 'O' to enable."] = "移动锁定. 现在可以移动它们移好了点击锁定. 你能点'X'关闭框体或点'O'来启用框体";
+	L["Movers unlocked. Move them now and click Lock when you are done."] = "移动锁定. 现在可以移动它们移好了点击锁定.";
 	L['Lock'] = "锁定";	
 	L["This can't be right, you must of broke something! Please turn on lua errors and report the issue to Elv http://www.tukui.org/forums/forum.php?id=146"] = "请到界面帮助里打开显示LUA错误,并把错误报告给我 http://www.eui.cc";
 	

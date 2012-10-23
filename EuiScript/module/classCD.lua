@@ -257,16 +257,6 @@ function CD:ToggleClassCD()
 	end
 end
 
-local function closeFunc()
-	E.db["euiscript"].classcd = false
-	CD:ToggleClassCD()
-end
-
-local function openFunc()
-	E.db.euiscript.classcd = true
-	CD:ToggleClassCD()
-end
-
 function CD:Initialize()
 	local ClassCDAnchor = CreateFrame("Frame", "ClassCDAnchor", UIParent)
 	ClassCDAnchor:Point("CENTER", E.UIParent, "CENTER", -222, 6)
@@ -275,7 +265,7 @@ function CD:Initialize()
 	else
 		ClassCDAnchor:Size(E.db["euiscript"].classcd_height, E.db["euiscript"].classcd_height)
 	end
-	E:CreateMover(ClassCDAnchor, "ClassCDAnchorMover", L["classcd"], nil, nil, nil, "ALL,EUI", closeFunc, openFunc)
+	E:CreateMover(ClassCDAnchor, "ClassCDAnchorMover", L["classcd"], nil, nil, nil, "ALL,EUI")
 	
 	self:ToggleClassCD()
 end	

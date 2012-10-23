@@ -527,9 +527,9 @@ function TT:GameTooltip_OnTooltipSetUnit(tt)
 		if guildName then
 			if E.db.tooltip.guildranks then
 				if UnitIsInMyGuild(unit) then
-					GameTooltipTextLeft2:SetText("<"..E["media"].hexvaluecolor..guildName.."|r> ["..E["media"].hexvaluecolor..guildRankName.."|r]")
+					GameTooltipTextLeft2:SetText("<"..E["media"].hexvaluecolor..guildName.."|r> [".. guildRankIndex.. "] ["..E["media"].hexvaluecolor..guildRankName.."|r]")
 				else
-					GameTooltipTextLeft2:SetText("<|cff00ff10"..guildName.."|r> [|cff00ff10"..guildRankName.."|r]")
+					GameTooltipTextLeft2:SetText("<|cff00ff10"..guildName.."|r> [".. guildRankIndex.. "] [|cff00ff10"..guildRankName.."|r]")
 				end
 			else
 				if UnitIsInMyGuild(unit) then
