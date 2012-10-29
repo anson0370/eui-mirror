@@ -31,6 +31,7 @@ P["FindIt"] = {
 
 P["AuraWatch"] = {
 	["enable"] = false,
+	["checkSpellid"] = false,
 	["loadDefault"] = false,
 	['font'] = 'EUI',
 	['fontSize'] = 11,
@@ -463,8 +464,8 @@ P["euiscript"] = {
 	["combatnoti"] = true,
 		["combatnoti_leaving"] = "LEAVING COMBAT",
 		["combatnoti_entering"] = "ENTERING COMBAT",
-	["wgtimenoti"] = false,
-	["lfgnoti"] = true,
+	["wgtimenoti"] = 'GUILD',
+	["lfgnoti"] = 'GUILD',
 --	["chatemote"] = true,
 	["autogreed"] = true,
 --	["buffreminder"] = true,
@@ -495,6 +496,11 @@ P["euiscript"] = {
 		["size"] = 40,
 		["questNum"] = 5,
 		["slotNum"] = 5,
+	},
+	['wsbutton'] = {
+		["enable"] = true,
+		["size"] = 40,
+		["fontsize"] = 20,
 	},
 	["camerafactor"] = 2,
 	["cameradistance"] = 20,

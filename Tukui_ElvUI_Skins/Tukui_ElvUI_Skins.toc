@@ -1,8 +1,8 @@
 ## Interface: 50001
-## Title: |cffC495DDEUI|r|cffC495DDTukui|r & |cff1784d1ElvUI |rSkin Options
+## Title: |cffC495DDEUI|r|cffC495DDTukui|r & |cff1784d1ElvUI |rSkin/Options
 ## Title-zhCN: |cffC495DDEUI|r美化皮肤模块
 ## Title-zhTW: |cffC495DDEUI|r美化皮膚模塊
-## Version: 3.14
+## Version: 3.33
 ## Author: See Credits
 ## OptionalDeps: Tukui, ElvUI, Ace3, ElvUI_SLE
 ## SavedVariables: UISkinOptions, CBEnableSpecialBars, CBBar2and3Width, CBBar2and3Position, CBShowButtonPosition, TPEnableSpecialBars, TPBar2and3Width, TPBar2and3Position, TPShowButtonPosition

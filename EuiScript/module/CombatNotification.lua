@@ -143,59 +143,55 @@ if E.db["euiscript"].combatnoti == true then
 	end)
 end
 
-if E.db["euiscript"].wgtimenoti == true then
-	local int = 1
+local int = 1
 
-	local clocks_update = function(self,t)
-		int = int - t
-		if int > 0 then return end
-			
-		int = 1
-		local _,_,_,canQueue,wgtime = GetWorldPVPAreaInfo(2)
+local clocks_update = function(self,t)
+	if E.db["euiscript"].wgtimenoti == 'NONE' then return end
+	int = int - t
+	if int > 0 then return end
+		
+	int = 1
+	local _,_,_,canQueue,wgtime = GetWorldPVPAreaInfo(2)
+
+	local canSend = (IsInGuild() and E.db["euiscript"].wgtimenoti == 'GUILD') or (IsInGroup() and E.db["euiscript"].wgtimenoti == 'PARTY') or (IsInRaid() and E.db["euiscript"].wgtimenoti == 'RAID')
 	
-		if canQueue == false then
-			if wgtime == 60 then 
-				E.EuiAlertRun (L.INFO_WOWTIME_TIP1)
-				if IsInGuild() then SendChatMessage('EUI:'.. L.INFO_WOWTIME_TIP1, "GUILD", nil, nil) end
-			elseif wgtime == 300 then 
-				E.EuiAlertRun (L.INFO_WOWTIME_TIP2)
-				if IsInGuild() then SendChatMessage('EUI:'.. L.INFO_WOWTIME_TIP2, "GUILD", nil, nil) end
-			elseif wgtime == 900 then 
-				E.EuiAlertRun (L.INFO_WOWTIME_TIP3)
-				if IsInGuild() then SendChatMessage('EUI:'.. L.INFO_WOWTIME_TIP3, "GUILD", nil, nil) end
-			end
+	if canQueue == false then
+		if wgtime == 60 then 
+			E.EuiAlertRun (L.INFO_WOWTIME_TIP1)
+			if canSend then SendChatMessage('EUI:'.. L.INFO_WOWTIME_TIP1, E.db["euiscript"].wgtimenoti, nil, nil) end
+		elseif wgtime == 300 then 
+			E.EuiAlertRun (L.INFO_WOWTIME_TIP2)
+			if canSend then SendChatMessage('EUI:'.. L.INFO_WOWTIME_TIP2, E.db["euiscript"].wgtimenoti, nil, nil) end
+		elseif wgtime == 900 then 
+			E.EuiAlertRun (L.INFO_WOWTIME_TIP3)
+			if canSend then SendChatMessage('EUI:'.. L.INFO_WOWTIME_TIP3, E.db["euiscript"].wgtimenoti, nil, nil) end
 		end
 	end
-	
-	CombatNotification:SetScript("OnUpdate",clocks_update)
 end
 
-if E.db["euiscript"].lfgnoti == true then
-	local ina = 1
-	local str = ""
-	local f = CreateFrame("Frame")
-	f:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+CombatNotification:SetScript("OnUpdate",clocks_update)
+
+local ina = 1
+local str = ""
+local f = CreateFrame("Frame")
+f:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 	
-	function f:lfgMsg()
-		local id, name = GetLFGRandomDungeonInfo(9)
-		if not id then id = 462; name = ''; end
-		local eligible, forTank, forHealer, forDamage, itemCount, money, xp = GetLFGRoleShortageRewards(id, 1)
-		if eligible and (itemCount > 0) and f.noti == false then
-			if forTank then str = str.. L.Tank end
-			if forHealer then str = str.. L.Healer end
-			if forDamage then str = str.. L.DPS end
-			E.EuiAlertRun(name.. str.. L.need)
-			if IsInGuild() then SendChatMessage('EUI:'.. name.. str.. L.need, "GUILD", nil, nil) end
-			f.noti = true
-			str = ""
-		else
-			E:ScheduleTimer(f.lfgMsg, 5)
-		end
-	end
-	f:lfgMsg();
-	
-	f:SetScript("OnEvent", function(self)
-		self.noti = false
+function f:lfgMsg()
+	if E.db["euiscript"].lfgnoti == 'NONE' then return end
+	local id, name = GetLFGRandomDungeonInfo(9)
+	if not id then id = 462; name = ''; end
+	local canSend = (IsInGuild() and E.db["euiscript"].lfgnoti == 'GUILD') or (IsInGroup() and E.db["euiscript"].lfgnoti == 'PARTY') or (IsInRaid() and E.db["euiscript"].lfgnoti == 'RAID')
+	local eligible, forTank, forHealer, forDamage, itemCount, money, xp = GetLFGRoleShortageRewards(id, 1)
+	if eligible and (itemCount > 0) then
+		if forTank then str = str.. L.Tank end
+		if forHealer then str = str.. L.Healer end
+		if forDamage then str = str.. L.DPS end
+		E.EuiAlertRun(name.. str.. L.need)
+		if canSend then SendChatMessage('EUI:'.. name.. str.. L.need, E.db["euiscript"].lfgnoti, nil, nil) end
+		str = ""
+		E:ScheduleTimer(f.lfgMsg, 600)
+	else
 		E:ScheduleTimer(f.lfgMsg, 5)
-	end)	
+	end
 end
+f:lfgMsg();

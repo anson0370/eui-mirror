@@ -85,7 +85,7 @@ local function SetTemplate(f, t, glossTex, ignoreUpdates, trans)
 		
 	f.template = t
 	f.glossTex = glossTex
-	
+	f.ignoreUpdates = ignoreUpdates
 	
 	if E.private.general.pixelPerfect then
 		f:SetBackdrop({

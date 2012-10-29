@@ -16,7 +16,7 @@ local function OnEvent(self, event, unit)
 			critRating = GetCritChance()
 		end
 	end
-	self.text:SetFormattedText(displayModifierString, CRIT_ABBR, critRating)
+	self.text:SetFormattedText(displayModifierString, L['Crit'], critRating)
 
 	lastPanel = self
 end

@@ -1,4 +1,5 @@
 local E, L, V, P, G, _ = unpack(ElvUI); --Engine
+local class = select(2, UnitClass("player"));
 
 E.Options.args.euiscript = {
 	type = "group",
@@ -48,8 +49,14 @@ E.Options.args.euiscript = {
 			--	},
 				lfgnoti = {
 					order = 8,
-					type = "toggle",
 					name = L["lfg notification"],
+					type = "select",
+					values = {
+						['NONE'] = NONE,
+						['GUILD'] = GUILD,
+						['PARTY'] = PARTY,
+						['RAID'] = RAID,
+					},
 				},
 				tradetabs = {
 					order = 9,
@@ -77,8 +84,14 @@ E.Options.args.euiscript = {
 				},
 				wgtimenoti = {
 					order = 13,
-					type = "toggle",
 					name = L["wgtimenoti"],
+					type = "select",
+					values = {
+						['NONE'] = NONE,
+						['GUILD'] = GUILD,
+						['PARTY'] = PARTY,
+						['RAID'] = RAID,
+					},					
 				},
 				sr = {
 					order = 14,
@@ -376,8 +389,38 @@ E.Options.args.euiscript = {
 				},
 			},
 		},
+		wsbutton = {
+			order = 7,
+			type = 'group',
+			name = GetSpellInfo(119611),
+			get = function(info) return E.db.euiscript.wsbutton[ info[#info] ] end,
+			set = function(info, value) E.db.euiscript.wsbutton[ info[#info] ] = value; E:GetModule('WS'):Toggle() end,
+			args = {
+				enable = {
+					order = 1,
+					type = 'toggle',
+					name = L['Enable'],
+				},
+				size = {
+					order = 2,
+					type = 'range',
+					name = L['Size'],
+					min = 10, max = 100, step = 1,
+				},
+				fontsize = {
+					order = 3,
+					type = 'range',
+					name = L["Font Size"],
+					type = "range",
+					min = 6, max = 50, step = 1,
+				},
+			},
+		},
 	},
 }
+
+if class ~= 'MONK' then E.Options.args.euiscript.args.wsbutton = nil; end
+if class ~= 'PRIEST' then E.Options.args.euiscript.args.euiscript_priestpet = nil; end
 
 E.Options.args.chatfilter = {
 	type = "group",
@@ -629,8 +672,14 @@ E.Options.args.chatfilter = {
 						end
 					end,
 				},
-				List = {
+				Reset = {
 					order = 3,
+					type = "execute",
+					name = L['Restore Defaults'],
+					func = function() wipe(E.global.chatfilter.BlankName); E:StaticPopup_Show("CONFIG_RL") end,
+				},
+				List = {
+					order = 4,
 					type = "multiselect",
 					name = L["BlackList"],
 					get = function(info, k) return E.global.chatfilter.BlankName[k] end,
@@ -644,6 +693,10 @@ E.Options.args.chatfilter = {
 		},			
 	},
 }
+
+for k, v in pairs(E.global.chatfilter.BlankName) do
+	E.Options.args.chatfilter.args.BlankName.args.List.values[k] = k
+end	
 
 for k, v in pairs(E.global.chatfilter.BlackList) do
 	E.Options.args.chatfilter.args.BlackList.args.List.values[k] = k

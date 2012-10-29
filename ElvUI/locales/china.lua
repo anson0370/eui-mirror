@@ -14,12 +14,14 @@ if not L then return end
 ]]
 --Static Popup
 do
+	L["You have changed your UIScale, however you still have the AutoScale option enabled in ElvUI. Press accept if you would like to disable the Auto Scale option."] = '你改变了UI缩放比率,但是你启用了EUI的自动缩放, 点确定将禁用自动缩放并重载界面.';
 	L["One or more of the changes you have made require a ReloadUI."] = "一个或更多的改变,需要重载插件";
 	L["A taint has occured that is preventing you from using your talents/glyphs, this can happen if you've inspected someone. Unfortionatly theres nothing we can do to fix it, please reload your ui and try again."] = "一个战斗污染发生在你查看天赋/幻化窗口时, 你可以输入/rl 重载界面.";
 end
 
 --General
 do
+	L['Nudge'] = '微调';
 	L['Location Text'] = '地区文字';
 	L['Change settings for the display of the location text that is on the minimap.'] = '改变小地图上地区名称文字显示方式';
 	L['Minimap Mouseover'] = '鼠标滑过显示';
@@ -858,6 +860,10 @@ end
 
 --Datatext
 do
+	L['Crit'] = '爆击';
+	L['Datatext Panel (Left)'] = '信息文字左面板';
+	L['Datatext Panel (Right)'] = '信息文字右面板';
+	L['Display data panels below the chat, used for datatexts.'] = '显示信息文字面板在聊天框底部';
 	L['ABLeftInfobar'] = '动作条左信息条';
 	L['ABRightInfobar'] = '动作条右信息条';
 	L['MainABInfobar'] = '主动作条信息条';
@@ -1012,6 +1018,8 @@ end
 
 --Chat
 do
+	L['Lock Positions'] = '锁定位置';
+	L['Attempt to lock the left and right chat frame positions. Disabling this option will allow you to move the main chat frame anywhere you wish.'] = '锁定左右聊天框位置,禁用则可以移动聊天框到任意位置';
 	L['Chat History'] = '聊天历史';
 	L['Log the main chat frames history. So when you reloadui or log in and out you see the history from your last session.'] = '记录聊天历史,当你重载,登录和退出时会恢复你最后一次会话';
 	L['Fade Chat'] = '文字淡出';
@@ -1339,6 +1347,8 @@ end
 
 --euiscript
 do
+	L["All Mail"] = '所有信件';
+	L["All Cash"] = '所有金币';
 	L["lfg notification"] = "随机本奖励提示";
 	L['Quset Button Number'] = '任务物品按钮数量';
 	L['Slot Button Number'] = '装备按钮数量';
@@ -1755,7 +1765,7 @@ do
 	L["Q22"] = "其它单体插件与EUI的兼容性问题"
 		L["A22"] = "原则上EUI兼容所有的单体插件,但注意如果单体插件提供的功能是EUI已经有的功能,则可能造成冲突.如右上角的BUFF显示插件."
 	L["Q23"] = "常用设置命令有哪些"
-		L["A23"] = "/ec 打开设置界面\n /luaerror 开关显示插件错误 \n /egrid 显示网格线方便对齐\n /moveui 解锁框体移动\n /resetui 重置EUI插件\n /resetgold 重设金币统计\n /frammode 采集模式小地图\n /euiat 添加关注框体 /euidt 删除关注框体\n /kb 设置动作条快捷键\n /skada toggle 开关Skada窗口"
+		L["A23"] = "/ec 打开设置界面\n /luaerror 开关显示插件错误 \n /egrid 显示网格线方便对齐\n /moveui 解锁框体移动\n /resetui 重置EUI插件\n /resetgold 重设金币统计\n /frammode 采集模式小地图\n /kb 设置动作条快捷键\n /skada toggle 开关Skada窗口"
 end		
 
 --Tukui_ElvUI_Skins

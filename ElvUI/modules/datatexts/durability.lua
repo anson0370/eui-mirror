@@ -3,7 +3,7 @@ local DT = E:GetModule('DataTexts')
 
 local displayString = ""
 local tooltipString = "%d%%"
-local total, totalDurability, totalPerc = 0, 0, 0
+local totalDurability = 0
 local current, max, lastPanel
 local invDurability = {}
 local slots = {
@@ -21,25 +21,22 @@ local slots = {
 
 local function OnEvent(self, event, ...)
 	lastPanel = self
-	total = 0
-	totalDurability = 0
-	totalPerc = 0
-	
+	totalDurability = 100
+
 	for index, value in pairs(slots) do
 		local slot = GetInventorySlotInfo(index)
 		current, max = GetInventoryItemDurability(slot)
 		
 		if current then
-			totalDurability = totalDurability + current
 			invDurability[value] = (current/max)*100
-			totalPerc = totalPerc + (current/max)*100
-			total = total + 1
+
+			if ((current/max) * 100) < totalDurability then
+				totalDurability = (current/max) * 100
+			end
 		end
 	end
 	
-	if total > 0 then
-		self.text:SetFormattedText(displayString, totalPerc/total)
-	end
+	self.text:SetFormattedText(displayString, totalDurability)
 end
 
 local function Click()
@@ -78,4 +75,3 @@ E['valueColorUpdateFuncs'][ValueColorUpdate] = true
 	onLeaveFunc - function to fire OnLeave, if not provided one will be set for you that hides the tooltip.
 ]]
 DT:RegisterDatatext('Durability', {'PLAYER_ENTERING_WORLD', "UPDATE_INVENTORY_DURABILITY", "MERCHANT_SHOW"}, OnEvent, nil, Click, OnEnter)
-

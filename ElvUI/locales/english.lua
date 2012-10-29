@@ -187,6 +187,8 @@ L['Wrap After'] = true;
 L['Your Auras First'] = true;
 
 --Chat
+L['Lock Positions'] = true;
+L['Attempt to lock the left and right chat frame positions. Disabling this option will allow you to move the main chat frame anywhere you wish.'] = true;
 L['P'] = true;
 L['Chat History'] = true;
 L['Log the main chat frames history. So when you reloadui or log in and out you see the history from your last session.'] = true;
@@ -330,6 +332,10 @@ L["ELVUI_CREDITS"] = "I would like to give out a special shout out to the follow
 L["Testing:"] = true;
 
 --DataTexts
+L['Crit'] = true;
+L['Datatext Panel (Left)'] = true;
+L['Datatext Panel (Right)'] = true;
+L['Display data panels below the chat, used for datatexts.'] = true;
 L['ABLeftInfobar'] = 'Actionbar Left Infobar';
 L['ABRightInfobar'] = 'Actionbar Right Infobar';
 L['MainABInfobar'] = 'Main Actionbar Infobar';
@@ -418,6 +424,7 @@ L["No locals to dump"] = true;
 L['|cFFE30000Lua error recieved. You can view the error message when you exit combat.'] = true;
 
 --General
+L['Nudge'] = true;
 L['Top Panel'] = true;
 L['Display a panel across the top of the screen. This is for cosmetic only.'] = true;
 L['Bottom Panel'] = true;
@@ -1131,6 +1138,8 @@ end
 
 --euiscript
 do
+	L["All Mail"] = true;
+	L["All Cash"] = true;
 	L["lfg notification"] = true;
 	L['Quset Button Number'] = true;
 	L['Slot Button Number'] = true;

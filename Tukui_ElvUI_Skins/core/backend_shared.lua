@@ -12,8 +12,8 @@ U.Skins = {
 		["addon"] = "ACP",
 	},
 	["AdiBagsSkin"] = {
-		["buttonText"] = "AdiBags : Disabled",
-		["addon"] = "BROKENPIECEOFSHIT",
+		["buttonText"] = "AdiBags",
+		["addon"] = "AdiBags",
 	},
 	["AltoholicSkin"] = {
 		["addon"] = "Altoholic",
@@ -138,9 +138,9 @@ U.Skins = {
 	["OutfitterSkin"] = {
 		["addon"] = "Outfitter"
 	},
-	["PoisonerSkin"] = {
-		["addon"] = "Poisoner"
-	},
+	--["PoisonerSkin"] = {
+	--	["addon"] = "Poisoner"
+	--},
 	["PoMTrackerSkin"] = {
 		["addon"] = "PoMTracker"
 	},
@@ -193,10 +193,6 @@ U.Skins = {
 	["SpySkin"] = {
 		["addon"] = "Spy"
 	},
-	["stAddonManagerSkin"] = {
-		["buttonText"] = "stAddonManager",
-		["addon"] = "stAddonmanager"
-	},
 	["SwatterSkin"] = {
 		["buttonText"] = "Swatter",
 		["addon"] = "!Swatter"
@@ -227,5 +223,18 @@ U.Skins = {
 	["ZygorSkin"] = {
 		["buttonText"] = "Zygor",
 		["addon"] = "ZygorGuidesViewer"
+	},
+	["PetBattleTeamsSkin"] = {
+		["buttonText"] = "PetBattleTeams",
+		["addon"] = "PetBattleTeams"
+	},
+	["BagnonSkin"] = {
+		["addon"] = "Bagnon",
+	},
+	["VengeanceStatusSkin"] = {
+		["addon"] = "VengeanceStatus",
+	},
+	["TomTomSkin"] = {
+		["addon"] = "TomTom",
 	},
 }

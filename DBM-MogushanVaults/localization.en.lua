@@ -79,7 +79,7 @@ L:SetWarningLocalization({
 	specWarnTotemE1 = "ToTem(%d)  >Party 5<",
 	specWarnTotemE2 = "ToTem(%d)  >Party 3<",
 	specWarnTotemE3 = "ToTem(%d)  >Party 4<",
-	specWarnAdmin 	= "Existence Healther Distribution Admin(%s)"
+	SpecWarnjs		= "<%s> → %s"
 })
 
 L:SetOptionLocalization({
@@ -95,10 +95,21 @@ L:SetOptionLocalization({
 	specWarnTotemE1		= "warning:counting totem(147)",
 	specWarnTotemE2		= "warning:counting totem(258)",
 	specWarnTotemE3		= "warning:counting totem(369)",
-	soundTotemEx		= "warning:When playing spirit totem speech according to 1~3 loop count voice",
-	specWarnAdmin		= "warning:When the Healther Distribution Admin is Existenced",
-	InfoFrame			= "InfoFrame: $spell:116161",
-	SetIconOnVoodoo		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(122151)
+	soundTotemEx		= "warning:counting totem voice (1~3)",
+	SpecWarnjs			= "warning:Damage reduction",
+	SetIconOnVoodoo		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(122151),
+	InfoFrame			= "infoframe:$spell:116161",
+	optjs				= "Damage reduction Mod",
+	non					= "none",
+	druid				= "druid",
+	priest				= "priest",
+	paltank				= "paltank",
+	palheal				= "palheal",
+	warrior1			= "warrior1",
+	warrior2			= "warrior2",
+	monktank			= "monktank",
+	paldps1				= "paldps1",
+	paldps2				= "paldps2"
 })
 
 L:SetMiscLocalization({
@@ -173,6 +184,7 @@ L= DBM:GetModLocalization(677)
 
 L:SetOptionLocalization({
 	InfoFrame			= "Show info frame for players affected by $spell:116525",
+	ArrowOnCombo	= "Show DBM Arrow during Devastating Arc\nNOTE: This assumes tank is in front of boss and anyone else is behind.",--Todo, make this an EJ clicky instead
 	SoundWOP			= "Voice warning: important skills",
 	SoundADD1A			= "Voice warning:$spell:ej5678 (5s before)",
 	SoundADD1			= "Voice warning:$spell:ej5678",

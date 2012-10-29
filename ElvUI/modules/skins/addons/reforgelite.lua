@@ -1,6 +1,8 @@
 local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB, Localize Underscore
 local S = E:GetModule('Skins')
 
+--ReforgeLite skins by eui.cc at 20121028
+
 local function SkinReforgeLite()
 
 	local R = ReforgeLite;
@@ -9,7 +11,6 @@ local function SkinReforgeLite()
 	R:HookScript("OnShow", function()
 		if R.skins then return; end
 		R:SetTemplate("Transparent")
-		R.title:SetText(GetAddOnMetadata("ReforgeLite", 'Title').. GetAddOnMetadata("ReforgeLite", "Version"));
 		R.itemTable:SetTemplate("Transparent")
 		R.settings:SetTemplate("Transparent")
 		R.methodStats:SetTemplate("Transparent")

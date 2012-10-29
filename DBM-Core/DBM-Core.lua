@@ -90,7 +90,7 @@ imsg.text:SetJustifyH("CENTER")
 --  Globals/Default Options  --
 -------------------------------
 DBM = {
-	Revision = tonumber(("$Revision: 7977 $"):sub(12, -3)),
+	Revision = tonumber(("$Revision: 7989 $"):sub(12, -3)),
 	DisplayVersion = "5.0.0 語音增強版", -- the string that is shown as version
 	ReleaseRevision = 7956 -- the revision of the latest stable version that is available
 }
@@ -119,6 +119,7 @@ DBM.DefaultOptions = {
 	SpecialWarningSound2 = "Sound\\Spells\\PVPFlagTaken.wav",
 	ModelSoundValue = "Short",
 	CountdownVoice = "Mosh",
+	CountdownPullTimer = true,
 	RaidWarningPosition = {
 		Point = "TOP",
 		X = 0,
@@ -900,12 +901,13 @@ SlashCmdList["DEADLYBOSSMODS"] = function(msg)
 		DBM:CreatePizzaTimer(timer, DBM_CORE_TIMER_PULL, true)
 		DBM:Unschedule(SendChatMessage)
 		SendChatMessage(DBM_CORE_ANNOUNCE_PULL:format(timer), channel)
-		if timer > 7 then DBM:Schedule(timer - 7, SendChatMessage, DBM_CORE_ANNOUNCE_PULL:format(7), channel) end
-		if timer > 5 then DBM:Schedule(timer - 5, SendChatMessage, DBM_CORE_ANNOUNCE_PULL:format(5), channel) end
-		if timer > 3 then DBM:Schedule(timer - 3, SendChatMessage, DBM_CORE_ANNOUNCE_PULL:format(3), channel) end
-		if timer > 2 then DBM:Schedule(timer - 2, SendChatMessage, DBM_CORE_ANNOUNCE_PULL:format(2), channel) end
-		if timer > 1 then DBM:Schedule(timer - 1, SendChatMessage, DBM_CORE_ANNOUNCE_PULL:format(1), channel) end
+		for i = 1, 5 do
+			if timer > i then
+				DBM:Schedule(timer - i, SendChatMessage, DBM_CORE_ANNOUNCE_PULL:format(i), channel) 
+			end
+		end
 		DBM:Schedule(timer, SendChatMessage, DBM_CORE_ANNOUNCE_PULL_NOW, channel)
+		sendSync("PT", timer)
 	elseif cmd:sub(1, 5) == "arrow" then
 		if not DBM:IsInRaid() then
 			DBM:AddMsg(DBM_ARROW_NO_RAIDGROUP)
@@ -1066,12 +1068,12 @@ do
 		if sender then DBM:ShowPizzaInfo(text, sender) end
 		if text == DBM_CORE_TIMER_PULL then
 			PlaySoundFile("Interface\\AddOns\\DBM-Core\\Sounds\\win.ogg", "Master")
-			if time > 5 then DBM:Schedule(time-4.5, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\Sounds\\Mosh\\5.mp3", "Master") end
-			if time > 5 then DBM:Schedule(time-3.5, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\Sounds\\Mosh\\4.mp3", "Master") end
-			if time > 3 then DBM:Schedule(time-2.5, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\Sounds\\Mosh\\3.mp3", "Master") end
-			if time > 3 then DBM:Schedule(time-1.5, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\Sounds\\Mosh\\2.mp3", "Master") end
-			if time > 3 then DBM:Schedule(time-0.5, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\Sounds\\Mosh\\1.mp3", "Master") end
-			if time > 3 then DBM:Schedule(time, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\extrasounds\\com_go.mp3", "Master") end
+			if time > 5 then DBM:Schedule(time-5.5, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\Sounds\\Mosh\\5.mp3", "Master") end
+			if time > 5 then DBM:Schedule(time-4.5, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\Sounds\\Mosh\\4.mp3", "Master") end
+			if time > 3 then DBM:Schedule(time-3.5, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\Sounds\\Mosh\\3.mp3", "Master") end
+			if time > 3 then DBM:Schedule(time-2.5, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\Sounds\\Mosh\\2.mp3", "Master") end
+			if time > 3 then DBM:Schedule(time-1.5, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\Sounds\\Mosh\\1.mp3", "Master") end
+			if time > 3 then DBM:Schedule(time-0.5, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\extrasounds\\com_go.mp3", "Master") end
 		end
 	end
 
@@ -1857,6 +1859,7 @@ do
 	-- H = Hi!
 	-- V = Incoming version information
 	-- U = User Timer
+	-- PT = Pull Timer (for sound effects, the timer itself is still sent as a normal timer)
 	-- RT = Request Timers
 	-- CI = Combat Info
 	-- TI = Timer Info
@@ -1887,6 +1890,22 @@ do
 		if select(2, IsInInstance()) == "pvp" then return end
 		cId = tonumber(cId or "")
 		if cId then DBM:OnMobKill(cId, true) end
+	end
+	
+	local dummyMod -- dummy mod for the pull sound effect
+	syncHandlers["PT"] = function(sender, timer)
+		if not DBM.Options.CountdownPullTimer or select(2, IsInInstance()) == "pvp" or DBM:GetRaidRank(sender) == 0 then
+			return
+		end
+		timer = tonumber(timer or 0)
+		if timer < 2 or timer > 60 then
+			return
+		end
+		if not dummyMod then
+			dummyMod = DBM:NewMod("PullTimerCountdownDummy")
+			dummyMod.countdown = dummyMod:NewCountdown(0, 0)
+		end
+--		dummyMod.countdown:Start(timer)
 	end
 	
 	-- TODO: is there a good reason that version information is broadcasted and not unicasted?
@@ -4048,7 +4067,7 @@ do
 	function countdownProtoType:Start(timer)
 		if not self.option or self.mod.Options[self.option] then
 			timer = timer or self.timer or 10
-			timer = timer < 3 and self.timer or timer
+			timer = timer < 2 and self.timer or timer
 			if timer >= 5 then
 				if DBM.Options.CountdownVoice == "Mosh" then
 					self.sound5:Schedule(timer-5, "Interface\\AddOns\\DBM-Core\\Sounds\\Mosh\\5.mp3")

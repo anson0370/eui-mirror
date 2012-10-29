@@ -10,8 +10,9 @@ local function OnEvent(self, event, unit)
 	lastPanel = self
 
 	if E.role == "Caster" then
+		local expertise = GetExpertise();
 		hitRating = GetCombatRating(CR_HIT_SPELL)
-		hitRatingBonus = GetCombatRatingBonus(CR_HIT_SPELL)
+		hitRatingBonus = GetCombatRatingBonus(CR_HIT_SPELL) + expertise
 	else
 		if E.myclass == "HUNTER" then
 			hitRating = GetCombatRating(CR_HIT_RANGED)

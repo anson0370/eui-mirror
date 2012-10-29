@@ -183,12 +183,12 @@ local function OnEnter(self)
 
 	local avgItemLevel = GetAverageItemLevel()
 	if avgItemLevel >= 460 then
-		local dungeonId1 = 528
-	--	local dungeonId2 = 417
+		local dungeonId1 = 527
+		local dungeonId2 = 528
 		local bossName, texture, isKilled, isIneligible
 		GameTooltip:AddLine(" ")
 		GameTooltip:AddLine("LFR "..BOSSES)
-		for i = 1, 6 do
+		for i = 1, 3 do
 			bossName, texture, isKilled, isIneligible = GetLFGDungeonEncounterInfo(dungeonId1, i)
 			if isKilled then
 				GameTooltip:AddDoubleLine(bossName, BOSS_DEAD, RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b, RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b)
@@ -198,16 +198,16 @@ local function OnEnter(self)
 				GameTooltip:AddDoubleLine(bossName, BOSS_ALIVE, GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b, GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b)
 			end
 		end
-		-- for i = 5, 8 do
-			-- bossName, texture, isKilled, isIneligible = GetLFGDungeonEncounterInfo(dungeonId2, i)
-			-- if isKilled then
-				-- GameTooltip:AddDoubleLine(bossName, BOSS_DEAD, RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b, RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b)
-			-- elseif isIneligible then
-				-- GameTooltip:AddDoubleLine(bossName, BOSS_ALIVE_INELIGIBLE, GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b, GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b)
-			-- else
-				-- GameTooltip:AddDoubleLine(bossName, BOSS_ALIVE, GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b, GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b)
-			-- end
-		-- end
+		for i = 4, 6 do
+			bossName, texture, isKilled, isIneligible = GetLFGDungeonEncounterInfo(dungeonId2, i)
+			if isKilled then
+				GameTooltip:AddDoubleLine(bossName, BOSS_DEAD, RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b, RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b)
+			elseif isIneligible then
+				GameTooltip:AddDoubleLine(bossName, BOSS_ALIVE_INELIGIBLE, GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b, GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b)
+			else
+				GameTooltip:AddDoubleLine(bossName, BOSS_ALIVE, GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b, GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b)
+			end
+		end
 	end
 	
 	GameTooltip:Show()

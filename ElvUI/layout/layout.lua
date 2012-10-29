@@ -116,6 +116,23 @@ function LO:ToggleChatPanels()
 	LeftChatDataPanel:ClearAllPoints()
 	RightChatDataPanel:ClearAllPoints()
 	local SPACING = (E.PixelMode and 3 or 5)
+
+	if E.db.datatexts.leftChatPanel then
+		LeftChatDataPanel:Show()
+		LeftChatToggleButton:Show()
+	else
+		LeftChatDataPanel:Hide()
+		LeftChatToggleButton:Hide()
+	end
+	
+	if E.db.datatexts.rightChatPanel then
+		RightChatDataPanel:Show()
+		RightChatToggleButton:Show()
+	else
+		RightChatDataPanel:Hide()
+		RightChatToggleButton:Hide()
+	end	
+	
 	if E.db.chat.panelBackdrop == 'SHOWBOTH' then
 		LeftChatPanel.backdrop:Show()
 		LeftChatTab:Show()
@@ -252,6 +269,7 @@ function LO:LocXY()
 	f:SetPoint("TOPRIGHT", E.UIParent, "TOPRIGHT", E.mult, E.mult)
 	f:SetFrameStrata("BACKGROUND")
 	f:SetFrameLevel(0)
+	E.FrameLocks['ElvuiTopPanel'] = true;
 	
 	local f = CreateFrame("Frame", "ElvuiLoc", ElvuiTopPanel)
 	f:SetHeight(23)
@@ -393,6 +411,7 @@ function LO:CreateChatPanels()
 	lchat:SetFrameStrata('BACKGROUND')
 	lchat:Size(E.db.chat.leftpanelWidth, E.db.chat.leftpanelHeight)		
 	lchat:Point('BOTTOMLEFT', E.UIParent, 4, 4)
+	lchat:SetFrameLevel(lchat:GetFrameLevel() + 2)
 	lchat:CreateBackdrop('Transparent')
 	lchat.backdrop:SetAllPoints()
 	E:CreateMover(lchat, 'LeftChatPanelMover', L['LeftChatPanel'], nil, nil, nil, 'ALL,CHAT')
@@ -438,6 +457,7 @@ function LO:CreateChatPanels()
 	rchat:SetFrameStrata('BACKGROUND')
 	rchat:Size(E.db.chat.rightpanelWidth, E.db.chat.rightpanelHeight)
 	rchat:Point('BOTTOMRIGHT', E.UIParent, -4, 4)
+	rchat:SetFrameLevel(lchat:GetFrameLevel() + 2)
 	rchat:CreateBackdrop('Transparent')
 	rchat.backdrop:SetAllPoints()	
 	E:CreateMover(rchat, 'RightChatPanelMover', L['RightChatPanel'], nil, nil, nil, 'ALL,CHAT')

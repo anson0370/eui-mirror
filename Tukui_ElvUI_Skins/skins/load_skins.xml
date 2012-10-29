@@ -1,7 +1,7 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
 	<Script file="ACP.lua"/>
-	<Script file="ATSW.lua"/>
 	<Script file="AdiBags.lua"/>
+	<Script file="ATSW.lua"/>
 	<Script file="Altoholic.lua"/>
 	<Script file="Archy.lua"/>
 	<Script file="Arh.lua"/>
@@ -9,6 +9,7 @@
 	<Script file="AtlasLoot.lua"/>
 	<Script file="Auctionator.lua"/>
 	<Script file="Auctioneer.lua"/>
+	<Script file="Bagnon.lua"/>
 	<Script file="BGDefender.lua"/>
 	<Script file="BPT.lua"/>
 	<Script file="BigWigs-ElvUI.lua"/>
@@ -65,5 +66,4 @@
 	<Script file="Wholly.lua"/>
 	<Script file="WowLua.lua"/>
 	<Script file="Zygor.lua"/>
-	<Script file="stAddonManager.lua"/>
 </Ui>

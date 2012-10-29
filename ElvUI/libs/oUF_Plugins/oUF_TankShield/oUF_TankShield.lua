@@ -24,6 +24,7 @@ elseif class == "PALADIN" then
 	BS_Name = GetSpellInfo(132403)
 elseif class == 'WARRIOR' then
 	BS_Name = GetSpellInfo(132404)
+	BS_Spell = GetSpellInfo(112048)
 elseif class == 'MONK' then
 	BS_Name, _, BS_Icon = GetSpellInfo(115307)
 	BS_Value = GetSpellInfo(124275)
@@ -167,6 +168,10 @@ local function valueChanged(self, event, unit)
 				OnUpdate(bar, 0)
 				bar:SetScript("OnUpdate", OnUpdate)
 			end
+		end
+		if class == 'WARRIOR' and UnitBuff('player', BS_Spell) then
+			local value = select(14, UnitBuff('player', BS_Spell))
+			if value then bar.text:SetText(ShortValue(value)) end
 		end
 	else
 		bar:SetAlpha(0)

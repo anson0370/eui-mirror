@@ -33,4 +33,5 @@
 	<Script file="FindIt.lua"/>
 	<Script file="Symbols.lua"/>
 	<Script file='RaidCheck.lua'/>
+	<Script file='ws.lua'/>
 </Ui>

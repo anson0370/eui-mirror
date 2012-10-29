@@ -105,6 +105,9 @@ local function GetProfessionRank(currentSkill)
 			return title
 		end
 	end
+	if currentSkill > ranks[#ranks][1] then
+		return ranks[#ranks][2]
+	end
 end
 
 local function HandleProfession(object, professionID)
@@ -191,7 +194,7 @@ function handler:SKILL_LINES_CHANGED()
 	for object in next, tabs do HandleTabs(object) end
 end
 
-function handler:CURRENT_SPELL_CAST_CHANGED()
+function handler:CURRENT_SPELL_CAST_CHANGED(event)
 	local numShown = 0
 
 	for object in next, tabs do
@@ -201,5 +204,5 @@ function handler:CURRENT_SPELL_CAST_CHANGED()
 		end
 	end
 
-	if numShown == 0 then self:UnregisterEvent("CURRENT_SPELL_CAST_CHANGED") end
+	if numShown == 0 then self:UnregisterEvent(event) end
 end

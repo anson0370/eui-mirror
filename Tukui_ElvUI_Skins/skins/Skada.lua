@@ -87,9 +87,11 @@ local function SkinSkada(self)
 		skada.backdrop:Point("BOTTOMRIGHT", skada, "BOTTOMRIGHT", 2, -2)
 		if (not U.CheckOption("SkadaBackdrop")) then skada.backdrop:Hide() end
 		if (U.CheckOption("EmbedSkada")) then
-			win.bargroup.button:SetFrameStrata("MEDIUM")
+			win.bargroup.button:SetFrameStrata("HIGH")
 			win.bargroup.button:SetFrameLevel(5)	
-			win.bargroup:SetFrameStrata("MEDIUM")
+			win.bargroup:SetFrameStrata("HIGH")
+			if U.elv then if RightChatPanel then win.bargroup:SetParent(RightChatPanel) end end
+			if U.tuk then if TukuiChatBackgroundRight then win.bargroup:SetParent(TukuiChatBackgroundRight) end end
 		end
 	end
 end
@@ -110,15 +112,29 @@ end
 local windows = {}
 function EmbedSkada()
 	if(#windows == 1) then
-		EmbedWindow(windows[1], EmbeddingWindow:GetWidth() - 4, (EmbeddingWindow:GetHeight() - 24), "TOPRIGHT", EmbeddingWindow, "TOPRIGHT", -2, -18)
-	elseif(#windows == 2) then
 		if U.tuk then
-			EmbedWindow(windows[1], ((EmbeddingWindow:GetWidth() - 4) / 2) - (borderWidth + s.mult), EmbeddingWindow:GetHeight() - 24, "TOPRIGHT", EmbeddingWindow, "TOPRIGHT", -2, -18)
-			EmbedWindow(windows[2], ((EmbeddingWindow:GetWidth() - 4) / 2) - (borderWidth + s.mult), EmbeddingWindow:GetHeight() - 24, "TOPLEFT", EmbeddingWindow, "TOPLEFT", 2, -18)
+			EmbedWindow(windows[1], EmbeddingWindow:GetWidth() - 4, (EmbeddingWindow:GetHeight() - 19), "TOPRIGHT", EmbeddingWindow, "TOPRIGHT", -2, -17)
 		end
 		if U.elv then
-			EmbedWindow(windows[1], ((EmbeddingWindow:GetWidth() - 4) / 2) - (borderWidth + c.mult), EmbeddingWindow:GetHeight() - 24, "TOPRIGHT", EmbeddingWindow, "TOPRIGHT", -2, -18)
-			EmbedWindow(windows[2], ((EmbeddingWindow:GetWidth() - 4) / 2) - (borderWidth + c.mult), EmbeddingWindow:GetHeight() - 24, "TOPLEFT", EmbeddingWindow, "TOPLEFT", 2, -18)
+			if c.PixelMode then
+				EmbedWindow(windows[1], EmbeddingWindow:GetWidth() - 4, (EmbeddingWindow:GetHeight() - 18), "TOPRIGHT", EmbeddingWindow, "TOPRIGHT", -2, -17)
+			else
+				EmbedWindow(windows[1], EmbeddingWindow:GetWidth() - 4, (EmbeddingWindow:GetHeight() - 20), "TOPRIGHT", EmbeddingWindow, "TOPRIGHT", -2, -17)
+			end
+		end
+	elseif(#windows == 2) then
+		if U.tuk then
+			EmbedWindow(windows[1], ((EmbeddingWindow:GetWidth() - 4) / 2) - (borderWidth + s.mult), EmbeddingWindow:GetHeight() - 19, "TOPRIGHT", EmbeddingWindow, "TOPRIGHT", -2, -17)
+			EmbedWindow(windows[2], ((EmbeddingWindow:GetWidth() - 4) / 2) - (borderWidth + s.mult), EmbeddingWindow:GetHeight() - 19, "TOPLEFT", EmbeddingWindow, "TOPLEFT", 2, -17)
+		end
+		if U.elv then
+			if c.PixelMode then
+				EmbedWindow(windows[1], ((EmbeddingWindow:GetWidth() - 4) / 2) - (borderWidth + c.mult), EmbeddingWindow:GetHeight() - 18, "TOPRIGHT", EmbeddingWindow, "TOPRIGHT", -2, -17)
+				EmbedWindow(windows[2], ((EmbeddingWindow:GetWidth() - 4) / 2) - (borderWidth + c.mult), EmbeddingWindow:GetHeight() - 18, "TOPLEFT", EmbeddingWindow, "TOPLEFT", 2, -17)
+			else
+				EmbedWindow(windows[1], ((EmbeddingWindow:GetWidth() - 4) / 2) - (borderWidth + c.mult), EmbeddingWindow:GetHeight() - 20, "TOPRIGHT", EmbeddingWindow, "TOPRIGHT", -2, -17)
+				EmbedWindow(windows[2], ((EmbeddingWindow:GetWidth() - 4) / 2) - (borderWidth + c.mult), EmbeddingWindow:GetHeight() - 20, "TOPLEFT", EmbeddingWindow, "TOPLEFT", 2, -17)
+			end
 		end
 	end
 end
@@ -157,11 +173,11 @@ end
 	local Skada_Skin = CreateFrame("Frame",nil)
 		Skada_Skin:RegisterEvent("PLAYER_ENTERING_WORLD")
 		Skada_Skin:SetScript("OnEvent", function(self)
-		self:UnregisterAllEvents()
-		self = nil
-	if U.CheckOption("EmbedSkada") then
-		EmbedSkada()
-	end
+			if U.CheckOption("EmbedSkada") then
+				EmbedSkada()
+				if U.elv then hooksecurefunc(RightChatPanel, "SetSize", function(self, width, height) EmbedSkada() end) end
+			end
+		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 	end)
 
 StaticPopupDialogs["SKADA_RELOADUI"] = {

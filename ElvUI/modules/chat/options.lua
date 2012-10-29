@@ -19,6 +19,12 @@ E.Options.args.chat = {
 			get = function(info) return E.private.chat.enable end,
 			set = function(info, value) E.private.chat.enable = value; E:StaticPopup_Show("PRIVATE_RL") end
 		},
+		lockPositions = {
+			order = 6,
+			type = 'toggle',
+			name = L['Lock Positions'],
+			desc = L['Attempt to lock the left and right chat frame positions. Disabling this option will allow you to move the main chat frame anywhere you wish.'],	
+		},		
 		panelBackdrop = {
 			order = 3,
 			type = 'select',

@@ -144,6 +144,7 @@ P['auras'] = {
 
 --Chat
 P['chat'] = {
+	['lockPositions'] = true,
 	['url'] = true,
 	['shortChannels'] = true,
 	['hyperlinkHover'] = true,
@@ -194,6 +195,8 @@ P['datatexts'] = {
 	['time24'] = false,
 	['battleground'] = true,
 	['minimapPanels'] = true,	
+	['leftChatPanel'] = true,
+	['rightChatPanel'] = true,	
 }
 
 --Tooltip

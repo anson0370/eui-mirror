@@ -10,6 +10,8 @@ local function LoadSkin()
 		f.ActiveEnemy
 	}
 
+	S:HandleCloseButton(FloatingBattlePetTooltip.CloseButton)
+	
 	-- TOP FRAMES
 	f:StripTextures()
 
@@ -115,13 +117,34 @@ local function LoadSkin()
 		end
 	end)
 
+
+local function BF_BattlePetTooltipUpdate(self) 
+   local petType = UnitBattlePetType("mouseover") 
+   local petName = UnitName("mouseover") 
+   local petLevel = UnitBattlePetLevel("mouseover") 
+   local auraID = PET_BATTLE_PET_TYPE_PASSIVES[petType]; 
+   local id, name, icon, maxCooldown, unparsedDescription, numTurns, petType, noStrongWeakHints = C_PetBattles.GetAbilityInfoByID(auraID); 
+   self.AbilityPetType:SetTexture("Interface\\PetBattles\\PetIcon-"..PET_TYPE_SUFFIX[petType]); 
+   self.Name:SetText(name) 
+   self.PetName:SetText(petName) 
+   self.PetLevel:SetText(LEVEL .. "  " .. petLevel) 
+   local bottom = self.AbilityPetType; 
+   local description = SharedPetAbilityTooltip_ParseText(abilityInfo, unparsedDescription); 
+   self.Description:SetText(description); 
+   self.Description:SetPoint("TOPLEFT", bottom, "BOTTOMLEFT", 0, -5); 
+   self.bottom = self.Description 
+   self:SetHeight(-(self.Description:GetBottom() - self:GetTop()) + 10); 
+end 
+
 	
 	-- PETS UNITFRAMES PET TYPE UPDATE
 	hooksecurefunc("PetBattleUnitFrame_UpdatePetType", function(self)
 		if self.PetType then
 			local petType = C_PetBattles.GetPetType(self.petOwner, self.petIndex)
+			local auraID = PET_BATTLE_PET_TYPE_PASSIVES[petType];
+			local _, name = C_PetBattles.GetAbilityInfoByID(auraID); --获得宠物类型的本地化名称
 			if self.PetTypeFrame then
-				self.PetTypeFrame.text:SetText(PET_TYPE_SUFFIX[petType])
+				self.PetTypeFrame.text:SetText(name or PET_TYPE_SUFFIX[petType])
 			end
 		end
 	end)	
@@ -180,8 +203,25 @@ end)
 
 	hooksecurefunc("PetBattleUnitFrame_UpdateDisplay", function(self)
 		self.Icon:SetTexCoord(unpack(E.TexCoords))
+		if self.Name and self.petOwner and self.petIndex and self.petIndex <= C_PetBattles.GetNumPets(self.petOwner) then --宠物名称品质染色
+			self.Name:SetText(ITEM_QUALITY_COLORS[C_PetBattles.GetBreedQuality(self.petOwner,self.petIndex)-1].hex..self.Name:GetText().."|r")
+		end		
 	end)
-
+	
+	hooksecurefunc("PetBattleFrame_ButtonUp", function(id) --修复宠物战斗时4,5按键失灵.
+		if id==4 or id== 5 then
+			local button=PetBattleFrame.BottomFrame[(id==4 and "SwitchPetButton" or "CatchButton")]
+			if ( button:GetButtonState() == "PUSHED" ) then
+				button:SetButtonState("NORMAL");
+				if ( not GetCVarBool("ActionButtonUseKeydown") ) then
+					button:Click();
+				end
+			end
+		end
+	end)
+	
+	
+	
 	f.TopVersusText:ClearAllPoints()
 	f.TopVersusText:SetPoint("TOP", f, "TOP", 0, -42)
 
@@ -300,7 +340,7 @@ end)
 	-- PETS SELECTION SKIN
 	for i = 1, 3 do
 		local pet = bf.PetSelectionFrame["Pet"..i]
-
+		if not pet then break; end
 		pet.HealthBarBG:SetAlpha(0)
 		pet.HealthDivider:SetAlpha(0)
 		pet.ActualHealthBar:SetAlpha(0)

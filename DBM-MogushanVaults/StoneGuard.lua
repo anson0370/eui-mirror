@@ -2,7 +2,7 @@
 local L		= mod:GetLocalizedStrings()
 local sndWOP	= mod:NewSound(nil, "SoundWOP", true)
 
-mod:SetRevision(("$Revision: 7964 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 7985 $"):sub(12, -3))
 mod:SetCreatureID(60051, 60043, 59915, 60047)--Cobalt: 60051, Jade: 60043, Jasper: 59915, Amethyst: 60047
 mod:SetModelID(41892)
 mod:SetZone()
@@ -45,9 +45,9 @@ local specWarnMySD					= mod:NewSpecialWarning("specWarnMySD")
 
 local timerCobaltMineCD				= mod:NewNextTimer(10.5, 129424)--12-15second variations
 local timerPetrification			= mod:NewNextTimer(76, 125091)
-local timerJadeShardsCD				= mod:NewNextTimer(20.5, 116223)--Always 20.5 seconds
+local timerJadeShardsCD				= mod:NewNextTimer(20.5, 116223, nil, false)--Always 20.5 seconds
 local timerJasperChainsCD			= mod:NewCDTimer(12, 130395)--11-13
-local timerAmethystPoolCD			= mod:NewCDTimer(6, 130774)
+local timerAmethystPoolCD			= mod:NewCDTimer(6, 130774, nil, false)
 
 local berserkTimer					= mod:NewBerserkTimer(420)
 
@@ -337,6 +337,14 @@ function mod:SPELL_AURA_REMOVED(args)
 		if args.destName == Cobalt then SDNOW["Bsdnow"] = false end
 		if args.destName == Amethyst then SDNOW["Psdnow"] = false end	
 		ChecknextOverload()
+	elseif args:IsSpellID(116541) then
+		if args:IsPlayer() then
+			self:Schedule(0.5, function()
+				if not UnitIsDeadOrGhost("player") then
+					sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_dzcz.mp3")--地磚重置
+				end
+			end)
+		end
 	end
 end
 

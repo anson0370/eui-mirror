@@ -26,19 +26,24 @@ end
 -- Skin Bars
 local function SkinSexyCooldownBar(bar)
 	SCDStripSkinSettings(bar)
-	if not bar.skinned then U.SkinFrame(bar) bar.skinned = true end
+	U.SkinFrame(bar)
 	if(U.CheckOption("EmbedSexyCooldown")) then
 		bar:ClearAllPoints()
 		if IsAddOnLoaded("ElvUI") then
 			bar:Point('BOTTOM', ElvUI_Bar1, 'TOP', 0, 1)
+			bar:CreateShadow()
 			bar:SetHeight(ElvUI_Bar1:GetHeight())
 			bar:SetWidth(ElvUI_Bar1:GetWidth())
 		else
 			bar:Point('BOTTOM', InvTukuiActionBarBackground, 'TOP', 0, 1)
+			if(U.CheckOption("AzilSettings")) then bar:Point('BOTTOM', InvTukuiActionBarBackground, 'TOP', 0, 16) end
+			bar:CreateShadow()
 			bar:SetHeight(ActionButton1:GetHeight())
 			bar:SetWidth(TukuiBar1:GetWidth())
 		end
 		bar:EnableMouse(false)
+		PetBattleFrame:HookScript("OnShow",function() bar:Hide() end)
+		PetBattleFrame:HookScript("OnHide",function() bar:Show() end)
 	end
 end
 
@@ -70,13 +75,15 @@ local function SkinSexyCooldownLabel(bar,label,store)
 		end
 	end
 end
-
---[[ Hook bar creation to add skinning ]]
+local function SkinSexyCooldownBackdrop(bar)
+		bar:SetTemplate("Transparent")
+end
 
 local function HookSCDBar(bar)
 	hooksecurefunc(bar,"UpdateBarLook",SkinSexyCooldownBar)
 	hooksecurefunc(bar,"UpdateSingleIconLook", SkinSexyCooldownIcon)
 	hooksecurefunc(bar,"UpdateLabel",SkinSexyCooldownLabel)
+	hooksecurefunc(bar,"UpdateBarBackdrop", SkinSexyCooldownBackdrop)
 	-- Static skinning
 	bar.settings.icon.borderInset = 0
 end

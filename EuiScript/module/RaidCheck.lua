@@ -155,7 +155,7 @@ function RC:CheckRaidBuff()
 			if class == 'MONK' then HasClass.monk = true end
 		end
 	end
-	if HasClass.monk then print("MONK") end
+
 	for i = 1, raidNum do
 		local name, _, subgroup = GetRaidRosterInfo(i)
 		local HasBuffMS = false

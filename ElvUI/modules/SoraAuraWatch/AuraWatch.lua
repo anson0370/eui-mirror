@@ -1614,12 +1614,12 @@ local function UpdateFrame()
 				local name = GetSpellInfo(value.AuraID)
 				if name and UnitBuff(value.UnitID, name) then
 					local name, _, icon, count, _, duration, expires, caster, _, _, spellID = UnitBuff(value.UnitID, name)
-					if spellID == value.AuraID then
+					if (spellID == value.AuraID) or (E.private.AuraWatch.checkSpellid == false) then
 						UpdateAuraFrame(KEY, value, name, icon, count, duration, expires, caster)
 					end
 				elseif name and UnitDebuff(value.UnitID, name) then
 					local name, _, icon, count, _, duration, expires, caster, _, _, spellID = UnitDebuff(value.UnitID, name)
-					if spellID == value.AuraID then
+					if (spellID == value.AuraID) or (E.private.AuraWatch.checkSpellid == false) then
 						UpdateAuraFrame(KEY, value, name, icon, count, duration, expires, caster)
 					end
 				end

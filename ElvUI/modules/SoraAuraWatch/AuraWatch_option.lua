@@ -235,6 +235,13 @@ E.Options.args.AuraWatch = {
 			disabled = function() return not E.private.AuraWatch.enable end,
 			func = function() wipe(E.db.AuraWatch.DB); E.private.AuraWatch.enable = false; E.db.AuraWatch.loadDefault = false; Module:LoadSettings(); end,
 		},
+		checkSpellid = {
+			type = "toggle",
+			order = 3,
+			name = L["Strict Filter"]..'ID',
+			set = function(info, value) E.private.AuraWatch.checkSpellid = value end,
+			get = function() return E.private.AuraWatch.checkSpellid end,
+		},
 		fontGroup = {
 			order = 3,
 			type = 'group',

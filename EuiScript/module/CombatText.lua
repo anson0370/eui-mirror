@@ -930,8 +930,8 @@ SlashCmdList.XCT = function(input)
 		if ct.locked then
 			pr("|cffffff00"..L_COMBATTEXT_ALREADY_LOCKED.."|r")
 		else
-			E:StaticPopup_Show("XCT_LOCK")
-		end
+			StaticPopup_Show("XCT_LOCK")
+		end	
 	elseif input == "test" then
 		if ct.testmode then
 			EndTestMode()

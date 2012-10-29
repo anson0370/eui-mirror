@@ -362,10 +362,10 @@ function UF:Update_TargetFrame(frame, db)
 	
 	do
 		local castbar = frame.Castbar
-		castbar:Width(db.castbar.width - (E.PixelMode and 0 or (BORDER * 2)))
+		castbar:Width(db.castbar.width - (E.PixelMode and 2 or (BORDER * 2)))
 		castbar:Height(db.castbar.height)
 		castbar.Holder:Width(db.castbar.width + (E.PixelMode and 0 or (BORDER * 2)))
-		castbar.Holder:Height(db.castbar.height + (E.PixelMode and 0 or (BORDER * 2)))
+		castbar.Holder:Height(db.castbar.height + (E.PixelMode and 2 or (BORDER * 2)))
 		castbar.Holder:GetScript('OnSizeChanged')(castbar.Holder)
 		
 		--Latency
@@ -411,7 +411,7 @@ function UF:Update_TargetFrame(frame, db)
 			CPoints:Point("CENTER", frame.Health.backdrop, "TOP", -(BORDER*3 + 6), -SPACING)
 			CPoints:SetFrameStrata("MEDIUM")
 		else
-			CPoints:Point("BOTTOMLEFT", frame.Health.backdrop, "TOPLEFT", BORDER, BORDER+SPACING)
+			CPoints:Point("BOTTOMLEFT", frame.Health.backdrop, "TOPLEFT", BORDER, (E.PixelMode and 0 or (BORDER + SPACING)))
 			CPoints:SetFrameStrata("LOW")
 		end
 

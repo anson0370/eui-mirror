@@ -8,7 +8,7 @@ function D:ModifyErrorFrame()
 	ScriptErrorsFrameScrollFrameText.cursorHeight = 0
 	ScriptErrorsFrameScrollFrameText:SetScript("OnEditFocusGained", nil)
 	
-	local Orig_ScriptErrorsFrame_Update = ScriptErrorsFrame_Update
+--[[	local Orig_ScriptErrorsFrame_Update = ScriptErrorsFrame_Update
 	ScriptErrorsFrame_Update = function(...)
 		if GetCVarBool('scriptErrors') ~= 1 then
 			Orig_ScriptErrorsFrame_Update(...)
@@ -30,7 +30,10 @@ function D:ModifyErrorFrame()
 		
 		-- Stop text highlighting again
 		ScriptErrorsFrameScrollFrameText:HighlightText(0, 0)
-	end	
+	end	]]
+	hooksecurefunc('ScriptErrorsFrame_Update', function()
+		ScriptErrorsFrameScrollFrameText:HighlightText(0, 0)
+	end)
 	
 	-- Unhighlight text when focus is hit
 	ScriptErrorsFrameScrollFrameText:HookScript("OnEscapePressed", function(self)
@@ -38,8 +41,8 @@ function D:ModifyErrorFrame()
 	end)	
 	
 	
-	ScriptErrorsFrame:Size(500, 300)
-	ScriptErrorsFrameScrollFrame:Size(ScriptErrorsFrame:GetWidth() - 45, ScriptErrorsFrame:GetHeight() - 71)
+	ScriptErrorsFrame:SetSize(500, 300)
+	ScriptErrorsFrameScrollFrame:SetSize(ScriptErrorsFrame:GetWidth() - 45, ScriptErrorsFrame:GetHeight() - 71)
 	
 	local BUTTON_WIDTH = 75
 	local BUTTON_HEIGHT = 24
@@ -48,7 +51,7 @@ function D:ModifyErrorFrame()
 	--Add Eui version label
 	local verLabel = ScriptErrorsFrame:CreateFontString(nil, "Overlay")
 	verLabel:FontTemplate(nil, 14, 'OUTLINE')
-	verLabel:Point("TOPLEFT", 8, -6)
+	verLabel:SetPoint("TOPLEFT", 8, -6)
 	verLabel:SetText(E.build and 'EUI: '..E.build or '')
 	
 	-- Add a first button
@@ -87,7 +90,7 @@ function D:ModifyErrorFrame()
 	
 	ScriptErrorsFrame.close:ClearAllPoints()
 	ScriptErrorsFrame.close:SetPoint("BOTTOMRIGHT", ScriptErrorsFrame, "BOTTOMRIGHT", -8, 8)	
-	ScriptErrorsFrame.close:Size(75, BUTTON_HEIGHT)
+	ScriptErrorsFrame.close:SetSize(75, BUTTON_HEIGHT)
 	
 	ScriptErrorsFrame.indexLabel:ClearAllPoints()
 	ScriptErrorsFrame.indexLabel:SetPoint("BOTTOMLEFT", ScriptErrorsFrame, "BOTTOMLEFT", -6, 8)	

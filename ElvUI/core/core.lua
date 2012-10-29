@@ -240,7 +240,7 @@ end
 
 function E:UpdateBorderColors()
 	for frame, _ in pairs(self["frames"]) do
-		if frame then
+		if frame and not frame.ignoreUpdates then
 			if frame.template == 'Default' or frame.template == 'Transparent' or frame.template == nil then
 				frame:SetBackdropBorderColor(unpack(self['media'].bordercolor))
 			end
@@ -473,7 +473,8 @@ function E:UpdateAll(ignoreInstall)
 	self.global = self.data.global;
 	
 	self:SetMoversPositions()
-
+	self:UpdateMedia()
+	
 	local UF = self:GetModule('UnitFrames')
 	UF.db = self.db.unitframe
 	UF:Update_AllFrames()
@@ -531,8 +532,7 @@ function E:UpdateAll(ignoreInstall)
 	end
 	
 	self:GetModule('Minimap'):UpdateSettings()
-	
-	self:UpdateMedia()
+
 	self:UpdateBorderColors()
 	self:UpdateBackdropColors()
 	self:UpdateFrameTemplates()
@@ -627,6 +627,13 @@ end
 
 --DATABASE CONVERSIONS
 function E:DBConversions()
+	if type(self.db.euiscript.wgtimenoti) == 'boolean' then
+		self.db.euiscript.wgtimenoti = P.euiscript.wgtimenoti
+	end
+	if type(self.db.euiscript.lfgnoti) == 'boolean' then
+		self.db.euiscript.lfgnoti = P.euiscript.lfgnoti
+	end
+
 	if type(self.db.unitframe.units.arena.pvpTrinket) == 'boolean' then
 		self.db.unitframe.units.arena.pvpTrinket = table.copy(self.DF["profile"].unitframe.units.arena.pvpTrinket, true)
 	end	

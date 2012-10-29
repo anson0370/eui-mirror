@@ -42,62 +42,25 @@ local function LoadSkin()
 	for _, slot in pairs(slots) do
 		local icon = _G["Inspect"..slot.."IconTexture"]
 		local slot = _G["Inspect"..slot]
-
 		slot:StripTextures()
 		slot:StyleButton(false)
-
-		icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
-		icon:ClearAllPoints()
-		icon:Point("TOPLEFT", 2, -2)
-		icon:Point("BOTTOMRIGHT", -2, 2)
-
-
+		icon:SetTexCoord(unpack(E.TexCoords))
+		icon:SetInside()
 		slot:SetFrameLevel(slot:GetFrameLevel() + 2)
-		slot:SetTemplate("Default", true)
-	end
-
-	local CheckItemBorderColor = CreateFrame("Frame")
-	local function ScanSlots()
-		local notFound
-		for _, slot in pairs(slots) do
-			-- Colour the equipment slots by rarity
-			local target = _G["Inspect"..slot]
-			local slotId, _, _ = GetInventorySlotInfo(slot)
-			local itemId = GetInventoryItemID("target", slotId)
-
-			if itemId then
-				local _, _, rarity, _, _, _, _, _, _, _, _ = GetItemInfo(itemId)
-				if not rarity then notFound = true end
-				if rarity and rarity > 1 then
-					target:SetBackdropBorderColor(GetItemQualityColor(rarity))
-				else
-					target:SetBackdropBorderColor(unpack(E.media.bordercolor))
-				end
-			else
-				target:SetBackdropBorderColor(unpack(E.media.bordercolor))
-			end
-		end	
-		
-		if notFound == true then
-			return false
-		else
-			CheckItemBorderColor:SetScript('OnUpdate', nil) --Stop updating
-			return true
-		end		
+		slot:CreateBackdrop("Default")
+		slot.backdrop:SetAllPoints()
 	end
 	
-	local function ColorItemBorder(self)
-		if self and not ScanSlots() then
-			self:SetScript("OnUpdate", ScanSlots) --Run function until all items borders are colored, sometimes when you have never seen an item before GetItemInfo will return nil, when this happens we have to wait for the server to send information.
-		end 
-	end
-
-	CheckItemBorderColor:RegisterEvent("PLAYER_TARGET_CHANGED")
-	CheckItemBorderColor:RegisterEvent("UNIT_PORTRAIT_UPDATE")
-	CheckItemBorderColor:RegisterEvent("PARTY_MEMBERS_CHANGED")
-	CheckItemBorderColor:SetScript("OnEvent", ColorItemBorder)	
-	InspectFrame:HookScript("OnShow", ColorItemBorder)
-	ColorItemBorder(CheckItemBorderColor)	
+	hooksecurefunc('InspectPaperDollItemSlotButton_Update', function(button)
+		local unit = InspectFrame.unit;
+		local quality = GetInventoryItemQuality(unit, button:GetID())
+		if quality and button.backdrop then
+			local r, g, b = GetItemQualityColor(quality)
+			button.backdrop:SetBackdropBorderColor(r, g ,b)
+		elseif button.backdrop then
+			button.backdrop:SetBackdropBorderColor(unpack(E.media.bordercolor))
+		end
+	end)
 	
 	InspectPVPFrameBottom:Kill()
 	InspectGuildFrameBG:Kill()

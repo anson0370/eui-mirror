@@ -579,10 +579,10 @@ function UF:Update_PlayerFrame(frame, db)
 	--Castbar
 	do
 		local castbar = frame.Castbar
-		castbar:Width(db.castbar.width - (E.PixelMode and 0 or (BORDER * 2)))
+		castbar:Width(db.castbar.width - (E.PixelMode and 2 or (BORDER * 2)))
 		castbar:Height(db.castbar.height)
 		castbar.Holder:Width(db.castbar.width + (E.PixelMode and 0 or (BORDER * 2)))
-		castbar.Holder:Height(db.castbar.height + (E.PixelMode and 0 or (BORDER * 2)))
+		castbar.Holder:Height(db.castbar.height + (E.PixelMode and 2 or (BORDER * 2)))
 		castbar.Holder:GetScript('OnSizeChanged')(castbar.Holder)
 		
 		--Latency
@@ -684,7 +684,7 @@ function UF:Update_PlayerFrame(frame, db)
 				bars:Point("CENTER", frame.Health.backdrop, "TOP", -(BORDER*3 + 6), 0)
 				bars:SetFrameStrata("MEDIUM")
 			else
-				bars:Point("BOTTOMLEFT", frame.Health.backdrop, "TOPLEFT", BORDER, BORDER+SPACING)
+				bars:Point("BOTTOMLEFT", frame.Health.backdrop, "TOPLEFT", BORDER, (E.PixelMode and 0 or (BORDER + SPACING)))
 				bars:SetFrameStrata("LOW")
 			end
 				
@@ -693,7 +693,7 @@ function UF:Update_PlayerFrame(frame, db)
 
 			for i = 1, PRIEST_BAR_NUM_ORBS do
 				bars[i]:SetHeight(bars:GetHeight())	
-				bars[i]:SetWidth(E:Scale(bars:GetWidth() - (E.PixelMode and 4 or 2))/PRIEST_BAR_NUM_ORBS)	
+				bars[i]:SetWidth((bars:GetWidth() - 2)/PRIEST_BAR_NUM_ORBS)	
 				bars[i]:GetStatusBarTexture():SetHorizTile(false)
 				bars[i]:ClearAllPoints()
 				if i == 1 then
@@ -734,7 +734,7 @@ function UF:Update_PlayerFrame(frame, db)
 				bars:Point("CENTER", frame.Health.backdrop, "TOP", -(BORDER*3 + 12), 0)
 				bars:SetFrameStrata("MEDIUM")
 			else
-				bars:Point("BOTTOMLEFT", frame.Health.backdrop, "TOPLEFT", BORDER, BORDER+SPACING)
+				bars:Point("BOTTOMLEFT", frame.Health.backdrop, "TOPLEFT", BORDER, (E.PixelMode and 0 or (BORDER + SPACING)))
 				bars:SetFrameStrata("LOW")
 			end
 				
@@ -743,7 +743,8 @@ function UF:Update_PlayerFrame(frame, db)
 
 			for i = 1, UF['classMaxResourceBar'][E.myclass] do
 				bars[i]:SetHeight(bars:GetHeight())	
-				bars[i]:SetWidth(E:Scale(bars:GetWidth() - (E.PixelMode and 4 or 2))/UF['classMaxResourceBar'][E.myclass])	
+				bars[i]:SetWidth((bars:GetWidth() - (E.PixelMode and 5 or 2))/UF['classMaxResourceBar'][E.myclass])	
+
 				bars[i]:GetStatusBarTexture():SetHorizTile(false)
 				bars[i]:ClearAllPoints()
 				if i == 1 then
@@ -785,7 +786,7 @@ function UF:Update_PlayerFrame(frame, db)
 				bars:Point("CENTER", frame.Health.backdrop, "TOP", -(BORDER*3 + 6), 0)
 				bars:SetFrameStrata("MEDIUM")
 			else
-				bars:Point("BOTTOMLEFT", frame.Health.backdrop, "TOPLEFT", BORDER, BORDER+SPACING)
+				bars:Point("BOTTOMLEFT", frame.Health.backdrop, "TOPLEFT", BORDER, (E.PixelMode and 0 or (BORDER + SPACING)))
 				bars:SetFrameStrata("LOW")
 			end
 			bars:Width(CLASSBAR_WIDTH)
@@ -810,7 +811,7 @@ function UF:Update_PlayerFrame(frame, db)
 				bars:Point("CENTER", frame.Health.backdrop, "TOP", -(BORDER*3 + 6), 0)
 				bars:SetFrameStrata("MEDIUM")			
 			else
-				bars:Point("BOTTOMLEFT", frame.Health.backdrop, "TOPLEFT", BORDER, BORDER+SPACING)
+				bars:Point("BOTTOMLEFT", frame.Health.backdrop, "TOPLEFT", BORDER, (E.PixelMode and 0 or (BORDER + SPACING)))
 				bars:SetFrameStrata("LOW")
 			end
 			bars:Width(CLASSBAR_WIDTH)
@@ -837,7 +838,7 @@ function UF:Update_PlayerFrame(frame, db)
 				runes:Point("CENTER", frame.Health.backdrop, "TOP", -(BORDER*3 + 8), 0)
 				runes:SetFrameStrata("MEDIUM")
 			else
-				runes:Point("BOTTOMLEFT", frame.Health.backdrop, "TOPLEFT", BORDER, BORDER+SPACING)
+				runes:Point("BOTTOMLEFT", frame.Health.backdrop, "TOPLEFT", BORDER, (E.PixelMode and 0 or (BORDER + SPACING)))
 				runes:SetFrameStrata("LOW")
 			end
 			runes:Width(CLASSBAR_WIDTH)
@@ -893,7 +894,7 @@ function UF:Update_PlayerFrame(frame, db)
 
 			eclipseBar:ClearAllPoints()
 			if not USE_MINI_CLASSBAR then
-				eclipseBar:Point("BOTTOMLEFT", frame.Health.backdrop, "TOPLEFT", BORDER, BORDER+SPACING)
+				eclipseBar:Point("BOTTOMLEFT", frame.Health.backdrop, "TOPLEFT", BORDER, (E.PixelMode and 0 or (BORDER + SPACING)))
 				eclipseBar:SetFrameStrata("LOW")
 			else		
 				CLASSBAR_WIDTH = CLASSBAR_WIDTH * 2/3			

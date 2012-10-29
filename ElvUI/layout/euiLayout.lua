@@ -160,16 +160,30 @@ local function CreateLoc(parent)
 			
 			x = math.floor(100 * x)
 			y = math.floor(100 * y)
-			if x ==0 and y==0 then
-				self.text:SetText(E:RGBToHex(LO:GetLocTextColor()).. '??, ??|r')
+
+			if x == 0 and y == 0 then
+				self.loc = '??, ??'
 			else
-				self.text:SetText(E:RGBToHex(LO:GetLocTextColor()).. x.. ', '.. y.. '|r')
+				self.loc = x.. ', '.. y
 			end
+			self.text:SetText(E:RGBToHex(LO:GetLocTextColor()).. self.loc.. '|r')
+
 			self.elapsed = 0
 		else
 			self.elapsed = (self.elapsed or 0) + elapsed
 		end	
 	end)
+	parent:SetScript("OnMouseUp", function(self)
+		local chattype = "SAY"
+		if IsInRaid() then
+			chattype = "RAID"
+		elseif IsInGroup() then
+			chattype = "PARTY"
+		end
+		local targetStr = ''
+		if UnitName('target') then targetStr = UnitName('target').. '@ ' end
+		SendChatMessage(targetStr.. GetRealZoneText()..": ".. self.loc, chattype)
+	end)	
 end
 
 local function CreateInfoBarButton(id, name, parent)
@@ -240,6 +254,7 @@ function LO:InfoBar()
 	f:SetPoint("TOPLEFT", E.UIParent, "TOPLEFT", -E.mult, -E.mult)
 	f:SetFrameStrata("BACKGROUND")
 	f:SetFrameLevel(0)
+	E.FrameLocks['EuiInfoBar'] = true;
 	
 	local anchor = CreateFrame("Button", nil, EuiInfoBar)
 	anchor:SetHeight(PANEL_HEIGHT)

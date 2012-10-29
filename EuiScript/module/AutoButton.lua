@@ -15,6 +15,8 @@ local frameItem = {
 	[79104] = true, --农具
 	[80513] = true,
 	[89880] = true,
+	[89815] = true,
+	[89869] = true,
 	[79102] = true, --种子
 	[80590] = true,
 	[80591] = true,
@@ -34,16 +36,23 @@ local frameItem = {
 	[85215] = true,
 	[89197] = true,
 	[89233] = true,	
+	[85219] = true, --特殊种子
 	['日歌农场'] = true,
 	['日歌農荘'] = true,
 	['Sunsong Ranch'] = true,
 }
 
+local whiteQusetItem = {
+	[90006] = true, --影踪派任务道具
+	[86534] = true,
+	[86536] = true,
+}
+
 local function IsQuestItem(bagID, slotID)
-	if frameItem[GetSubZoneText()] then return false; end
+	if frameItem[GetMinimapZoneText()] then return false; end
 	
-	local isQuestItem, questId, isActiveQuest = GetContainerItemQuestInfo(bagID, slotID);
-	return (questId or isQuestItem)
+	local isquestItem, questId, isActiveQuest = GetContainerItemQuestInfo(bagID, slotID);
+	return (questId or isquestItem)
 end
 
 local function IsUsableItem(itemId)
@@ -52,7 +61,7 @@ local function IsUsableItem(itemId)
 end
 
 local function IsFrameItem(itemId)
-	if not frameItem[GetSubZoneText()] then return false; end
+	if not frameItem[GetMinimapZoneText()] then return false; end
 
 	if frameItem[itemId] then
 		return true
@@ -155,7 +164,11 @@ local function CreateButton(name)
 	return AutoButton
 end
 
-function S:ScanItem()
+function S:ScanItem(self, event)
+	if event == 'ZONE_CHANGED' then
+		if not frameItem[GetMinimapZoneText()] then return; end
+	end
+	
 	HideAllButton()
 	
 	-- Scan bags for Item matchs
@@ -165,7 +178,7 @@ function S:ScanItem()
 			for s = 1, GetContainerNumSlots(b) do
 				local itemID = GetContainerItemID(b, s)
 				itemID = tonumber(itemID)
-				if itemID and (IsQuestItem(b, s) or IsFrameItem(itemID)) and IsUsableItem(itemID) then
+				if itemID and (IsQuestItem(b, s) or IsFrameItem(itemID) or whiteQusetItem[itemID]) and IsUsableItem(itemID) then
 					num = num + 1
 					if num > E.db.euiscript.autobutton.questNum then break; end
 					
@@ -257,6 +270,7 @@ function S:UpdateAutoButton()
 	
 	for i = 1, db.questNum do
 		local f = CreateButton("AutoQuestButton"..i)
+		E.FrameLocks["AutoQuestButton"..i] = true;
 		if i == 1 then
 			f:Point("LEFT", AutoButtonAnchor, "LEFT", 0, 0)
 		else
@@ -266,6 +280,7 @@ function S:UpdateAutoButton()
 	
 	for i = 1, db.slotNum do
 		local f = CreateButton("AutoSlotButton"..i)
+		E.FrameLocks["AutoSlotButton"..i] = true;
 		if i == 1 then
 			f:Point("LEFT", AutoButtonAnchor2, "LEFT", 0, 0)
 		else

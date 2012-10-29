@@ -26,7 +26,6 @@ local function SkinRecount(self)
 		frame.Title:ClearAllPoints()
 		frame.Title:SetPoint("LEFT", 4, 0)
 		if IsAddOnLoaded("Tukui") then
-			frame.Title:SetFont(c["media"].font, c["datatext"].fontsize, "OUTLINE")
 			frame.CloseButton:SetNormalTexture("")
 			frame.CloseButton:SetPushedTexture("")
 			frame.CloseButton:SetHighlightTexture("")
@@ -59,7 +58,6 @@ local function SkinRecount(self)
 		frame.Title:ClearAllPoints()
 		frame.Title:SetPoint("LEFT", 4, 0)
 		if IsAddOnLoaded("Tukui") then
-			frame.Title:SetFont(c["media"].font, c["datatext"].fontsize, "OUTLINE")
 			frame.CloseButton:SetNormalTexture("")
 			frame.CloseButton:SetPushedTexture("")
 			frame.CloseButton:SetHighlightTexture("")
@@ -80,8 +78,6 @@ local function SkinRecount(self)
 			if IsAddOnLoaded("Tukui") then
 				v.LeftText:SetPoint("LEFT", 4, 0)
 				v.RightText:SetPoint("RIGHT", -4, 0)
-				v.LeftText:SetFont(c["media"].font, c["datatext"].fontsize)
-				v.RightText:SetFont(c["media"].font, c["datatext"].fontsize)
 			end
 		end
 	end
@@ -225,9 +221,11 @@ local function SkinRecount(self)
 	end
 
 	if U.CheckOption("EmbedRecount") then EmbedRecount() end
+	
 end
 
 U.RegisterSkin(name,SkinRecount)
+
 
 StaticPopupDialogs["RECOUNT_RELOADUI"] = {
 	text = "Reload your User Interface?",
@@ -258,7 +256,6 @@ StaticPopupDialogs["RECOUNT_RELOADUI"] = {
 }
 
 function EmbedRecount()
-	U.EnableOption("EmbedRecount")
 	if (U.CheckOption("EmbedOoC")) then
 		if (U.CheckOption("EmbedRecount")) then
 			Recount_MainWindow:Hide()
@@ -266,9 +263,15 @@ function EmbedRecount()
 	end
 	Recount:LockWindows(true)
 	Recount_MainWindow:ClearAllPoints()
-	Recount_MainWindow:SetPoint("TOPLEFT", EmbeddingWindow,"TOPLEFT", 0, 6)
-	Recount_MainWindow:SetPoint("BOTTOMRIGHT", EmbeddingWindow,"BOTTOMRIGHT", 0, 5)
-	Recount_MainWindow:SetFrameStrata("MEDIUM")
+	EmbedRecountResize()
+	if U.elv then if RightChatPanel then Recount_MainWindow:SetParent(RightChatPanel) end end
+	if U.tuk then if TukuiChatBackgroundRight then Recount_MainWindow:SetParent(TukuiChatBackgroundRight) end end
+	Recount.MainWindow:SetFrameStrata("HIGH")
+end
+
+function EmbedRecountResize()
+	Recount_MainWindow:SetPoint("TOPLEFT", EmbeddingWindow,"TOPLEFT", 0, 7)
+	Recount_MainWindow:SetPoint("BOTTOMRIGHT", EmbeddingWindow,"BOTTOMRIGHT", 0, 2)
 end
 
 SLASH_RECOUNTEMBEDDED1, SLASH_RECOUNTEMBEDDED2 = '/er', '/embedrecount';

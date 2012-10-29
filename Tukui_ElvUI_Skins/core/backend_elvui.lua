@@ -28,7 +28,7 @@ local exceptions = {
 }
 
 P["skins"] = {
-	["LootConfirmer"] = true,
+	["LootConfirmer"] = false,
 	["UISkinMinimap"] = true,
 	["DBMSkinHalf"] = false,
 	["RecountBackdrop"] = true,
@@ -90,14 +90,11 @@ function XS:Initialize()
 	end
 end
 
-function XS:RegisterSkin(skinName,func,...)
-	local events = ...
+function XS:RegisterSkin(skinName,func,events)
 	if not self.skins[skinName] then self.skins[skinName] = {} end
 	self.skins[skinName][func] = true
-	for i = 1,#events do
-		local event = select(i,events)
-		if not event then return end
-		if not self.events[event] then
+	for event,_ in pairs(events) do
+    	if not self.events[event] then
 			self[event] = GenerateEventFunction(event)
 			self:RegisterEvent(event); 
 			self.events[event] = {} 
