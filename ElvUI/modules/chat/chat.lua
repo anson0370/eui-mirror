@@ -860,6 +860,29 @@ function CH:ThrottleSound()
 	self.SoundPlayed = nil;
 end
 
+local function catch_hyperlink(Linkstring)
+	local Hyperlinks = {}
+	local i = 0
+	local LinkBeginning = 0
+	while true do
+		i= i + 1
+		local LinkEnding, LinkColor, LinkType, LinkContents, LinkText
+		LinkBeginning, LinkEnding, LinkColor, LinkType, LinkContents, LinkText = string.find(Linkstring, "|(%x-)|H(%a-):(.-)|h%[(.-)%]|h|r", LinkBeginning + 1);
+		if not LinkBeginning then break end
+		Hyperlinks[i] = {LinkBeginning, LinkEnding, LinkColor, LinkType, LinkContents ,LinkText}
+	end
+	
+	for k, v in ipairs(Hyperlinks) do
+		for keyword, _ in pairs(CH.Keywords) do
+			if v[6] == keyword:lower() then
+				Linkstring = Linkstring:gsub(v[6], "|r|cffff0000"..v[6].."|r|"..v[3])
+			end
+		end
+	end
+	
+	return Linkstring 
+end
+
 function CH:CheckKeyword(message)
 	local replaceWords = {};
 
@@ -888,6 +911,8 @@ function CH:CheckKeyword(message)
 			message = message:gsub(word..' ', replaceWord..' ')
 		end
 	end
+	
+	message = catch_hyperlink(message)
 	
 	return message
 end
