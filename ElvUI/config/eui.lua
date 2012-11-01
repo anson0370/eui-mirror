@@ -331,37 +331,6 @@ P["chatfilter"] = {
 	["RepeatMaxCache"] = 200, --Set the max cache from the messages. // 设定最多缓存多少条消息
 }
 
-P["combattext"] = {
-	["enable"] = false,							-- Global enable combat text
-	["blizz_head_numbers"] = false,				-- Use blizzard damage/healing output(above mob/player head)
-	["damage_style"] = true,					-- Change default damage/healing font above mobs/player heads(you need to restart WoW to see changes)
-	["damage"] = true,							-- Show outgoing damage in it's own frame
-	["healing"] = true,							-- Show outgoing healing in it's own frame
-	["show_hots"] = true,						-- Show periodic healing effects in healing frame
-	["show_overhealing"] = true,				-- Show outgoing overhealing
-	["pet_damage"] = true,						-- Show your pet damage
-	["dot_damage"] = true,						-- Show damage from your dots
-	["damage_color"] = true,					-- Display damage numbers depending on school of magic
-	["crit_prefix"] = "*",						-- Symbol that will be added before crit
-	["crit_postfix"] = "*",						-- Symbol that will be added after crit
-	["icons"] = true,							-- Show outgoing damage icons
-	["icon_size"] = 16,							-- Icon size of spells in outgoing damage frame, also has effect on dmg font size
-	["treshold"] = 1,							-- Minimum damage to show in damage frame
-	["heal_treshold"] = 1,						-- Minimum healing to show in incoming/outgoing healing messages
-	["scrollable"] = false,						-- Allows you to scroll frame lines with mousewheel
-	["max_lines"] = 15,							-- Max lines to keep in scrollable mode(more lines = more memory)
-	["time_visible"] = 3,						-- Time(seconds) a single message will be visible
-	["stop_ve_spam"] = false,					-- Automaticly turns off healing spam for priests in shadowform
-	["dk_runes"] = true,						-- Show deathknight rune recharge
-	["killingblow"] = false,					-- Tells you about your killingblows
-	["merge_aoe_spam"] = true,					-- Merges multiple aoe damage spam into single message
-	["merge_aoe_spam_time"] = 3,				-- Time in seconds aoe spell will be merged into single message(works only with ["damage"] = true)
-	["dispel"] = true,							-- Tells you about your dispels(works only with ["damage"] = true)
-	["interrupt"] = true,						-- Tells you about your interrupts(works only with ["damage"] = true)
-	["combat_text_font_size"] = 16,				-- 伤害字体尺寸
-	["direction"] = "bottom",					-- 滚动方向
-}
-
 P["clickset"] = {
 	['spec1'] = {
 		["type1"] = "NONE",

@@ -27,7 +27,7 @@
 	<Script file="PRIEST.lua"/>
 	<Script file="ClassColors.lua"/>
 	<Script file="DoomCooldownPulse.lua"/>
-	<Script file="CombatText.lua"/>
+	<!--Script file="CombatText.lua"/-->
 	<Script file="AutoBuy.lua"/>
 	<Script file="AutoButton.lua"/>
 	<Script file="FindIt.lua"/>

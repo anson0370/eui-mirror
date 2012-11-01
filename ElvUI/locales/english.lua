@@ -187,6 +187,10 @@ L['Wrap After'] = true;
 L['Your Auras First'] = true;
 
 --Chat
+L['Chat EditBox Position'] = true;
+L['Position of the Chat EditBox, if datatexts are disabled this will be forced to be above chat.'] = true;
+L['Below Chat'] = true;
+L['Above Chat'] = true;
 L['Lock Positions'] = true;
 L['Attempt to lock the left and right chat frame positions. Disabling this option will allow you to move the main chat frame anywhere you wish.'] = true;
 L['P'] = true;
@@ -1385,34 +1389,7 @@ end
 -- Combat text options
 do
 	L["combattext"] = "Combat Text"
-	L["combattext desc"] = "xCT is very lightweight combat text addon"
-	L["blizz head numbers"] = "Use blizzard damage/healing output (above mob/player head)"
-	L["damage style"] = "Change default damage/healing font above mobs/player heads (you need to restart WoW to see changes)"
-	L["damage"] = "Show outgoing damage in it's own frame"
-	L["healing"]= "Show outgoing healing in it's own frame"
-	L["show hots"] = "Show periodic healing effects in healing frame"
-	L["show overhealing"] = "Show outgoing overhealing"
-	L["pet damage"] = "Show your pet damage"
-	L["dot damage"] = "Show damage from your dots"
-	L["damage color"] = "Display damage numbers depending on school of magic"
-	L["crit prefix"] = "Symbol that will be added before crit"
-	L["crit postfix"] = "Symbol that will be added after crit"
-	L["icons"] = "Show outgoing damage icons"
-	L["icon size"] = "Icon size of spells in outgoing damage frame, also has effect on dmg font size"
-	L["treshold"] = "Minimum damage to show in damage frame"
-	L["heal treshold"] = "Minimum healing to show in incoming/outgoing healing messages"
-	L["scrollable"] = "Allows you to scroll frame lines with mousewheel"
-	L["max lines"] = "Max lines to keep in scrollable mode (more lines = more memory)"
-	L["time visible"] = "Time(seconds) a single message will be visible"
-	L["stop ve spam"] = "Automaticly turns off healing spam for priests in shadowform"
-	L["dk runes"] = "Show deathknight rune recharge"
-	L["killingblow"] = "Tells you about your killingblows"
-	L["merge aoe spam"] = "Merges multiple aoe damage spam into single message"
-	L["merge aoe spam time"] = "Time in seconds aoe spell will be merged into single message"
-	L["dispel"] = "Tells you about your dispels"
-	L["interrupt"] = "Tells you about your interrupts"
-	L["combat text font size"] = true;
-	L["Scroll Direction"] = true;
+	L["combattext desc"] = "COMMAND: /MSBT"
 end
 
 -- Bags

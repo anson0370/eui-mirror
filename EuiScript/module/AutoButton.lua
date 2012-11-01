@@ -55,6 +55,17 @@ local function IsQuestItem(bagID, slotID)
 	return (questId or isquestItem)
 end
 
+local function haveIt(num, spellName)
+	if not spellName then return false; end
+	for i = 1, num do
+		local AutoButton = _G["AutoQuestButton"..i]
+		if AutoButton.spellName == spellName then
+			return false;
+		end
+	end
+	return true;
+end		
+		
 local function IsUsableItem(itemId)
 	local itemSpell = GetItemSpell(itemId)
 	return itemSpell
@@ -178,7 +189,7 @@ function S:ScanItem(self, event)
 			for s = 1, GetContainerNumSlots(b) do
 				local itemID = GetContainerItemID(b, s)
 				itemID = tonumber(itemID)
-				if itemID and (IsQuestItem(b, s) or IsFrameItem(itemID) or whiteQusetItem[itemID]) and IsUsableItem(itemID) then
+				if itemID and (IsQuestItem(b, s) or IsFrameItem(itemID) or whiteQusetItem[itemID]) and IsUsableItem(itemID) and haveIt(num, IsUsableItem(itemID)) then
 					num = num + 1
 					if num > E.db.euiscript.autobutton.questNum then break; end
 					
@@ -193,6 +204,8 @@ function S:ScanItem(self, event)
 					AutoButton.itemName = itemName
 					AutoButton.spellName = IsUsableItem(itemID)
 					AutoButton:SetBackdropBorderColor(1.0, 0.3, 0.3)
+					
+					
 					
 					-- Get the count if there is one
 					if count and count ~= 1 then

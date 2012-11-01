@@ -709,8 +709,6 @@ end
 E.Options.args.combattext = {
 	type = "group",
 	name = '15.'..L["combattext"],
-	get = function(info) return E.db.combattext[ info[#info] ] end,
-	set = function(info, value) E.db.combattext[ info[#info] ] = value; E:StaticPopup_Show("CONFIG_RL") end,
 	args = {
 		desc = {
 			order = 0,
@@ -721,175 +719,32 @@ E.Options.args.combattext = {
 			order = 1,
 			type = "toggle",
 			name = L["Enabled"],
+			get = function() return IsAddOnLoaded('MikScrollingBattleText') end,
 			set = function(info, value)
-				E.db.combattext.enable = value; 
 				if value then
-					SetCVar("CombatDamage", 0)
-					SetCVar("CombatHealing", 0)
-					SetCVar("enableCombatText", 1)
+					EnableAddOn('MikScrollingBattleText')
 				else
-					SetCVar("CombatDamage", 1)
-					SetCVar("CombatHealing", 1)
-					SetCVar("enableCombatText", 1)
+					DisableAddOn('MikScrollingBattleText')
 				end
 				E:StaticPopup_Show("CONFIG_RL")
 			end,
 		},
-		general = {
+		option = {
 			order = 2,
-			type = "group",
-			guiInline = true,
-			name = L["General"],
-			disabled = function() return not E.db.combattext.enable end,
-			args = {
-			--	blizz_head_numbers = {
-			--		order = 1,
-			--		type = "toggle",
-			--		name = L["blizz head numbers"],
-			--	},
-				damage_style = {
-					order = 2,
-					type = "toggle",
-					name = L["damage style"],
-				},
-				damage = {
-					order = 3,
-					type = "toggle",
-					name = L["damage"],
-				},
-				healing = {
-					order = 4,
-					type = "toggle",
-					name = L["healing"],
-				},
-				show_hots = {
-					order = 5,
-					type = "toggle",
-					name = L["show hots"],
-				},
-				show_overhealing = {
-					order = 6,
-					type = "toggle",
-					name = L["show overhealing"],
-				},
-				pet_damage = {
-					order = 7,
-					type = "toggle",
-					name = L["pet damage"],
-				},
-				dot_damage = {
-					order = 8,
-					type = "toggle",
-					name = L["dot damage"],
-				},
-				damage_color = {
-					order = 9,
-					type = "toggle",
-					name = L["damage color"],
-				},
-				crit_prefix = {
-					order = 10,
-					type = "input",
-					name = L["crit prefix"],
-				},
-				crit_postfix = {
-					order = 11,
-					type = "input",
-					name = L["crit postfix"],
-				},
-				icons = {
-					order = 12,
-					type = "toggle",
-					name = L["icons"],
-				},
-				icon_size = {
-					order = 13,
-					type = "range",
-					name = L["icon size"],
-					min = 5, max = 50, step = 1,
-				},
-				treshold = {
-					order = 14,
-					type = "range",
-					name = L["treshold"],
-					min = 1, max = 10000, step = 10,
-				},
-				heal_treshold = {
-					order = 15,
-					type = "range",
-					name = L["heal treshold"],
-					min = 1, max = 10000, step = 10,
-				},
-				scrollable = {
-					order = 16,
-					type = "toggle",
-					name = L["scrollable"],
-				},
-				max_lines = {
-					order = 17,
-					type = "range",
-					min = 1, max = 100, step = 1,
-					name = L["max lines"],
-				},
-				time_visible = {
-					order = 18,
-					type = "range",
-					min = 1, max = 10, step = 1,
-					name = L["time visible"],
-				},
-				stop_ve_spam = {
-					order = 19,
-					type = "toggle",
-					name = L["stop ve spam"],
-				},
-				dk_runes = {
-					order = 20,
-					type = "toggle",
-					name = L["dk runes"],
-				},
-				killingblow = {
-					order = 21,
-					type = "toggle",
-					name = L["killingblow"],
-				},
-				merge_aoe_spam = {
-					order = 22,
-					type = "toggle",
-					name = L["merge aoe spam"],
-				},
-				merge_aoe_spam_time = {
-					order = 23,
-					type = "range",
-					min = 1, max = 10, step = 1,
-					name = L["merge aoe spam time"],
-				},
-				dispel = {
-					order = 24,
-					type = "toggle",
-					name = L["dispel"],
-				},
-				interrupt = {
-					order = 25,
-					type = "toggle",
-					name = L["interrupt"],
-				},
-				combat_text_font_size = {
-					order = 26,
-					type = "range",
-					name = L["combat text font size"],
-					min = 5, max = 50, step = 1,
-				},
-				direction = {
-					order = 27,
-					type = "select",
-					name = L["Scroll Direction"],
-					values = {
-						["top"] = "TOP",
-						["bottom"] = "BOTTOM",
-					},
-				},				
-			},
-		},
+			type = "execute",
+			name = L['Toggle Configuration'],
+			func = function()
+				local optionsName = "MSBTOptions"
+				if (not IsAddOnLoaded(optionsName)) then
+					local loaded, failureReason = LoadAddOn(optionsName)
+					if (not loaded) then
+						local failureMessage = _G["ADDON_" .. failureReason] or failureReason or ""
+						E:Print(string.format(ADDON_LOAD_FAILED, optionsName, failureMessage))
+					end
+				end
+				if (IsAddOnLoaded(optionsName)) then MSBTOptions.Main.ShowMainFrame(); E:ToggleConfig() end
+			end,
+		},		
 	},
 }
 					

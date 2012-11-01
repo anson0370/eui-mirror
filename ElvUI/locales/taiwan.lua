@@ -1009,6 +1009,10 @@ end
 
 --Chat
 do
+	L['Chat EditBox Position'] = '聊天編輯框位置';
+	L['Position of the Chat EditBox, if datatexts are disabled this will be forced to be above chat.'] = '聊天編輯框位置,如果底部的信息文字被禁用的話,將會強制顯示在聊天框頂部';
+	L['Below Chat'] = '聊天框底部';
+	L['Above Chat'] = '聊天框頂部';
 	L['Lock Positions'] = '鎖定位置';
 	L['Attempt to lock the left and right chat frame positions. Disabling this option will allow you to move the main chat frame anywhere you wish.'] = '鎖定左右聊天框位置,禁用則可以移動聊天框到任意位置';
 	L['Chat History'] = '聊天歷史';
@@ -1585,34 +1589,7 @@ end
 -- Combat text options
 do
 	L["combattext"] = "戰鬥文字"
-	L["combattext desc"] = "設置命令/xCT, 顯示承受傷害需在介面浮動戰鬥資訊中勾選我的浮動戰鬥資訊"
-	L["blizz head numbers"] = "使用暴雪默認傷害/治療模式（模型頂部/玩家頭像）"
-	L["damage style"] = "改變模型頂部/玩家頭像的傷害/治療字體"
-	L["damage"] = "獨立顯示傷害輸出"
-	L["healing"]= "獨立顯示治療輸出"
-	L["show hots"] = "顯示hot造成的治療"
-	L["show overhealing"] = "顯示過量治療輸出"
-	L["pet damage"] = "顯示寵物傷害輸出"
-	L["dot damage"] = "顯示dot造成的傷害"
-	L["damage color"] = "以法術系別顏色顯示傷害文字"
-	L["crit prefix"] = "文本左側爆擊效果修飾符號"
-	L["crit postfix"] = "文本右側爆擊效果修飾符號"
-	L["icons"] = "顯示輸出傷害技能圖示"
-	L["icon size"] = "傷害輸出圖示大小"
-	L["treshold"] = "傷害輸出資訊最小閥值"
-	L["heal treshold"] = "治療承受資訊/輸出最小閥值"
-	L["scrollable"] = "允許滑鼠調整滾動區域"
-	L["max lines"] = "滾動區域顯示最多行數"
-	L["time visible"] = "資訊保留時間(秒)"
-	L["stop ve spam"] = "自動遮罩吸血鬼之擁(@暗牧)的垃圾資訊"
-	L["dk runes"] = "顯示死亡騎士符文恢復"
-	L["killingblow"] = "顯示擊殺資訊"
-	L["merge aoe spam"] = "將AOE傷害合併為一條資訊"
-	L["merge aoe spam time"] = "AOE傷害合併資訊閥值(秒)"
-	L["dispel"] = "當你驅散成功的時候提示"
-	L["interrupt"] = "當你打斷成功的時候提示"
-	L["combat text font size"] = "傷害數字尺寸"
-	L["Scroll Direction"] = "滾動方向"
+	L["combattext desc"] = "設置命令/MSBT"
 end
 
 -- Bags

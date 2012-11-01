@@ -162,7 +162,7 @@ function XS:GenerateOptions()
 			},
 			misc = {
 				type = 'group',
-				name = 'Misc Options',
+				name = L['Misc Options'],
 				order = 5,
 				args = {
 				--	LootConfirmer = {
