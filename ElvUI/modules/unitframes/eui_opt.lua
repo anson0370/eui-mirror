@@ -150,6 +150,39 @@ E.Options.args.unitframe.args.focus.args.aurabar.args.auraBarHeight = {
 	set = function(info,value) E.db.unitframe.units['focus']['aurabar'].auraBarHeight = value; UF:CreateAndUpdateUF('focus'); E:StaticPopup_Show("CONFIG_RL"); end	
 }
 
+E.Options.args.unitframe.args.target.args.tapped = {
+	order = 350,
+	type = 'group',
+	name = L['Tapped'],
+	get = function(info) return E.db.unitframe.units['target']['tapped'][ info[#info] ] end,
+	set = function(info, value) E.db.unitframe.units['target']['tapped'][ info[#info] ] = value; UF:CreateAndUpdateUF('target') end,
+	args = {
+		position = {
+			type = 'select',
+			order = 2,
+			name = L['Position'],
+			values = {
+				TOPLEFT = L['TOPLEFT'],
+				LEFT = L['LEFT'],
+				BOTTOMLEFT = L['BOTTOMLEFT'],
+				RIGHT = L['RIGHT'],
+				TOPRIGHT = L['TOPRIGHT'],
+				BOTTOMRIGHT = L['BOTTOMRIGHT'],
+				CENTER = L['CENTER'],
+				TOP = L['TOP'],
+				BOTTOM = L['BOTTOM'],
+			},
+		},	
+		text_format = {
+			order = 100,
+			name = L['Text Format'],
+			type = 'input',
+			width = 'full',
+			desc = L['TEXT_FORMAT_DESC'],
+		},					
+	},
+}
+
 E.Options.args.unitframe.args['raid10'] = nil
 E.Options.args.unitframe.args['raid40'] = nil
 

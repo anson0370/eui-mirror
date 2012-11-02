@@ -494,6 +494,15 @@ end
 
 --UNITFRAMES
 do	
+	L['TOPLEFT'] = '左上';
+	L['LEFT'] = '左';
+	L['BOTTOMLEFT'] = '左下';
+	L['RIGHT'] = '右';
+	L['TOPRIGHT'] = '右上';
+	L['BOTTOMRIGHT'] = '右下';
+	L['CENTER'] = '中間';
+	L['TOP'] = '頂部';
+	L['BOTTOM'] = '底部';
 	L["Affliction"] = "痛苦";
 	L["Demonology"] = "惡魔";
 	L["Destruction"] = "毀滅";
@@ -592,7 +601,7 @@ do
 		L['Color the health backdrop by class or reaction.'] = "血條背景色以職業色顯示";
 	L['Health'] = "血條";
 	L['Health Backdrop'] = "血條背景";
-	L['Tapped'] = "被攻擊";
+	L['Tapped'] = "已被攻擊";
 	L['Disconnected'] = "斷開";
 	L['Powers'] = "能量";
 	L['Reactions'] = "聲望";
@@ -1066,6 +1075,8 @@ end
 
 --Skins
 do
+	L["You do not own this pet."] = "你沒有此類型寵物。";
+	L["Owned: "] = "我的寵物: ";
 	L['Black Market AH'] = "黑市";
 	L['Transmogrify Frame'] = "幻化窗口";
 	L['Open Tukui_UIPackages_Skins option'] = "打開插件美化皮膚選項";

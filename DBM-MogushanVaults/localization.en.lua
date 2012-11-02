@@ -122,6 +122,13 @@ L:SetMiscLocalization({
 ----------------------
 L = DBM:GetModLocalization(687)
 
+L:SetWarningLocalization({
+	specWarnDDL 	= ">> Next:You Interrupt<<",
+	specWarnQBH		= "Next: Annihilate!",
+	specWarnQBHT	= "Next: Annihilate!",
+	specWarnDSoon	= "3s: >> Shield! <<"
+})
+
 L:SetOptionLocalization({
 	RangeFrame			= "Show range frame (8)",
 	SoundWOP			= "Voice warning: important skills",
@@ -157,6 +164,7 @@ L:SetOptionLocalization({
 	specWarnCharge				= "Show special warning: Charges",
 	specWarnProtector			= "Show special warning: $journal:6178",
 	timerDespawnFloor			= "show timer for when floor vanishes",
+	SetIconOnDestabilized	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(132226),
 	InfoFrame					= "InfoFrame: $spell:117878 Stacks",
 	optOC						= "How many \"OverLoad\" Stacks，Beginning warning",
 	six							= "6 Stacks",
@@ -184,7 +192,7 @@ L= DBM:GetModLocalization(677)
 
 L:SetOptionLocalization({
 	InfoFrame			= "Show info frame for players affected by $spell:116525",
-	ArrowOnCombo	= "Show DBM Arrow during Devastating Arc\nNOTE: This assumes tank is in front of boss and anyone else is behind.",--Todo, make this an EJ clicky instead
+	ArrowOnCombo	= "Show DBM Arrow during $journal:5673\nNOTE: This assumes tank is in front of boss and anyone else is behind.",
 	SoundWOP			= "Voice warning: important skills",
 	SoundADD1A			= "Voice warning:$spell:ej5678 (5s before)",
 	SoundADD1			= "Voice warning:$spell:ej5678",

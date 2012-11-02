@@ -52,9 +52,9 @@ function CH:LoadChatbar()
 	big:RegisterForClicks("AnyDown")
 	big:SetNormalTexture("Interface\\Addons\\ElvUI\\media\\textures\\world")
 	if E.db.chat.autojoin then
-		big:GetNormalTexture():SetDesaturated(true)
-	else
 		big:GetNormalTexture():SetDesaturated(false)
+	else
+		big:GetNormalTexture():SetDesaturated(true)
 	end
 	big:SetScript("OnClick", function(self)
 		if E.db.chat.autojoin ~= true then
@@ -62,11 +62,11 @@ function CH:LoadChatbar()
 			ChatFrame_RemoveChannel(DEFAULT_CHAT_FRAME, L["BigFootChannel"])
 			ChatFrame_AddChannel(DEFAULT_CHAT_FRAME, L["BigFootChannel"])	
 			E.db.chat.autojoin = true
-			self:GetNormalTexture():SetDesaturated(true)
+			self:GetNormalTexture():SetDesaturated(false)
 		else
 			SlashCmdList["LEAVE"](L["BigFootChannel"])
 			E.db.chat.autojoin = false
-			self:GetNormalTexture():SetDesaturated(false)
+			self:GetNormalTexture():SetDesaturated(true)
 		end
 	end)
 	big:SetScript("OnEnter", function(self)

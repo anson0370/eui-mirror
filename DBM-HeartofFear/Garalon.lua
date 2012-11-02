@@ -2,11 +2,11 @@
 local L		= mod:GetLocalizedStrings()
 local sndWOP	= mod:NewSound(nil, "SoundWOP", true)
 
-mod:SetRevision(("$Revision: 7750 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 8007 $"):sub(12, -3))
 mod:SetCreatureID(63191)--Also has CID 62164. He has 2 CIDs for a single target, wtf? It seems 63191 is one players attack though so i'll try just it.
 mod:SetModelID(42368)
 mod:SetZone()
-mod:SetUsedIcons(1, 2)
+mod:SetUsedIcons(2)
 
 mod:RegisterCombat("combat")
 
@@ -46,6 +46,8 @@ local timerMendLegCD			= mod:NewNextTimer(30, 123495)
 local timerFury					= mod:NewBuffActiveTimer(30, 122754)
 local timerPungency				= mod:NewBuffFadesTimer(120, 123081)
 
+local berserkTimer				= mod:NewBerserkTimer(420)
+
 --mod:AddBoolOption("InfoFrame", true)--Not sure how to do yet, i need to see 25 man first to get a real feel for number of people with debuff at once.
 mod:AddBoolOption("PheromonesIcon", true)
 local sndFS		= mod:NewSound(nil, "SoundFS", mod:IsTank())
@@ -73,6 +75,7 @@ function mod:OnCombatStart(delay)
 	PeromonesIcon = 1
 	brokenLegs = 0
 	timerFuriousSwipeCD:Start(-delay)--8-11 sec on pull
+	berserkTimer:Start(-delay)
 	sndFS:Schedule(5, "Interface\\AddOns\\DBM-Core\\extrasounds\\countthree.mp3")
 	sndFS:Schedule(6, "Interface\\AddOns\\DBM-Core\\extrasounds\\counttwo.mp3")
 	sndFS:Schedule(7, "Interface\\AddOns\\DBM-Core\\extrasounds\\countone.mp3")
@@ -99,7 +102,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(122786) and args:GetDestCreatureID() == 63191 then--This one also hits both CIDs, so filter second one here as well.
 		madeUpNumber = madeUpNumber + 1
 		brokenLegs = (args.amount or 1)
-		warnBrokenLeg:Show(brokenLegs)
+		warnBrokenLeg:Show(args.destName, brokenLegs)
 		timerMendLegCD:Start(30, madeUpNumber)--using madeUpNumber jus to serve purpose of making each bar unique entire fight, legs die and rez all fight, there will be many mend leg Cd bars, often at once.
 	elseif args:IsSpellID(122835) then
 		warnPheromones:Show(args.destName)
@@ -126,15 +129,10 @@ function mod:SPELL_AURA_APPLIED(args)
 			end
 		end
 		if self.Options.PheromonesIcon then
-			self:SetIcon(args.destName, PeromonesIcon)
-			if PeromonesIcon == 1 then	-- 2 will have it at a time on 25 man so we alternate icons.
-				PeromonesIcon = 2
-			else
-				PeromonesIcon = 1
-			end
+			self:SetIcon(args.destName, 2)
 		end
 	elseif args:IsSpellID(123081) then
-		timerPungency:Start(args.destName)
+		timerPungency:Start()
 		Pn = self.Options.optTankMode == "two" and 30 or self.Options.optTankMode == "three" and 20
 		if args:IsPlayer() then
 			if (args.amount or 1) >= Pn and args.amount % 2 == 0 then
@@ -164,7 +162,7 @@ function mod:SPELL_AURA_REMOVED(args)
 			PheromonesMarkers[args.destName] = free(PheromonesMarkers[args.destName])
 		end
 	elseif args:IsSpellID(123081) then
-		timerPungency:Cancel(args.destName)
+		timerPungency:Cancel()
 		if mod:IsTank() then
 			sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\changemt.mp3")--換坦嘲諷
 		end

@@ -16,6 +16,8 @@ function UF:Construct_TargetFrame(frame)
 	frame.Portrait3D = self:Construct_Portrait(frame, 'model')
 	frame.Portrait2D = self:Construct_Portrait(frame, 'texture')
 	
+	frame.TappedText = self:Construct_Tapped(frame)
+	
 	frame.Buffs = self:Construct_Buffs(frame)
 
 	frame.Debuffs = self:Construct_Debuffs(frame)
@@ -172,6 +174,16 @@ function UF:Update_TargetFrame(frame, db)
 		
 		frame:Tag(name, db.name.text_format)
 	end	
+	
+	--Tapped
+	do
+		local tapped = frame.TappedText
+		local x, y = self:GetPositionOffset(db.tapped.position)
+		tapped:ClearAllPoints()
+		tapped:Point(db.tapped.position, frame.Health, db.tapped.position, x, y)	
+
+		frame:Tag(tapped, db.tapped.text_format)
+	end
 	
 	--Power
 	do

@@ -1,5 +1,5 @@
 ﻿-- Simplified Chinese by Diablohu(diablohudream@gmail.com)
--- Last update: 10/25/2012
+-- Last update: 10/31/2012
 
 if GetLocale() ~= "zhCN" then return end
 local L
@@ -151,14 +151,35 @@ L:SetMiscLocalization({
 ----------------------
 L = DBM:GetModLocalization(687)
 
+L:SetWarningLocalization({
+	specWarnDDL 	= ">> 下一次 到你断 <<",
+	specWarnQBH		= "下一刀歼灭 去背后!",
+	specWarnQBHT	= "下一刀是歼灭!",
+	specWarnDSoon	= "三秒后 >>护盾<<"
+})
+
 L:SetOptionLocalization({
 	RangeFrame			= "距离监视(8码)",
 	SoundWOP			= "语音警告：重要技能",
-	SoundDS				= "语音警告：$spell:117697和$spell:117961的驱散",
+	SoundDSA			= "语音警告：為各种护盾提前预警",
 	InfoFrame			= "资讯框：$spell:118303的目标",
 	HudMAP				= "高级定位监视(HUD)：$spell:118047的位置",
 	HudMAP2				= "高级定位监视(HUD)：$spell:118303的目标",
-	SoundCT				= "语音警告：$spell:117833的打断"
+	SoundCT				= "语音警告：$spell:117833的打断",
+	optDD				= "打断链",
+	nodd				= "我不打断",
+	DD1					= "打断1",
+	DD2					= "打断2",
+	DD3					= "打断3",
+	DD4					= "打断4",
+	optKZ				= "盗王控制链",
+	noKZ				= "我不控制",
+	KZ1					= "控制1",
+	KZ2					= "控制2",
+	specWarnDDL 		= "特殊警告：下一次到你打断",
+	specWarnQBH			= "特殊警告：下一刀歼灭",
+	specWarnQBHT		= "特殊警告：下一刀歼灭(坦克)",
+	specWarnDSoon		= "特殊警告：护盾即将到来"
 })
 
 
@@ -187,6 +208,7 @@ L:SetOptionLocalization({
 	specWarnProtector			= "特殊警告：$journal:6178",
 	timerDespawnFloor			= "计时器：中场地板消失",
 	InfoFrame					= "资讯框：$spell:117878层数最高的5名团员",
+	SetIconOnDestabilized		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(132226),
 	optOC						= "\"能量超载\"叠加几层时，开始报警(每三层报警一次)",
 	six							= "6层",
 	nine						= "9层",

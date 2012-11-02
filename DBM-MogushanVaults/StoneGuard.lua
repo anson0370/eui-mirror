@@ -2,7 +2,7 @@
 local L		= mod:GetLocalizedStrings()
 local sndWOP	= mod:NewSound(nil, "SoundWOP", true)
 
-mod:SetRevision(("$Revision: 7985 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 8009 $"):sub(12, -3))
 mod:SetCreatureID(60051, 60043, 59915, 60047)--Cobalt: 60051, Jade: 60043, Jasper: 59915, Amethyst: 60047
 mod:SetModelID(41892)
 mod:SetZone()
@@ -26,6 +26,7 @@ local warnCobaltMine				= mod:NewTargetAnnounce(129424, 4)
 local warnJadeShards				= mod:NewSpellAnnounce(116223, 3, nil, false)
 local warnJasperChains				= mod:NewTargetAnnounce(130395, 4)
 local warnAmethystPool				= mod:NewTargetAnnounce(130774, 3, nil, false)
+local warnPowerDown					= mod:NewSpellAnnounce(116529, 4, nil, not mod:IsTank())
 local warnGSD						= mod:NewSpellAnnounce(116008)
 local warnBSD						= mod:NewSpellAnnounce(115861)
 local warnPSD						= mod:NewSpellAnnounce(116060)
@@ -40,7 +41,7 @@ local specWarnCobaltMineNear		= mod:NewSpecialWarningClose(129424)
 local yellCobaltMine				= mod:NewYell(129424)
 local specWarnAmethystPool			= mod:NewSpecialWarningMove(130774)
 local yellAmethystPool				= mod:NewYell(130774, nil, false)
-
+local specWarnPowerDown				= mod:NewSpecialWarningSpell(116529, not mod:IsTank())
 local specWarnMySD					= mod:NewSpecialWarning("specWarnMySD")
 
 local timerCobaltMineCD				= mod:NewNextTimer(10.5, 129424)--12-15second variations
@@ -337,14 +338,6 @@ function mod:SPELL_AURA_REMOVED(args)
 		if args.destName == Cobalt then SDNOW["Bsdnow"] = false end
 		if args.destName == Amethyst then SDNOW["Psdnow"] = false end	
 		ChecknextOverload()
-	elseif args:IsSpellID(116541) then
-		if args:IsPlayer() then
-			self:Schedule(0.5, function()
-				if not UnitIsDeadOrGhost("player") then
-					sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_dzcz.mp3")--地磚重置
-				end
-			end)
-		end
 	end
 end
 
@@ -400,6 +393,10 @@ end
 function mod:RAID_BOSS_EMOTE(msg, boss)
 	if msg == L.Overload or msg:find(L.Overload) then--Cast trigger is an emote 7 seconds before, CLEU only shows explosion. Just like nefs electrocute
 		self:SendSync("Overload", boss == Cobalt and "Cobalt" or boss == Jade and "Jade" or boss == Jasper and "Jasper" or boss == Amethyst and "Amethyst" or "Unknown")
+	elseif msg:find("spell:116529") then
+		warnPowerDown:Show()
+		specWarnPowerDown:Show()
+		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_dzcz.mp3")--地磚重置
 	end
 end
 

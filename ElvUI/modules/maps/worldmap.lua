@@ -1,4 +1,4 @@
-local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB, Localize Underscore
 local M = E:NewModule('WorldMap', 'AceHook-3.0', 'AceEvent-3.0', 'AceTimer-3.0');
 E.WorldMap = M
 
@@ -28,8 +28,14 @@ function M:SetLargeWorldMap()
 		WorldMapFrame:EnableMouse(false)
 		WorldMapFrame:EnableKeyboard(false)
 		WorldMapFrame:SetScale(1)
-		SetUIPanelAttribute(WorldMapFrame, "area", "center");
-		SetUIPanelAttribute(WorldMapFrame, "allowOtherPanels", true)	
+		
+		if WorldMapFrame:GetAttribute('UIPanelLayout-area') ~= 'center' then
+			SetUIPanelAttribute(WorldMapFrame, "area", "center");
+		end
+		
+		if WorldMapFrame:GetAttribute('UIPanelLayout-allowOtherPanels') ~= true then
+			SetUIPanelAttribute(WorldMapFrame, "allowOtherPanels", true)	
+		end
 	end
 	
 	WorldMapFrameSizeUpButton:Hide()
@@ -43,8 +49,13 @@ function M:SetQuestWorldMap()
 		WorldMapFrame:SetParent(E.UIParent)
 		WorldMapFrame:EnableMouse(false)
 		WorldMapFrame:EnableKeyboard(false)
-		SetUIPanelAttribute(WorldMapFrame, "area", "center");
-		SetUIPanelAttribute(WorldMapFrame, "allowOtherPanels", true)
+		if WorldMapFrame:GetAttribute('UIPanelLayout-area') ~= 'center' then
+			SetUIPanelAttribute(WorldMapFrame, "area", "center");
+		end
+		
+		if WorldMapFrame:GetAttribute('UIPanelLayout-allowOtherPanels') ~= true then
+			SetUIPanelAttribute(WorldMapFrame, "allowOtherPanels", true)	
+		end
 	end
 	
 	WorldMapFrameSizeUpButton:Hide()
@@ -67,7 +78,7 @@ end
 
 function M:PLAYER_REGEN_DISABLED()
 	WorldMapFrameSizeDownButton:Disable()
-	WorldMapFrameSizeUpButton:Disable()	
+	WorldMapFrameSizeUpButton:Disable()
 end
 
 function M:UpdateCoords()
@@ -86,8 +97,6 @@ function M:UpdateCoords()
 	local width = WorldMapDetailFrame:GetWidth()
 	local height = WorldMapDetailFrame:GetHeight()
 	local centerX, centerY = WorldMapDetailFrame:GetCenter()
-	if not centerX then return end
-	
 	local x, y = GetCursorPosition()
 	local adjustedX = (x / scale - (centerX - (width/2))) / width
 	local adjustedY = (centerY + (height/2) - y / scale) / height	
@@ -145,8 +154,6 @@ function M:ToggleTinyWorldMapSetting()
 end
 
 function M:Initialize()
-	if IsAddOnLoaded('Mapster') then return; end
-	
 	WorldMapShowDropDown:Point('BOTTOMRIGHT', WorldMapPositioningGuide, 'BOTTOMRIGHT', -2, -4)
 	WorldMapZoomOutButton:Point("LEFT", WorldMapZoneDropDown, "RIGHT", 0, 4)
 	WorldMapLevelUpButton:Point("TOPLEFT", WorldMapLevelDropDown, "TOPRIGHT", -2, 8)
@@ -177,13 +184,13 @@ function M:Initialize()
 	
 	self:ScheduleRepeatingTimer('UpdateCoords', 0.01)
 	self:ToggleTinyWorldMapSetting()
-
+	
+	
 	DropDownList1:HookScript('OnShow', function(self)
 		if DropDownList1:GetScale() ~= UIParent:GetScale() and E.db.general.tinyWorldMap then
 			DropDownList1:SetScale(UIParent:GetScale())
 		end		
-	end)
+	end)	
 end
 
-E:RegisterModule(M:GetName())
---E:RegisterInitialModule(M:GetName())
+E:RegisterInitialModule(M:GetName())

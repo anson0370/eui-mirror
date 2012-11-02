@@ -2,7 +2,7 @@
 local L		= mod:GetLocalizedStrings()
 local sndWOP	= mod:NewSound(nil, "SoundWOP", true)
 
-mod:SetRevision(("$Revision: 7977 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 8008 $"):sub(12, -3))
 mod:SetCreatureID(60143)
 mod:SetModelID(41256)
 mod:SetZone()
@@ -44,7 +44,7 @@ local specWarnVoodooDollsMe			= mod:NewSpecialWarningYou(122151, false)
 local specWarnjs				= mod:NewSpecialWarning("SpecWarnjs")
 local specWarninTT					= mod:NewSpecialWarning("specWarninTT")
 
-local timerTotemCD					= mod:NewNextCountTimer(20.5, 116174)
+local timerTotemCD					= mod:NewNextCountTimer(20, 116174)
 local timerBanishmentCD				= mod:NewCDTimer(65, 116272)
 local timerSoulSever				= mod:NewBuffFadesTimer(30, 116278)--Tank version of spirit realm
 local timerCrossedOver				= mod:NewBuffFadesTimer(30, 116161)--Dps version of spirit realm
@@ -245,11 +245,17 @@ function mod:OnCombatStart(delay)
 	table.wipe(crossedOverTargets)
 	table.wipe(voodooDollTargetIcons)
 	timerShadowyAttackCD:Start(7-delay)
-	timerTotemCD:Start(-delay, 1)
+	totemn = 0
+	if self:IsDifficulty("normal25", "heroic25") then
+		timerTotemCD:Start(20-delay, totemn+1)
+	elseif self:IsDifficulty("lfr25") then
+		timerTotemCD:Start(30-delay, totemn+1)
+	else
+		timerTotemCD:Start(36-delay, totemn+1)
+	end
 	timerBanishmentCD:Start(-delay)
 	prewarnedPhase2 = false
 	inTotem = false
-	totemn = 0
 	vd = 0
 	ct = 0
 	if not self:IsDifficulty("lfr25") then -- lfr seems not berserks.
@@ -477,8 +483,13 @@ function mod:OnSync(msg, guid)
 		end
 		
 		specWarnTotem:Show()
-		
-		timerTotemCD:Start(20, totemn+1)
+		if self:IsDifficulty("normal25", "heroic25") then
+			timerTotemCD:Start(20-delay, totemn+1)
+		elseif self:IsDifficulty("lfr25") then
+			timerTotemCD:Start(30, totemn+1)
+		else
+			timerTotemCD:Start(36, totemn+1)
+		end
 		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_lhtt.mp3")
 		
 		if self.Options.optTT == "warn4" then

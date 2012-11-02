@@ -8,7 +8,7 @@ local sndADD2	= mod:NewSound(nil, "SoundADD2", mod:IsDps())
 local sndADD3A	= mod:NewSound(nil, "SoundADD3A", mod:IsDps())
 local sndADD3	= mod:NewSound(nil, "SoundADD3", mod:IsDps())
 
-mod:SetRevision(("$Revision: 7989 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 7993 $"):sub(12, -3))
 mod:SetCreatureID(60399, 60400)--60396 (Rage), 60397 (Strength), 60398 (Courage), 60480 (Titan Spark), 60399 (Qin-xi), 60400 (Jan-xi)
 mod:SetModelID(41391)
 mod:SetZone()
@@ -254,9 +254,9 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, _, _, spellId)
 	if spellId == 116968 and self:AntiSpam(2, 1) then--Arc Left
 		if self.Options.ArrowOnCombo then
 			if self:IsTank() then--Assume tank is in front of the boss
-				DBM.Arrow:ShowStatic(240, 3)
-			else--Assume anyone else is behind the boss
 				DBM.Arrow:ShowStatic(90, 3)
+			else--Assume anyone else is behind the boss
+				DBM.Arrow:ShowStatic(270, 3)
 			end
 		end
 		Isstomp = 1
@@ -270,9 +270,9 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, _, _, spellId)
 	elseif spellId == 116971 and self:AntiSpam(2, 2) then--Arc Right
 		if self.Options.ArrowOnCombo then
 			if self:IsTank() then--Assume tank is in front of the boss
-				DBM.Arrow:ShowStatic(90, 3)
+				DBM.Arrow:ShowStatic(270, 3)
 			else--Assume anyone else is behind the boss
-				DBM.Arrow:ShowStatic(240, 3)
+				DBM.Arrow:ShowStatic(90, 3)
 			end
 		end
 		Isstomp = 1

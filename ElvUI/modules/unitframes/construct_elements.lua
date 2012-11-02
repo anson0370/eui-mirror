@@ -850,3 +850,10 @@ function UF:Construct_TankShield(frame)
 	
 	return bs
 end
+
+function UF:Construct_Tapped(frame)
+	local tapped = frame:CreateFontString(nil, 'OVERLAY')
+	UF:Configure_FontString(tapped)
+
+	return tapped
+end

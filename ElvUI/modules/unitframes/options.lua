@@ -1144,15 +1144,15 @@ local fillValues = {
 };
 
 local positionValues = {
-	TOPLEFT = 'TOPLEFT',
-	LEFT = 'LEFT',
-	BOTTOMLEFT = 'BOTTOMLEFT',
-	RIGHT = 'RIGHT',
-	TOPRIGHT = 'TOPRIGHT',
-	BOTTOMRIGHT = 'BOTTOMRIGHT',
-	CENTER = 'CENTER',
-	TOP = 'TOP',
-	BOTTOM = 'BOTTOM',
+	TOPLEFT = L['TOPLEFT'],
+	LEFT = L['LEFT'],
+	BOTTOMLEFT = L['BOTTOMLEFT'],
+	RIGHT = L['RIGHT'],
+	TOPRIGHT = L['TOPRIGHT'],
+	BOTTOMRIGHT = L['BOTTOMRIGHT'],
+	CENTER = L['CENTER'],
+	TOP = L['TOP'],
+	BOTTOM = L['BOTTOM'],
 };
 
 local auraAnchors = {

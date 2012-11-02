@@ -148,14 +148,35 @@ L:SetMiscLocalization({
 ----------------------
 L = DBM:GetModLocalization(687)
 
+L:SetWarningLocalization({
+	specWarnDDL 	= ">> 下一次 到你斷 <<",
+	specWarnQBH		= "下一刀殲滅 去背後!",
+	specWarnQBHT	= "下一刀是殲滅!",
+	specWarnDSoon	= "三秒後 >>護盾<<"
+})
+
 L:SetOptionLocalization({
 	RangeFrame			= "距離監視(8碼)",
 	SoundWOP			= "語音警告：重要技能",
-	SoundDS				= "語音警告：$spell:117697和$spell:117961的驅散",
+	SoundDSA			= "語音警告：為各種護盾提前預警",
 	InfoFrame			= "資訊框：$spell:118303的目標",
 	HudMAP				= "高級定位監視(HUD)：$spell:118047的位置",
 	HudMAP2				= "高級定位監視(HUD)：$spell:118303的目標",
-	SoundCT				= "語音警告：$spell:117833的打斷"
+	SoundCT				= "語音警告：$spell:117833的打斷",
+	optDD				= "近戰打斷鏈",
+	nodd				= "我不打斷",
+	DD1					= "打斷1",
+	DD2					= "打斷2",
+	DD3					= "打斷3",
+	DD4					= "打斷4",
+	optKZ				= "盜王控制鏈",
+	noKZ				= "我不控制",
+	KZ1					= "控制1",
+	KZ2					= "控制2",
+	specWarnDDL 		= "特殊警告：下一次到你打斷",
+	specWarnQBH			= "特殊警告：下一刀殲滅",
+	specWarnQBHT		= "特殊警告：下一刀是殲滅(坦克)",
+	specWarnDSoon		= "特殊警告：護盾即將到來"
 })
 
 ------------
@@ -183,6 +204,7 @@ L:SetOptionLocalization({
 	specWarnProtector			= "特殊警告：$journal:6178",
 	timerDespawnFloor			= "計時器：中場地板消失",
 	InfoFrame					= "資訊框：$spell:117878層數最高的5名團員",
+	SetIconOnDestabilized		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(132226),
 	optOC						= "\"超載\"疊加幾層時，開始報警(每三層報警一次)",
 	six							= "6層",
 	nine						= "9層",
@@ -209,7 +231,7 @@ L= DBM:GetModLocalization(677)
 
 L:SetOptionLocalization({
 	InfoFrame			= "資訊框：$spell:116525的目標",
-	ArrowOnCombo			= "DBM箭頭：毀滅連擊",
+	ArrowOnCombo	= "為$journal:5673顯示DBM箭頭\n注:這是假設坦克在前方而其他人在後方",
 	SoundWOP			= "語音警告：重要技能",
 	SoundADD1A			= "預先語音警告：$spell:ej5678 (5秒前)",
 	SoundADD1			= "語音警告：$spell:ej5678",

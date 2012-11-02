@@ -451,3 +451,13 @@ ElvUF.Tags.Methods['classpower:percent'] = function()
 		return E:GetFormattedText('PERCENT', min, max)
 	end
 end
+
+ElvUF.Tags.Events['tapped'] = 'UNIT_HEALTH_FREQUENT PLAYER_TARGET_CHANGED'
+ElvUF.Tags.Methods['tapped'] = function(unit)
+	local tapped = UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit)
+	if tapped then
+		return L['Tapped']
+	else
+		return ''
+	end
+end

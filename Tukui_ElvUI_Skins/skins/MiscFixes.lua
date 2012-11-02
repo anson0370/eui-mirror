@@ -169,13 +169,15 @@ end
 
 local function PetDump()
 	local isWildPetBattle = (C_PetBattles.IsInBattle() and C_PetBattles.IsWildBattle())
-
+	
+	local _, L = unpack(ElvUI);
+	
 	if (isWildPetBattle) then 
 		local activePet = C_PetBattles.GetActivePet(LE_BATTLE_PET_ENEMY)
 		local targetID = C_PetBattles.GetPetSpeciesID(LE_BATTLE_PET_ENEMY, activePet)
 		
 		local ownedDump = GetPetDumpList(targetID)
-		if ownedDump == nil then RaidNotice_AddMessage(RaidWarningFrame, "You do not own this pet.", ChatTypeInfo["RAID_WARNING"]) else RaidNotice_AddMessage(RaidWarningFrame, "Owned: "..ownedDump, ChatTypeInfo["RAID_WARNING"]) end
+		if ownedDump == nil then RaidNotice_AddMessage(RaidWarningFrame, L["You do not own this pet."], ChatTypeInfo["RAID_WARNING"]) else RaidNotice_AddMessage(RaidWarningFrame, L["Owned: "]..ownedDump, ChatTypeInfo["RAID_WARNING"]) end
 	else
 		local zoneDump = GetZoneDumpList()
 		if zoneDump ~= nil then print("Zone: "..GetZoneDumpList()) end
