@@ -3,7 +3,7 @@ local A = E:GetModule('Auras')
 
 E.Options.args.auras = {
 	type = 'group',
-	name = '02'.. BUFFOPTIONS_LABEL,
+	name = '02.'.. BUFFOPTIONS_LABEL,
 	get = function(info) return E.db.auras[ info[#info] ] end,
 	set = function(info, value) E.db.auras[ info[#info] ] = value; A:UpdateAllHeaders() end,
 	args = {

@@ -21,8 +21,9 @@ local function Update(self)
 			local unit = "raid"..i
 			local j = 1
 			while UnitBuff(unit, j) do
-				if UnitBuff(unit, j) == buffName then
+				if UnitBuff(unit, j) == buffName and select(8, UnitBuff(unit, j)) == 'player' then
 					local exipres = select(7, UnitBuff(unit, j))
+					
 					num = num + 1;
 					if not Expires then
 						Expires = exipres
@@ -79,7 +80,7 @@ function WS:Initialize()
 	f:SetFrameLevel(5)
 	f:SetAlpha(0)
 	f:Size(E.db.euiscript.wsbutton.size)
-	f:SetPoint("CENTER")
+	f:SetPoint("CENTER", UIParent, "CENTER", -400, 0)
 	self.button = f
 
 	f.Icon = f:CreateTexture(nil, 'ARTWORK')

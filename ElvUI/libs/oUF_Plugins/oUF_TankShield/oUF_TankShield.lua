@@ -2,7 +2,7 @@
 	Project.: oUF_TankShield
 	File....: oUF_TankShield.lua
 	Version.: 50001.2
-	Rev Date: 10/08/2012
+	Rev Date: 04/11/2012
 	Authors.: Eui.cc
 ]]
 
@@ -23,8 +23,9 @@ elseif class == "PRIEST" then
 elseif class == "PALADIN" then
 	BS_Name = GetSpellInfo(132403)
 elseif class == 'WARRIOR' then
-	BS_Name = GetSpellInfo(132404)
+	BS_Name, _, BS_Icon = GetSpellInfo(132404)
 	BS_Spell = GetSpellInfo(112048)
+	BS_Shield = GetSpellInfo(871)
 elseif class == 'MONK' then
 	BS_Name, _, BS_Icon = GetSpellInfo(115307)
 	BS_Value = GetSpellInfo(124275)
@@ -63,6 +64,64 @@ local function OnUpdate(self, elapsed)
 		local remaining = self.expires - time
 		self.time:SetText(tostring(math.floor(remaining)))
 	end
+end
+
+local function warvalueChanged(self, event, unit)
+	if unit ~= 'player' or not BS_Name then return end
+	local bar = self.TankShield
+
+	if bar.PreUpdate then
+		return bar:PreUpdate(name)
+	end
+	
+	if UnitBuff('player', BS_Name) then
+		local _, _, icon, _, _, _, expires, _, _, _, _, _, _, value = UnitBuff('player', BS_Name)
+		if icon then
+			bar:SetAlpha(1)
+			bar.Icon:SetDesaturated(false)
+			bar.expires = expires
+			if (expires > 0) then
+				OnUpdate(bar, 0)
+				bar:SetScript("OnUpdate", OnUpdate)
+			end
+		end
+	else
+		bar.Icon:SetDesaturated(true)
+		bar.time:SetText('')
+		bar.expires = 0
+		bar:SetScript("OnUpdate", nil)
+	end
+
+	if UnitBuff('player', BS_Spell) then
+		local _, _, icon, _, _, etime, eexpires, _, _, _, _, _, _, evalue = UnitBuff('player', BS_Spell)	
+		if evalue then
+			bar.text:SetText(ShortValue(evalue))
+			bar.sb:SetMinMaxValues(0, etime)
+			bar.sb:SetValue(math.floor(eexpires - GetTime()))
+			bar.sb:SetAlpha(1)
+			bar:SetAlpha(1)
+		end
+	else
+		bar.sb:SetAlpha(0);
+		bar.text:SetText('');
+		bar.sb:SetMinMaxValues(0, 0)
+		bar.sb:SetValue(0)
+	end
+	
+	if UnitBuff('player', BS_Shield) then
+		bar:SetBackdropBorderColor(1, 1, 0)
+	else
+		bar:SetBackdropBorderColor(.31, .31, .31)
+	end		
+	
+	if not UnitBuff('player', BS_Name) and not UnitBuff('player', BS_Spell) then
+		bar:SetAlpha(0);
+		bar.sb:SetAlpha(0);
+	end
+	
+	if bar.PostUpdate then
+		return bar:PostUpdate(name)
+	end	
 end
 
 local function doubleValueChanged(self, event, unit)
@@ -169,10 +228,6 @@ local function valueChanged(self, event, unit)
 				bar:SetScript("OnUpdate", OnUpdate)
 			end
 		end
-		if class == 'WARRIOR' and UnitBuff('player', BS_Spell) then
-			local value = select(14, UnitBuff('player', BS_Spell))
-			if value then bar.text:SetText(ShortValue(value)) end
-		end
 	else
 		bar:SetAlpha(0)
 		bar.sb:SetAlpha(0)
@@ -224,6 +279,9 @@ local function Enable(self, unit)
 			f:SetAttribute("spell2", BS_Shield)
 			f:SetAttribute("type3", "spell")
 			f:SetAttribute("spell3", BS_Spell2)
+			f.Icon:SetTexture(BS_Icon)
+		elseif class == 'WARRIOR' then
+			self:RegisterEvent("UNIT_AURA", warvalueChanged)
 			f.Icon:SetTexture(BS_Icon)
 		else
 			self:RegisterEvent("UNIT_AURA", valueChanged)

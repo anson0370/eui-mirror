@@ -419,17 +419,17 @@ function E:SetupTheme(theme, noDisplayMsg)
 	
 	E.private.general.pixelPerfect = false;
 	
-	if not noDisplayMsg then
-		E:CopyTable(E.db.unitframe.units, P.unitframe.units)
-		E:CopyTable(E.db.actionbar, P.actionbar)
-		E:CopyTable(E.db.nameplate, P.nameplate)
-		E:CopyTable(E.db.bags, P.bags)
-		E:CopyTable(E.private.auras, V.auras)
+	-- if not noDisplayMsg then
+		-- E:CopyTable(E.db.unitframe.units, P.unitframe.units)
+		-- E:CopyTable(E.db.actionbar, P.actionbar)
+		-- E:CopyTable(E.db.nameplate, P.nameplate)
+		-- E:CopyTable(E.db.bags, P.bags)
+		-- E:CopyTable(E.private.auras, V.auras)
 		
-		if E.db.movers then
-			E.db.movers.AurasMover = nil;
-		end
-	end
+		-- if E.db.movers then
+			-- E.db.movers.AurasMover = nil;
+		-- end
+	-- end
 	
 	--Set colors
 	if theme == 'pixelPerfect' then
@@ -489,6 +489,7 @@ function E:SetupTheme(theme, noDisplayMsg)
 	elseif theme == "classic" or theme == "transparent" then
 		E.db.general.bottomPanel = false;
 		E.db.general.bordercolor = E:GetColor(.31, .31, .31)
+		if theme == "transparent" then E.db.general.bordercolor = E:GetColor(.1, .1, .1) end
 		E.db.general.backdropcolor = E:GetColor(.1, .1, .1)
 		E.db.general.backdropfadecolor = E:GetColor(.06, .06, .06, .8)
 		
@@ -541,7 +542,7 @@ function E:SetupTheme(theme, noDisplayMsg)
 	if InstallStatus then
 		InstallStatus:SetStatusBarColor(unpack(E['media'].rgbvaluecolor))
 		
-		if InstallStepComplete and not noDisplayMsg then
+		if InstallStepComplete then
 			InstallStepComplete.message = L["Theme Set"]
 			InstallStepComplete:Show()		
 		end	
@@ -959,16 +960,16 @@ local function SetPage(PageNum)
 		f.Desc3:SetText(L["Importance: |cffFF0000Low|r"])
 
 		InstallOption1Button:Show()
-		InstallOption1Button:SetScript('OnClick', function() E:SetupTheme('classic', true) end)
+		InstallOption1Button:SetScript('OnClick', function() E:SetupTheme('classic') end)
 		InstallOption1Button:SetText(L["Classic"])	
 		InstallOption2Button:Show()
-		InstallOption2Button:SetScript('OnClick', function() E:SetupTheme('transparent', true) end)
+		InstallOption2Button:SetScript('OnClick', function() E:SetupTheme('transparent') end)
 		InstallOption2Button:SetText(L["Transparent Theme"])
 		InstallOption3Button:Show()
-		InstallOption3Button:SetScript('OnClick', function() E:SetupTheme('default', true) end)
+		InstallOption3Button:SetScript('OnClick', function() E:SetupTheme('default') end)
 		InstallOption3Button:SetText(DEFAULT)
 		InstallOption4Button:Show()
-		InstallOption4Button:SetScript('OnClick', function() E:SetupTheme('class', true) end)
+		InstallOption4Button:SetScript('OnClick', function() E:SetupTheme('class') end)
 		InstallOption4Button:SetText(CLASS)	
 	elseif PageNum == 5 then
 		f.SubTitle:SetText(L["Resolution"])

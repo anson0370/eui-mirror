@@ -67,12 +67,12 @@ end
 local applystyle = function(bar)
 
 	-- general bar settings
-	bar.OldHeight = bar:GetHeight()
-	bar.OldScale = bar:GetScale()
-	bar.OldSetScale=bar.SetScale
-	bar.SetScale=E.noop
+	--bar.OldHeight = bar:GetHeight()
+	--bar.OldScale = bar:GetScale()
+	--bar.OldSetScale=bar.SetScale
+	--bar.SetScale=E.noop
 	bar:Height(buttonsize)
-	bar:SetScale(1)
+	--bar:SetScale(1)
 
 	-- create or reparent and use bar background
 	local bg = nil

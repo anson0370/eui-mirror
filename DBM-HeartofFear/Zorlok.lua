@@ -32,7 +32,8 @@ local warnConvert			= mod:NewTargetAnnounce(122740, 4)
 local specwarnPlatform		= mod:NewSpecialWarning("specwarnPlatform")
 local specwarnForce			= mod:NewSpecialWarningSpell(122713)
 local specwarnConvert		= mod:NewSpecialWarningSwitch(122740, not mod:IsHealer())
-local specwarnExhale		= mod:NewSpecialWarningTarget(122761, mod:IsHealer() or mod:IsTank())
+local specwarnExhale		= mod:NewSpecialWarning("specwarnExhale")
+local specwarnExhaleB		= mod:NewSpecialWarning("specwarnExhaleB")
 local specwarnAttenuation	= mod:NewSpecialWarningSpell(127834, nil, nil, nil, true)
 
 --Timers aren't worth a crap, at all, this is a timerless fight and will probably stay that way unless blizz redesigns it.
@@ -56,6 +57,9 @@ local MCIcon = 8
 --local recentPlatformChange = false
 --local platform = 0
 
+local tqcount = 0
+
+
 mod:AddBoolOption("HudMAP", true, "sound")
 mod:AddBoolOption("HudMAP2", true, "sound")
 local DBMHudMap = DBMHudMap
@@ -73,7 +77,6 @@ local function showMCWarning()
 	warnConvert:Show(table.concat(MCTargets, "<, >"))
 	table.wipe(MCTargets)
 	MCIcon = 8
-	sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\findmc.mp3") --注意心控
 end
 
 local function ArrowRTI(rindex)
@@ -102,15 +105,16 @@ end
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(122852) then
 		warnInhale:Show(args.destName, args.amount or 1)
+		tqcount = args.amount or 1
 	elseif args:IsSpellID(122761) then
 		warnExhale:Show(args.destName)
-		specwarnExhale:Show(args.destName)
+		specwarnExhale:Show(tqcount, args.destName)
 		timerExhale:Start(args.destName)
 		if args.destName == UnitName("player") then
 			sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\targetyou.mp3") --目標是你
 		end
 		if self.Options.HudMAP then
-			local spelltext = GetSpellInfo(122761)
+			local spelltext = GetSpellInfo(122761).." - "..args.destName
 			ExhaleMarkers[args.destName] = register(DBMHudMap:PlaceRangeMarkerOnPartyMember("targeting", args.destName, 3, 6, 1, 0, 0, 1):SetLabel(spelltext))
 		end
 	elseif args:IsSpellID(122740) then
@@ -122,8 +126,11 @@ function mod:SPELL_AURA_APPLIED(args)
 		self:Unschedule(showMCWarning)
 		self:Schedule(0.9, showMCWarning)
 		if self.Options.HudMAP2 then
-			local spelltext2 = GetSpellInfo(122740)
+			local spelltext2 = args.destName
 			MindControlMarkers[args.destName] = register(DBMHudMap:PlaceRangeMarkerOnPartyMember("targeting", args.destName, 3, nil, 1, 0, 0, 1):SetLabel(spelltext2))
+		end
+		if self:AntiSpam(2, 2) then
+			sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\findmc.mp3") --注意心控
 		end
 	end
 end
@@ -176,6 +183,7 @@ function mod:SPELL_CAST_START(args)
 		end
 	elseif args:IsSpellID(122761) and self:AntiSpam(2, 1) then
 		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_tqzb.mp3") --吐氣準備
+		specwarnExhaleB:Show(tqcount)
 --[[	elseif args:IsSpellID(123791) and recentPlatformChange then--No one is in melee range of boss, he's aoeing. (i.e., he's arrived at new platform)
 		recentPlatformChange = false--we want to ignore when this happens as a result of players doing fight wrong. Only interested in platform changes.--]]
 	end

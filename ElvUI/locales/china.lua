@@ -21,6 +21,8 @@ end
 
 --General
 do
+	L["High Resolution"] = '高分辨率';
+	L['Low Resolution'] = '低分辨率';
 	L['Nudge'] = '微调';
 	L['Location Text'] = '地区文字';
 	L['Change settings for the display of the location text that is on the minimap.'] = '改变小地图上地区名称文字显示方式';
@@ -1479,6 +1481,7 @@ end
 
 --Mover
 do
+	L["Loot / Alert Frames"] = "拾取 / 成就框";
 	L['Weapons'] = "武器(毒药/强化等)";
 	L["Auras Frame"] = "BUFF/DEBUFF 窗口";
 	L["Achievement Frames"] = "成就窗口";
@@ -1604,6 +1607,33 @@ end
 do
 	L["combattext"] = "战斗文字"
 	L["combattext desc"] = "设置命令/MSBT"
+	L["blizz head numbers"] = "使用暴雪默认伤害/治疗模式（模型顶部/玩家头像）"
+	L["damage style"] = "改变模型顶部/玩家头像的伤害/治疗字体"
+	L["damage"] = "独立显示伤害输出"
+	L["healing"]= "独立显示治疗输出"
+	L["show hots"] = "显示hot造成的治疗"
+	L["show overhealing"] = "显示过量治疗输出"
+	L["pet damage"] = "显示宠物伤害输出"
+	L["dot damage"] = "显示dot造成的伤害"
+	L["damage color"] = "以法术系别颜色显示伤害文字"
+	L["crit prefix"] = "文本左侧爆击效果修饰符号"
+	L["crit postfix"] = "文本右侧爆击效果修饰符号"
+	L["icons"] = "显示输出伤害技能图标"
+	L["icon size"] = "伤害输出图标大小"
+	L["treshold"] = "伤害输出信息最小阀值"
+	L["heal treshold"] = "治疗承受信息/输出最小阀值"
+	L["scrollable"] = "允许滑鼠调整滚动区域"
+	L["max lines"] = "滚动区域显示最多行数"
+	L["time visible"] = "信息保留时间(秒)"
+	L["stop ve spam"] = "自动屏蔽吸血鬼之拥(@暗牧)的垃圾信息"
+	L["dk runes"] = "显示死亡骑士符文恢复"
+	L["killingblow"] = "显示击杀信息"
+	L["merge aoe spam"] = "将AOE伤害合并为一条信息"
+	L["merge aoe spam time"] = "AOE伤害合并信息阀值(秒)"
+	L["dispel"] = "当你驱散成功的时候提示"
+	L["interrupt"] = "当你打断成功的时候提示"
+	L["combat text font size"] = "伤害字体尺寸"
+	L["Scroll Direction"] = "滚动方向"
 end
 
 -- Bags

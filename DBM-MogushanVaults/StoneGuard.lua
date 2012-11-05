@@ -135,6 +135,9 @@ function mod:ClobaltMineTarget(targetname)
 		specWarnCobaltMine:Show()
 		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\runaway.mp3")--快躲開
 		yellCobaltMine:Yell()
+		if activePetrification ~= "Cobalt" then
+			DBM.Flash:Show(1, 0, 0)
+		end
 	else
 		local uId = DBM:GetRaidUnitId(targetname)
 		if uId then
@@ -146,6 +149,9 @@ function mod:ClobaltMineTarget(targetname)
 			local inRange = DBM.RangeCheck:GetDistance("player", x, y)
 			if inRange and inRange < 8 then
 				specWarnCobaltMineNear:Show(targetname)
+				if activePetrification ~= "Cobalt" then
+					DBM.Flash:Show(1, 0, 0)
+				end
 				sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\runaway.mp3")--快躲開
 			end
 		end
@@ -298,7 +304,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			playerHasChains = true
 			yellJasperChains:Yell()
 			local uId = getBossuId(Jasper)
-			if uId and UnitPower(uId) <= 80 and activePetrification == "Jasper" then--Make sure his energy isn't already high, otherwise breaking chains when jasper will only be active for a few seconds is bad
+			if uId and (UnitPower(uId) <= 80) and (activePetrification == "Jasper") then--Make sure his energy isn't already high, otherwise breaking chains when jasper will only be active for a few seconds is bad
 				specWarnBreakJasperChains:Show()
 				sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_ldsl.mp3") --拉斷鎖鏈
 				DBM.Arrow:Hide()
@@ -348,6 +354,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 			timerPetrification:Cancel()
 			SDSTAT = L.SDNOT
 			ChecknextOverload()
+			activePetrification = nil
 		else
 			ChecknextOverload()
 		end
@@ -357,6 +364,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 			timerPetrification:Cancel()
 			SDSTAT = L.SDNOT
 			ChecknextOverload()
+			activePetrification = nil
 		else
 			ChecknextOverload()
 		end
@@ -366,6 +374,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 			timerPetrification:Cancel()
 			SDSTAT = L.SDNOT
 			ChecknextOverload()
+			activePetrification = nil
 		else
 			ChecknextOverload()
 		end
@@ -375,6 +384,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 			timerPetrification:Cancel()
 			SDSTAT = L.SDNOT
 			ChecknextOverload()
+			activePetrification = nil
 		else
 			ChecknextOverload()
 		end
@@ -466,7 +476,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, _, _, spellId)
 		end
 		if playerHasChains then
 			local uId = getBossuId(Jasper)
-			if uId and UnitPower(uId) <= 80 then--Make sure his energy isn't already high, otherwise breaking chains when jasper will only be active for a few seconds is bad
+			if uId and (UnitPower(uId) <= 80) and (activePetrification == "Jasper") then
 				specWarnBreakJasperChains:Show()
 				sndWOP:Schedule(1, "Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_ldsl.mp3") --拉斷鎖鏈
 				DBM.Arrow:Hide()

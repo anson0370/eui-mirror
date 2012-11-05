@@ -1,5 +1,5 @@
 ﻿local E, L, V, P, G, _ = unpack(ElvUI); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
-if E.db.combattext.enable ~= true or IsAddOnLoaded('xCT') then return end
+if E.db.combattext.enable ~= true or IsAddOnLoaded('xCT') or IsAddOnLoaded('MikScrollingBattleText') then return end
 
 if GetLocale() == 'zhCN' then
 	L_COMBATTEXT_KILLING_BLOW = "最后一击"

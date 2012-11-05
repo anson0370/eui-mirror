@@ -718,7 +718,7 @@ E.Options.args.combattext = {
 		enable = {
 			order = 1,
 			type = "toggle",
-			name = L["Enabled"],
+			name = 'MSBT',
 			get = function() return IsAddOnLoaded('MikScrollingBattleText') end,
 			set = function(info, value)
 				if value then
@@ -733,6 +733,7 @@ E.Options.args.combattext = {
 			order = 2,
 			type = "execute",
 			name = L['Toggle Configuration'],
+			disabled = function() return not IsAddOnLoaded('MikScrollingBattleText') end,
 			func = function()
 				local optionsName = "MSBTOptions"
 				if (not IsAddOnLoaded(optionsName)) then
@@ -744,10 +745,178 @@ E.Options.args.combattext = {
 				end
 				if (IsAddOnLoaded(optionsName)) then MSBTOptions.Main.ShowMainFrame(); E:ToggleConfig() end
 			end,
-		},		
+		},
+		xct = {
+			order = 3,
+			type = 'toggle',
+			name = 'XCT',
+			get = function() return E.db.combattext.enable end,
+			set = function(info, value)
+				E.db.combattext.enable = value;
+				if value then
+					if IsAddOnLoaded('MikScrollingBattleText') then DisableAddOn('MikScrollingBattleText') end
+				end					
+				E:StaticPopup_Show("CONFIG_RL")
+			end,
+		},
 	},
 }
-					
+
+if E.db.combattext.enable then
+	E.Options.args.combattext.args.general = {
+		order = 4,
+		type = "group",
+		guiInline = true,
+		name = L["General"],
+		get = function(info) return E.db.combattext[ info[#info] ] end,
+		set = function(info, value) E.db.combattext[ info[#info] ] = value; E:StaticPopup_Show("CONFIG_RL") end,		
+		disabled = function() return not E.db.combattext.enable end,
+		args = {
+			damage_style = {
+				order = 2,
+				type = "toggle",
+				name = L["damage style"],
+			},
+			damage = {
+				order = 3,
+				type = "toggle",
+				name = L["damage"],
+			},
+			healing = {
+				order = 4,
+				type = "toggle",
+				name = L["healing"],
+			},
+			show_hots = {
+				order = 5,
+				type = "toggle",
+				name = L["show hots"],
+			},
+			show_overhealing = {
+				order = 6,
+				type = "toggle",
+				name = L["show overhealing"],
+			},
+			pet_damage = {
+				order = 7,
+				type = "toggle",
+				name = L["pet damage"],
+			},
+			dot_damage = {
+				order = 8,
+				type = "toggle",
+				name = L["dot damage"],
+			},
+			damage_color = {
+				order = 9,
+				type = "toggle",
+				name = L["damage color"],
+			},
+			crit_prefix = {
+				order = 10,
+				type = "input",
+				name = L["crit prefix"],
+			},
+			crit_postfix = {
+				order = 11,
+				type = "input",
+				name = L["crit postfix"],
+			},
+			icons = {
+				order = 12,
+				type = "toggle",
+				name = L["icons"],
+			},
+			icon_size = {
+				order = 13,
+				type = "range",
+				name = L["icon size"],
+				min = 5, max = 50, step = 1,
+			},
+			treshold = {
+				order = 14,
+				type = "range",
+				name = L["treshold"],
+				min = 1, max = 10000, step = 10,
+			},
+			heal_treshold = {
+				order = 15,
+				type = "range",
+				name = L["heal treshold"],
+				min = 1, max = 10000, step = 10,
+			},
+			scrollable = {
+				order = 16,
+				type = "toggle",
+				name = L["scrollable"],
+			},
+			max_lines = {
+				order = 17,
+				type = "range",
+				min = 1, max = 100, step = 1,
+				name = L["max lines"],
+			},
+			time_visible = {
+				order = 18,
+				type = "range",
+				min = 1, max = 10, step = 1,
+				name = L["time visible"],
+			},
+			stop_ve_spam = {
+				order = 19,
+				type = "toggle",
+				name = L["stop ve spam"],
+			},
+			dk_runes = {
+				order = 20,
+				type = "toggle",
+				name = L["dk runes"],
+			},
+			killingblow = {
+				order = 21,
+				type = "toggle",
+				name = L["killingblow"],
+			},
+			merge_aoe_spam = {
+				order = 22,
+				type = "toggle",
+				name = L["merge aoe spam"],
+			},
+			merge_aoe_spam_time = {
+				order = 23,
+				type = "range",
+				min = 1, max = 10, step = 1,
+				name = L["merge aoe spam time"],
+			},
+			dispel = {
+				order = 24,
+				type = "toggle",
+				name = L["dispel"],
+			},
+			interrupt = {
+				order = 25,
+				type = "toggle",
+				name = L["interrupt"],
+			},
+			combat_text_font_size = {
+				order = 26,
+				type = "range",
+				name = L["combat text font size"],
+				min = 5, max = 50, step = 1,
+			},
+			direction = {
+				order = 27,
+				type = "select",
+				name = L["Scroll Direction"],
+				values = {
+					["top"] = "TOP",
+					["bottom"] = "BOTTOM",
+				},
+			},				
+		},
+	}
+end
+	
 E.Options.args.FindIt = {
 	type = "group",
 	name = L["FindIt"],

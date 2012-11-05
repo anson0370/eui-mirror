@@ -2,7 +2,7 @@
 local L		= mod:GetLocalizedStrings()
 local sndWOP	= mod:NewSound(nil, "SoundWOP", true)
 
-mod:SetRevision(("$Revision: 8008 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 8027 $"):sub(12, -3))
 mod:SetCreatureID(60143)
 mod:SetModelID(41256)
 mod:SetZone()
@@ -10,10 +10,7 @@ mod:SetUsedIcons(5, 6, 7, 8)
 mod:SetMinSyncRevision(7751)
 
 -- Sometimes it fails combat detection on "combat". Use yell instead until the problem being founded.
---I'd REALLY like to see some transcriptor logs that prove your bug, i pulled this boss like 20 times, on 25 man, 100% functional engage trigger, not once did this mod fail to start, on 25 man or 10 man.
 --seems that combat detection fails only in lfr. (like DS Zonozz Void of Unmaking summon event.)
---"<102.8> [INSTANCE_ENCOUNTER_ENGAGE_UNIT] Fake Args:#1#1#Gara'jal the Spiritbinder#0xF150EAEF00000F5A#elit
---"<103.1> [CHAT_MSG_MONSTER_YELL] CHAT_MSG_MONSTER_YELL#It be dyin' time, now!#Gara'jal the Spiritbinder#####0#0##0#862##0#false#false", -- [291]
 mod:RegisterCombat("yell", L.Pull)
 
 mod:RegisterEventsInCombat(
@@ -66,6 +63,8 @@ local dh = {}
 local dpsname
 local testd = 0
 local dpssendn = 0
+
+local incombat = false
 
 --local countdownCrossedOver			= mod:NewCountdown(29, 116161)
 local berserkTimer					= mod:NewBerserkTimer(360)
@@ -258,6 +257,7 @@ function mod:OnCombatStart(delay)
 	inTotem = false
 	vd = 0
 	ct = 0
+	incombat = true
 	if not self:IsDifficulty("lfr25") then -- lfr seems not berserks.
 		berserkTimer:Start(-delay)
 	end
@@ -267,6 +267,7 @@ function mod:OnCombatEnd()
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:Hide()
 	end
+	incombat = false
 end
 
 
@@ -422,37 +423,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 		if self:LatencyCheck() then
 			self:SendSync("SummonTotem")
 		end
-		if self.Options.GoTotemClient then
-			getraidindex()
-			if not UnitDebuff("player", GetSpellInfo(122151)) and not UnitDebuff("player", GetSpellInfo(116161)) and not UnitBuff("player", GetSpellInfo(117543)) and not UnitIsDeadOrGhost("player") then
-				if UnitDebuff("player", GetSpellInfo(117723)) then
-					_, _, _, _, _, duration, expires, _, _ = UnitDebuff("player", GetSpellInfo(117723))
-					if expires - GetTime() < 6 then
-						if mod:IsHealer() then
-							self:SendSync("HealthSend", myraidindex)
-						elseif mod:IsDps() then
-							if mychooseindex~=99 then
-								local sendtime = mychooseindex/10 - 0.09
-								self:Schedule(sendtime, function()
-									self:SendSync("DpsSend", myraidindex)
-								end)
-							end
-						end
-					end
-				else
-					if mod:IsHealer() then
-						self:SendSync("HealthSend", myraidindex)
-					elseif mod:IsDps() then
-						if mychooseindex~=99 then
-							local sendtime = mychooseindex/10 - 0.09
-							self:Schedule(sendtime, function()
-								self:SendSync("DpsSend", myraidindex)
-							end)
-						end
-					end
-				end
-			end
-		end
 	elseif args:IsSpellID(116272) then
 		if args:IsPlayer() then--no latency check for personal notice you aren't syncing.
 			specWarnBanishment:Show()
@@ -477,14 +447,48 @@ function mod:OnSync(msg, guid)
 
 		if self.Options.GoTotemAdmin and UnitIsGroupLeader("player") then
 			if mod:IsDifficulty("heroic10", "heroic25") then
-				self:Schedule(0.5, choosehealther)
+				self:Schedule(1, choosehealther)
 				self:Schedule(1, choosedps)
+			end
+		end
+		
+		if incombat then
+			if self.Options.GoTotemClient then
+				getraidindex()
+				if not UnitDebuff("player", GetSpellInfo(122151)) and not UnitDebuff("player", GetSpellInfo(116161)) and not UnitBuff("player", GetSpellInfo(117543)) and not UnitIsDeadOrGhost("player") then
+					if UnitDebuff("player", GetSpellInfo(117723)) then
+						_, _, _, _, _, duration, expires, _, _ = UnitDebuff("player", GetSpellInfo(117723))
+						if expires - GetTime() < 6 then
+							if mod:IsHealer() then
+								self:SendSync("HealthSend", myraidindex)
+							elseif mod:IsDps() then
+								if mychooseindex~=99 then
+									local sendtime = mychooseindex/10 - 0.09
+									self:Schedule(sendtime, function()
+										self:SendSync("DpsSend", myraidindex)
+									end)
+								end
+							end
+						end
+					else
+						if mod:IsHealer() then
+							self:SendSync("HealthSend", myraidindex)
+						elseif mod:IsDps() then
+							if mychooseindex~=99 then
+								local sendtime = mychooseindex/10 - 0.09
+								self:Schedule(sendtime, function()
+									self:SendSync("DpsSend", myraidindex)
+								end)
+							end
+						end
+					end
+				end
 			end
 		end
 		
 		specWarnTotem:Show()
 		if self:IsDifficulty("normal25", "heroic25") then
-			timerTotemCD:Start(20-delay, totemn+1)
+			timerTotemCD:Start(20, totemn+1)
 		elseif self:IsDifficulty("lfr25") then
 			timerTotemCD:Start(30, totemn+1)
 		else

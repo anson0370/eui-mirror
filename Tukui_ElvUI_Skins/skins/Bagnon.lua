@@ -2,7 +2,10 @@ if not (IsAddOnLoaded("ElvUI") or IsAddOnLoaded("Tukui")) or not IsAddOnLoaded("
 local U = unpack(select(2,...))
 local name = 'BagnonSkin'
 local function SkinBagnon(self,event)
+	local s = U.s
+	local c = U.c
 	if event == "BANKFRAME_OPENED" then
+	if U.elv then c:Delay(0, function()
 		if BagnonFramebank then
 			if not bagnonbankonce then
 				bagnonbankonce = true
@@ -10,6 +13,17 @@ local function SkinBagnon(self,event)
 				U.SkinCloseButton(BagnonFramebankCloseButton)
 			end
 		end
+		end)
+	end
+	if U.tuk then
+		if BagnonFramebank then
+			if not bagnonbankonce then
+				bagnonbankonce = true
+				U.SkinFrame(BagnonFramebank)
+				U.SkinCloseButton(BagnonFramebankCloseButton)
+			end
+		end
+	end
 	elseif event == "GUILDBANKFRAME_OPENED" then
 		if BagnonFrameguildbank then
 			if not bagnonguildonce then
@@ -27,7 +41,17 @@ local function SkinBagnon(self,event)
 			end
 		end
 	end
-	if not bagnononce then
+	if U.elv then c:Delay(0, function()
+		if not bagnononce then
+			bagnononce = true
+			ToggleBackpack()
+			U.SkinFrame(BagnonFrameinventory)
+			U.SkinCloseButton(BagnonFrameinventoryCloseButton)
+			ToggleBackpack()
+		end
+		end)
+	end
+	if U.tuk then
 		bagnononce = true
 		ToggleBackpack()
 		U.SkinFrame(BagnonFrameinventory)
@@ -35,4 +59,4 @@ local function SkinBagnon(self,event)
 		ToggleBackpack()
 	end
 end
-U.RegisterSkin(name,SkinBagnon,"BANKFRAME_OPENED","GUILDBANKFRAME_OPENED","VOID_STORAGE_OPEN","UNIT_AURA")
+U.RegisterSkin(name,SkinBagnon,"BANKFRAME_OPENED","GUILDBANKFRAME_OPENED","VOID_STORAGE_OPEN")

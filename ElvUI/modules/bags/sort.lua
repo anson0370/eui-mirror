@@ -333,7 +333,8 @@ function B:ScanBags()
 			end
 			
 			bagIDs[bagSlot] = itemID
-			bagStacks[bagSlot] = select(2, GetContainerItemInfo(bag, slot))
+			local texture, itemCount = GetContainerItemInfo(bag, slot) --by eui.cc
+			bagStacks[bagSlot] = itemCount or 0
 		end
 	end
 end

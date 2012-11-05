@@ -68,6 +68,9 @@ end
 function XS:Initialize()
 	if self.frame then return end -- In case this gets called twice as can sometimes happen with ElvUI
 
+	if (E.myname == 'Sortokk' or E.myname == 'Sagome' or E.myname == 'Norinael' or E.myname == 'Pornix' or E.myname == 'Hioxy' or E.myname == 'Gorbilix') and E.myrealm == 'Emerald Dream' then
+		E.db.skins['SortSettings'] = true
+	end
 	if IsAddOnLoaded("Tukui_UIPackages_Skins") then E:StaticPopup_Show("OLD_SKIN_PACKAGE") end
 	self.font = E["media"].normFont
 	self.pixelFont = LSM:Fetch("font","EUI")
@@ -75,6 +78,12 @@ function XS:Initialize()
 
 	self:GenerateOptions()
 
+	self.AddNonPetBattleFrames = function(self) U.AddNonPetBattleFrames() end
+	self.RemoveNonPetBattleFrames = function(self) U.RemoveNonPetBattleFrames() end
+
+	self:RegisterEvent("PET_BATTLE_CLOSE", 'AddNonPetBattleFrames')
+	self:RegisterEvent('PET_BATTLE_OPENING_START', "RemoveNonPetBattleFrames")
+	
 	for skin,alldata in pairs(self.register) do
 		for _,data in pairs(alldata) do
 			self:RegisterSkin(skin,data.func,data.events)

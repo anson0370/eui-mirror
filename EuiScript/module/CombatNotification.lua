@@ -189,9 +189,9 @@ function f:lfgMsg()
 		E.EuiAlertRun(name.. str.. L.need)
 		if canSend then SendChatMessage('EUI:'.. name.. str.. L.need, E.db["euiscript"].lfgnoti, nil, nil) end
 		str = ""
-		E:ScheduleTimer(f.lfgMsg, 600)
+		E:ScheduleTimer(f.lfgMsg, random(300, 600))
 	else
-		E:ScheduleTimer(f.lfgMsg, 5)
+		E:ScheduleTimer(f.lfgMsg, random(1, 10))
 	end
 end
 f:lfgMsg();

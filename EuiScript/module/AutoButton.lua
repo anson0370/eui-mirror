@@ -59,6 +59,7 @@ local function haveIt(num, spellName)
 	if not spellName then return false; end
 	for i = 1, num do
 		local AutoButton = _G["AutoQuestButton"..i]
+		if not AutoButton then break; end
 		if AutoButton.spellName == spellName then
 			return false;
 		end
@@ -122,7 +123,11 @@ local function AutoButtonShow(AutoButton)
 	
 	if not InCombatLockdown() then
 		AutoButton:EnableMouse(true)
-		if AutoButton.itemName then
+		if AutoButton.slotID then
+			AutoButton:SetAttribute("type", "macro")
+			AutoButton:SetAttribute("macrotext", "/use "..AutoButton.slotID)
+		elseif AutoButton.itemName then
+			AutoButton:SetAttribute("type", "item")
 			AutoButton:SetAttribute("item", AutoButton.itemName)
 		end
 	else
@@ -130,7 +135,11 @@ local function AutoButtonShow(AutoButton)
 		AutoButton:SetScript("OnEvent", function(self, event) 
 			if event == "PLAYER_REGEN_ENABLED" then
 				self:EnableMouse(true) 
-				if self.itemName then
+				if self.slotID then
+					self:SetAttribute("type", "macro")
+					self:SetAttribute("macrotext", "/use "..self.slotID)
+				elseif self.itemName then
+					self:SetAttribute("type", "item")
 					self:SetAttribute("item", self.itemName)
 				end
 				self:UnregisterEvent("PLAYER_REGEN_ENABLED") 
@@ -250,7 +259,8 @@ function S:ScanItem(self, event)
 				-- Set our texture to the item found in bags
 				AutoButton.t:SetTexture(itemIcon)
 				AutoButton.c:SetText("")
-				AutoButton.itemName = itemName
+			--	AutoButton.itemName = itemName
+				AutoButton.slotID = w
 				AutoButton.spellName = IsUsableItem(EquipedItems)
 				
 				AutoButton:SetScript("OnUpdate", function(self, elapsed)

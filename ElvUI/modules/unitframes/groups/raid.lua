@@ -176,7 +176,7 @@ do
 			end	
 		
 			if USE_MINI_POWERBAR then
-				POWERBAR_WIDTH = POWERBAR_WIDTH / 2
+				POWERBAR_WIDTH = POWERBAR_WIDTH / 1.5 --eui.cc
 			end
 		end
 		

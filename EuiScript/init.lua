@@ -209,6 +209,23 @@ function S:ConvertUFDb()
 	if self.convert then E:StaticPopup_Show("CONFIG_RL") end
 end
 
+function S:ChangeActionbarPage()
+	if not UnitIsPlayer("target") then return; end
+	if InCombatLockdown() then self:RegisterEvent('PLAYER_REGEN_ENABLED'); return; end
+	
+	local change = (UnitFactionGroup('player') == UnitFactionGroup('target'))
+	if not change then
+		ChangeActionBarPage(2)
+	else
+		ChangeActionBarPage(1)
+	end
+end
+
+function S:PLAYER_REGEN_ENABLED()
+	self:UnregisterEvent("PLAYER_REGEN_ENABLED");
+	self:ChangeActionbarPage()
+end
+
 function S:Initialize()
 	self:CreateVehicleExit()
 	self:AutoCollect()
@@ -227,6 +244,7 @@ function S:Initialize()
 	self:RegisterEvent("CHAT_MSG_WHISPER", "AutoInvite")
 	self:RegisterEvent("ZONE_CHANGED_NEW_AREA", "ModifyCamera")
 	self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED", "FixoUF_Swing")
+--	self:RegisterEvent("PLAYER_TARGET_CHANGED", "ChangeActionbarPage")
 end
 
 E:RegisterModule(S:GetName())

@@ -23,6 +23,8 @@ mod:RegisterEventsInCombat(
 	"UNIT_SPELLCAST_SUCCEEDED",
 	"CHAT_MSG_MONSTER_YELL",
 	"UNIT_DIED",
+	"SWING_DAMAGE",
+	"SWING_MISSED",
 	"UNIT_POWER"
 )
 
@@ -63,6 +65,8 @@ local specWarnFocusedEnergy		= mod:NewSpecialWarningYou(116829)
 local specWarnBossesActivated	= mod:NewSpecialWarningSwitch("ej5726", mod:IsTank())
 local specWarnCombo				= mod:NewSpecialWarningSpell("ej5672", mod:IsMelee())
 local specWarnTitanGas			= mod:NewSpecialWarningSpell(116779, nil, nil, nil, true)
+
+local specWarnFocused			= mod:NewSpecialWarningMove(116525)
 
 --Rage
 local timerRageActivates		= mod:NewNextTimer(11, "ej5678", nil, nil, nil, 116525)
@@ -350,3 +354,12 @@ function mod:UNIT_POWER(uId)
 --		timerComboCD:Start()
 	end
 end
+
+function mod:SWING_DAMAGE(sourceGUID, _, _, _, destGUID)
+	local cid = self:GetCIDFromGUID(sourceGUID)
+	if cid == 60396 and destGUID == UnitGUID("player") and self:AntiSpam(3, 5) then
+		specWarnFocused:Show()
+		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\runaway.mp3") --快躲開
+	end
+end
+mod.SWING_MISSED = mod.SWING_DAMAGE

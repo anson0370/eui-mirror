@@ -148,7 +148,7 @@ local function SetTemplate(f, t, glossTex, ignoreUpdates, trans)
 		f.backdropTexture:SetInside(f)
 	end
 	
-	f:SetBackdropBorderColor(borderr, borderg, borderb, E.db.general.transparent and backdropa or nil)
+	f:SetBackdropBorderColor(borderr, borderg, borderb)
 	
 	if not ignoreUpdates then
 		E["frames"][f] = true
