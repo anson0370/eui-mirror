@@ -45,6 +45,7 @@ NS.NPCAliases = { -- (Key) NPC shows (Value) NPC's path instead
 NS.Achievements = { -- Achievements whos criteria mobs are all mapped
 	[ 1312 ] = true; -- Bloody Rare (Outlands)
 	[ 2257 ] = true; -- Frostbitten (Northrend)
+	[ 7439 ] = true; -- Glorious! (Pandaria)
 };
 
 NS.Colors = {
@@ -57,6 +58,8 @@ NS.Colors = {
 	UnitPopupButtons.RAID_TARGET_5.color,
 	UnitPopupButtons.RAID_TARGET_6.color,
 	UnitPopupButtons.RAID_TARGET_3.color,
+	RAID_CLASS_COLORS.MONK,
+	RAID_CLASS_COLORS.HUNTER,
 };
 
 NS.DetectionRadius = 100; -- yards
@@ -203,17 +206,33 @@ end
 
 
 do
-	local Max = 2 ^ 16 - 1;
+	local DWORD_LENGTH = 4;
+	--- @return DWORD read from binary Data at Offset.
+	local function ReadDWord ( Data, Offset )
+		local B1, B2, B3, B4 = Data:byte( Offset + 1, Offset + DWORD_LENGTH );
+		return B1 * 2 ^ 24 + B2 * 2 ^ 16 + B3 * 2 ^ 8 + B4; -- Big-endian
+	end
+	--- @return Offset of points, lines, and triangles within PathData.
+	function NS.GetPathPrimitiveOffsets ( PathData )
+		return ReadDWord( PathData, 0 ) + 1, -- Points
+			ReadDWord( PathData, DWORD_LENGTH ) + 1, -- Lines
+			ReadDWord( PathData, DWORD_LENGTH * 2 ) + 1; -- Triangles
+	end
+end
+do
+	local COORD_MAX = 2 ^ 16 - 1;
+	local BYTES_PER_TRIANGLE = 2 * 2 * 3;
 	local Ax1, Ax2, Ay1, Ay2, Bx1, Bx2, By1, By2, Cx1, Cx2, Cy1, Cy2;
 	--- Draws the given NPC's path onto a frame.
 	-- @param PathData  Binary path data string.
 	function NS:DrawPath ( PathData, Layer, R, G, B )
-		for Index = 1, #PathData, 12 do
-			Ax1, Ax2, Ay1, Ay2, Bx1, Bx2, By1, By2, Cx1, Cx2, Cy1, Cy2 = PathData:byte( Index, Index + 11 );
+		local PointsOffset, LinesOffset, TrianglesOffset = NS.GetPathPrimitiveOffsets( PathData );
+		for Index = TrianglesOffset, #PathData, BYTES_PER_TRIANGLE do
+			Ax1, Ax2, Ay1, Ay2, Bx1, Bx2, By1, By2, Cx1, Cx2, Cy1, Cy2 = PathData:byte( Index, Index + BYTES_PER_TRIANGLE - 1 );
 			NS.TextureAdd( self, Layer, R, G, B,
-				( Ax1 * 256 + Ax2 ) / Max, ( Ay1 * 256 + Ay2 ) / Max,
-				( Bx1 * 256 + Bx2 ) / Max, ( By1 * 256 + By2 ) / Max,
-				( Cx1 * 256 + Cx2 ) / Max, ( Cy1 * 256 + Cy2 ) / Max );
+				( Ax1 * 256 + Ax2 ) / COORD_MAX, 1 - ( Ay1 * 256 + Ay2 ) / COORD_MAX,
+				( Bx1 * 256 + Bx2 ) / COORD_MAX, 1 - ( By1 * 256 + By2 ) / COORD_MAX,
+				( Cx1 * 256 + Cx2 ) / COORD_MAX, 1 - ( Cy1 * 256 + Cy2 ) / COORD_MAX );
 		end
 	end
 end
@@ -264,8 +283,6 @@ function NS:ApplyZone ( Map, Callback )
 		end
 	end
 end
-
-
 
 
 --- @return Aliased NPC ID, or original if not aliased.

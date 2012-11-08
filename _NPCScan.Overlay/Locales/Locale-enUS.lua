@@ -48,6 +48,9 @@ select( 2, ... ).L = setmetatable( {
 		[ 54323 ] = "Kirix",
 		[ 54324 ] = "Skitterflame",
 		[ 54338 ] = "Anthriss",
+		[ 60491 ] = "Sha of Anger",
+		[ 62346 ] = "Galleon",
+		[ 64403 ] = "Alani",
 	};
 
 	CONFIG_ALPHA = "Alpha",
