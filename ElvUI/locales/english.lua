@@ -428,6 +428,7 @@ L["No locals to dump"] = true;
 L['|cFFE30000Lua error recieved. You can view the error message when you exit combat.'] = true;
 
 --General
+L['Dark'] = true;
 L['Nudge'] = true;
 L['Top Panel'] = true;
 L['Display a panel across the top of the screen. This is for cosmetic only.'] = true;
@@ -705,6 +706,8 @@ L['You can toggle the microbar by using your middle mouse button on the minimap 
 L['You can use the /resetui command to reset all of your movers. You can also use the command to reset a specific mover, /resetui <mover name>.\nExample: /resetui Player Frame'] = true;
 
 --UnitFrames
+L['By Type'] = true;
+L['Color aurabar debuffs by type.'] = true;
 L['Raid Icon'] = true;
 L["Affliction"] = true;
 L["Demonology"] = true;

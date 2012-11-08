@@ -159,6 +159,7 @@ local function CreateButton(name)
 	AutoButton:Size(E.db.euiscript.autobutton.size)
 	AutoButton:SetTemplate("Default")
 	AutoButton:StyleButton()
+	AutoButton:SetClampedToScreen(true)
 	AutoButton:SetAttribute("type", "item")
 	AutoButton:SetAlpha(0)
 	AutoButton:EnableMouse(false)
@@ -324,12 +325,14 @@ function S:Initialize()
 	
 	-- Create anchor
 	local AutoButtonAnchor = CreateFrame("Frame", "AutoButtonAnchor", UIParent)
+	AutoButtonAnchor:SetClampedToScreen(true)
 	AutoButtonAnchor:Point("BOTTOMLEFT", RightChatPanel or LeftChatPanel, "TOPLEFT", 0, 4)
 	AutoButtonAnchor:Size(db.questNum > 0 and db.size * db.questNum or 260, db.questNum > 0 and db.size or 40)
 	E:CreateMover(AutoButtonAnchor, "AutoButtonAnchorMover", L["Auto QuestItem Button"], nil, nil, nil, "ALL,EUI")
-
+	
 	-- Create anchor2
 	local AutoButtonAnchor2 = CreateFrame("Frame", "AutoButtonAnchor2", UIParent)
+	AutoButtonAnchor2:SetClampedToScreen(true)
 	AutoButtonAnchor2:Point("BOTTOMLEFT", RightChatPanel or LeftChatPanel, "TOPLEFT", 0, 48)
 	AutoButtonAnchor2:Size(db.slotNum > 0 and db.size * db.slotNum or 260, db.slotNum > 0 and db.size or 40)
 	E:CreateMover(AutoButtonAnchor2, "AutoButtonAnchor2Mover", L["Auto InventoryItem Button"], nil, nil, nil, "ALL,EUI")

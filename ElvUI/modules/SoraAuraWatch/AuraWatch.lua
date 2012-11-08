@@ -1268,9 +1268,9 @@ local Default = {
 				Pos = {"BOTTOMLEFT", "ElvUF_Target", "TOPLEFT", 0, 68}, 
 				List = {
 					-- Blood Plague
-					{AuraID = 59879, UnitID = "target", Caster = "player"},
+					{AuraID = 55095, UnitID = "target", Caster = "player"},
 					-- Frost Fever
-					{AuraID = 59921, UnitID = "target", Caster = "player"},
+					{AuraID = 55078, UnitID = "target", Caster = "player"},
 				}, 
 			}, 	
 		}, 

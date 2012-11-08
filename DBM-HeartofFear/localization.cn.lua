@@ -1,4 +1,7 @@
-﻿if GetLocale() ~= "zhCN" then return end
+﻿-- Simplified Chinese by Diablohu(diablohudream@gmail.com)
+-- Last update: 11/04/2012
+
+if GetLocale() ~= "zhCN" then return end
 local L
 
 ------------
@@ -66,13 +69,13 @@ L:SetOptionLocalization({
 	two					= "二坦模式 (30层敏感以上提示)",
 	three				= "三坦模式 (20层敏感以上提示)",
 	SoundWOP			= "语音警告：重要技能",
-	SpecWarnPungencyOther = "特别警告：当别人的$spell:123081达到设定层数时",
+	specWarnPungencyOtherFix = "特别警告：当别人的$spell:123081达到设定层数时",
 	HudMAP				= "高级定位监视(HUD)：$spell:122835的位置",
 	SoundFS				= "坦克倒计时：$spell:122735"
 })
 
 L:SetWarningLocalization({
-	SpecWarnPungencyOther 		= "%s 敏感性 (%d)"
+	specWarnPungencyOtherFix 		= "%s 敏感性 (%d)"
 })
 ----------------------
 -- Wind Lord Mel'jarak --
@@ -82,10 +85,15 @@ L= DBM:GetModLocalization(741)
 L:SetOptionLocalization({
 	SoundWOP			= "语音警告：重要技能",
 	SoundDQ				= "语音警告：$spell:122149的驱散",
+	SoundJR				= "语音警告：当你没有残渣时提示救琥珀",
 	APArrow				= "DBM箭头：$spell:121881的位置",
 	NearAP				= "特殊功能：$spell:121881在你20码范围内才播放语音(仅影响语音)",
 	ReapetAP			= "特殊功能：若你的$spell:121881在5秒内无人打破则不停呼救",
 	HudMAP				= "高级定位监视(HUD)：$spell:121885的位置",
+	optHud				= "高级定位监视(HUD)：风之炸弹的位置",
+	auto				= "当你中了炸弹时显示",
+	always				= "总是显示",
+	none				= "不显示",
 	RangeFrame			= "距离监视(3码)：$spell:121881",
 	AmberPrisonIcons	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(121885)
 })
@@ -133,7 +141,8 @@ L:SetOptionLocalization({
 	InfoFrame			= "资讯框：被$spell:125390的团员",
 	SoundWOP			= "语音警告：重要技能",
 	HudMAP				= "高级定位监视(HUD)：$spell:124863的位置",
-	RangeFrame			= "距离监视(5码)：$spell:123735"
+	RangeFrame			= "距离监视(5码)：$spell:123735",
+	StickyResinIcons	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(124097)
 })
 
 L:SetMiscLocalization({

@@ -586,7 +586,13 @@ function UF:Update_TargetFrame(frame, db)
 				auraBars:SetPoint(anchorPoint..'RIGHT', auraBars.Holder, anchorTo..'RIGHT')	
 			end
 			auraBars.buffColor = {buffColor.r, buffColor.g, buffColor.b}
-			auraBars.debuffColor = {debuffColor.r, debuffColor.g, debuffColor.b}
+			if UF.db.colors.auraBarByType then
+				auraBars.debuffColor = nil;
+				auraBars.defaultDebuffColor = {debuffColor.r, debuffColor.g, debuffColor.b}
+			else
+				auraBars.debuffColor = {debuffColor.r, debuffColor.g, debuffColor.b}
+				auraBars.defaultDebuffColor = nil;
+			end
 			auraBars.down = db.aurabar.anchorPoint == 'BELOW'
 			auraBars:SetAnchors()
 		else

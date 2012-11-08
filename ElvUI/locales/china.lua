@@ -21,6 +21,7 @@ end
 
 --General
 do
+	L['Dark'] = '黑暗';
 	L["High Resolution"] = '高分辨率';
 	L['Low Resolution'] = '低分辨率';
 	L['Nudge'] = '微调';
@@ -503,6 +504,8 @@ end
 
 --UNITFRAMES
 do
+	L['By Type'] = '按类型';
+	L['Color aurabar debuffs by type.'] = '按DEBUFF类型彩色化光环条';
 	L['TOPLEFT'] = '左上';
 	L['LEFT'] = '左';
 	L['BOTTOMLEFT'] = '左下';

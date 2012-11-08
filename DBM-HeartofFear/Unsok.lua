@@ -2,7 +2,7 @@
 local L		= mod:GetLocalizedStrings()
 local sndWOP	= mod:NewSound(nil, "SoundWOP", true)
 
-mod:SetRevision(("$Revision: 8027 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 8046 $"):sub(12, -3))
 mod:SetCreatureID(62511)
 mod:SetModelID(43126)
 mod:SetZone()
@@ -43,7 +43,7 @@ local warnFling					= mod:NewSpellAnnounce(122413, 3)--think this always does hi
 local warnInterruptsAvailable	= mod:NewAnnounce("warnInterruptsAvailable", 1, 122398)
 
 --Boss
-local specwarnAmberScalpel		= mod:NewSpecialWarningSpell(121994, nil, nil, nil, true)
+local specwarnAmberScalpel		= mod:NewSpecialWarningSpell(121994, not mod:IsTank())
 local specwarnReshape			= mod:NewSpecialWarningYou(122784)
 local specwarnParasiticGrowth	= mod:NewSpecialWarningTarget(121949, mod:IsHealer())
 --Construct
@@ -58,6 +58,7 @@ local specwarnScalpel			= mod:NewSpecialWarningMove(121995)
 local specwarnScalpelAmber		= mod:NewSpecialWarningMove(122005)
 --Amber Monstrosity
 local specwarnAmberMonstrosity	= mod:NewSpecialWarningSwitch("ej6254", not mod:IsHealer())
+local specwarnFling				= mod:NewSpecialWarningSpell(122413, mod:IsTank())
 local specwarnMassiveStomp		= mod:NewSpecialWarningSpell(122408, nil, nil, nil, true)
 
 --Boss
@@ -75,13 +76,17 @@ local timerMassiveStompCD		= mod:NewCDTimer(18, 122540)--18-25 seconds variation
 local timerFlingCD				= mod:NewCDTimer(25, 122413)--25-40sec variation.
 local timerAmberExplosionAMCD	= mod:NewTimer(49, "timerAmberExplosionAMCD", 122402)--Special timer just for amber monstrosity. easier to cancel, easier to tell apart. His bar is the MOST important and needs to be seperate from any other bar option.
 
-mod:AddBoolOption("InfoFrame", false)--Needs more work.
+local countdownAmberExplosionAM	= mod:NewCountdown(49, 122402)
+
+mod:AddBoolOption("InfoFrame", true)
 
 local Phase = 1
 local Puddles = 0
 local Constructs = 0
 local playerIsConstruct = false
+local warnedWill = false
 local lastStrike = 0
+local amberExplosion = GetSpellInfo(122402)
 local Monstrosity = EJ_GetSectionInfo(6254)
 local MutatedConstruct = EJ_GetSectionInfo(6249)
 local canInterrupt = {}
@@ -95,6 +100,7 @@ local function buildGuidTable()
 end
 
 function mod:OnCombatStart(delay)
+	warnedWill = true--avoid wierd bug on pull
 	buildGuidTable()
 	Phase = 1
 	Puddles = 0
@@ -107,7 +113,7 @@ function mod:OnCombatStart(delay)
 	timerParasiticGrowthCD:Start(23.5-delay)
 	if self.Options.InfoFrame then
 		DBM.InfoFrame:SetHeader(L.WillPower)--This is a work in progress
-		DBM.InfoFrame:Show(10, "playerpower", 1, ALTERNATE_POWER_INDEX)--At a point i need to add an arg that lets info frame show the 5 LOWEST not the 5 highest, instead of just showing 10
+		DBM.InfoFrame:Show(5, "playerpower", 1, ALTERNATE_POWER_INDEX, nil, nil, true)--At a point i need to add an arg that lets info frame show the 5 LOWEST not the 5 highest, instead of just showing 10
 	end
 end
 
@@ -136,7 +142,8 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerMassiveStompCD:Start(20)
 		timerFlingCD:Start(33)
 		warnAmberExplosionSoon:Schedule(45.5)
-		timerAmberExplosionAMCD:Start(55.5)
+		timerAmberExplosionAMCD:Start(55.5, amberExplosion, Monstrosity)
+		countdownAmberExplosionAM:Start(55.5)
 		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ptwo.mp3")--P2
 	elseif args:IsSpellID(122395) and Phase < 3 then
 		warnStruggleForControl:Show(args.destName)
@@ -146,6 +153,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnReshapeLife:Show(args.destName)
 		if args:IsPlayer() then
 			playerIsConstruct = true
+			warnedWill = false
 			specwarnReshape:Show()
 			sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_nbzh.mp3") --你被轉化
 		end
@@ -176,8 +184,9 @@ function mod:SPELL_AURA_REMOVED(args)
 		timerMassiveStompCD:Cancel()
 		timerFlingCD:Cancel()
 		timerAmberExplosionAMCD:Cancel()
+		countdownAmberExplosionAM:Cancel()
 		warnAmberExplosionSoon:Cancel()
-		--He does NOT reset reshape live cd here, he finishes outlast CD first, THEN starts using new one.
+		--He does NOT reset reshape live cd here, he finishes out last CD first, THEN starts using new one.
 	end
 end
 
@@ -190,7 +199,7 @@ function mod:SPELL_CAST_START(args)
 					specwarnAmberExplosionOther:Show(args.sourceName)--Only give interrupt warning if you are capable of doing it.
 					sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\kickcast.mp3") --快打斷
 					if self:LatencyCheck() then--if you're too laggy we don't want you telling us you can interrupt it 2-3 seconds from now. we only care if you can interrupt it NOW
-						self:SendSync("InterruptAvailable", UnitGUID("player"), 122398)
+						self:SendSync("InterruptAvailable", 122398)
 					end
 				end
 			end
@@ -211,7 +220,7 @@ function mod:SPELL_CAST_START(args)
 				specwarnAmberExplosionOther:Show(args.sourceName)--Only give interrupt warning if you are capable of doing it.
 				sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\kickcast.mp3") --快打斷
 				if self:LatencyCheck() then--if you're too laggy we don't want you telling us you can interrupt it 2-3 seconds from now. we only care if you can interrupt it NOW
-					self:SendSync("InterruptAvailable", UnitGUID("player"), 122402)
+					self:SendSync("InterruptAvailable", 122402)
 				end
 			end
 		end
@@ -221,7 +230,8 @@ function mod:SPELL_CAST_START(args)
 		end
 		warnAmberExplosionSoon:Cancel()
 		warnAmberExplosionSoon:Schedule(39)
-		timerAmberExplosionAMCD:Start(49, args.sourceName, args.sourceGUID)
+		timerAmberExplosionAMCD:Start(49, args.spellName, args.sourceName)
+		countdownAmberExplosionAM:Start(49)
 	elseif args:IsSpellID(122408) then
 		warnMassiveStomp:Show()
 		specwarnMassiveStomp:Show()
@@ -229,6 +239,7 @@ function mod:SPELL_CAST_START(args)
 		timerMassiveStompCD:Start()
 	elseif args:IsSpellID(122413) then
 		warnFling:Show()
+		specwarnFling:Show()
 		timerFlingCD:Start()
 	end
 end
@@ -238,7 +249,9 @@ function mod:SPELL_CAST_SUCCESS(args)
 		warnLivingAmber:Show()
 	elseif args:IsSpellID(121994) then
 		warnAmberScalpel:Show()
-		specwarnAmberScalpel:Show()
+		if not playerIsConstruct then--If your a construct you don't need to concern yourself with amber scalpel. should help reduce spam
+			specwarnAmberScalpel:Show()
+		end
 	elseif args:IsSpellID(122532) then
 		Puddles = Puddles + 1
 		warnBurningAmber:Show(Puddles)
@@ -275,31 +288,25 @@ function mod:UNIT_POWER(uId)
 	end
 end
 
-local function warnAmberExplosionCast(SpellId)
+local function warnAmberExplosionCast(spellId)
 	if #canInterrupt == 0 then--No interupts, warn the raid to prep for aoe damage with beware! alert.
-		if SpellId == 122402 then
-			specwarnAmberExplosion:Show(Monstrosity)
-		else
-			specwarnAmberExplosion:Show(MutatedConstruct)
-		end
+		specwarnAmberExplosion:Show(spellId == 122402 and Monstrosity or MutatedConstruct)
 	else--Interrupts available, lets call em out as a great tool to give raid leader split second decisions on who to allocate to the task (so they don't all waste it on same target and not have for next one).
-		if SpellId == 122402 then
-			warnInterruptsAvailable:Show(Monstrosity, table.concat(canInterrupt, "<, >"))
-		else
-			warnInterruptsAvailable:Show(MutatedConstruct, table.concat(canInterrupt, "<, >"))
-		end
+		warnInterruptsAvailable:Show(spellId == 122402 and Monstrosity or MutatedConstruct, table.concat(canInterrupt, "<, >"))
 	end
 	table.wipe(canInterrupt)
 end
 
-function mod:OnSync(msg, guid, SpellId)
+function mod:OnSync(msg, spellId, sender)
 	if not guidTableBuilt then
 		buildGuidTable()
 		guidTableBuilt = true
 	end
-	if msg == "InterruptAvailable" and guids[guid] and SpellId then
+	spellId = tonumber(spellId or "")
+	local guid = sender and DBM:GetRaidUnitId(sender) or UnitGUID("player")
+	if msg == "InterruptAvailable" and guids[guid] and spellId then
 		canInterrupt[#canInterrupt + 1] = guids[guid]
 		self:Unschedule(warnAmberExplosionCast)
-		self:Schedule(0.3, warnAmberExplosionCast, SpellId)
+		self:Schedule(0.3, warnAmberExplosionCast, spellId)
 	end
 end

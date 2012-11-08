@@ -29,7 +29,7 @@ E.FrameLocks = {}
 E.CreditsList = {};
 E.Spacing = 1;
 E.Border = 2;
-E.PixelMode = tr;
+E.PixelMode = false;
 
 E.InversePoints = {
 	TOP = 'BOTTOM',
@@ -619,6 +619,9 @@ end
 
 --DATABASE CONVERSIONS
 function E:DBConversions()
+	if type(self.db.unitframe.units.player.vengeance) == 'boolean' then
+		self.db.unitframe.units.player.vengeance = P.unitframe.units.player.vengeance
+	end
 	if type(self.db.euiscript.wgtimenoti) == 'boolean' then
 		self.db.euiscript.wgtimenoti = P.euiscript.wgtimenoti
 	end

@@ -2,10 +2,11 @@
 local L		= mod:GetLocalizedStrings()
 local sndWOP	= mod:NewSound(nil, "SoundWOP", true)
 
-mod:SetRevision(("$Revision: 8025 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 8044 $"):sub(12, -3))
 mod:SetCreatureID(62837)--62847 Dissonance Field, 63591 Kor'thik Reaver, 63589 Set'thik Windblade
 mod:SetModelID(42730)
 mod:SetZone()
+mod:SetUsedIcons(1, 2)
 
 mod:RegisterCombat("combat")
 
@@ -15,19 +16,24 @@ mod:RegisterEventsInCombat(
 	"SPELL_AURA_REMOVED",
 	"SPELL_CAST_SUCCESS",
 	"SPELL_CAST_START",
+	"CHAT_MSG_MONSTER_YELL",
 	"UNIT_SPELLCAST_SUCCEEDED"
 )
 
-local warnScreech				= mod:NewSpellAnnounce(123735, 3)
+local warnScreech				= mod:NewSpellAnnounce(123735, 3, nil, mod:IsRanged())
 local warnCryOfTerror			= mod:NewTargetAnnounce(123788, 3, nil, mod:IsHealer())
 local warnEyes					= mod:NewStackAnnounce(123707, 2, nil, mod:IsTank())
 local warnSonicDischarge		= mod:NewSoonAnnounce(123504, 4)--Iffy reliability but better then nothing i suppose.
 local warnRetreat				= mod:NewSpellAnnounce(125098, 4)
 local warnAmberTrap				= mod:NewSpellAnnounce(125826, 3)--Trap ready
 local warnTrapped				= mod:NewTargetAnnounce(125822, 1)--Trap used
+local warnStickyResin			= mod:NewTargetAnnounce(124097, 3)
 local warnFixate				= mod:NewTargetAnnounce(125390, 3, nil, false)--Spammy
 local warnAdvance				= mod:NewSpellAnnounce(125304, 4)
 local warnVisions				= mod:NewTargetAnnounce(124862, 4)--Visions of Demise
+local warnPhase3				= mod:NewPhaseAnnounce(3)
+local warnCalamity				= mod:NewSpellAnnounce(124845, 3, nil, mod:IsHealer())
+local warnConsumingTerror		= mod:NewSpellAnnounce(124849, 4, nil, not mod:IsTank())
 
 local specwarnSonicDischarge	= mod:NewSpecialWarningSpell(123504, nil, nil, nil, true)
 local specWarnEyes				= mod:NewSpecialWarningStack(123707, mod:IsTank(), 4)
@@ -35,29 +41,39 @@ local specWarnEyesOther			= mod:NewSpecialWarningTarget(123707, mod:IsTank())
 local specwarnCryOfTerror		= mod:NewSpecialWarningYou(123788)
 local specWarnRetreat			= mod:NewSpecialWarningSpell(125098)
 local specwarnAmberTrap			= mod:NewSpecialWarningSpell(125826, false)
+local specwarnStickyResin		= mod:NewSpecialWarningYou(124097)
+local yellStickyResin			= mod:NewYell(124097)
 local specwarnFixate			= mod:NewSpecialWarningYou(125390, false)--Could be spammy, make optional, will use info frame to display this more constructively
 local specWarnDispatch			= mod:NewSpecialWarningInterrupt(124077, mod:IsMelee())
 local specWarnAdvance			= mod:NewSpecialWarningSpell(125304)
 local specwarnVisions			= mod:NewSpecialWarningYou(124862)
 local yellVisions				= mod:NewYell(124862)
+local specWarnConsumingTerror	= mod:NewSpecialWarningSpell(124849, not mod:IsTank())
 
-local timerScreechCD			= mod:NewNextTimer(7, 123735)
+local timerScreechCD			= mod:NewNextTimer(7, 123735, nil, mod:IsRanged())
 local timerCryOfTerror			= mod:NewTargetTimer(20, 123788, nil, mod:IsHealer())
 local timerCryOfTerrorCD		= mod:NewCDTimer(25, 123788)
 local timerEyes					= mod:NewTargetTimer(30, 123707, nil, mod:IsTank())
-local timerEyesCD				= mod:NewNextTimer(12, 123707, nil, mod:IsTank())
+local timerEyesCD				= mod:NewNextTimer(11, 123707, nil, mod:IsTank())
 local timerPhase1				= mod:NewNextTimer(156.4, 125304)--156.4 til ENGAGE fires and boss is out, 157.4 until "advance" fires though. But 156.4 is more accurate timer
 local timerPhase2				= mod:NewNextTimer(151, 125098)--152 until trigger, but probalby 150 or 151 til adds are targetable.
+local timerCalamityCD			= mod:NewCDTimer(6, 124845, nil, mod:IsHealer())
+local timerVisionsCD			= mod:NewCDTimer(19.5, 124862)
+local timerConsumingTerrorCD	= mod:NewCDTimer(32, 124849, nil, not mod:IsTank())
 
 mod:AddBoolOption("InfoFrame")--On by default because these do more then just melee, they interrupt spellcasting (bad for healers)
 mod:AddBoolOption("RangeFrame", mod:IsRanged())
+mod:AddBoolOption("StickyResinIcons", true)
 
 local sentLowHP = {}
 local warnedLowHP = {}
 local visonsTargets = {}
+local resinIcon = 2
+local shaName = EJ_GetEncounterInfo(709)
 
 local function warnVisionsTargets()
 	warnVisions:Show(table.concat(visonsTargets, "<, >"))
+	timerVisionsCD:Start()
 	table.wipe(visonsTargets)
 end
 
@@ -74,6 +90,7 @@ end
 local DeadMarkers = {}
 
 function mod:OnCombatStart(delay)
+	resinIcon = 2
 	timerScreechCD:Start(-delay)
 	timerEyesCD:Start(-delay)
 	timerPhase2:Start(-delay)
@@ -149,6 +166,20 @@ function mod:SPELL_AURA_APPLIED(args)
 		if self.Options.HudMAP then
 			DeadMarkers[args.destName] = register(DBMHudMap:PlaceRangeMarkerOnPartyMember("targeting", args.destName, 9, nil, 0, 1, 0, 1):Appear():RegisterForAlerts())
 		end
+	elseif args:IsSpellID(124097) then
+		warnStickyResin:Show(args.destName)
+		if args:IsPlayer() then
+			specwarnStickyResin:Show()
+			yellStickyResin:Yell()
+		end
+		if self.Options.StickyResinIcons then
+			self:SetIcon(args.destName, resinIcon)
+			if resinIcon == 2 then
+				resinIcon = 1
+			else
+				resinIcon = 2
+			end
+		end
 	end
 end
 mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
@@ -164,8 +195,11 @@ function mod:SPELL_AURA_REMOVED(args)
 		if args:IsPlayer() then
 			sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\safenow.mp3") --安全
 		end
-	elseif args:IsSpellID(124097) then  --樹脂
+	elseif args:IsSpellID(124097) then
 		lastplayer = args.destName
+		if self.Options.StickyResinIcons then
+			self:SetIcon(args.destName, 0)
+		end
 	elseif args:IsSpellID(124862) then
 		if DeadMarkers[args.destName] then
 			DeadMarkers[args.destName] = free(DeadMarkers[args.destName])
@@ -181,6 +215,9 @@ function mod:SPELL_CAST_SUCCESS(args)
 		warnAmberTrap:Show()
 		specwarnAmberTrap:Show()
 		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_xjwc.mp3") --陷阱完成
+	elseif args:IsSpellID(124845) then
+		warnCalamity:Show()
+		timerCalamityCD:Start()
 	end
 end
 
@@ -190,6 +227,10 @@ function mod:SPELL_CAST_START(args)
 			specWarnDispatch:Show(args.sourceName)
 			sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\kickcast.mp3")--快打斷
 		end
+	elseif args:IsSpellID(124849) then
+		warnConsumingTerror:Show()
+		specWarnConsumingTerror:Show()
+		timerConsumingTerrorCD:Start()
 	end
 end
 
@@ -245,6 +286,23 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, _, _, spellId)
 	end
 end
 
+--[[ Yell comes 3 seconds sooner then combat log event, so it's better phase 3 transitioner to start better timers, especially for first visions of demise
+"<33.5 22:57:49> [CHAT_MSG_MONSTER_YELL] CHAT_MSG_MONSTER_YELL#No more excuses, Empress! Eliminate these cretins or I will kill you myself!#Sha of Fear###Grand Empress Shek'zeer
+"<36.8 22:57:52> [CLEU] SPELL_CAST_SUCCESS#false#0xF130F9C600007497#Sha of Fear#2632#0#0x0000000000000000#nil#-2147483648#-2147483648#125451#Ultimate Corruption#1", -- [7436]
+--]]
+function mod:CHAT_MSG_MONSTER_YELL(msg, mob)
+	if not self:IsInCombat() then return end
+	if mob == shaName then
+		self:UnregisterShortTermEvents()
+		timerPhase2:Cancel()
+		warnPhase3:Show()
+		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\pthree.mp3")--p3
+		timerVisionsCD:Start(7)
+		timerCalamityCD:Start(12)
+		timerConsumingTerrorCD:Start(14)
+	end
+end
+
 --May not be that reliable, because they don't have a special unitID and there is little reason to target them.
 --So it may miss some of them, not sure of any other way to PRE-warn though. Can warn on actual cast/damage but not too effective.
 function mod:UNIT_HEALTH_FREQUENT_UNFILTERED(uId)
@@ -259,8 +317,8 @@ end
 function mod:OnSync(msg, guid)
 	if msg == "lowhealth" and guid and not warnedLowHP[guid] then
 		warnedLowHP[guid] = true
-		warnSonicDischarge:Show()
-		specwarnSonicDischarge:Show()
+		warnSonicDischarge:Show()--This only works if someone in raid is actually targeting them :(
+		specwarnSonicDischarge:Show()--But is extremly useful when they are.
 		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_ybbz.mp3") --音波爆炸準備
 	end
 end

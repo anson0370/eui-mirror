@@ -168,6 +168,8 @@ P["unitframe"].unitframeType = 1
 P["unitframe"].transparent = false
 
 P['unitframe'].units.target.smartAuraDisplay = 'DISABLED'
+P['unitframe'].units.target.name.position = 'LEFT'
+P['unitframe'].units.target.power.position = 'BOTTOMRIGHT'
 P['unitframe'].units.target.debuffs.useWhitelist = {friendly = false, enemy = true}
 P['unitframe'].units.target.buffs.playerOnly = {friendly = false, enemy = false}
 P['unitframe'].units.player.classbar.text = true
@@ -237,7 +239,7 @@ P["unitframe"].units.attention =  {
 G['chatfilter'] = {
 	["Enabled"] = true,
 	["WhiteList"] = {
-		["巨龙"] = true,
+		["宝库"] = true,
 	},	
 	["BlackList"] = {
 		["代.*练.*代.*打"] = true,
