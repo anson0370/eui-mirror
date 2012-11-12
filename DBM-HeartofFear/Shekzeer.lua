@@ -2,7 +2,7 @@
 local L		= mod:GetLocalizedStrings()
 local sndWOP	= mod:NewSound(nil, "SoundWOP", true)
 
-mod:SetRevision(("$Revision: 8044 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 8065 $"):sub(12, -3))
 mod:SetCreatureID(62837)--62847 Dissonance Field, 63591 Kor'thik Reaver, 63589 Set'thik Windblade
 mod:SetModelID(42730)
 mod:SetZone()
@@ -47,6 +47,7 @@ local specwarnFixate			= mod:NewSpecialWarningYou(125390, false)--Could be spamm
 local specWarnDispatch			= mod:NewSpecialWarningInterrupt(124077, mod:IsMelee())
 local specWarnAdvance			= mod:NewSpecialWarningSpell(125304)
 local specwarnVisions			= mod:NewSpecialWarningYou(124862)
+local specwarnXJ				= mod:NewSpecialWarningMove(123184)
 local yellVisions				= mod:NewYell(124862)
 local specWarnConsumingTerror	= mod:NewSpecialWarningSpell(124849, not mod:IsTank())
 
@@ -70,6 +71,8 @@ local warnedLowHP = {}
 local visonsTargets = {}
 local resinIcon = 2
 local shaName = EJ_GetEncounterInfo(709)
+local phase3Started = false
+local warnedhp = false
 
 local function warnVisionsTargets()
 	warnVisions:Show(table.concat(visonsTargets, "<, >"))
@@ -78,7 +81,6 @@ local function warnVisionsTargets()
 end
 
 local ptwo = false
-local lastplayer = nil
 
 mod:AddBoolOption("HudMAP", true, "sound")
 local DBMHudMap = DBMHudMap
@@ -90,6 +92,7 @@ end
 local DeadMarkers = {}
 
 function mod:OnCombatStart(delay)
+	phase3Started = false
 	resinIcon = 2
 	timerScreechCD:Start(-delay)
 	timerEyesCD:Start(-delay)
@@ -99,6 +102,7 @@ function mod:OnCombatStart(delay)
 	table.wipe(visonsTargets)
 	table.wipe(DeadMarkers)
 	ptwo = false
+	warnedhp = false
 	if self.Options.RangeFrame then
 		DBM.RangeCheck:Show(5)
 	end
@@ -170,7 +174,9 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnStickyResin:Show(args.destName)
 		if args:IsPlayer() then
 			specwarnStickyResin:Show()
+			DBM.Flash:Show(1, 0, 0)
 			yellStickyResin:Yell()
+			sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_szkp.mp3") --樹脂
 		end
 		if self.Options.StickyResinIcons then
 			self:SetIcon(args.destName, resinIcon)
@@ -178,6 +184,13 @@ function mod:SPELL_AURA_APPLIED(args)
 				resinIcon = 1
 			else
 				resinIcon = 2
+			end
+		end
+	elseif args:IsSpellID(123184) then
+		if not UnitDebuff("player", GetSpellInfo(123788)) then
+			if args:IsPlayer() then
+				specwarnXJ:Show()
+				sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\runaway.mp3") --快躲開
 			end
 		end
 	end
@@ -196,7 +209,6 @@ function mod:SPELL_AURA_REMOVED(args)
 			sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\safenow.mp3") --安全
 		end
 	elseif args:IsSpellID(124097) then
-		lastplayer = args.destName
 		if self.Options.StickyResinIcons then
 			self:SetIcon(args.destName, 0)
 		end
@@ -218,6 +230,25 @@ function mod:SPELL_CAST_SUCCESS(args)
 	elseif args:IsSpellID(124845) then
 		warnCalamity:Show()
 		timerCalamityCD:Start()
+	--"<33.5 22:57:49> [CHAT_MSG_MONSTER_YELL] CHAT_MSG_MONSTER_YELL#No more excuses, Empress! Eliminate these cretins or I will kill you myself!#Sha of Fear###Grand Empress Shek'zeer
+	--"<36.8 22:57:52> [CLEU] SPELL_CAST_SUCCESS#false#0xF130F9C600007497#Sha of Fear#2632#0#0x0000000000000000#nil#-2147483648#-2147483648#125451#Ultimate Corruption#1", -- [7436]
+	--backup phase 3 trigger for unlocalized languages
+	elseif args:IsSpellID(125451) and not phase3Started then
+		phase3Started = true
+		self:UnregisterShortTermEvents()
+		sndWOP:Cancel("Interface\\AddOns\\DBM-Core\\extrasounds\\ptwo.mp3")
+		sndWOP:Cancel("Interface\\AddOns\\DBM-Core\\extrasounds\\countfour.mp3")
+		sndWOP:Cancel("Interface\\AddOns\\DBM-Core\\extrasounds\\countthree.mp3")
+		sndWOP:Cancel("Interface\\AddOns\\DBM-Core\\extrasounds\\counttwo.mp3")
+		sndWOP:Cancel("Interface\\AddOns\\DBM-Core\\extrasounds\\countone.mp3")
+		timerPhase2:Cancel()
+		timerConsumingTerrorCD:Cancel()
+		timerScreechCD:Cancel()
+		warnPhase3:Show()
+		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\pthree.mp3")--p3
+		timerVisionsCD:Start(4)
+		timerCalamityCD:Start(9)
+		timerConsumingTerrorCD:Start(11)
 	end
 end
 
@@ -231,6 +262,34 @@ function mod:SPELL_CAST_START(args)
 		warnConsumingTerror:Show()
 		specWarnConsumingTerror:Show()
 		timerConsumingTerrorCD:Start()
+		if mod:IsTank() then
+			DBM.Flash:Show(1, 0, 0)
+		end
+		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_kjts.mp3")--恐懼吞噬
+	end
+end
+
+--[[ Yell comes 3 seconds sooner then combat log event, so it's better phase 3 transitioner to start better timers, especially for first visions of demise
+"<33.5 22:57:49> [CHAT_MSG_MONSTER_YELL] CHAT_MSG_MONSTER_YELL#No more excuses, Empress! Eliminate these cretins or I will kill you myself!#Sha of Fear###Grand Empress Shek'zeer
+"<36.8 22:57:52> [CLEU] SPELL_CAST_SUCCESS#false#0xF130F9C600007497#Sha of Fear#2632#0#0x0000000000000000#nil#-2147483648#-2147483648#125451#Ultimate Corruption#1", -- [7436]
+--]]
+function mod:CHAT_MSG_MONSTER_YELL(msg)
+	if (msg == L.YellPhase3 or msg:find(L.YellPhase3)) and not phase3Started then
+		phase3Started = true
+		self:UnregisterShortTermEvents()
+		sndWOP:Cancel("Interface\\AddOns\\DBM-Core\\extrasounds\\ptwo.mp3")
+		sndWOP:Cancel("Interface\\AddOns\\DBM-Core\\extrasounds\\countfour.mp3")
+		sndWOP:Cancel("Interface\\AddOns\\DBM-Core\\extrasounds\\countthree.mp3")
+		sndWOP:Cancel("Interface\\AddOns\\DBM-Core\\extrasounds\\counttwo.mp3")
+		sndWOP:Cancel("Interface\\AddOns\\DBM-Core\\extrasounds\\countone.mp3")
+		timerPhase2:Cancel()
+		timerConsumingTerrorCD:Cancel()
+		timerScreechCD:Cancel()
+		warnPhase3:Show()
+		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\pthree.mp3")--p3
+		timerVisionsCD:Start(7)
+		timerCalamityCD:Start(12)
+		timerConsumingTerrorCD:Start(14)
 	end
 end
 
@@ -245,7 +304,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, _, _, spellId)
 		timerPhase1:Start()
 		ptwo = true
 		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\phasechange.mp3")--階段轉換
-		sndWOP:Schedule(152, "Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_zbnw.mp3") --準備女王
+		sndWOP:Schedule(152, "Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_nwzb.mp3") --女王準備
 		sndWOP:Schedule(153, "Interface\\AddOns\\DBM-Core\\extrasounds\\countfour.mp3")
 		sndWOP:Schedule(154, "Interface\\AddOns\\DBM-Core\\extrasounds\\countthree.mp3")
 		sndWOP:Schedule(155, "Interface\\AddOns\\DBM-Core\\extrasounds\\counttwo.mp3")
@@ -259,6 +318,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, _, _, spellId)
 		end
 	elseif spellId == 125304 and self:AntiSpam(2, 1) then
 		timerPhase1:Cancel()--If you kill everything it should end early.
+		sndWOP:Cancel("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_nwzb.mp3")
 		sndWOP:Cancel("Interface\\AddOns\\DBM-Core\\extrasounds\\countfive.mp3")
 		sndWOP:Cancel("Interface\\AddOns\\DBM-Core\\extrasounds\\countfour.mp3")
 		sndWOP:Cancel("Interface\\AddOns\\DBM-Core\\extrasounds\\countthree.mp3")
@@ -286,31 +346,24 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, _, _, spellId)
 	end
 end
 
---[[ Yell comes 3 seconds sooner then combat log event, so it's better phase 3 transitioner to start better timers, especially for first visions of demise
-"<33.5 22:57:49> [CHAT_MSG_MONSTER_YELL] CHAT_MSG_MONSTER_YELL#No more excuses, Empress! Eliminate these cretins or I will kill you myself!#Sha of Fear###Grand Empress Shek'zeer
-"<36.8 22:57:52> [CLEU] SPELL_CAST_SUCCESS#false#0xF130F9C600007497#Sha of Fear#2632#0#0x0000000000000000#nil#-2147483648#-2147483648#125451#Ultimate Corruption#1", -- [7436]
---]]
-function mod:CHAT_MSG_MONSTER_YELL(msg, mob)
-	if not self:IsInCombat() then return end
-	if mob == shaName then
-		self:UnregisterShortTermEvents()
-		timerPhase2:Cancel()
-		warnPhase3:Show()
-		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\pthree.mp3")--p3
-		timerVisionsCD:Start(7)
-		timerCalamityCD:Start(12)
-		timerConsumingTerrorCD:Start(14)
-	end
-end
-
 --May not be that reliable, because they don't have a special unitID and there is little reason to target them.
 --So it may miss some of them, not sure of any other way to PRE-warn though. Can warn on actual cast/damage but not too effective.
 function mod:UNIT_HEALTH_FREQUENT_UNFILTERED(uId)
 	local cid = self:GetUnitCreatureId(uId)
 	local guid = UnitGUID(uId)
-	if cid == 62847 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.05 and not sentLowHP[guid] then
+	if cid == 62847 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.08 and not sentLowHP[guid] then
 		sentLowHP[guid] = true
 		self:SendSync("lowhealth", guid)
+	end	
+	if uId == "player" then
+		if UnitDebuff("player", GetSpellInfo(123184)) then
+			if UnitHealth(uId) / UnitHealthMax(uId) <= 0.5 and not warnedhp then
+				sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\checkhp.mp3")--注意血量
+				warnedhp = true
+			end
+		else
+			warnedhp = false
+		end
 	end
 end
 

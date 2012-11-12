@@ -108,19 +108,23 @@ L:SetWarningLocalization({
 	warnAmberExplosion			= "%s 正在釋放 %s",
 	warnInterruptsAvailable		= "可打斷 %s: %s",
 	specwarnWillPower			= "意志過低!",
-	specwarnAmberExplosionYou	= "打斷 >你自己的< %s!"--Struggle for Control interrupt.
+	specwarnAmberExplosionYou	= "打斷 >你自己的< %s!",--Struggle for Control interrupt.
+	specwarnAmberExplosionAM	= "%s：打斷 %s!",--Amber Montrosity
+	specwarnAmberExplosionOther	= "%s：打斷 %s!"--Amber Montrosity
 })
 
 L:SetTimerLocalization{
-	timerAmberExplosionAMCD		= "下一次 %s: %s"
+	timerAmberExplosionAMCD		= "%s 冷卻：%s"
 }
 
 L:SetOptionLocalization({
-	SoundWOP			= "語音警告：重要技能",
+	SoundWOP					= "語音警告：重要技能",
 	warnAmberExplosion			= "警告：$spell:122398",
 	warnInterruptsAvailable		= "警告：誰可以打斷$spell:122402",
 	specwarnWillPower			= "特殊警告：你的傀儡意志過低",
 	specwarnAmberExplosionYou	= "特殊警告：打斷你自己的$spell:122398",
+	specwarnAmberExplosionAM	= "特殊警告：打斷琥珀巨怪的$spell:122402",
+	specwarnAmberExplosionOther	= "特殊警告：打斷無人控制傀儡體的$spell:122398",
 	timerAmberExplosionAMCD		= "計時器：琥珀巨怪的下一次$spell:122402",
 	InfoFrame					= "資訊框：玩家的意志力"
 })
@@ -142,5 +146,6 @@ L:SetOptionLocalization({
 })
 
 L:SetMiscLocalization({
-	PlayerDebuffs	= "被凝視"
+	PlayerDebuffs	= "被凝視",
+	YellPhase3		= "不要再找藉口了，女皇!消滅這些侏儒，否則我會親自殺了妳!"
 })

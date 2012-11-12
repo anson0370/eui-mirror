@@ -1,5 +1,5 @@
 ﻿-- Simplified Chinese by Diablohu(diablohudream@gmail.com)
--- Last update: 11/04/2012
+-- Last update: 11/06/2012
 
 if GetLocale() ~= "zhCN" then return end
 local L
@@ -108,28 +108,32 @@ L:SetMiscLocalization({
 L= DBM:GetModLocalization(737)
 
 L:SetWarningLocalization({
-	warnAmberExplosion			= "%s 正在释放 %s",
+	warnAmberExplosion			= "%s 正在施放 %s",
 	warnInterruptsAvailable		= "可打断 %s: %s",
-	specwarnWillPower			= "意志过低!",
-	specwarnAmberExplosionYou	= "打断 >你自己的< %s!"--Struggle for Control interrupt.
+	specwarnWillPower			= "意志低下！",
+	specwarnAmberExplosionYou	= "打断 >你自己的< %s！",--Struggle for Control interrupt.
+	specwarnAmberExplosionAM	= "%s：打断 %s!",--Amber Montrosity
+	specwarnAmberExplosionOther	= "%s：打断 %s!"--Amber Montrosity
 })
 
 L:SetTimerLocalization{
-	timerAmberExplosionAMCD		= "下一次 %s: %s"
+	timerAmberExplosionAMCD		= "下一次%s: %s"
 }
 
 L:SetOptionLocalization({
 	SoundWOP			= "语音警告：重要技能",
-	warnAmberExplosion			= "警告：$spell:122398",
-	warnInterruptsAvailable		= "警告：谁可以打断$spell:122402",
-	specwarnWillPower			= "特殊警告：你的傀儡意志过低",
-	specwarnAmberExplosionYou	= "特殊警告：打断你自己的$spell:122398",
-	timerAmberExplosionAMCD		= "计时器：琥珀巨怪的下一次$spell:122402",
-	InfoFrame					= "资讯框：玩家的意志力"
+	warnAmberExplosion			= "警报：$spell:122398正在施放，并警报来源",
+	warnInterruptsAvailable		= "警报：可使用$spell:122402打断琥珀打击的成员",
+	specwarnWillPower			= "特殊警报：在畸形体中意志低下时",
+	specwarnAmberExplosionYou	= "特殊警报：打断自己的$spell:122398",
+	specwarnAmberExplosionAM	= "特殊警报：打断琥珀畸怪的$spell:122402",
+	specwarnAmberExplosionOther	= "特殊警报：打断畸形体的$spell:122398",
+	timerAmberExplosionAMCD		= "计时条：琥珀畸怪的下一次$spell:122402",
+	InfoFrame					= "信息框：意志值（功能开发中）"
 })
 
 L:SetMiscLocalization({
-	WillPower					= "意志力"
+	WillPower					= "意志"
 })
 
 ------------
@@ -138,13 +142,15 @@ L:SetMiscLocalization({
 L= DBM:GetModLocalization(743)
 
 L:SetOptionLocalization({
-	InfoFrame			= "资讯框：被$spell:125390的团员",
+	InfoFrame			= "信息框：受$spell:125390效果影响的玩家",
 	SoundWOP			= "语音警告：重要技能",
 	HudMAP				= "高级定位监视(HUD)：$spell:124863的位置",
-	RangeFrame			= "距离监视(5码)：$spell:123735",
+	RangeFrame			= "距离监视（5码）：$spell:123735",
 	StickyResinIcons	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(124097)
 })
 
 L:SetMiscLocalization({
-	PlayerDebuffs	= "被凝视"
+	PlayerDebuffs		= "凝视",
+	YellPhase3			= "No more excuses, Empress! Eliminate these cretins or I will kill you myself!"
+
 })

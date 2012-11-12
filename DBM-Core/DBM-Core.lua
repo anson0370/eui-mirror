@@ -90,7 +90,7 @@ imsg.text:SetJustifyH("CENTER")
 --  Globals/Default Options  --
 -------------------------------
 DBM = {
-	Revision = tonumber(("$Revision: 8048 $"):sub(12, -3)),
+	Revision = tonumber(("$Revision: 8065 $"):sub(12, -3)),
 	DisplayVersion = "5.0.0 語音增強版", -- the string that is shown as version
 	ReleaseRevision = 7956 -- the revision of the latest stable version that is available
 }

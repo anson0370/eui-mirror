@@ -2,7 +2,7 @@
 local L		= mod:GetLocalizedStrings()
 local sndWOP	= mod:NewSound(nil, "SoundWOP", true)
 
-mod:SetRevision(("$Revision: 8036 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 8059 $"):sub(12, -3))
 mod:SetCreatureID(63191)--Also has CID 62164. He has 2 CIDs for a single target, wtf? It seems 63191 is one players attack though so i'll try just it.
 mod:SetModelID(42368)
 mod:SetZone()
@@ -126,6 +126,8 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(123081) then
 		if self:IsDifficulty("normal25", "heroic25") then--Is it also 4 min on LFR?
 			timerPungency:Start(240, args.destName)
+		elseif self:IsDifficulty("lfr25") then
+			timerPungency:Start(20, args.destName)
 		else
 			timerPungency:Start(args.destName)
 		end
