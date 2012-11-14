@@ -8,8 +8,11 @@ L= DBM:GetModLocalization(745)
 
 L:SetOptionLocalization({
 	specwarnPlatform	= "特別警告：當戰鬥露臺改變時",
+	ArrowOnAttenuation	= "DBM箭頭：當$spell:127834出現時指示移動的方向",
 	specwarnExhale		= "特別警告：$spell:122761",
 	specwarnExhaleB		= "特別警告：$spell:122761的預先警告",
+	specwarnAttenuationL	= "特別警告：左旋音波",
+	specwarnAttenuationR	= "特別警告：右旋音波",
 	MindControlIcon		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(122740),
 	SoundWOP			= "語音警告：重要技能",
 	HudMAP				= "高級定位監視(HUD)：$spell:122761目標的位置",
@@ -32,6 +35,8 @@ L:SetMiscLocalization({
 
 L:SetWarningLocalization({
 	specwarnPlatform	= "作戰區改變!",
+	specwarnAttenuationL	= "← ← ←左左左",
+	specwarnAttenuationR	= "右右右→ → →",
 	specwarnExhale		= "吐氣[%d] : %s",
 	specwarnExhaleB		= "即將 >>%d層<< 吐氣"
 })
@@ -59,7 +64,13 @@ L:SetWarningLocalization({
 -------------------------------
 L= DBM:GetModLocalization(713)
 
+L:SetWarningLocalization({
+	specwarnUnder	= "離開紫圈!",
+	specWarnPungencyOtherFix = "%s 敏感 (%d)"
+})
+
 L:SetOptionLocalization({
+	specwarnUnder		= "特別警告：你在BOSS下方",
 	PheromonesIcon		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(122835),
 	InfoFrame			= "資訊框：$spell:123081層數監視",
 	optTankMode			= "特別警告：費洛蒙換坦策略",
@@ -71,9 +82,10 @@ L:SetOptionLocalization({
 	SoundFS				= "坦克倒計時：$spell:122735"
 })
 
-L:SetWarningLocalization({
-	specWarnPungencyOtherFix = "%s 敏感 (%d)"
+L:SetMiscLocalization({
+	UnderHim	= "在他下面"
 })
+
 ----------------------
 -- Wind Lord Mel'jarak --
 ----------------------
@@ -99,12 +111,14 @@ L:SetMiscLocalization({
 	Helpme				= "救我 ~~~",
 	Reinforcements		= "Wind Lord Mel'jarak calls for reinforcements!"
 })
+
 ------------
 -- Amber-Shaper Un'sok --
 ------------
 L= DBM:GetModLocalization(737)
 
 L:SetWarningLocalization({
+	warnReshapeLifeTutor		= "1:中斷/益傷目標,, 2:中斷自己, 3:回復體力/意志力, 4:脫離魁儡",
 	warnAmberExplosion			= "%s 正在釋放 %s",
 	warnInterruptsAvailable		= "可打斷 %s: %s",
 	specwarnWillPower			= "意志過低!",
@@ -119,6 +133,7 @@ L:SetTimerLocalization{
 
 L:SetOptionLocalization({
 	SoundWOP					= "語音警告：重要技能",
+	warnReshapeLifeTutor		= "顯示突變魁儡的能力說明效果",
 	warnAmberExplosion			= "警告：$spell:122398",
 	warnInterruptsAvailable		= "警告：誰可以打斷$spell:122402",
 	specwarnWillPower			= "特殊警告：你的傀儡意志過低",
@@ -132,6 +147,7 @@ L:SetOptionLocalization({
 L:SetMiscLocalization({
 	WillPower					= "意志力"
 })
+
 ------------
 -- Grand Empress Shek'zeer --
 ------------
@@ -141,6 +157,7 @@ L:SetOptionLocalization({
 	InfoFrame			= "資訊框：被$spell:125390的團員",
 	SoundWOP			= "語音警告：重要技能",
 	HudMAP				= "高級定位監視(HUD)：$spell:124863的位置",
+	HudMAP2				= "高級定位監視(HUD)：$spell:124821的位置",
 	RangeFrame			= "距離監視(5碼)：$spell:123735",
 	StickyResinIcons	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(124097)
 })

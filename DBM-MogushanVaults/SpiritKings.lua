@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 local sndWOP	= mod:NewSound(nil, "SoundWOP", true)
 local sndDSA	= mod:NewSound(nil, "SoundDSA", true)
 
-mod:SetRevision(("$Revision: 8010 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 8081 $"):sub(12, -3))
 mod:SetCreatureID(60701, 60708, 60709, 60710)--Adds: 60731 Undying Shadow, 60958 Pinning Arrow
 mod:SetModelID(41813)
 mod:SetZone()
@@ -87,8 +87,8 @@ local timerShieldOfDarknessCD  	= mod:NewNextTimer(42.5, 117697)
 local timerMaddeningShoutCD		= mod:NewCDTimer(47, 117708)--47-50 sec variation. So a CD timer instead of next.
 local timerDeliriousCD			= mod:NewCDTimer(20.5, 117837, nil, mod:CanRemoveEnrage())
 --Qiang
-local timerAnnihilateCD			= mod:NewNextTimer(32.5, 117948)
-local timerFlankingOrdersCD		= mod:NewNextTimer(40, 117910)
+local timerAnnihilateCD			= mod:NewNextTimer(39, 117948)
+local timerFlankingOrdersCD		= mod:NewCDTimer(40, 117910)--Every 40 seconds on normal, but on heroic it has a 40-50 second variation so has to be a CD bar instead of next
 local timerImperviousShieldCD	= mod:NewCDTimer(42, 117961)
 --Subetai
 local timerVolleyCD				= mod:NewNextTimer(41, 118094)
@@ -146,7 +146,7 @@ local mengfirstime = 0
 local countzsb = 0
 
 local countxk = 0
-
+local diedShadow = {}
 local shadowdd = 0
 local ctdd = 0
 
@@ -166,6 +166,7 @@ function mod:OnCombatStart(delay)
 	subetaiActive = false
 	table.wipe(bossesActivated)
 	table.wipe(pinnedTargets)
+	table.wipe(diedShadow)
 	table.wipe(PillageMarkers)
 	table.wipe(FixatelMarkers)
 	berserkTimer:Start(-delay)
@@ -192,7 +193,8 @@ function mod:OnCombatEnd()
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(117539) then
+	if args:IsSpellID(117539) and not diedShadow[args.destGUID] then--They only ressurrect once so only start timer once per GUID
+		diedShadow[args.destGUID] = true
 		timerCoalescingShadowsCD:Start(args.destGUID)--Basically, the rez timer for a defeated Undying Shadow that is going to re-animate in 60 seconds.
 	elseif args:IsSpellID(117837) then
 		warnDelirious:Show(args.destName)
@@ -365,7 +367,11 @@ function mod:SPELL_CAST_START(args)
 	elseif args:IsSpellID(117948) then
 		warnAnnihilate:Show()
 		specWarnAnnihilate:Show()
-		timerAnnihilateCD:Start()
+		if self:IsDifficulty("heroic10", "heroic25") then
+			timerAnnihilateCD:Start(32.5)
+		else
+			timerAnnihilateCD:Start()
+		end
 		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\shockwave.mp3") --震懾波
 		timerJL:Start(8)
 		countzsb = countzsb + 1

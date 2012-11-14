@@ -97,7 +97,8 @@ elseif GetLocale() == "zhTW" then
 	V["general"].namefont = "EUI"
 end	
 
-P['chat'].keywords = '%MYNAME%, EUI, DS, FL, 火源, 巨龙'
+P['chat'].keywords = '%MYNAME%, EUI, DS, FL, 火源, 宝库, 恐惧之心, 永春台'
+P['chat'].sendRW = false
 P["actionbar"].euiabstyle = "None"
 P["actionbar"].keyDown = false
 P["actionbar"]["bar1"]["paging"]["ROGUE"] = "[stance:1] 7; [stance:2] 7; [stance:3] 10;"

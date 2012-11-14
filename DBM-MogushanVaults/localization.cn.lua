@@ -1,5 +1,5 @@
 ﻿-- Simplified Chinese by Diablohu(diablohudream@gmail.com)
--- Last update: 10/31/2012
+-- Last update: 11/11/2012
 
 if GetLocale() ~= "zhCN" then return end
 local L
@@ -235,7 +235,7 @@ L= DBM:GetModLocalization(677)
 
 L:SetOptionLocalization({
 	InfoFrame			= "资讯框：$spell:116525的目标",
-	ArrowOnCombo			= "DBM箭头：连击",
+	ArrowOnCombo	= "DBM箭头：$journal:5673阶段\n注：该功能正常工作的前提是坦克在Boss面前而其他人在Boss身后。",
 	SoundWOP			= "语音警告：重要技能",
 	SoundADD1A			= "预先语音警告：$spell:ej5678 (5秒前)",
 	SoundADD1			= "语音警告：$spell:ej5678",

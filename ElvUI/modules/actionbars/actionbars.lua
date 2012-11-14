@@ -127,7 +127,6 @@ function AB:PositionAndSizeBar(barName)
 	end
 	
 	local button, lastButton, lastColumnButton ;
-	local possibleButtons = {};
 	for i=1, NUM_ACTIONBAR_BUTTONS do
 		button = bar.buttons[i];
 		lastButton = bar.buttons[i-1];
@@ -138,8 +137,6 @@ function AB:PositionAndSizeBar(barName)
 		button:SetAttribute("showgrid", 1);
 		ActionButton_ShowGrid(button);
 			
-		possibleButtons[((i * buttonsPerRow) + 1)] = true;
-
 		if self.db[barName].mouseover == true then
 			bar:SetAlpha(0);
 			if not self.hooks[bar] then
@@ -177,7 +174,7 @@ function AB:PositionAndSizeBar(barName)
 			end
 
 			button:Point(point, bar, point, x, y);
-		elseif possibleButtons[i] then
+		elseif (i - 1) % buttonsPerRow == 0 then
 			local x = 0;
 			local y = -spacing;
 			local buttonPoint, anchorPoint = "TOP", "BOTTOM";

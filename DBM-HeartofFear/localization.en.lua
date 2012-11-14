@@ -7,6 +7,9 @@ L= DBM:GetModLocalization(745)
 
 L:SetOptionLocalization({
 	specwarnPlatform	= "Show special warning when boss changes platforms",
+	ArrowOnAttenuation	= "Show DBM Arrow during $spell:127834 to indicate which direction to move",
+	specwarnAttenuationL	= "Show special warning when left Attenuation",
+	specwarnAttenuationR	= "Show special warning when right Attenuation",
 	specwarnExhale		= "Show special warning for $spell:122761",
 	specwarnExhaleB		= "Show special warning for pre $spell:122761",
 	MindControlIcon		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(122740),
@@ -31,6 +34,8 @@ L:SetMiscLocalization({
 
 L:SetWarningLocalization({
 	specwarnPlatform	= "Combat zone changed",
+	specwarnAttenuationL	= "LEFT!",
+	specwarnAttenuationR	= "RIGHR!",
 	specwarnExhale		= "Exhale[%d] : %s",
 	specwarnExhaleB		= "Next: >>%d<< Exhale"
 })
@@ -58,7 +63,13 @@ L:SetWarningLocalization({
 -------------------------------
 L= DBM:GetModLocalization(713)
 
+L:SetWarningLocalization({
+	specwarnUnder	= "Move out of purple ring!",
+	specWarnPungencyOtherFix 		= "%s - (%d)"
+})
+
 L:SetOptionLocalization({
+	specwarnUnder	= "Show special warning when you are under boss",
 	PheromonesIcon	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(122835),
 	InfoFrame			= "InfoFrame:$spell:123081",
 	optTankMode			= "Special warning:how to change tank",
@@ -70,8 +81,8 @@ L:SetOptionLocalization({
 	SoundFS				= "Countdown: $spell:122735"
 })
 
-L:SetWarningLocalization({
-	specWarnPungencyOtherFix 		= "%s - (%d)"
+L:SetMiscLocalization({
+	UnderHim	= "under him"
 })
 
 ----------------------
@@ -106,6 +117,7 @@ L:SetMiscLocalization({
 L= DBM:GetModLocalization(737)
 
 L:SetWarningLocalization({
+	warnReshapeLifeTutor		= "1: Interrupt/debuff target, 2: Interrupt yourself, 3: Regen Health/Willpower, 4: Escape Vehicle",
 	warnAmberExplosion			= ">%s< is casting %s",
 	warnInterruptsAvailable		= "Interupts available for %s: %s",
 	specwarnWillPower			= "Low Will Power!",
@@ -120,6 +132,7 @@ L:SetTimerLocalization{
 
 L:SetOptionLocalization({
 	SoundWOP			= "voice warning: important skills",
+	warnReshapeLifeTutor		= "Display ability purpose rundown of Mutated Construct abilities",
 	warnAmberExplosion			= "Show warning (with source) when $spell:122398 is cast",
 	warnInterruptsAvailable		= "Announce who has Amber Strike interrupts available for $spell:122402",
 	specwarnWillPower			= "Show special warning when will power is low in construct",

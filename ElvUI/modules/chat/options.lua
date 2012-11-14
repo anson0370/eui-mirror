@@ -175,16 +175,8 @@ E.Options.args.chat = {
 					values = AceGUIWidgetLSMlists.sound,
 					set = function(info, value) E.db.chat.whisperSound = value; end,
 				},
-				keywordSound = {
-					order = 12,
-					type = 'select', dialogControl = 'LSM30_Sound',
-					name = L["Keyword Alert"],
-					disabled = function() return not E.db.chat.keywordSound end,
-					values = AceGUIWidgetLSMlists.sound,
-					set = function(info, value) E.db.chat.keywordSound = value; end,
-				},	
 				timeStampFormat = {
-					order = 8,
+					order = 12,
 					type = 'select',
 					name = TIMESTAMPS_LABEL,
 					desc = OPTION_TOOLTIP_TIMESTAMPS,
@@ -199,7 +191,7 @@ E.Options.args.chat = {
 					},
 				},		
 				editBoxPosition = {
-					order = 9,
+					order = 13,
 					type = 'select',
 					name = L['Chat EditBox Position'],
 					desc = L['Position of the Chat EditBox, if datatexts are disabled this will be forced to be above chat.'],
@@ -217,6 +209,26 @@ E.Options.args.chat = {
 					type = 'input',
 					width = 'full',
 					set = function(info, value) E.db.chat[ info[#info] ] = value; CH:UpdateChatKeywords() end,
+				},
+				keywordSound = {
+					order = 101,
+					type = 'select', dialogControl = 'LSM30_Sound',
+					name = L["Keyword Alert"],
+					disabled = function() return not E.db.chat.keywordSound end,
+					values = AceGUIWidgetLSMlists.sound,
+					set = function(info, value) E.db.chat.keywordSound = value; end,
+				},				
+				sendRW = {
+					order = 102,
+					name = L['Send to Screen'],
+					type = 'toggle',
+					disabled = function() return not E.db.chat.keywordSound end,
+				},
+				spacer = {
+					type = 'description',
+					name = '',
+					desc = '',
+					order = 103,
 				},				
 				embedRight = {
 					order = 200,

@@ -890,13 +890,16 @@ function CH:CheckKeyword(message)
 		local word = select(i, string.split(' ', message));
 		if not word:find('|') then
 			for keyword, _ in pairs(CH.Keywords) do
-				if word:lower() == keyword:lower() then
-					replaceWords[word] = E.media.hexvaluecolor..word..'|r'
+				if string.find(word:lower(), keyword:lower()) then
+					replaceWords[word] = string.gsub(word, keyword, E.media.hexvaluecolor..keyword..'|r')
 					if self.db.keywordSound ~= 'None' and not self.SoundPlayed  then
 						PlaySoundFile(LSM:Fetch("sound", self.db.keywordSound), "Master")
 						self.SoundPlayed = true
 						self.SoundTimer = CH:ScheduleTimer('ThrottleSound', 1)			
 					end
+					if self.db.sendRW and E.EuiAlertRun then --eui.cc
+						E.EuiAlertRun(message, 0.1, 0.5, 0.8)
+					end					
 				end	
 			end
 		end

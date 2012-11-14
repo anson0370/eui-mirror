@@ -2,7 +2,7 @@
 local L		= mod:GetLocalizedStrings()
 local sndWOP	= mod:NewSound(nil, "SoundWOP", true)
 
-mod:SetRevision(("$Revision: 8063 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 8091 $"):sub(12, -3))
 mod:SetCreatureID(62511)
 mod:SetModelID(43126)
 mod:SetZone()
@@ -26,6 +26,7 @@ mod:RegisterEventsInCombat(
 (spellid = 45477 or spellid = 122540) and fulltype = SPELL_CAST_SUCCESS or (spellid =122784 or spellid =121949 or spellid = 122395 or spellid = 121994) and fulltype = SPELL_AURA_APPLIED or (spellid =122370 or spellid = 122540 or spellid = 122395 or spellid = 121994) and fulltype = SPELL_AURA_REMOVED or (spellid = 122408 or spellid = 122413 or spellid = 122398 or spellid = 122540 or spellid = 122402) and fulltype = SPELL_CAST_START or fulltype = UNIT_DIED and (targetname = "Omegal" or targetname = "Shiramune")
 --]]
 --Boss
+local warnReshapeLifeTutor		= mod:NewAnnounce("warnReshapeLifeTutor", 1, 122784)--Another LFR focused warning really.
 local warnReshapeLife			= mod:NewTargetAnnounce(122784, 4)
 local warnAmberScalpel			= mod:NewTargetAnnounce(121994, 3)
 local warnParasiticGrowth		= mod:NewTargetAnnounce(121949, 4, nil, mod:IsHealer())
@@ -77,7 +78,7 @@ local timerAmberExplosionCD		= mod:NewNextSourceTimer(13, 122398)--13 second cd 
 local timerDestabalize			= mod:NewTargetTimer(10, 123059)
 local timerStruggleForControl	= mod:NewTargetTimer(5, 122395)
 --Amber Monstrosity
-local timerMassiveStompCD		= mod:NewCDTimer(18, 122540)--18-25 seconds variation
+local timerMassiveStompCD		= mod:NewCDTimer(18, 122408)--18-25 seconds variation
 local timerFlingCD				= mod:NewCDTimer(25, 122413)--25-40sec variation.
 local timerAmberExplosionAMCD	= mod:NewTimer(46, "timerAmberExplosionAMCD", 122402)--Special timer just for amber monstrosity. easier to cancel, easier to tell apart. His bar is the MOST important and needs to be seperate from any other bar option.
 
@@ -108,8 +109,8 @@ end
 function mod:ScalpelTarget()
 	scansDone = scansDone + 1
 	local targetname = DBM:GetUnitFullName("boss1targettarget")--Not a mistake, just clever use of available api to get the target of an invisible mob the boss is targeting ;)
-	warnAmberScalpel:Show(targetname)
 	if UnitExists("boss1targettarget") and not UnitIsUnit("boss1", "boss1targettarget") then
+		warnAmberScalpel:Show(targetname)
 		if targetname == UnitName("player") then
 			specwarnAmberScalpel:Show()
 			yellAmberScalpel:Yell()
@@ -194,6 +195,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			playerIsConstruct = true
 			warnedWill = true -- fix bad low will special warning on entering Construct. After entering vehicle, this will be return to false. (on alt.power changes)
 			specwarnReshape:Show()
+			warnReshapeLifeTutor:Show()
 			sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_nbzh.mp3") --你被轉化
 		end
 		if Phase < 3 then
@@ -213,6 +215,7 @@ function mod:SPELL_AURA_REMOVED(args)
 		if args:IsPlayer() then
 			playerIsConstruct = false
 		end
+		timerAmberExplosionCD:Cancel(args.destName)
 	elseif args:IsSpellID(121994) then
 		timerAmberScalpelCD:Start()
 	elseif args:IsSpellID(121949) then

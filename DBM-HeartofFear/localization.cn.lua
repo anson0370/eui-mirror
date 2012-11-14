@@ -11,8 +11,11 @@ L= DBM:GetModLocalization(745)
 
 L:SetOptionLocalization({
 	specwarnPlatform	= "特别警告：当战斗露台改变时",
+	ArrowOnAttenuation	= "DBM箭头：当$spell:127834出现时指示移动的方向",
 	specwarnExhale		= "特别警告：$spell:122761",
 	specwarnExhaleB		= "特别警告：$spell:122761的预先警告",
+	specwarnAttenuationL	= "特别警告：左旋音波",
+	specwarnAttenuationR	= "特别警告：右旋音波",
 	MindControlIcon		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(122740),
 	SoundWOP			= "语音警告：重要技能",
 	HudMAP				= "高级定位监视(HUD)：$spell:122761目标的位置",
@@ -35,6 +38,8 @@ L:SetMiscLocalization({
 
 L:SetWarningLocalization({
 	specwarnPlatform	= "作战区改变!",
+	specwarnAttenuationL	= "← ← ←左左左",
+	specwarnAttenuationR	= "右右右→ → →",
 	specwarnExhale		= "吐气[%d] : %s",
 	specwarnExhaleB		= "即将 >>%d层<< 吐气"
 })
@@ -62,7 +67,13 @@ L:SetWarningLocalization({
 -------------------------------
 L= DBM:GetModLocalization(713)
 
+L:SetWarningLocalization({
+	specwarnUnder	= "离开紫圈!",
+	specWarnPungencyOtherFix = "%s 敏感 (%d)"
+})
+
 L:SetOptionLocalization({
+	specwarnUnder		= "特别警告：你在BOSS下方",
 	PheromonesIcon		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(122835),
 	InfoFrame			= "资讯框：$spell:123081层数监视",
 	optTankMode			= "特别警告：费洛蒙换坦策略",
@@ -74,8 +85,8 @@ L:SetOptionLocalization({
 	SoundFS				= "坦克倒计时：$spell:122735"
 })
 
-L:SetWarningLocalization({
-	specWarnPungencyOtherFix 		= "%s 敏感性 (%d)"
+L:SetMiscLocalization({
+	UnderHim	= "下面"
 })
 ----------------------
 -- Wind Lord Mel'jarak --
@@ -108,6 +119,7 @@ L:SetMiscLocalization({
 L= DBM:GetModLocalization(737)
 
 L:SetWarningLocalization({
+	warnReshapeLifeTutor		= "1:中断/益伤目标,, 2:中断自己, 3:回复体力/意志力, 4:脱离傀儡",
 	warnAmberExplosion			= "%s 正在施放 %s",
 	warnInterruptsAvailable		= "可打断 %s: %s",
 	specwarnWillPower			= "意志低下！",
@@ -122,6 +134,7 @@ L:SetTimerLocalization{
 
 L:SetOptionLocalization({
 	SoundWOP			= "语音警告：重要技能",
+	warnReshapeLifeTutor		= "显示突变魁儡的能力说明效果",
 	warnAmberExplosion			= "警报：$spell:122398正在施放，并警报来源",
 	warnInterruptsAvailable		= "警报：可使用$spell:122402打断琥珀打击的成员",
 	specwarnWillPower			= "特殊警报：在畸形体中意志低下时",

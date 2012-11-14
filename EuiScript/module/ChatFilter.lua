@@ -65,6 +65,7 @@ end
 local createmsg = deformat(LOOT_ITEM_CREATED_SELF)
 local createmultimsg = deformat(LOOT_ITEM_CREATED_SELF_MULTIPLE)
 local learnspellmsg = deformat(ERR_LEARN_SPELL_S)
+local learnpassivemsg = deformat(ERR_LEARN_PASSIVE_S)
 local learnabilitymsg = deformat(ERR_LEARN_ABILITY_S)
 local unlearnspellmsg = deformat(ERR_SPELL_UNLEARNED_S)
 local petlearnspellmsg = deformat(ERR_PET_LEARN_SPELL_S)
@@ -407,7 +408,7 @@ end
 
 local function ChatFilter_TalentSpec(self, event, msg)
 	if (Config.MergeTalentSpec) then
-		local learnID = strmatch(msg, learnspellmsg) or strmatch(msg, learnabilitymsg)
+		local learnID = strmatch(msg, learnspellmsg) or strmatch(msg, learnabilitymsg) or strmatch(msg, learnpassivemsg)
 		local unlearnID = strmatch(msg, unlearnspellmsg)
 		if (learnID and changingspec) then
 			learnID = tonumber(strmatch(learnID, "spell:(%d+)"))

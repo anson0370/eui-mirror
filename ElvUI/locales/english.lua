@@ -187,6 +187,7 @@ L['Wrap After'] = true;
 L['Your Auras First'] = true;
 
 --Chat
+L['Send to Screen'] = true;
 L['Chat EditBox Position'] = true;
 L['Position of the Chat EditBox, if datatexts are disabled this will be forced to be above chat.'] = true;
 L['Below Chat'] = true;

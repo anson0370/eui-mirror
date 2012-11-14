@@ -2,9 +2,8 @@
 local L		= mod:GetLocalizedStrings()
 local sndWOP	= mod:NewSound(nil, "SoundWOP", true)
 local sndJR	= mod:NewSound(nil, "SoundJR", true)
-local LibRange = LibStub("LibRangeCheck-2.0")
 
-mod:SetRevision(("$Revision: 8051 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 8093 $"):sub(12, -3))
 mod:SetCreatureID(62397)
 mod:SetModelID(42645)
 mod:SetZone()
@@ -23,6 +22,8 @@ mod:RegisterEventsInCombat(
 	"SPELL_CAST_START",
 	"SPELL_DAMAGE",
 	"SPELL_MISSED",
+	"SPELL_PERIODIC_DAMAGE",
+	"SPELL_PERIODIC_MISSED",
 	"RAID_BOSS_EMOTE",
 	"UNIT_DIED",
 	"UNIT_SPELLCAST_SUCCEEDED",
@@ -224,7 +225,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	elseif args:IsSpellID(122064) then
 		warnCorrosiveResin:Show(args.destName)
-		if args:IsPlayer() then
+		if args:IsPlayer() and self:AntiSpam(3, 7) then
 			specWarnCorrosiveResin:Show()
 			yellCorrosiveResin:Yell()
 			sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\keepmove.mp3")--保持移動
@@ -261,9 +262,13 @@ function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(122406) then
 		warnRainOfBlades:Show()
 		specWarnRainOfBlades:Show()
+		if not ptwo then
+			timerRainOfBladesCD:Start()
+		else
+			timerRainOfBladesCD:Start(49)
+		end
 		if mod:IsHealer() then
 			if not ptwo then
-				timerRainOfBladesCD:Start()
 				sndWOP:Cancel("Interface\\AddOns\\DBM-Core\\extrasounds\\countthree.mp3")
 				sndWOP:Cancel("Interface\\AddOns\\DBM-Core\\extrasounds\\counttwo.mp3")
 				sndWOP:Cancel("Interface\\AddOns\\DBM-Core\\extrasounds\\countone.mp3")
@@ -272,7 +277,6 @@ function mod:SPELL_CAST_START(args)
 				sndWOP:Schedule(59, "Interface\\AddOns\\DBM-Core\\extrasounds\\counttwo.mp3")
 				sndWOP:Schedule(60, "Interface\\AddOns\\DBM-Core\\extrasounds\\countone.mp3")
 			else
-				timerRainOfBladesCD:Start(49)
 				sndWOP:Cancel("Interface\\AddOns\\DBM-Core\\extrasounds\\countthree.mp3")
 				sndWOP:Cancel("Interface\\AddOns\\DBM-Core\\extrasounds\\counttwo.mp3")
 				sndWOP:Cancel("Interface\\AddOns\\DBM-Core\\extrasounds\\countone.mp3")
@@ -328,6 +332,8 @@ function mod:SPELL_DAMAGE(_, _, _, _, destGUID, destName, _, _, spellId)
 	end
 end
 mod.SPELL_MISSED = mod.SPELL_DAMAGE
+mod.SPELL_PERIODIC_DAMAGE = mod.SPELL_DAMAGE
+mod.SPELL_PERIODIC_MISSED = mod.SPELL_DAMAGE
 
 function mod:RAID_BOSS_EMOTE(msg)
 	if msg == L.Reinforcements or msg:find(L.Reinforcements) then

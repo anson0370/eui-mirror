@@ -2,7 +2,7 @@
 local L		= mod:GetLocalizedStrings()
 local sndWOP	= mod:NewSound(nil, "SoundWOP", true)
 
-mod:SetRevision(("$Revision: 8062 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 8092 $"):sub(12, -3))
 mod:SetCreatureID(62980)
 mod:SetModelID(42807)
 mod:SetZone()
@@ -16,16 +16,18 @@ mod:RegisterEventsInCombat(
 	"SPELL_AURA_REMOVED",
 	"SPELL_CAST_START",
 --	"SPELL_CAST_SUCCESS",
-	"RAID_BOSS_EMOTE"
+	"RAID_BOSS_EMOTE",
+	"UNIT_SPELLCAST_SUCCEEDED"
 )
 
 --[[WoL Reg expression
 (spellid = 123791 or spellid = 122713) and fulltype = SPELL_CAST_START or (spell = "Inhale" or spell = "Exhale") and (fulltype = SPELL_AURA_APPLIED or fulltype = SPELL_AURA_APPLIED_DOSE or fulltype = SPELL_AURA_REMOVED) or spellid = 127834 or spell = "Convert" or spellid = 124018
+(spellid = 123791 or spellid = 122713 or spellid = 122740 or spellid = 127834) and fulltype = SPELL_CAST_START or spellid = 124018
 --]]
 --Notes: Currently, his phase 2 chi blast abiliteis are not detectable via traditional combat log. maybe with transcriptor.
 local warnInhale			= mod:NewStackAnnounce(122852, 2)
 local warnExhale			= mod:NewTargetAnnounce(122761, 3)
-local warnForceandVerve		= mod:NewSpellAnnounce(122713, 4)
+local warnForceandVerve		= mod:NewCastAnnounce(122713, 4, 4)
 local warnAttenuation		= mod:NewSpellAnnounce(127834, 4)
 local warnConvert			= mod:NewTargetAnnounce(122740, 4)
 
@@ -36,6 +38,9 @@ local specwarnExhale		= mod:NewSpecialWarning("specwarnExhale")
 local specwarnExhaleB		= mod:NewSpecialWarning("specwarnExhaleB")
 local specwarnAttenuation	= mod:NewSpecialWarningSpell(127834, nil, nil, nil, true)
 
+local specwarnAttenuationL	= mod:NewSpecialWarning("specwarnAttenuationL")
+local specwarnAttenuationR	= mod:NewSpecialWarning("specwarnAttenuationR")
+
 --Timers aren't worth a crap, at all, this is a timerless fight and will probably stay that way unless blizz redesigns it.
 --Update, blizzard didn't redesign it, so don't uncomment these timers, they are wrong and will always be wrong until every single failsafe is discovered.
 --Every time i figure one failsafe out, i find out it's wrong under a different condition
@@ -45,6 +50,7 @@ local specwarnAttenuation	= mod:NewSpecialWarningSpell(127834, nil, nil, nil, tr
 --local timerExhaleCD			= mod:NewCDTimer(41, 122761)
 local timerExhale				= mod:NewTargetTimer(6, 122761)
 --local timerForceCD			= mod:NewCDTimer(48, 122713)--Phase 1, every 41 seconds since exhale keeps resetting it, phase 2, 48 seconds or as wildly high as 76 seconds if exhale resets it late in it's natural CD
+local timerForceCast			= mod:NewCastTimer(4, 122713)
 local timerForce				= mod:NewBuffActiveTimer(12.5, 122713)
 --local timerAttenuationCD		= mod:NewCDTimer(34, 127834)--34-41 second variations, when not triggered off exhale. It's ALWAYS 11 seconds after exhale.
 local timerAttenuation			= mod:NewBuffActiveTimer(14, 127834)
@@ -53,6 +59,7 @@ local timerAttenuation			= mod:NewBuffActiveTimer(14, 127834)
 local berserkTimer				= mod:NewBerserkTimer(660)
 
 mod:AddBoolOption("MindControlIcon", true)
+mod:AddBoolOption("ArrowOnAttenuation", true)
 
 local MCTargets = {}
 local MCIcon = 8
@@ -103,6 +110,9 @@ function mod:OnCombatEnd()
 	if self.Options.HudMAP or self.Options.HudMAP2 then
 		DBMHudMap:FreeEncounterMarkers()
 	end
+	if self.Options.ArrowOnAttenuation then
+		DBM.Arrow:Hide()
+	end
 end
 
 function mod:SPELL_AURA_APPLIED(args)
@@ -135,6 +145,20 @@ function mod:SPELL_AURA_APPLIED(args)
 		if self:AntiSpam(2, 2) then
 			sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\findmc.mp3") --注意心控
 		end
+	--"<112.7 21:19:19> [CLEU] SPELL_CAST_START#false#0xF150F60400001A34#Imperial Vizier Zor'lok#68168#0#0x0000000000000000#nil#-2147483648#-2147483648#127834#Attenuation#0", -- [30640] --First ID is universal spell cast start spellid
+	--"<114.3 21:19:21> [CLEU] SPELL_AURA_APPLIED#false#0xF130F8420000203A#Imperial Vizier Zor'lok#2632#0#0xF130F8420000203A#Imperial Vizier Zor'lok#2632#0#122474#Attenuation#0#BUFF", -- [30914] --Second ID is direction (one of two buffs he gets, he also gets a buff from cast ID)
+	elseif args:IsSpellID(122474, 122496, 123721, 122513) then
+		if self.Options.ArrowOnAttenuation then
+			DBM.Arrow:ShowStatic(270, 9)
+		end
+		specwarnAttenuationL:Show()
+		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_left.mp3") --左側
+	elseif args:IsSpellID(122479, 122497, 123722, 122514) then
+		if self.Options.ArrowOnAttenuation then
+			DBM.Arrow:ShowStatic(90, 9)
+		end
+		specwarnAttenuationR:Show()
+		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_right.mp3") --右側
 	end
 end
 mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
@@ -164,7 +188,6 @@ function mod:SPELL_CAST_START(args)
 	elseif args:IsSpellID(122713) then
 		warnForceandVerve:Show()
 		specwarnForce:Show()
-		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_dyq.mp3") --快進定音區
 		if mod:IsHealer() then
 			sndWOP:Schedule(2, "Interface\\AddOns\\DBM-Core\\extrasounds\\healall.mp3") --注意群療
 		end
@@ -206,5 +229,13 @@ function mod:RAID_BOSS_EMOTE(msg)
 		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\justrun.mp3") --快跑
 --		platform = platform + 1
 --		recentPlatformChange = true
+	end
+end
+
+function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, _, _, spellId)
+	if spellId == 122933 and self:AntiSpam(2, 1) then--Clear Throat (4 seconds before force and verve)
+		warnForceandVerve:Show()
+		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_dyq.mp3") --快進定音區
+		timerForceCast:Start()
 	end
 end

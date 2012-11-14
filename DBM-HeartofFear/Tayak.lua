@@ -2,7 +2,7 @@
 local L		= mod:GetLocalizedStrings()
 local sndWOP	= mod:NewSound(nil, "SoundWOP", true)
 
-mod:SetRevision(("$Revision: 8042 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 8072 $"):sub(12, -3))
 mod:SetCreatureID(62543)
 mod:SetModelID(43141)
 mod:SetZone()
@@ -99,7 +99,9 @@ function mod:OnCombatStart(delay)
 	timerUnseenStrikeCD:Start(30.5-delay)
 	sndWOP:Schedule(27, "Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_wxdjzb.mp3") --無形打擊準備
 	timerIntensifyCD:Start(intensifyCD-delay)
-	berserkTimer:Start(-delay)
+	if not self:IsDifficulty("lfr25") then
+		berserkTimer:Start(-delay)
+	end
 	if self:IsDifficulty("heroic10", "heroic25") then
 		timerBladeTempestCD:Start(-delay)
 		sndWOP:Schedule(57, "Interface\\AddOns\\DBM-Core\\extrasounds\\wwsoon.mp3") --準備旋風
@@ -220,7 +222,7 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, _, _, _, target)
 		sndWOP:Schedule(3.5, "Interface\\AddOns\\DBM-Core\\extrasounds\\countone.mp3")
 		sndWOP:Schedule(50, "Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_wxdjzb.mp3") --無形打擊準備
 		if self.Options.UnseenStrikeArrow then
-			DBM.Arrow:ShowRunTo(target, 5)
+			DBM.Arrow:ShowRunTo(target, 5, 5)
 		end
 		self:Schedule(5, function()
 			emoteFired = false

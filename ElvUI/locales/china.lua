@@ -1032,6 +1032,7 @@ end
 
 --Chat
 do
+	L['Send to Screen'] = '转发至屏幕';
 	L['Chat EditBox Position'] = '聊天编辑框位置';
 	L['Position of the Chat EditBox, if datatexts are disabled this will be forced to be above chat.'] = '聊天编辑框位置,如果底部的信息文字被禁用的话,将会强制显示在聊天框顶部';
 	L['Below Chat'] = '聊天框底部';
