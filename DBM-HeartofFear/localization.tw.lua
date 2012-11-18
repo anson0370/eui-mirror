@@ -13,6 +13,7 @@ L:SetOptionLocalization({
 	specwarnExhaleB		= "特別警告：$spell:122761的預先警告",
 	specwarnAttenuationL	= "特別警告：左旋音波",
 	specwarnAttenuationR	= "特別警告：右旋音波",
+	specwarnDR				= "特別警告：注意開減傷",
 	MindControlIcon		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(122740),
 	SoundWOP			= "語音警告：重要技能",
 	HudMAP				= "高級定位監視(HUD)：$spell:122761目標的位置",
@@ -25,7 +26,21 @@ L:SetOptionLocalization({
 	arrow4				= "三角",
 	arrow5				= "月亮",
 	arrow6				= "方塊",
-	arrow7				= "叉叉"
+	arrow7				= "叉叉",
+	optDR				= "P1階段<力量與氣魄>減傷",
+	noDR				= "不關我事",
+	DR1					= "P1第一次",
+	DR2					= "P1第二次",
+	DR3					= "P1第三次",
+	DR4					= "P1第四次",
+	DR5					= "P1第五次",
+	optDRT				= "P2階段<力量與氣魄>減傷",
+	noDRT				= "不關我事",
+	DRT1				= "P2第一次",
+	DRT2				= "P2第二次",
+	DRT3				= "P2第三次",
+	DRT4				= "P2第四次",
+	DRT5				= "P2第五次"
 })
 
 L:SetMiscLocalization({
@@ -38,6 +53,7 @@ L:SetWarningLocalization({
 	specwarnAttenuationL	= "← ← ←左左左",
 	specwarnAttenuationR	= "右右右→ → →",
 	specwarnExhale		= "吐氣[%d] : %s",
+	specwarnDR			= ">>本輪你開減傷<<",
 	specwarnExhaleB		= "即將 >>%d層<< 吐氣"
 })
 
@@ -83,7 +99,8 @@ L:SetOptionLocalization({
 })
 
 L:SetMiscLocalization({
-	UnderHim	= "在他下面"
+	UnderHim	= "在他下面",
+	Heroicrush	= "他的對手"
 })
 
 ----------------------
@@ -153,7 +170,12 @@ L:SetMiscLocalization({
 ------------
 L= DBM:GetModLocalization(743)
 
+L:SetWarningLocalization({
+	warnAmberTrap		= "琥珀陷阱：%d/5",
+})
+
 L:SetOptionLocalization({
+	warnAmberTrap		= "警告：$spell:125826的生成和進度", -- maybe bad translation.
 	InfoFrame			= "資訊框：被$spell:125390的團員",
 	SoundWOP			= "語音警告：重要技能",
 	HudMAP				= "高級定位監視(HUD)：$spell:124863的位置",

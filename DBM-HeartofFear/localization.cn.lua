@@ -1,5 +1,5 @@
 ﻿-- Simplified Chinese by Diablohu(diablohudream@gmail.com)
--- Last update: 11/06/2012
+-- Last update: 11/14/2012
 
 if GetLocale() ~= "zhCN" then return end
 local L
@@ -16,6 +16,7 @@ L:SetOptionLocalization({
 	specwarnExhaleB		= "特别警告：$spell:122761的预先警告",
 	specwarnAttenuationL	= "特别警告：左旋音波",
 	specwarnAttenuationR	= "特别警告：右旋音波",
+	specwarnDR				= "特别警告：注意开减伤",
 	MindControlIcon		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(122740),
 	SoundWOP			= "语音警告：重要技能",
 	HudMAP				= "高级定位监视(HUD)：$spell:122761目标的位置",
@@ -28,7 +29,21 @@ L:SetOptionLocalization({
 	arrow4				= "三角",
 	arrow5				= "月亮",
 	arrow6				= "方块",
-	arrow7				= "叉叉"
+	arrow7				= "叉叉",
+	optDR				= "P1阶段<力与魄>减伤",
+	noDR				= "不关我事",
+	DR1					= "P1第一次",
+	DR2					= "P1第二次",
+	DR3					= "P1第三次",
+	DR4					= "P1第四次",
+	DR5					= "P1第五次",
+	optDRT				= "P2阶段<力与魄>减伤",
+	noDRT				= "不关我事",
+	DRT1				= "P2第一次",
+	DRT2				= "P2第二次",
+	DRT3				= "P2第三次",
+	DRT4				= "P2第四次",
+	DRT5				= "P2第五次"
 })
 
 L:SetMiscLocalization({
@@ -41,6 +56,7 @@ L:SetWarningLocalization({
 	specwarnAttenuationL	= "← ← ←左左左",
 	specwarnAttenuationR	= "右右右→ → →",
 	specwarnExhale		= "吐气[%d] : %s",
+	specwarnDR			= ">>本轮你开减伤<<",
 	specwarnExhaleB		= "即将 >>%d层<< 吐气"
 })
 
@@ -154,7 +170,12 @@ L:SetMiscLocalization({
 ------------
 L= DBM:GetModLocalization(743)
 
+L:SetWarningLocalization({
+	warnAmberTrap		= "琥珀陷阱：%d/5",
+})
+
 L:SetOptionLocalization({
+	warnAmberTrap		= "警报：$spell:125826的生成，并提示进度", -- maybe bad translation.
 	InfoFrame			= "信息框：受$spell:125390效果影响的玩家",
 	SoundWOP			= "语音警告：重要技能",
 	HudMAP				= "高级定位监视(HUD)：$spell:124863的位置",
@@ -164,6 +185,6 @@ L:SetOptionLocalization({
 
 L:SetMiscLocalization({
 	PlayerDebuffs		= "凝视",
-	YellPhase3			= "No more excuses, Empress! Eliminate these cretins or I will kill you myself!"
+	YellPhase3			= "别找借口了，女皇！消灭这些傻瓜，否则我会亲手杀了你！"
 
 })

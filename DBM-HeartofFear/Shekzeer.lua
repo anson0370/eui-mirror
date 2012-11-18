@@ -2,7 +2,7 @@
 local L		= mod:GetLocalizedStrings()
 local sndWOP	= mod:NewSound(nil, "SoundWOP", true)
 
-mod:SetRevision(("$Revision: 8084 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 8106 $"):sub(12, -3))
 mod:SetCreatureID(62837)--62847 Dissonance Field, 63591 Kor'thik Reaver, 63589 Set'thik Windblade
 mod:SetModelID(42730)
 mod:SetZone()
@@ -25,7 +25,7 @@ local warnCryOfTerror			= mod:NewTargetAnnounce(123788, 3, nil, mod:IsHealer())
 local warnEyes					= mod:NewStackAnnounce(123707, 2, nil, mod:IsTank())
 local warnSonicDischarge		= mod:NewSoonAnnounce(123504, 4)--Iffy reliability but better then nothing i suppose.
 local warnRetreat				= mod:NewSpellAnnounce(125098, 4)
-local warnAmberTrap				= mod:NewSpellAnnounce(125826, 3)--Trap ready
+local warnAmberTrap				= mod:NewAnnounce("warnAmberTrap", 2, 125826)
 local warnTrapped				= mod:NewTargetAnnounce(125822, 1)--Trap used
 local warnStickyResin			= mod:NewTargetAnnounce(124097, 3)
 local warnFixate				= mod:NewTargetAnnounce(125390, 3, nil, false)--Spammy
@@ -155,6 +155,8 @@ function mod:SPELL_AURA_APPLIED(args)
 			specwarnCryOfTerror:Show()
 			sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_kjyy.mp3") --快進音域
 		end
+	elseif args:IsSpellID(124748) then
+		warnAmberTrap:Show(args.amount or 1)
 	elseif args:IsSpellID(125822) then
 		warnTrapped:Show(args.destName)
 	elseif args:IsSpellID(125390) then
@@ -253,6 +255,8 @@ function mod:SPELL_CAST_SUCCESS(args)
 	if args:IsSpellID(123735) then
 		warnScreech:Show()
 		timerScreechCD:Start()
+	elseif args:IsSpellID(124748) then
+		warnAmberTrap:Show(1)
 	elseif args:IsSpellID(125826) then
 		warnAmberTrap:Show()
 		specwarnAmberTrap:Show()

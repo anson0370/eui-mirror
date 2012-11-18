@@ -45,6 +45,7 @@ local specwarnPungency			= mod:NewSpecialWarningStack(123081, mod:IsTank(), 20)
 local specWarnPungencyOtherFix	= mod:NewSpecialWarning("specWarnPungencyOtherFix")
 
 local timerCrush				= mod:NewCastTimer(3.5, 122774)--Was 3 second, hotfix went live after my kill log, don't know what new hotfixed cast time is, 3.5, 4? Needs verification.
+local timerCrushCD				= mod:NewNextTimer(37.5, 122774)
 local timerFuriousSwipeCD		= mod:NewCDTimer(8, 122735)
 local timerMendLegCD			= mod:NewCDTimer(30, 123495)
 local timerFury					= mod:NewBuffActiveTimer(30, 122754)
@@ -81,7 +82,10 @@ function mod:OnCombatStart(delay)
 	sndFS:Schedule(5, "Interface\\AddOns\\DBM-Core\\extrasounds\\countthree.mp3")
 	sndFS:Schedule(6, "Interface\\AddOns\\DBM-Core\\extrasounds\\counttwo.mp3")
 	sndFS:Schedule(7, "Interface\\AddOns\\DBM-Core\\extrasounds\\countone.mp3")
-	table.wipe(PheromonesMarkers)
+	table.wipe(PheromonesMarkers)	
+	if self:IsDifficulty("heroic10", "heroic25") then
+		timerCrushCD:Start(30-delay)
+	end
 end
 
 function mod:OnCombatEnd()
@@ -223,6 +227,10 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, _, _, _, target)
 		if msg:find(L.UnderHim) and target == UnitName("player") then
 			specwarnUnder:Show()--it's a bit of a too little too late warning, but hopefully it'll help people in LFR understand it's not place to be and less likely to repeat it, eventually thining out LFR failure rate to this.
 			sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_lkzq.mp3") --離開紫圈
+		end
+		if msg:find(L.Heroicrush) then
+			timerCrushCD:Cancel()
+			timerCrushCD:Start()
 		end
 	end
 end

@@ -96,6 +96,7 @@ local function LoadSkin()
 	hooksecurefunc("PetJournal_UpdatePetCard", UpdatePetCardQuality)
 
 	local function ColorSelectedPet()
+		if IsAddOnLoaded('PetJournalEnhanced') then return; end
 		local petButtons = PetJournal.listScroll.buttons;
 		local isWild = PetJournal.isWild;
 

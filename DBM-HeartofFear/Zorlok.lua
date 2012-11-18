@@ -2,7 +2,7 @@
 local L		= mod:GetLocalizedStrings()
 local sndWOP	= mod:NewSound(nil, "SoundWOP", true)
 
-mod:SetRevision(("$Revision: 8092 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 8110 $"):sub(12, -3))
 mod:SetCreatureID(62980)
 mod:SetModelID(42807)
 mod:SetZone()
@@ -15,7 +15,7 @@ mod:RegisterEventsInCombat(
 	"SPELL_AURA_APPLIED_DOSE",
 	"SPELL_AURA_REMOVED",
 	"SPELL_CAST_START",
---	"SPELL_CAST_SUCCESS",
+	"SPELL_CAST_SUCCESS",
 	"RAID_BOSS_EMOTE",
 	"UNIT_SPELLCAST_SUCCEEDED"
 )
@@ -41,6 +41,8 @@ local specwarnAttenuation	= mod:NewSpecialWarningSpell(127834, nil, nil, nil, tr
 local specwarnAttenuationL	= mod:NewSpecialWarning("specwarnAttenuationL")
 local specwarnAttenuationR	= mod:NewSpecialWarning("specwarnAttenuationR")
 
+local specwarnDR			= mod:NewSpecialWarning("specwarnDR")
+
 --Timers aren't worth a crap, at all, this is a timerless fight and will probably stay that way unless blizz redesigns it.
 --Update, blizzard didn't redesign it, so don't uncomment these timers, they are wrong and will always be wrong until every single failsafe is discovered.
 --Every time i figure one failsafe out, i find out it's wrong under a different condition
@@ -63,10 +65,12 @@ mod:AddBoolOption("ArrowOnAttenuation", true)
 
 local MCTargets = {}
 local MCIcon = 8
---local recentPlatformChange = false
---local platform = 0
+local platform = 0
 
 local tqcount = 0
+local qpcount = 0
+
+local ptwo = false
 
 
 mod:AddBoolOption("HudMAP", true, "sound")
@@ -81,6 +85,9 @@ local ExhaleMarkers = {}
 local MindControlMarkers = {}
 
 mod:AddDropdownOption("optarrowRTI", {"none", "arrow1", "arrow2", "arrow3", "arrow4", "arrow5", "arrow6", "arrow7"}, "none", "sound")
+
+mod:AddDropdownOption("optDR", {"noDR", "DR1", "DR2", "DR3", "DR4", "DR5"}, "noDR", "sound")
+mod:AddDropdownOption("optDRT", {"noDRT", "DRT1", "DRT2", "DRT3", "DRT4", "DRT5"}, "noDRT", "sound")
 
 local function showMCWarning()
 	warnConvert:Show(table.concat(MCTargets, "<, >"))
@@ -98,8 +105,9 @@ local function ArrowRTI(rindex)
 end
 
 function mod:OnCombatStart(delay)
---	recentPlatformChange = false
---	platform = 0
+	platform = 0
+	qpcount = 0
+	ptwo = false
 	table.wipe(MCTargets)
 	berserkTimer:Start(-delay)
 	table.wipe(ExhaleMarkers)
@@ -147,18 +155,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 	--"<112.7 21:19:19> [CLEU] SPELL_CAST_START#false#0xF150F60400001A34#Imperial Vizier Zor'lok#68168#0#0x0000000000000000#nil#-2147483648#-2147483648#127834#Attenuation#0", -- [30640] --First ID is universal spell cast start spellid
 	--"<114.3 21:19:21> [CLEU] SPELL_AURA_APPLIED#false#0xF130F8420000203A#Imperial Vizier Zor'lok#2632#0#0xF130F8420000203A#Imperial Vizier Zor'lok#2632#0#122474#Attenuation#0#BUFF", -- [30914] --Second ID is direction (one of two buffs he gets, he also gets a buff from cast ID)
-	elseif args:IsSpellID(122474, 122496, 123721, 122513) then
-		if self.Options.ArrowOnAttenuation then
-			DBM.Arrow:ShowStatic(270, 9)
-		end
-		specwarnAttenuationL:Show()
-		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_left.mp3") --左側
-	elseif args:IsSpellID(122479, 122497, 123722, 122514) then
-		if self.Options.ArrowOnAttenuation then
-			DBM.Arrow:ShowStatic(90, 9)
-		end
-		specwarnAttenuationR:Show()
-		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_right.mp3") --右側
 	end
 end
 mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
@@ -181,10 +177,10 @@ end
 
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(127834) then
-		warnAttenuation:Show()
-		specwarnAttenuation:Show()
+--		warnAttenuation:Show()
+--		specwarnAttenuation:Show()
 		timerAttenuation:Start()
-		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_ybzb.mp3") --音波準備
+--		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_ybzb.mp3") --音波準備
 	elseif args:IsSpellID(122713) then
 		warnForceandVerve:Show()
 		specwarnForce:Show()
@@ -212,23 +208,37 @@ function mod:SPELL_CAST_START(args)
 		specwarnExhaleB:Show(tqcount)
 --[[	elseif args:IsSpellID(123791) and recentPlatformChange then--No one is in melee range of boss, he's aoeing. (i.e., he's arrived at new platform)
 		recentPlatformChange = false--we want to ignore when this happens as a result of players doing fight wrong. Only interested in platform changes.--]]
+	elseif args:IsSpellID(122474, 122496, 123721, 122513) then
+		if self.Options.ArrowOnAttenuation then
+			DBM.Arrow:ShowStatic(90, 9)
+		end
+		specwarnAttenuationL:Show()
+		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_zzyb.mp3") --左轉音波
+	elseif args:IsSpellID(122479, 122497, 123722, 122514) then
+		if self.Options.ArrowOnAttenuation then
+			DBM.Arrow:ShowStatic(270, 9)
+		end
+		specwarnAttenuationR:Show()
+		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_yzyb.mp3") --右轉音波
 	end
 end
 
---[[
+
 function mod:SPELL_CAST_SUCCESS(args)
 	if args:IsSpellID(124018) then
-		platform = 4--He moved to middle, it's phase 2, although platform "4" is better then adding an extra variable.
 		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ptwo.mp3") --P2
+		ptwo = true
+		qpcount = 0
 	end
-end--]]
+end
 
 function mod:RAID_BOSS_EMOTE(msg)
 	if msg == L.Platform or msg:find(L.Platform) then
+		platform = platform + 1
 		specwarnPlatform:Show()
-		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\justrun.mp3") --快跑
---		platform = platform + 1
---		recentPlatformChange = true
+		if platform < 4 then
+			sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\justrun.mp3") --快跑
+		end
 	end
 end
 
@@ -237,5 +247,10 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, _, _, spellId)
 		warnForceandVerve:Show()
 		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_dyq.mp3") --快進定音區
 		timerForceCast:Start()
+		qpcount = qpcount + 1
+		if (((self.Options.optDR == "DR1" and qpcount == 1) or (self.Options.optDR == "DR2" and qpcount == 2) or (self.Options.optDR == "DR3" and qpcount == 3) or (self.Options.optDR == "DR4" and qpcount == 4) or (self.Options.optDR == "DR5" and qpcount == 5)) and not ptwo) or (((self.Options.optDRT == "DRT1" and qpcount == 1) or (self.Options.optDRT == "DRT2" and qpcount == 2) or (self.Options.optDRT == "DRT3" and qpcount == 3) or (self.Options.optDRT == "DRT4" and qpcount == 4) or (self.Options.optDRT == "DRT5" and qpcount == 5)) and ptwo) then
+			sndWOP:Schedule(3, "Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_zyjs.mp3") --注意減傷
+			specwarnDR:Schedule(3)
+		end
 	end
 end

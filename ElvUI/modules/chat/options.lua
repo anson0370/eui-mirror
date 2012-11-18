@@ -235,7 +235,7 @@ E.Options.args.chat = {
 					type = 'select',
 					name = L['Embedded Addon'],
 					desc = L['Select an addon to embed to the right chat window. This will resize the addon to fit perfectly into the chat window, it will also parent it to the chat window so hiding the chat window will also hide the addon.'],
-					disabled = function() return not IsAddOnLoaded("Tukui_ElvUI_Skins") end,
+					disabled = function() return not IsAddOnLoaded("ElvUI_AddOnSkins") end,
 					values = {
 						["Skada"] = "Skada",
 						["Recount"] = "Recount",
@@ -245,30 +245,30 @@ E.Options.args.chat = {
 						["None"] = "None",
 					},
 					get = function(info) 
-						if E.db.skins.EmbedSkada then return "Skada" end;
-						if E.db.skins.EmbedRecount then return "Recount" end;
-						if E.db.skins.EmbedOmen then return "Omen" end;
-						if E.db.skins.EmbedRO then return "OmenRecount" end;
-						if E.db.skins.EmbedTDPS then return "TinyDPS" end;						
+						if E.private.skins.addons.EmbedSkada then return "Skada" end;
+						if E.private.skins.addons.EmbedRecount then return "Recount" end;
+						if E.private.skins.addons.EmbedOmen then return "Omen" end;
+						if E.private.skins.addons.EmbedRO then return "OmenRecount" end;
+						if E.private.skins.addons.EmbedTDPS then return "TinyDPS" end;						
 						return "None"
 					end,
 					set = function(info, value)
 						if value == "Skada" then
-							E.db.skins.EmbedSkada = true;
+							E.private.skins.addons.EmbedSkada = true;
 						elseif value == "Recount" then
-							E.db.skins.EmbedRecount = true;
+							E.private.skins.addons.EmbedRecount = true;
 						elseif value == "Omen" then
-							E.db.skins.EmbedOmen = true;
+							E.private.skins.addons.EmbedOmen = true;
 						elseif value == "OmenRecount" then
-							E.db.skins.EmbedRO = true;
+							E.private.skins.addons.EmbedRO = true;
 						elseif value == "TinyDPS" then
-							E.db.skins.EmbedTDPS = true;
+							E.private.skins.addons.EmbedTDPS = true;
 						elseif value == "None" then
-							E.db.skins.EmbedSkada = false;
-							E.db.skins.EmbedRecount = false;
-							E.db.skins.EmbedOmen = false;
-							E.db.skins.EmbedRO = false;
-							E.db.skins.EmbedTDPS = false;							
+							E.private.skins.addons.EmbedSkada = false;
+							E.private.skins.addons.EmbedRecount = false;
+							E.private.skins.addons.EmbedOmen = false;
+							E.private.skins.addons.EmbedRO = false;
+							E.private.skins.addons.EmbedTDPS = false;							
 						end
 						E:StaticPopup_Show("CONFIG_RL")
 					end,
@@ -278,9 +278,9 @@ E.Options.args.chat = {
 					type = "toggle",
 					name = L["embedcombat"],
 					desc = L["embedcombat_desc"],
-					set = function(info, value) E.db.skins.EmbedOoC = value; E:StaticPopup_Show("PRIVATE_RL") end,
-					get = function() return E.db.skins.EmbedOoC end,
-					disabled = function() return not IsAddOnLoaded("Tukui_ElvUI_Skins") end,
+					set = function(info, value) E.private.skins.addons.EmbedOoC = value; E:StaticPopup_Show("PRIVATE_RL") end,
+					get = function() return E.private.skins.addons.EmbedOoC end,
+					disabled = function() return not IsAddOnLoaded("ElvUI_AddOnSkins") end,
 				},					
 			},
 		},

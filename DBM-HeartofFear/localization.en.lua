@@ -12,6 +12,7 @@ L:SetOptionLocalization({
 	specwarnAttenuationR	= "Show special warning when right Attenuation",
 	specwarnExhale		= "Show special warning for $spell:122761",
 	specwarnExhaleB		= "Show special warning for pre $spell:122761",
+	specwarnDR			= "Show special warning for Damage reduction skills",
 	MindControlIcon		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(122740),
 	SoundWOP			= "Voice warning: important skills",
 	HudMAP				= "HudMAP: $spell:122761 targeting",
@@ -24,7 +25,21 @@ L:SetOptionLocalization({
 	arrow4				= "Triangle",
 	arrow5				= "moon",
 	arrow6				= "Square",
-	arrow7				= "Fork"
+	arrow7				= "Fork",
+	optDR				= "P1 Damage reduction skills",
+	noDR				= "none",
+	DR1					= "P1 first",
+	DR2					= "P1 second",
+	DR3					= "P1 third",
+	DR4					= "P1 fourth",
+	DR5					= "P1 fifth",
+	optDRT				= "P2 Damage reduction skills",
+	noDRT				= "none",
+	DRT1				= "P2 first",
+	DRT2				= "P2 second",
+	DRT3				= "P2 third",
+	DRT4				= "P2 fourth",
+	DRT5				= "P2 fifth"
 })
 
 L:SetMiscLocalization({
@@ -37,6 +52,7 @@ L:SetWarningLocalization({
 	specwarnAttenuationL	= "LEFT!",
 	specwarnAttenuationR	= "RIGHR!",
 	specwarnExhale		= "Exhale[%d] : %s",
+	specwarnDR			= ">>Damage reduction skill!<<",
 	specwarnExhaleB		= "Next: >>%d<< Exhale"
 })
 
@@ -152,7 +168,12 @@ L:SetMiscLocalization({
 ------------
 L= DBM:GetModLocalization(743)
 
+L:SetWarningLocalization({
+	warnAmberTrap		= "Amber Trap progress: (%d/5)",
+})
+
 L:SetOptionLocalization({
+	warnAmberTrap		= "Show warning (with progress) when $spell:125826 is making", -- maybe bad translation.
 	InfoFrame		= "Show info frame for players affected by $spell:125390",
 	RangeFrame		= "Show range frame (5) for $spell:123735",
 	SoundWOP		= "voice warning: important skills",

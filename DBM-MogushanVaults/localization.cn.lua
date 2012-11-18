@@ -191,6 +191,7 @@ L = DBM:GetModLocalization(726)
 L:SetWarningLocalization({
 	specWarnDespawnFloor		= "中场即将消失!",
 	specWarnCharge				= "聚焦能量 [%d] - 转换目标",
+	specwarnYB					= "本轮>>分担横扫千军<<!",
 	specWarnProtector			= "星穹保卫者 [%d] - 转换目标"
 })
 
@@ -206,6 +207,7 @@ L:SetOptionLocalization({
 	specWarnDespawnFloor		= "特殊警告：中场地板消失前",
 	specWarnCharge				= "特殊警告：聚焦能量",
 	specWarnProtector			= "特殊警告：$journal:6178",
+	specwarnYB					= "特殊警告：本轮需要分担横扫千军",
 	timerDespawnFloor			= "计时器：中场地板消失",
 	InfoFrame					= "资讯框：$spell:117878层数最高的5名团员",
 	SetIconOnDestabilized		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(132226),
@@ -222,7 +224,21 @@ L:SetOptionLocalization({
 	posC 						= "3号位",
 	posD						= "4号位",
 	posE 						= "5号位",
-	posF 						= "6号位"
+	posF 						= "6号位",
+	optYB						= "第一轮<横扫千军>分担",
+	noYB						= "没我事",
+	YB1							= "第一次",
+	YB2							= "第二次",
+	YB3							= "第三次",
+	YB4							= "第四次",
+	YB5							= "第五次",
+	optYBT						= "第二轮<横扫千军>分担",
+	noYBT						= "没我事",
+	YBT1						= "第一次",
+	YBT2						= "第二次",
+	YBT3						= "第三次",
+	YBT4						= "第四次",
+	YBT5						= "第五次"
 })
 
 L:SetMiscLocalization({

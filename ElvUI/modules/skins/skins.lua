@@ -21,6 +21,7 @@ local function SetOriginalBackdrop(self)
 end
 
 function S:HandleButton(f, strip)
+	if not f then return; end
 	if f.Left then f.Left:SetAlpha(0) end
 	if f.Middle then f.Middle:SetAlpha(0) end
 	if f.Right then f.Right:SetAlpha(0) end
@@ -41,6 +42,7 @@ function S:HandleButton(f, strip)
 end
 
 function S:HandleButtonB(f, strip)
+	if not f then return; end
 	if f.Left then f.Left:SetAlpha(0) end
 	if f.Middle then f.Middle:SetAlpha(0) end
 	if f.Right then f.Right:SetAlpha(0) end
@@ -57,6 +59,7 @@ function S:HandleButtonB(f, strip)
 end
 
 function S:HandleScrollBar(frame, thumbTrim)
+	if not frame then return; end
 	if _G[frame:GetName().."BG"] then _G[frame:GetName().."BG"]:SetTexture(nil) end
 	if _G[frame:GetName().."Track"] then _G[frame:GetName().."Track"]:SetTexture(nil) end
 	
@@ -166,6 +169,7 @@ function S:HandleTab(tab)
 end
 
 function S:HandleNextPrevButton(btn, horizonal)
+	if not btn then return; end
 	local norm, pushed, disabled
 	local isPrevButton = btn:GetName() and (string.find(btn:GetName(), 'Left') or string.find(btn:GetName(), 'Prev') or string.find(btn:GetName(), 'Decrement'))
 	
@@ -242,6 +246,7 @@ function S:HandleNextPrevButton(btn, horizonal)
 end
 
 function S:HandleRotateButton(btn)
+	if not btn then return; end
 	btn:SetTemplate("Default")
 	btn:Size(btn:GetWidth() - 14, btn:GetHeight() - 14)	
 	
@@ -256,6 +261,7 @@ function S:HandleRotateButton(btn)
 end
 
 function S:HandleEditBox(frame)
+	if not frame then return; end
 	frame:CreateBackdrop("Default")
 
 	if frame.TopLeftTex then frame.TopLeftTex:Kill() end
@@ -281,6 +287,7 @@ function S:HandleEditBox(frame)
 end
 
 function S:HandleDropDownBox(frame, width, trans)
+	if not frame then return; end
 	local button = _G[frame:GetName().."Button"]
 	if not width then width = 155 end
 	
@@ -303,6 +310,7 @@ function S:HandleDropDownBox(frame, width, trans)
 end
 
 function S:HandleCheckBox(frame)
+	if not frame then return; end
 	frame:StripTextures()
 	frame:CreateBackdrop("Default")
 	frame.backdrop:SetInside(nil, 4, 4)
@@ -330,6 +338,7 @@ function S:HandleCheckBox(frame)
 end
 
 function S:HandleItemButton(b, shrinkIcon)
+	if not b then return; end
 	if b.isSkinned then return; end
 
 	b:StripTextures()
@@ -360,6 +369,7 @@ function S:HandleItemButton(b, shrinkIcon)
 end
 
 function S:HandleCloseButton(f, point, text)
+	if not f then return; end
 	f:StripTextures()
 	
 	if not f.backdrop then
@@ -384,6 +394,7 @@ function S:HandleCloseButton(f, point, text)
 end
 
 function S:HandleSliderFrame(frame)
+	if not frame then return; end
 	local orientation = frame:GetOrientation()
 	local SIZE = 12
 	frame:StripTextures()

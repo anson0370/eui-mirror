@@ -2,7 +2,7 @@
 local L		= mod:GetLocalizedStrings()
 local sndWOP	= mod:NewSound(nil, "SoundWOP", true)
 
-mod:SetRevision(("$Revision: 8091 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 8110 $"):sub(12, -3))
 mod:SetCreatureID(62511)
 mod:SetModelID(43126)
 mod:SetZone()
@@ -30,6 +30,7 @@ local warnReshapeLifeTutor		= mod:NewAnnounce("warnReshapeLifeTutor", 1, 122784)
 local warnReshapeLife			= mod:NewTargetAnnounce(122784, 4)
 local warnAmberScalpel			= mod:NewTargetAnnounce(121994, 3)
 local warnParasiticGrowth		= mod:NewTargetAnnounce(121949, 4, nil, mod:IsHealer())
+local warnAmberGlob				= mod:NewTargetAnnounce(125502, 4)--Heroic drycode, might need some tweaks
 --Construct
 local warnAmberExplosion		= mod:NewAnnounce("warnAmberExplosion", 3, 122398, false)--In case you want to get warned for all of them, but could be spammy later fight so off by default. This announce includes source of cast.
 local warnStruggleForControl	= mod:NewTargetAnnounce(122395, 2)--Disabled in phase 3 as at that point it's just a burn.
@@ -51,6 +52,7 @@ local specwarnAmberScalpelNear		= mod:NewSpecialWarningClose(121994)
 local specwarnReshape				= mod:NewSpecialWarningYou(122784)
 local specwarnParasiticGrowth		= mod:NewSpecialWarningTarget(121949, mod:IsHealer())
 local specwarnParasiticGrowthYou	= mod:NewSpecialWarningYou(121949) -- This warn will be needed at player is clustered together. Especially on Phase 3.
+local specwarnAmberGlob				= mod:NewSpecialWarningYou(125502)
 --Construct
 local specwarnAmberExplosionYou		= mod:NewSpecialWarning("specwarnAmberExplosionYou")--Only interruptable by the player controling construct casting, so only that person gets warning. non generic used to make this one more specific.
 local specwarnAmberExplosionAM		= mod:NewSpecialWarning("specwarnAmberExplosionAM")--Must be on by default. Amber montrosity's MUST be interrupted on heroic or it's an auto wipe. it hits for over 500k.
@@ -163,7 +165,11 @@ end
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(123059) and not args:GetDestCreatureID() == 62691 then--Only track debuffs on boss, constructs, or monstrosity, ignore oozes.
 		warnDestabalize:Show(args.destName, args.amount or 1)
-		timerDestabalize:Start(args.destName)
+		if self:IsDifficulty("lfr25") then
+			timerDestabalize:Start(60, args.destName)
+		else
+			timerDestabalize:Start(args.destName)
+		end
 	elseif args:IsSpellID(121949) then
 		warnParasiticGrowth:Show(args.destName)
 		specwarnParasiticGrowth:Show(args.destName)
@@ -196,12 +202,20 @@ function mod:SPELL_AURA_APPLIED(args)
 			warnedWill = true -- fix bad low will special warning on entering Construct. After entering vehicle, this will be return to false. (on alt.power changes)
 			specwarnReshape:Show()
 			warnReshapeLifeTutor:Show()
+			timerAmberExplosionCD:Start(15, args.destName)--Only player needs to see this, they are only person who can do anything about it.
 			sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_nbzh.mp3") --你被轉化
 		end
 		if Phase < 3 then
 			timerReshapeLifeCD:Start()
 		else
 			timerReshapeLifeCD:Start(15)--More often in phase 3
+		end
+	elseif args:IsSpellID(125502) then
+		warnAmberGlob:Show(args.destName)
+		if args:IsPlayer() then
+			DBM.Flash:Show(1, 0, 0)
+			specwarnAmberGlob:Show()
+			sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\orbrun.mp3") --寶珠快跑
 		end
 	end
 end
