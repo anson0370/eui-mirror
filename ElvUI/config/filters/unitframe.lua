@@ -571,24 +571,36 @@ G.unitframe.aurafilters['RaidDebuffs'] = {
 	   -- Mogu'shan Vaults
 			-- The Stone Guard
 			[SpellName(116281)] = Defaults(), -- Cobalt Mine Blast
+			[SpellName(125206)] = Defaults(),	-- Rend Flesh
+			[SpellName(130395)] = Defaults(),	-- Jasper Chains			
 			-- Feng the Accursed
 			[SpellName(116784)] = Defaults(), -- Wildfire Spark
 			[SpellName(116417)] = Defaults(), -- Arcane Resonance
 			[SpellName(116942)] = Defaults(), -- Flaming Spear
+			[SpellName(131788)] = Defaults(),	-- Lightning Lash
+			[SpellName(131790)] = Defaults(),	-- Arcane Shock
+			[SpellName(131792)] = Defaults(),	-- Shadowburn
 			-- Gara'jal the Spiritbinder
 			[SpellName(116161)] = Defaults(), -- Crossed Over
+			[SpellName(117723)] = Defaults(),	-- Frail Soul
+			[SpellName(122151)] = Defaults(),	-- Voodoo Doll
 			-- The Spirit Kings
 			[SpellName(117708)] = Defaults(), -- Maddening Shout
 			[SpellName(118303)] = Defaults(), -- Fixate
 			[SpellName(118048)] = Defaults(), -- Pillaged
 			[SpellName(118135)] = Defaults(), -- Pinned Down
+			[SpellName(118163)] = Defaults(),	-- Robbed Blind
 			-- Elegon
 			[SpellName(117878)] = Defaults(), -- Overcharged
 			[SpellName(117949)] = Defaults(), -- Closed Circuit
+			[SpellName(132222)] = Defaults(),	-- Destabilizing Energies
 			-- Will of the Emperor
 			[SpellName(116835)] = Defaults(), -- Devastating Arc
 			[SpellName(116778)] = Defaults(), -- Focused Defense
-			[SpellName(116525)] = Defaults(), -- Focused Assault    
+			[SpellName(116525)] = Defaults(), -- Focused Assault 
+		-- Sha of Anger
+			[SpellName(119622)] = Defaults(),	-- Growing Anger
+			[SpellName(119626)] = Defaults(),	-- Aggressive Behavior			
 		-- Heart of Fear
 			-- Imperial Vizier Zor'lok
 			[SpellName(122761)] = Defaults(), -- Exhale
@@ -602,8 +614,18 @@ G.unitframe.aurafilters['RaidDebuffs'] = {
 			[SpellName(122835)] = Defaults(), -- Pheromones
 			[SpellName(123081)] = Defaults(), -- Pungency
 			-- Wind Lord Mel'jarak
-			[SpellName(122125)] = Defaults(), -- Corrosive Resin Pool
-			[SpellName(121885)] = Defaults(), -- Amber Prison
+			[SpellName(129078)] = Defaults(),	-- Amber Prison
+			[SpellName(122055)] = Defaults(),	-- Residue
+			[SpellName(122064)] = Defaults(),	-- Corrosive Resin
+			-- Amber-Shaper Un'sok
+			[SpellName(121949)] = Defaults(),	-- Parasitic Growth
+			[SpellName(122370)] = Defaults(),	-- Reshape Life
+			-- Grand Empress Shek'zeer
+			[SpellName(123707)] = Defaults(),	-- Eyes of the Empress
+			[SpellName(123713)] = Defaults(),	-- Servant of the Empress
+			[SpellName(123788)] = Defaults(),	-- Cry of Terror
+			[SpellName(124849)] = Defaults(),	-- Consuming Terror
+			[SpellName(124863)] = Defaults(),	-- Visions of Demise			
 			-- Wind Lord Mel'jarak
 			[SpellName(121949)] = Defaults(), -- Parasitic Growth
 			-- Grand Empress Shek'zeer
@@ -722,11 +744,32 @@ G.unitframe.ChannelTicks = {
 }
 
 G.unitframe.ChannelTicksSize = {
-    --Warlock
-    [SpellName(1120)] = 2, --"Drain Soul"
-    [SpellName(689)] = 1, -- "Drain Life"
-	[SpellName(108371)] = 1, -- "Harvest Life"
-	[SpellName(103103)] = 1, -- "Malefic Grasp"
+	-- Druid
+	[SpellName(44203)] = 4,	-- Tranquility
+	[SpellName(16914)] = 10,	-- Hurricane
+	[SpellName(106996)] = 10,-- Astral Storm
+	-- Mage
+	[SpellName(5143)] = 5,	-- Arcane Missiles
+	[SpellName(10)] = 8,		-- Blizzard
+	[SpellName(12051)] = 4,	-- Evocation
+	-- Monk
+	[SpellName(115175)] = 9,	-- Soothing Mist
+	-- Priest
+	[SpellName(15407)] = 3,	-- Mind Flay
+	[SpellName(48045)] = 5,	-- Mind Sear
+	[SpellName(47540)] = 2,	-- Penance
+	[SpellName(64901)] = 4,	-- Hymn of Hope
+	[SpellName(64843)] = 4,	-- Divine Hymn
+	-- Shaman
+	[SpellName(61882)] = 8,	-- Earthquake
+	-- Warlock
+	[SpellName(689)] = 6,	-- Drain Life
+	[SpellName(108371)] = 6, -- Harvest Life
+	[SpellName(1120)] = 6,	-- Drain Soul
+	[SpellName(755)] = 6,	-- Health Funnel
+	[SpellName(1949)] = 15,	-- Hellfire
+	[SpellName(5740)] = 4,	-- Rain of Fire
+	[SpellName(103103)] = 3,	-- Malefic Grasp
 }
 
 --Spells Effected By Haste

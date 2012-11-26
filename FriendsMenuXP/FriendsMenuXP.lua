@@ -13,6 +13,7 @@
 	attributes,                                        --安全按钮的属性, 格式为"属性1:值1; 属性2:值2"
 ]]
 local E, L, V, P, G, _ = unpack(ElvUI); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+
 --{ "WHISPER", "INVITE", "TARGET", "IGNORE", "REPORT_SPAM", "GUILD_PROMOTE", "GUILD_LEAVE", "CANCEL" };
 function NoSelfShow(name) return UnitName("player")~=name; end
 
@@ -80,7 +81,7 @@ FriendsMenuXP_Buttons["REPORT_SPAM"] = {
     func = function(name, dropdown)
         local dialog = StaticPopup_Show("CONFIRM_REPORT_SPAM_CHAT", name);
         if ( dialog ) then
-            dialog.data = dropdown.lineID;
+            dialog.data = dropdown.unit or tonumber(dropdown.lineID);
         end
     end,
     show = function(name, dropdown) return dropdown.lineID and CanComplainChat(dropdown.lineID) end,
@@ -429,7 +430,6 @@ FriendsMenuXP_ButtonSet["OFFLINE"] = {
 }
 
 FriendsMenuXP_ButtonSet["UNITPOPUP"] = {
-    "ADD_FRIEND",
     "REMOVE_FRIEND",
     "SET_NOTE",
     "ADD_GUILD",
@@ -618,7 +618,7 @@ function FriendsMenuXP_OnLoad(self)
     self:RegisterEvent("PLAYER_REGEN_ENABLED");
     self:RegisterEvent("ADDON_LOADED"); -- for RaidUI
 
---    if(FRIENDS_MENU_XP_LOADED) then DEFAULT_CHAT_FRAME:AddMessage(FRIENDS_MENU_XP_LOADED,1,1,0); end
+    if(FRIENDS_MENU_XP_LOADED) then DEFAULT_CHAT_FRAME:AddMessage(FRIENDS_MENU_XP_LOADED,1,1,0); end
 end
 
 function FriendsMenuXP_OnEvent(self, event, ...)
@@ -673,7 +673,7 @@ function FriendsMenuXP_OnUpdate(self, elapsed)
 
     if( IsControlKeyDown() and FRIENDSMENU_NOW_LINK_PLAYER.link) then
         if(ChatLinkMaskButton) then
-            local name, lineid, chatType, chatTarget = strsplit(":", FRIENDSMENU_NOW_LINK_PLAYER.link);
+            local _, name, lineid, chatType, chatTarget = strsplit(":", FRIENDSMENU_NOW_LINK_PLAYER.link);
             ChatLinkMaskButton:SetAttribute("macrotext", "/target "..name);
         end
 

@@ -2,9 +2,9 @@
 ## Title: |cffC495DDEui|r Script
 ## Title-zhCN: |cffC495DDEUI|r附加模块
 ## Title-zhTW: |cffC495DDEUI|r附加模塊
-## Author: Ljxx.net
+## Author: eui.cc
 ## X-Category: ElvUI
-## Version: 20121118A
+## Version: 20121122A
 ## RequiredDeps: ElvUI
 
 init.lua

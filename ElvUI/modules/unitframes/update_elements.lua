@@ -336,7 +336,7 @@ function UF:SetCastTicks(frame, numTicks, extraTickRatio)
 				ticks[i]:SetHeight(frame:GetHeight())
 			end
 			ticks[i]:ClearAllPoints()
-			ticks[i]:SetPoint("CENTER", frame, "LEFT", d * i, 0)
+			ticks[i]:SetPoint("CENTER", frame, "RIGHT", -(d * i), 0)
 			ticks[i]:Show()
 		end
 	end

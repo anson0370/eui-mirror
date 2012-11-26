@@ -2,7 +2,7 @@
 local L		= mod:GetLocalizedStrings()
 local sndWOP	= mod:NewSound(nil, "SoundWOP", true)
 
-mod:SetRevision(("$Revision: 8106 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 8137 $"):sub(12, -3))
 mod:SetCreatureID(62837)--62847 Dissonance Field, 63591 Kor'thik Reaver, 63589 Set'thik Windblade
 mod:SetModelID(42730)
 mod:SetZone()
@@ -48,7 +48,7 @@ local specWarnDispatch			= mod:NewSpecialWarningInterrupt(124077, mod:IsMelee())
 local specWarnAdvance			= mod:NewSpecialWarningSpell(125304)
 local specwarnVisions			= mod:NewSpecialWarningYou(124862)
 local specwarnXJ				= mod:NewSpecialWarningMove(123184)
-local yellVisions				= mod:NewYell(124862)
+local yellVisions				= mod:NewYell(124862, nil, false)
 local specWarnConsumingTerror	= mod:NewSpecialWarningSpell(124849, not mod:IsTank())
 
 local timerScreechCD			= mod:NewNextTimer(7, 123735, nil, mod:IsRanged())
@@ -216,6 +216,11 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			timerDQ:Start()
 		end
+	elseif args:IsSpellID(124077) then
+		if args.sourceGUID == UnitGUID("target") then--Only show warning for your own target.
+			specWarnDispatch:Show(args.sourceName)
+			sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\kickcast.mp3")--快打斷
+		end
 	end
 end
 mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
@@ -255,10 +260,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 	if args:IsSpellID(123735) then
 		warnScreech:Show()
 		timerScreechCD:Start()
-	elseif args:IsSpellID(124748) then
-		warnAmberTrap:Show(1)
 	elseif args:IsSpellID(125826) then
-		warnAmberTrap:Show()
 		specwarnAmberTrap:Show()
 		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_xjwc.mp3") --陷阱完成
 	elseif args:IsSpellID(124845) then
@@ -270,6 +272,9 @@ function mod:SPELL_CAST_SUCCESS(args)
 	elseif args:IsSpellID(125451) and not phase3Started then
 		phase3Started = true
 		self:UnregisterShortTermEvents()
+		if self.Options.RangeFrame then
+			DBM.RangeCheck:Hide()
+		end
 		sndWOP:Cancel("Interface\\AddOns\\DBM-Core\\extrasounds\\ptwo.mp3")
 		sndWOP:Cancel("Interface\\AddOns\\DBM-Core\\extrasounds\\countfour.mp3")
 		sndWOP:Cancel("Interface\\AddOns\\DBM-Core\\extrasounds\\countthree.mp3")
@@ -287,12 +292,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 end
 
 function mod:SPELL_CAST_START(args)
-	if args:IsSpellID(124077) then
-		if args.sourceGUID == UnitGUID("target") then--Only show warning for your own target.
-			specWarnDispatch:Show(args.sourceName)
-			sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\kickcast.mp3")--快打斷
-		end
-	elseif args:IsSpellID(124849) then
+	if args:IsSpellID(124849) then
 		warnConsumingTerror:Show()
 		specWarnConsumingTerror:Show()
 		timerConsumingTerrorCD:Start()
@@ -311,6 +311,9 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if (msg == L.YellPhase3 or msg:find(L.YellPhase3)) and not phase3Started then
 		phase3Started = true
 		self:UnregisterShortTermEvents()
+		if self.Options.RangeFrame then
+			DBM.RangeCheck:Hide()
+		end
 		sndWOP:Cancel("Interface\\AddOns\\DBM-Core\\extrasounds\\ptwo.mp3")
 		sndWOP:Cancel("Interface\\AddOns\\DBM-Core\\extrasounds\\countfour.mp3")
 		sndWOP:Cancel("Interface\\AddOns\\DBM-Core\\extrasounds\\countthree.mp3")
@@ -385,15 +388,22 @@ end
 function mod:UNIT_HEALTH_FREQUENT_UNFILTERED(uId)
 	local cid = self:GetUnitCreatureId(uId)
 	local guid = UnitGUID(uId)
-	if cid == 62847 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.08 and not sentLowHP[guid] then
+	if cid == 62847 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.1 and not sentLowHP[guid] then
 		sentLowHP[guid] = true
 		self:SendSync("lowhealth", guid)
 	end	
 	if uId == "player" then
 		if UnitDebuff("player", GetSpellInfo(123184)) then
-			if UnitHealth(uId) / UnitHealthMax(uId) <= 0.5 and not warnedhp then
-				sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\checkhp.mp3")--注意血量
-				warnedhp = true
+			if self:IsDifficulty("heroic10", "heroic25") then
+				if UnitHealth(uId) / UnitHealthMax(uId) <= 0.8 and not warnedhp then
+					sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\checkhp.mp3")--注意血量
+					warnedhp = true
+				end
+			else
+				if UnitHealth(uId) / UnitHealthMax(uId) <= 0.5 and not warnedhp then
+					sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\checkhp.mp3")
+					warnedhp = true
+				end
 			end
 		else
 			warnedhp = false

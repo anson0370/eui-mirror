@@ -23,7 +23,7 @@ L= DBM:GetModLocalization(742)
 L:SetOptionLocalization({
 	SoundWOP					= "語音警告：重要技能",
 	SoundJK						= "語音警告：$spell:123011的預先警告",
-	HudMAP						= "高級定位監視(HUD)：$spell:122770的位置(僅10人準確)",
+	HudMAP						= "高級定位監視(HUD)：$spell:122770的位置(僅10人)",
 	optDS						= "\"恐怖陰影\"疊加幾層時，開始報警",
 	six							= "6層",
 	nine						= "9層",
@@ -53,7 +53,8 @@ L:SetTimerLocalization({
 L:SetOptionLocalization({
 	warnHideOver			= "警告：當$spell:123244結束時",
 	timerSpecialCD			= "計時器：下一次特殊技能",
-	SoundWOP				= "語音警告：重要技能"
+	SoundWOP				= "語音警告：重要技能",
+	SetIconOnGuard		= "為$journal:6224設置團隊標記"
 })
 
 L:SetMiscLocalization{

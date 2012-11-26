@@ -2,7 +2,7 @@
 local L		= mod:GetLocalizedStrings()
 local sndWOP	= mod:NewSound(nil, "SoundWOP", true)
 
-mod:SetRevision(("$Revision: 8072 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 8126 $"):sub(12, -3))
 mod:SetCreatureID(62543)
 mod:SetModelID(43141)
 mod:SetZone()
@@ -242,6 +242,9 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(uId, _, _, _, spellId)
 		self:Schedule(0.8, checkUnseenEmote)
 	elseif spellId == 123814 and self:AntiSpam(2, 2) then--Do not add other spellids here either. 123814 is only cast once, it starts the channel. everything else is cast every 1-2 seconds as periodic triggers.
 		intensifyCD = 10
+		if self.Options.RangeFrame then
+			DBM.RangeCheck:Hide()
+		end
 		timerTempestSlashCD:Cancel()
 		timerOverwhelmingAssaultCD:Cancel()
 		if not mod:IsDps() then

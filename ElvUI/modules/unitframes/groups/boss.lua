@@ -118,8 +118,13 @@ function UF:Update_BossFrames(frame, db)
 		health.bg:ClearAllPoints()
 		if not USE_PORTRAIT_OVERLAY then
 			health:Point("TOPRIGHT", -(PORTRAIT_WIDTH+BORDER), -BORDER)
-			health.bg:SetParent(health)
-			health.bg:SetAllPoints()
+			if E.db.unitframe.transparent then
+				health.bg:SetParent(health.hbg or health)
+				health.bg:SetAllPoints()
+			else
+				health.bg:SetParent(health)
+				health.bg:SetAllPoints()
+			end
 		else
 			health.bg:Point('BOTTOMLEFT', health:GetStatusBarTexture(), 'BOTTOMRIGHT')
 			health.bg:Point('TOPRIGHT', health)		

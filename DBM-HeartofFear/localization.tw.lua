@@ -158,7 +158,8 @@ L:SetOptionLocalization({
 	specwarnAmberExplosionAM	= "特殊警告：打斷琥珀巨怪的$spell:122402",
 	specwarnAmberExplosionOther	= "特殊警告：打斷無人控制傀儡體的$spell:122398",
 	timerAmberExplosionAMCD		= "計時器：琥珀巨怪的下一次$spell:122402",
-	InfoFrame					= "資訊框：玩家的意志力"
+	InfoFrame					= "資訊框：玩家的意志力",
+	FixNameplates				= "開戰自動禁用干擾的單位名條(離開戰鬥後恢復)"
 })
 
 L:SetMiscLocalization({

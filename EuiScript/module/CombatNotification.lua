@@ -171,17 +171,16 @@ end
 
 CombatNotification:SetScript("OnUpdate",clocks_update)
 
-local ina = 1
-local str = ""
 local f = CreateFrame("Frame")
 f:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 	
 function f:lfgMsg()
+	local str = ''
 	if E.db["euiscript"].lfgnoti == 'NONE' then return end
-	local id, name = GetLFGRandomDungeonInfo(9)
-	if not id then id = 462; name = ''; end
+	local _, name = GetLFGRandomDungeonInfo(8)
+	if not name then name = ''; end
 	local canSend = (IsInGuild() and E.db["euiscript"].lfgnoti == 'GUILD') or (IsInGroup() and E.db["euiscript"].lfgnoti == 'PARTY') or (IsInRaid() and E.db["euiscript"].lfgnoti == 'RAID')
-	local eligible, forTank, forHealer, forDamage, itemCount, money, xp = GetLFGRoleShortageRewards(id, 1)
+	local eligible, forTank, forHealer, forDamage, itemCount, money, xp = GetLFGRoleShortageRewards(462, 1)
 	if eligible and (itemCount > 0) then
 		if forTank then str = str.. L.Tank end
 		if forHealer then str = str.. L.Healer end

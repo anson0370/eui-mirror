@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 local sndWOP	= mod:NewSound(nil, "SoundWOP", true)
 local sndJR	= mod:NewSound(nil, "SoundJR", true)
 
-mod:SetRevision(("$Revision: 8100 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 8144 $"):sub(12, -3))
 mod:SetCreatureID(62397)
 mod:SetModelID(42645)
 mod:SetZone()
@@ -61,6 +61,7 @@ local specWarnKorthikStrike				= mod:NewSpecialWarningYou(123963)
 local specWarnKorthikStrikeOther		= mod:NewSpecialWarningTarget(123963, mod:IsHealer())
 local yellKorthikStrike					= mod:NewYell(123963)
 local specWarnWindBomb					= mod:NewSpecialWarningMove(131830)
+local specWarnWhirlingBladeMove			= mod:NewSpecialWarningMove(121898)
 local yellWindBomb						= mod:NewYell(131830)
 
 local timerWhirlingBladeCD				= mod:NewNextTimer(45.5, 121896)
@@ -142,7 +143,9 @@ function mod:OnCombatStart(delay)
 	table.wipe(windBombTargets)
 	timerWhirlingBladeCD:Start(35.5-delay)
 	timerRainOfBladesCD:Start(60-delay)
-	berserkTimer:Start(-delay)
+	if not self:IsDifficulty("lfr25") then
+		berserkTimer:Start(-delay)
+	end
 	if mod:IsHealer() then
 		sndWOP:Schedule(57, "Interface\\AddOns\\DBM-Core\\extrasounds\\countthree.mp3")
 		sndWOP:Schedule(58, "Interface\\AddOns\\DBM-Core\\extrasounds\\counttwo.mp3")
@@ -329,6 +332,9 @@ function mod:SPELL_DAMAGE(_, _, _, _, destGUID, destName, _, _, spellId)
 	elseif spellId == 122125 and destGUID == UnitGUID("player") and self:AntiSpam(3, 5) then
 		specWarnCorrosiveResinPool:Show()
 		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\runaway.mp3")--快躲開
+	elseif spellId == 121898 and destGUID == UnitGUID("player") and not self:IsDifficulty("lfr25") and self:AntiSpam(3, 10) then
+		specWarnWhirlingBladeMove:Show()
+		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\runaway.mp3")--快躲開
 	end
 end
 mod.SPELL_MISSED = mod.SPELL_DAMAGE
@@ -381,7 +387,7 @@ end
 function mod:UNIT_AURA(uId)
 	if uId ~= "player" then return end
 	if UnitDebuff("player", strikeTarget) and not strikeWarned then--Warn you that you have a meteor
-		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\runaway.mp3")--快躲開
+		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\holdit.mp3")--自保技能
 		DBM.Flash:Show(1, 0, 0)
 		specWarnKorthikStrike:Show()
 		yellKorthikStrike:Yell()

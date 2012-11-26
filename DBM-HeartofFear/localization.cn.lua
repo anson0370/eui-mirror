@@ -158,7 +158,8 @@ L:SetOptionLocalization({
 	specwarnAmberExplosionAM	= "特殊警报：打断琥珀畸怪的$spell:122402",
 	specwarnAmberExplosionOther	= "特殊警报：打断畸形体的$spell:122398",
 	timerAmberExplosionAMCD		= "计时条：琥珀畸怪的下一次$spell:122402",
-	InfoFrame					= "信息框：意志值（功能开发中）"
+	InfoFrame					= "信息框：意志值",
+	FixNameplates				= "在战斗开始后自动关闭影响战斗的姓名面板\n（战斗结束后会自动恢复原始设置）"
 })
 
 L:SetMiscLocalization({

@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 -- Title: ChatFilter
--- Version: v3.6 Beta3
+-- Version: v5.02
 -- Author: aliluya555
 -- Config
 local E, _, DF = unpack(ElvUI); --Engine
@@ -26,18 +26,21 @@ local Config = E.db["chatfilter"]
 -- Locals
 -----------------------------------------------------------------------
 local L = {
+	["Channel"] = "大脚世界频道",
 	["Achievement"] = "%shave earned the achievement%s!",
 	["LearnSpell"] = "You have learned: %s",
 	["UnlearnSpell"] = "You have unlearned: %s",
 }
 if (GetLocale() == "zhCN") then
 	L = {
+		["Channel"] = "大脚世界频道",
 		["Achievement"] = "%s获得了成就%s!",
 		["LearnSpell"] = "你学会了技能: %s",
 		["UnlearnSpell"] = "你遗忘了技能: %s",
 	}
 elseif (GetLocale() == "zhTW") then
 	L = {
+		["Channel"] = "大腳世界頻道",
 		["Achievement"] = "%s獲得了成就%s!",
 		["LearnSpell"] = "你學會了技能: %s",
 		["UnlearnSpell"] = "你遺忘了技能: %s",
@@ -49,9 +52,9 @@ end
 local ChatFilter, ChatFrames = CreateFrame("Frame")
 
 local CacheTable, prevLineId = {}
-local alreadySent, spellList, changingspec = {}, {}
+local achievements, alreadySent, spellList = {}, {}, {}
 local totalCreated, resetTimer, craftList, craftQuantity, craftItemID, prevCraft = {}, {}, {}
-local achievements, spamCategories, specialFilters = {}, {[95] = true, [155] = true, [168] = true, [14807] = true}, {456, 1400, 1402, 3117, 3259, 4078, 4576}
+local spamCategories, specialFilters = {[95] = true, [155] = true, [168] = true, [14807] = true}, {[456] = true, [1400] = true, [1402] = true, [2186] = true, [2187] = true, [2903] = true, [2904] = true, [3004] = true, [3005] = true, [3117] = true, [3259] = true, [3316] = true, [3808] = true, [3809] = true, [3810] = true, [3817] = true, [3818] = true, [3819] = true, [4078] = true, [4079] = true, [4080] = true, [4156] = true, [4576] = true, [7485] = true, [7486] = true, [7487] = true}
 
 local function deformat(text)
 	text = gsub(text, "%.", "%%.")
@@ -75,8 +78,8 @@ local auctionstartedmsg = deformat(ERR_AUCTION_STARTED)
 local auctionremovedmsg = deformat(ERR_AUCTION_REMOVED)
 local duelwinmsg = deformat(DUEL_WINNER_KNOCKOUT )
 local duellosemsg = deformat(DUEL_WINNER_RETREAT  )
-local spellcastprimaryspec = GetSpellInfo(63645)
-local spellcastsecondaryspec = GetSpellInfo(63644)
+
+
 
 local function SendMessage(event, msg, r, g, b)
 	local info = ChatTypeInfo[strsub(event, 10)]
@@ -160,7 +163,7 @@ local function talentspecReady(attribute, spells)
 	end
 end
 
-local function ChatFrames_OnUpdata(self, elapsed)
+local function ChatFrames_OnUpdate(self, elapsed)
 	local found
 	for id, resetAt in pairs(resetTimer) do
 		if (resetAt <= GetTime()) then
@@ -196,29 +199,24 @@ local function queueCraftMessage(craft, itemID, itemQuantity)
 	if (Delay > 2) then Delay = 2 end
 	totalCreated[itemID] = (totalCreated[itemID] or 0) + (itemQuantity or 1)
 	resetTimer[itemID] = GetTime() + craftList[itemID] + Delay
-	ChatFilter:SetScript("OnUpdate", ChatFrames_OnUpdata)
+	ChatFilter:SetScript("OnUpdate", ChatFrames_OnUpdate)
 end
 
 local function queueTalentSpecSpam(attribute, spellID)
 	spellList[attribute] = spellList[attribute] or {timeout = GetTime() + 0.5}
 	tinsert(spellList[attribute], spellID)
-	ChatFilter:SetScript("OnUpdate", ChatFrames_OnUpdata)
+	ChatFilter:SetScript("OnUpdate", ChatFrames_OnUpdate)
 end
 
 local function queueAchievementSpam(event, achievementID, playerdata)
 	achievements[achievementID] = achievements[achievementID] or {timeout = GetTime() + 0.5}
 	achievements[achievementID][event] = achievements[achievementID][event] or {}
 	tinsert(achievements[achievementID][event], playerdata)
-	ChatFilter:SetScript("OnUpdate", ChatFrames_OnUpdata)
+	ChatFilter:SetScript("OnUpdate", ChatFrames_OnUpdate)
 end
 
 if (Config.noprofanityFilter or Config.nojoinleaveChannel) then
 	ChatFilter:RegisterEvent("ADDON_LOADED")
-end
-
-if (Config.MergeTalentSpec) then
-	ChatFilter:RegisterEvent("UNIT_SPELLCAST_START")
-	ChatFilter:RegisterEvent("UNIT_SPELLCAST_STOP")
 end
 
 if (Config.MergeManufacturing) then
@@ -256,37 +254,43 @@ ChatFilter:SetScript("OnEvent", function(self, event, ...)
 					end
 				end
 			end
-		end
-	elseif (event == "UNIT_SPELLCAST_START" and arg1 == "player" and (arg2 == spellcastprimaryspec or arg2 == spellcastsecondaryspec)) then
-		changingspec = true
-	elseif (event == "UNIT_SPELLCAST_STOP" and arg1 == "player" and (arg2 == spellcastprimaryspec or arg2 == spellcastsecondaryspec)) then
-		changingspec = nil
+		end		
 	end
 end)
 
 local function ChatFilter_Rubbish(self, event, msg, player, _, _, _, flag, _, _, _, _, lineId, guid)
 	if (lineId ~= prevLineId) then
+		if (event == "CHAT_MSG_CHANNEL") then
+			if (Config.BlockInstance and select(2, IsInInstance()) ~= "none") or (Config.BlockCombat and InCombatLockdown()) or (Config.BlockBossCombat and UnitExists("boss1")) then
+				local i, id, channel
+				for i = 1, NUM_CHAT_WINDOWS do
+					local channels = {GetChatWindowChannels(i)}
+					for id, channel in ipairs(channels) do
+						if channel == L["Channel"] then
+							if (Config.BlockInstance and select(2, IsInInstance()) ~= "none") then return true end
+							if (Config.BlockCombat and InCombatLockdown()) then return true end
+							if (Config.BlockBossCombat and UnitExists("boss1")) then return true end
+						end
+					end
+				end
+			end
+		else
+			if (event == "CHAT_MSG_WHISPER") then
+				if (flag == "GM") then return end
+				for i = 1, select(2, BNGetNumFriends()) do
+					local toon = BNGetNumFriendToons(i)
+					for j = 1, toon do
+						local _, rName, rGame = BNGetFriendToonInfo(i, j)
+						if (not Config.ScanFriend and rName == player and rGame == "WoW") then return end
+					end
+				end
+			end
+			if (guid and tonumber(guid) and tonumber(guid:sub(-12, -9), 16) >0) then return end
+		end
 		if (not Config.ScanOurself and UnitIsUnit(player,"player")) then return end
 		if (not Config.ScanFriend and not CanComplainChat(lineId)) then return end
 		if (not Config.ScanTeam and (UnitInRaid(player) or UnitInParty(player))) then return end
 		if (not Config.ScanGuild and UnitIsInMyGuild(player)) then return end
-		if (event ~= "CHAT_MSG_CHANNEL") then
-		   if (event == "CHAT_MSG_WHISPER") then
-			  if (flag == "GM") then return end
-			  for i = 1, select(2, BNGetNumFriends()) do
-				 local toon = BNGetNumFriendToons(i)
-				 for j = 1, toon do
-					local _, rName, rGame = BNGetFriendToonInfo(i, j)
-					if (not Config.ScanFriend and rName == player and rGame == "WoW") then return end
-				 end
-			  end
-		   end
-		   if (guid and tonumber(guid) and tonumber(guid:sub(-12, -9), 16) >0) then return end
-		end
-		if (Config.FilterRepeat or Config.FilterAdvertising) then
-			msg = (msg):lower()
-			msg = gsub(msg, " ", "")
-		end
 		for k , v in pairs(E.global.chatfilter.WhiteList) do
 			if E.global.chatfilter.WhiteList[k] and strmatch(msg, k) then
 				return
@@ -299,7 +303,15 @@ local function ChatFilter_Rubbish(self, event, msg, player, _, _, _, flag, _, _,
 		end	
 		if player and E.global.chatfilter.BlankName[player] then
 			return true
+		end
+		if (Config.FilterRepeat or Config.FilterAdvertising) then
+			msg = (msg):lower()
+			local Symbols = {" ","`","~","@","#","^","*","/","，","。","、","？","！","：","；","’","‘","“","”","【","】","《","》","（","）","<",">"}
+			for i = 1, getn(Symbols) do
+				msg = gsub(msg, Symbols[i], "")
+			end
 		end		
+		
 		local Data = {Name = player, Msg = msg, Time = GetTime()}
 		if (Config.FilterRepeat or Config.FilterMultiLine) then
 
@@ -356,19 +368,9 @@ local function ChatFilter_Rubbish(self, event, msg, player, _, _, _, flag, _, _,
 		end
 		if (Config.FilterAdvertising) then
 			local matchs = 0
-		--	for i = 1, getn(Config.WhiteList) do
-		--		if (strmatch(msg, Config.WhiteList[i])) then
-		--			return
-		--		end
-		--	end
-		--	for i = 1, getn(Config.BlackList) do
-		--		if (strmatch(msg, Config.BlackList[i])) then
-		--			return true
-		--		end
-		--	end
 			for i = 1, getn(E.global.chatfilter.SafeWords) do
 				if (strfind(msg, E.global.chatfilter.SafeWords[i])) then
-					matchs = matchs - 2
+					matchs = matchs - 1
 				end
 			end
 			for i = 1, getn(E.global.chatfilter.DangerWords) do
@@ -381,10 +383,13 @@ local function ChatFilter_Rubbish(self, event, msg, player, _, _, _, flag, _, _,
 			if (Config.ScanFriend and not CanComplainChat(lineId)) then matchs = matchs - 2 end
 			if (Config.ScanTeam and (UnitInRaid(player) or UnitInParty(player))) then matchs = matchs - 1 end
 			if (Config.ScanGuild and UnitIsInMyGuild(player)) then matchs = matchs - 1 end
-			if (event == "CHAT_MSG_WHISPER" and UnitLevel(player) == 0) then matchs = matchs + 1 end
+			if (Config.AllowMatchs > 1) then
+				if (strlen(msg) > 120) then matchs = matchs + 1 end
+				if (event == "CHAT_MSG_WHISPER" and UnitLevel(player) == 0) then matchs = matchs + 1 end
+			end
 			if (matchs > Config.AllowMatchs) then return true end
 		end
-		if Config.RepeatMaxCache and (getn(CacheTable) > Config.RepeatMaxCache) then
+		if (getn(CacheTable) > Config.RepeatMaxCache) then
 			tremove(CacheTable, 1)
 		end
 		tinsert(CacheTable, Data)
@@ -410,11 +415,11 @@ local function ChatFilter_TalentSpec(self, event, msg)
 	if (Config.MergeTalentSpec) then
 		local learnID = strmatch(msg, learnspellmsg) or strmatch(msg, learnabilitymsg) or strmatch(msg, learnpassivemsg)
 		local unlearnID = strmatch(msg, unlearnspellmsg)
-		if (learnID and changingspec) then
+		if (learnID) then
 			learnID = tonumber(strmatch(learnID, "spell:(%d+)"))
 			queueTalentSpecSpam("Learn", learnID)
 			return true
-		elseif (unlearnID and changingspec) then
+		elseif (unlearnID) then
 			unlearnID = tonumber(strmatch(unlearnID, "spell:(%d+)"))
 			queueTalentSpecSpam("Unlearn", unlearnID)
 			return true

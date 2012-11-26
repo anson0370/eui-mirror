@@ -90,7 +90,7 @@ imsg.text:SetJustifyH("CENTER")
 --  Globals/Default Options  --
 -------------------------------
 DBM = {
-	Revision = tonumber(("$Revision: 8110 $"):sub(12, -3)),
+	Revision = tonumber(("$Revision: 8140 $"):sub(12, -3)),
 	DisplayVersion = "5.0.0 語音增強版", -- the string that is shown as version
 	ReleaseRevision = 8086 -- the revision of the latest stable version that is available
 }
@@ -193,7 +193,6 @@ DBM.DefaultOptions = {
 	DisableCinematics = false,
 	DisableCinematicsOutside = false,
 --	HelpMessageShown = false,
-	AprilFools = false,
 	MoviesSeen = {},
 	MovieFilters = {},
 	LastRevision = 0
@@ -770,7 +769,7 @@ do
 		
 		-- execute scheduled tasks
 		local nextTask = getMin()
-		while nextTask and nextTask.time <= time do
+		while nextTask and nextTask.func and nextTask.time <= time do
 			deleteMin()
 			nextTask.func(unpack(nextTask))
 			pushCachedTable(nextTask)
@@ -1758,9 +1757,9 @@ do
 					DBM:Unschedule(DBM.LoadMod, DBM, v)
 					DBM:Schedule(3, DBM.LoadMod, DBM, v)
 					--Lets try multiple checks, cause quite frankly this has been failinga bout 50% of time with just one check.
-					DBM:Schedule(5, DBM.ScenarioCheck)
-					DBM:Schedule(7, DBM.ScenarioCheck)
-					DBM:Schedule(9, DBM.ScenarioCheck)
+					DBM:Schedule(4, DBM.ScenarioCheck)
+					DBM:Schedule(8, DBM.ScenarioCheck)
+					DBM:Schedule(12, DBM.ScenarioCheck)
 --				else -- just the first event seems to be broken and loading stuff during the ZONE_CHANGED event is slightly better as it doesn't add a short lag just after the loading screen (instead the loading screen is a few ms longer, no one notices that, but a 100 ms lag a few seconds after the loading screen sucks)
 --					DBM:LoadMod(v)
 --				end
@@ -2236,13 +2235,6 @@ do
 	function DBM:CHAT_MSG_ADDON(prefix, msg, channel, sender)
 		if prefix == "D4" and msg and (channel == "PARTY" or channel == "RAID" or channel == "BATTLEGROUND" or channel == "WHISPER" and self:GetRaidUnitId(sender) ~= "none") then
 			handleSync(channel, sender, strsplit("\t", msg))
-		elseif prefix == "DBMv4-Ver" and msg == "Hi!" then -- an old client is trying to communicate with us, but we can't respond as he won't be able to receive our messages
-			if raid[sender] and not raid[sender].revision then -- it is actually an old client and not a recent one sending an old sync for compatibility reasons during 4.0
-				raid[sender].revision = 0
-				raid[sender].version = 4
-				raid[sender].displayVersion = "Unknown (uses incompatible pre-4.1 sync system)"
-				raid[sender].locale = "unknown"
-			end
 		end
 	end
 end
@@ -2541,8 +2533,7 @@ function checkWipe(confirm)
 end
 
 
--- lowest health the boss had in the current fight
-local lowestBossHealth = 1
+local lowestBossHealth = 1 -- lowest health the boss had in the current fight
 local savedDifficulty
 local difficultyText
 
@@ -2556,44 +2547,29 @@ function DBM:StartCombat(mod, delay, synced)
 		end
 		table.insert(inCombat, mod)
 		lowestBossHealth = 1
-		savedDifficulty = self:GetCurrentInstanceDifficulty()
+		savedDifficulty, difficultyText = self:GetCurrentInstanceDifficulty()
 		if mod.inCombatOnlyEvents and not mod.inCombatOnlyEventsRegistered then
 			mod.inCombatOnlyEventsRegistered = 1
 			mod:RegisterEvents(unpack(mod.inCombatOnlyEvents))
 		end
 		if mod:IsDifficulty("lfr25") then
 			mod.stats.lfr25Pulls = mod.stats.lfr25Pulls + 1
-			difficultyText = PLAYER_DIFFICULTY3.." - "
 		elseif mod:IsDifficulty("normal5") then
 			mod.stats.normalPulls = mod.stats.normalPulls + 1
-			local _, instanceType, difficulty, _, maxPlayers = GetInstanceInfo()
-			if not instanceType then--It's a scenario and blizzard reports these really goofy. Only place instanceType is nil
-				difficultyText = GUILD_CHALLENGE_TYPE4.." - "
-			elseif instanceType == "party" then--outdoor areas can return normal5 so we add extra instance check here
-				difficultyText = PLAYER_DIFFICULTY1.." - "
-			else
-				difficultyText = ""
-			end
 		elseif mod:IsDifficulty("heroic5") then
 			mod.stats.heroicPulls = mod.stats.heroicPulls + 1
-			difficultyText = PLAYER_DIFFICULTY2.." - "
 		elseif mod:IsDifficulty("challenge5") then
 			mod.stats.challengePulls = mod.stats.challengePulls + 1
-			difficultyText = CHALLENGE_MODE.." - "
 		elseif mod:IsDifficulty("normal10") then
 			mod.stats.normalPulls = mod.stats.normalPulls + 1
 			local _, _, _, _, maxPlayers = GetInstanceInfo()
 			--Because we still combine 40 mans with 10 man raids, we use maxPlayers arg for player count.
-			difficultyText = PLAYER_DIFFICULTY1.." ("..maxPlayers..") - "
 		elseif mod:IsDifficulty("heroic10") then
 			mod.stats.heroicPulls = mod.stats.heroicPulls + 1
-			difficultyText = PLAYER_DIFFICULTY2.." (10) - "
 		elseif mod:IsDifficulty("normal25") then
 			mod.stats.normal25Pulls = mod.stats.normal25Pulls + 1
-			difficultyText = PLAYER_DIFFICULTY1.." (25) - "
 		elseif mod:IsDifficulty("heroic25") then
 			mod.stats.heroic25Pulls = mod.stats.heroic25Pulls + 1
-			difficultyText = PLAYER_DIFFICULTY2.." (25) - "
 		end
 		if DBM.Options.ShowEngageMessage then
 			self:AddMsg(DBM_CORE_COMBAT_STARTED:format(difficultyText..mod.combatInfo.name))
@@ -2640,7 +2616,6 @@ function DBM:StartCombat(mod, delay, synced)
 			sendSync("C", (delay or 0).."\t"..mod.id.."\t"..(mod.revision or 0))
 		end
 		fireEvent("pull", mod, delay, synced)
-		-- http://www.deadlybossmods.com/forum/viewtopic.php?t=1464
 		if DBM.Options.ShowBigBrotherOnCombatStart and BigBrother and type(BigBrother.ConsumableCheck) == "function" then
 			if DBM.Options.BigBrotherAnnounceToRaid then
 				BigBrother:ConsumableCheck("RAID")
@@ -2685,42 +2660,8 @@ function DBM:EndCombat(mod, wipe)
 				mod.combatInfo.killMobs[i] = true
 			end
 		end
-		if not difficultyText then -- prevent error when timer recovery function worked and etc (StartCombat not called)
-			local _, instanceType, difficulty, _, maxPlayers = GetInstanceInfo()
-			if not instanceType then--It's a scenario and blizzard reports these really goofy. Only place instanceType is nil
-				difficultyText = GUILD_CHALLENGE_TYPE4.." - "
-				savedDifficulty = "normal5"--Just treat these like 5 man normals, for stat purposes.
-			elseif difficulty == 1 then
-				difficultyText = PLAYER_DIFFICULTY1.." ("..maxPlayers..") - "
-				savedDifficulty = "normal5"
-			elseif difficulty == 2 then
-				difficultyText = PLAYER_DIFFICULTY2.." ("..maxPlayers..") - "
-				savedDifficulty = "heroic5"
-			elseif difficulty == 3 then
-				difficultyText = PLAYER_DIFFICULTY1.." ("..maxPlayers..") - "
-				savedDifficulty = "normal10"
-			elseif difficulty == 4 then
-				difficultyText = PLAYER_DIFFICULTY1.." ("..maxPlayers..") - "
-				savedDifficulty = "normal25"
-			elseif difficulty == 5 then
-				difficultyText = PLAYER_DIFFICULTY2.." ("..maxPlayers..") - "
-				savedDifficulty = "heroic10"
-			elseif difficulty == 6 then
-				difficultyText = PLAYER_DIFFICULTY2.." ("..maxPlayers..") - "
-				savedDifficulty = "heroic25"
-			elseif difficulty == 7 then
-				difficultyText = PLAYER_DIFFICULTY3.." - "
-				savedDifficulty = "lfr25"
-			elseif difficulty == 8 then
-				difficultyText = CHALLENGE_MODE.." - "
-				savedDifficulty = "challenge5"
-			elseif difficulty == 9 then--40 mans now have their own difficulty, instead of being reported as 10 man normal like they used to in 3.x-4.x
-				difficultyText = PLAYER_DIFFICULTY1.." ("..maxPlayers..") - "
-				savedDifficulty = "normal10"--Lets just save these where we been saving them, to avoid probelms, instead of creating a normal40 for little reason.
-			else
-				difficultyText = ""
-				savedDifficulty = "normal5"
-			end
+		if not savedDifficulty or not difficultyText then -- prevent error when timer recovery function worked and etc (StartCombat not called)
+			savedDifficulty, difficultyText = self:GetCurrentInstanceDifficulty()
 		end
 		if wipe then
 			local thisTime = GetTime() - mod.combatInfo.pull
@@ -2892,29 +2833,33 @@ function DBM:OnMobKill(cId, synced)
 end
 
 function DBM:GetCurrentInstanceDifficulty()
-	local _, instanceType, difficulty = GetInstanceInfo()
+	local _, instanceType, difficulty, _, maxPlayers = GetInstanceInfo()
 	if not instanceType then--It's a scenario and blizzard reports these really goofy. Only place instanceType is nil
-		return "normal5"--Just treat these like 5 man normals, for stat purposes.
+		return "normal5", GUILD_CHALLENGE_TYPE4.." - "--Just treat these like 5 man normals, for stat purposes.
 	elseif difficulty == 1 then
-		return "normal5"
+		if instanceType == "party" then
+			return "normal5", PLAYER_DIFFICULTY1.." ("..maxPlayers..") - "
+		else--Likely an outdoor boss
+			return "normal5", ""
+		end
 	elseif difficulty == 2 then
-		return "heroic5"
+		return "heroic5", PLAYER_DIFFICULTY2.." ("..maxPlayers..") - "
 	elseif difficulty == 3 then
-		return "normal10"
+		return "normal10", PLAYER_DIFFICULTY1.." ("..maxPlayers..") - "
 	elseif difficulty == 4 then
-		return "normal25"
+		return "normal25", PLAYER_DIFFICULTY1.." ("..maxPlayers..") - "
 	elseif difficulty == 5 then
-		return "heroic10"
+		return "heroic10", PLAYER_DIFFICULTY2.." ("..maxPlayers..") - "
 	elseif difficulty == 6 then
-		return "heroic25"
+		return "heroic25", PLAYER_DIFFICULTY2.." ("..maxPlayers..") - "
 	elseif difficulty == 7 then
-		return "lfr25"
+		return "lfr25", PLAYER_DIFFICULTY3.." - "
 	elseif difficulty == 8 then
-		return "challenge5"
+		return "challenge5", CHALLENGE_MODE.." - "
 	elseif difficulty == 9 then--40 man raids have their own difficulty now, no longer returned as normal 10man raids
-		return "normal10"--Just use normal10 anyways, since that's where we been saving 40 man stuff for so long anyways, no reason to change it now, not like any 40 mans can be toggled between 10 and 40 where we NEED to tell the difference.
+		return "normal10", PLAYER_DIFFICULTY1.." ("..maxPlayers..") - "--Just use normal10 anyways, since that's where we been saving 40 man stuff for so long anyways, no reason to change it now, not like any 40 mans can be toggled between 10 and 40 where we NEED to tell the difference.
 	else
-		return "normal5"
+		return "normal5", ""
 	end
 end
 
@@ -3040,43 +2985,6 @@ function DBM:SendTimerInfo(mod, target)
 	end
 end
 
-local soundFiles = {
-	"Sound\\Creature\\RHYOLITH\\VO_FL_RHYOLITH_KILL_02.wav",
-	"Sound\\Creature\\RHYOLITH\\VO_QUEST_42_RHYOLITH_TAUNT_01.wav",
-	"Sound\\Creature\\RHYOLITH\\VO_FL_RHYOLITH_AGGRO.wav",
-	"Sound\\Creature\\XT002Deconstructor\\UR_XT002_Special01.wav",
-	"Sound\\Creature\\Thorim\\UR_Thorim_Start02.wav",
-	"Sound\\Creature\\YoggSaron\\UR_YoggSaron_Slay01.wav",
-	"Sound\\Creature\\YoggSaron\\UR_YoggSaron_Tentacle01.wav",
-	"Sound\\Creature\\YoggSaron\\UR_YoggSaron_Death01.wav",
-	"Sound\\Creature\\Kologarn\\UR_Kologarn_Slay02.wav",
-	"Sound\\Creature\\FlameLeviathan\\UR_Leviathan_HardmodeOn.wav",
-	"Sound\\Creature\\AlgalonTheObserver\\UR_Algalon_Aggro01.wav",
-	"Sound\\Creature\\Sindragosa\\IC_Sindragosa_Arcane01.wav",
-	"Sound\\Creature\\LordMarrowgar\\IC_Marrowgar_WW01.wav",
-	"Sound\\Creature\\Chogall\\VO_BT_Chogall_BotEvent28.wav",
-	"Sound\\Creature\\Arthas\\CS_Arthas_StartingPhase5.wav",
-	"Sound\\Creature\\Falric\\HR_FalrIC_SP01.wav",
-	"Sound\\Creature\\Falric\\HR_FalrIC_SP02.wav",
-	"Sound\\Creature\\PrinceMalchezzar\\PrinceAxeToss01.wav",
-	"Sound\\Creature\\PrinceMalchezzar\\PrinceSpecial01.wav",
-	"Sound\\Creature\\MedivhsEcho\\ChessKnightTaken01.wav",
-	"Sound\\Creature\\MedivhsEcho\\ChessBegin01.wav",
-	"sound\\CREATURE\\ALIZABAL\\VO_BH_ALIZABAL_RESET_01.OGG"
-}
-
-function DBM:AprilFools()
-	DBM:Unschedule(DBM.AprilFools)
-	if IsInInstance() then return end--Don't play joke if you're raiding.
-	DBM:Schedule(900 + math.random(0, 600) , DBM.AprilFools)
-	local x = math.random(1, #soundFiles)
-	if DBM.Options.UseMasterVolume then
-		PlaySoundFile(soundFiles[x], "Master")
-	else
-		PlaySoundFile(soundFiles[x])
-	end
-end
-
 do
 	local function requestTimers()
 		local uId = (IsInRaid() and "raid") or "party"
@@ -3090,10 +2998,6 @@ do
 	end
 
 	function DBM:PLAYER_ENTERING_WORLD()
-		local weekday, month, day, year = CalendarGetDate()--Must be called after PLAYER_ENTERING_WORLD
-		if month == 4 and day == 1 and DBM.Options.AprilFools then--April 1st
-			DBM:Schedule(900 + math.random(0, 600) , DBM.AprilFools)
-		end
 		if #inCombat == 0 then
 			DBM:Schedule(3.5, requestTimers) -- not sure how late or early PLAYER_ENTERING_WORLD fires. Since boss mod loading takes 3 sec after entering zone, delays more will be good?
 		end
@@ -3140,6 +3044,9 @@ do
 	-- sender is a presenceId for real id messages, a character name otherwise
 	local function onWhisper(msg, sender, isRealIdMessage)
 		if msg == "status" and #inCombat > 0 and DBM.Options.StatusEnabled then
+			if not difficultyText then -- prevent error when timer recovery function worked and etc (StartCombat not called)
+				difficultyText = select(2, DBM:GetCurrentInstanceDifficulty())
+			end
 			local mod
 			for i, v in ipairs(inCombat) do
 				mod = not v.isCustomMod and v
@@ -3148,6 +3055,9 @@ do
 			sendWhisper(sender, chatPrefix..DBM_CORE_STATUS_WHISPER:format(difficultyText..(mod.combatInfo.name or ""), mod:GetHP() or "unknown", getNumAlivePlayers(), math.max(GetNumGroupMembers(), GetNumSubgroupMembers() + 1)))
 		elseif #inCombat > 0 and DBM.Options.AutoRespond and
 		(isRealIdMessage and (not isOnSameServer(sender) or DBM:GetRaidUnitId((select(4, BNGetFriendInfoByID(sender)))) == "none") or not isRealIdMessage and DBM:GetRaidUnitId(sender) == "none") then
+			if not difficultyText then -- prevent error when timer recovery function worked and etc (StartCombat not called)
+				difficultyText = select(2, DBM:GetCurrentInstanceDifficulty())
+			end
 			local mod
 			for i, v in ipairs(inCombat) do
 				mod = not v.isCustomMod and v
