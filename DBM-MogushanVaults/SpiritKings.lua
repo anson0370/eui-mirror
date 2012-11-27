@@ -416,7 +416,7 @@ function mod:SPELL_DAMAGE(_, _, _, _, destGUID, _, _, _, spellId)
 		specWarnCoalescingShadows:Show()
 		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\runaway.mp3")--快躲開
 	elseif spellId == 117921 and self:AntiSpam(2, 6) then--巨力攻擊
-		if (countzsb == 0 and timerAnnihilateCD:GetTime() < 7) or (countzsb >= 1 and timerAnnihilateCD:GetTime() < 27) then
+		if (countzsb == 0 and timerAnnihilateCD:GetTime() < 6) or (countzsb >= 1 and timerAnnihilateCD:GetTime() < 27) then
 			timerJL:Start()
 		else
 			if self:IsDifficulty("heroic10", "heroic25") then
@@ -495,7 +495,7 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, _, _, _, target)
 			warnPillage:Show(target)
 			if self.Options.HudMAP then
 				local spelltext = GetSpellInfo(118047)
-				PillageMarkers[target] = register(DBMHudMap:PlaceStaticMarkerOnPartyMember("highlight", target, 9, 3, 0, 1, 0, 0.2):RegisterForAlerts(true, spelltext))
+				PillageMarkers[target] = register(DBMHudMap:PlaceStaticMarkerOnPartyMember("highlight", target, 9, 3, 0, 1, 0, 0.4):RegisterForAlerts(true, spelltext))
 			end
 			if target == UnitName("player") then
 				specWarnPillage:Show()

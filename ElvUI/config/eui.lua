@@ -12,7 +12,46 @@ V['reminder'] = {
 	['sound'] = "Warning",
 }
 
-
+P['sao'] = {
+	['enable'] = true,
+	['onlyTime'] = 'time', --no,time,name
+	['offsetX'] = 0,
+	['offsetY'] = 0,
+	['useIcon'] = false,
+	['fontSize'] = 24,
+	['useBuffIcon'] = false,
+	['iconSize'] = 64,
+	['iconGap'] = 8,
+	['spells'] = {
+		['DRUID'] = {
+			[69369] = {
+				['enable'] = true,
+				['texture'] = 'FURY_OF_STORMRAGE',
+				['position'] = 'TOP',
+				['showing'] = false,
+				['active'] = false,
+			},
+		},
+		['PRIEST'] = {},
+		['HUNTER'] = {},
+		['MAGE'] = {},
+		['PALADIN'] = {},
+		['SHAMAN'] = {},
+		['WARRIOR'] = {},
+		['DEATHKNIGHT'] = {
+			[50421] = {
+				['enable'] = true,
+				['texture'] = 'FURY_OF_STORMRAGE',
+				['position'] = 'TOP',
+				['showing'] = false,
+				['active'] = false,
+			},		
+		},
+		['ROGUE'] = {},
+		['WARLOCK'] = {},
+		['MONK'] = {},
+	},
+}
 
 P['general'].bordercolor = { r = .31,g = .31,b = .31 }
 P['general'].backdropfadecolor = { r = .06,g = .06,b = .06, a = 0.9 }

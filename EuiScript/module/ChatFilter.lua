@@ -54,7 +54,7 @@ local ChatFilter, ChatFrames = CreateFrame("Frame")
 local CacheTable, prevLineId = {}
 local achievements, alreadySent, spellList = {}, {}, {}
 local totalCreated, resetTimer, craftList, craftQuantity, craftItemID, prevCraft = {}, {}, {}
-local spamCategories, specialFilters = {[95] = true, [155] = true, [168] = true, [14807] = true}, {[456] = true, [1400] = true, [1402] = true, [2186] = true, [2187] = true, [2903] = true, [2904] = true, [3004] = true, [3005] = true, [3117] = true, [3259] = true, [3316] = true, [3808] = true, [3809] = true, [3810] = true, [3817] = true, [3818] = true, [3819] = true, [4078] = true, [4079] = true, [4080] = true, [4156] = true, [4576] = true, [7485] = true, [7486] = true, [7487] = true}
+local spamCategories, specialFilters = {[95] = true, [155] = true, [168] = true, [14807] = true, [15165] = true}, {[456] = true, [1400] = true, [1402] = true, [2186] = true, [2187] = true, [2903] = true, [2904] = true, [3004] = true, [3005] = true, [3117] = true, [3259] = true, [3316] = true, [3808] = true, [3809] = true, [3810] = true, [3817] = true, [3818] = true, [3819] = true, [4078] = true, [4079] = true, [4080] = true, [4156] = true, [4576] = true, [7485] = true, [7486] = true, [7487] = true}
 
 local function deformat(text)
 	text = gsub(text, "%.", "%%.")
@@ -195,8 +195,14 @@ end
 local function queueCraftMessage(craft, itemID, itemQuantity)
 	if (prevCraft and prevCraft ~= craft) then return end
 	prevCraft = craft
-	local Delay = select(4, GetNetStats()) / 250 + 0.5
-	if (Delay > 2) then Delay = 2 end
+	local Delay
+	if (select(3, GetNetStats()) > select(4, GetNetStats())) then 
+		Delay = select(3, GetNetStats()) / 250 + 0.5
+	else
+		Delay = select(4, GetNetStats()) / 250 + 0.5
+	end
+
+	if (Delay > 3) then Delay = 3 end
 	totalCreated[itemID] = (totalCreated[itemID] or 0) + (itemQuantity or 1)
 	resetTimer[itemID] = GetTime() + craftList[itemID] + Delay
 	ChatFilter:SetScript("OnUpdate", ChatFrames_OnUpdate)

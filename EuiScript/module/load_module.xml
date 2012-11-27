@@ -34,4 +34,5 @@
 	<Script file="Symbols.lua"/>
 	<Script file='RaidCheck.lua'/>
 	<Script file='ws.lua'/>
+	<Script file='iTimer.lua'/>
 </Ui>

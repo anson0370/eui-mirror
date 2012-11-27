@@ -422,6 +422,209 @@ E.Options.args.euiscript = {
 if class ~= 'MONK' then E.Options.args.euiscript.args.wsbutton = nil; end
 if class ~= 'PRIEST' then E.Options.args.euiscript.args.euiscript_priestpet = nil; end
 
+local positionValues = {
+	TOPLEFT = L['TOPLEFT'],
+	LEFT = L['LEFT'],
+	BOTTOMLEFT = L['BOTTOMLEFT'],
+	RIGHT = L['RIGHT'],
+	TOPRIGHT = L['TOPRIGHT'],
+	BOTTOMRIGHT = L['BOTTOMRIGHT'],
+	CENTER = L['CENTER'],
+	TOP = L['TOP'],
+	BOTTOM = L['BOTTOM'],
+};
+
+local selectedspell = 0
+
+local function UpdateSAOGroup()
+	if selectedspell == 0 or not E.db.sao['spells'][E.myclass][selectedspell] then
+		E.Options.args.sao.args.spell.args.spellGroup = nil
+		return
+	end
+	
+	E.Options.args.sao.args.spell.args.spellGroup = {
+		type = "group",
+		name = GetSpellInfo(selectedspell),
+		order = 15,
+		guiInline = true,
+		args = {
+			enable = {
+				name = L["Enable"],
+				type = "toggle",
+				get = function() return E.db.sao['spells'][E.myclass][selectedspell].enable end,
+				set = function(info, value) E.db.sao['spells'][E.myclass][selectedspell].enable = value; UpdateSAOGroup(); end
+			},
+			texture = {
+				name = L["Textures"], dialogControl = 'LSM30_Background',
+				type = "select",
+				get = function() return E.db.sao['spells'][E.myclass][selectedspell].texture end,
+				set = function(info, value) E.db.sao['spells'][E.myclass][selectedspell].texture = value; UpdateSAOGroup(); end,
+				values = LibStub("LibSharedMedia-3.0"):HashTable("sao"),
+			},
+			position = {
+				name = L['Position'],
+				type = "select",
+				get = function() return E.db.sao['spells'][E.myclass][selectedspell].position end,
+				set = function(info, value) E.db.sao['spells'][E.myclass][selectedspell].position = value; UpdateSAOGroup(); end,
+				values = positionValues,
+			},
+		},				
+	}	
+end
+
+E.Options.args.sao = {
+	type = 'group',
+	name = '00.'..E.ValColor..L['Display spell trigger graphics prompt'].."|r",
+	childGroups = 'tree',
+	get = function(info) return E.db.sao[ info[#info] ] end,
+	set = function(info, value) E.db.sao[ info[#info] ] = value end,
+	args = {
+		enable = {
+			order = 1,
+			type = 'toggle',
+			name = L['Enable'],
+			set = function(info, value) 
+				E.db.sao.enable = value; 
+				if value then SetCVar('displaySpellActivationOverlays', 1) end
+				E:StaticPopup_Show("CONFIG_RL") 
+			end,
+		},
+		general = {
+			order = 2,
+			type = 'group',
+			name = L["General"],
+			guiInline = true,
+			disabled = function() return not E.db.sao.enable end,
+			args = {
+				onlyTime = {
+					order = 3,
+					type = 'select',
+					name = L['Text Format'],
+					values = {
+						['no'] = NONE,
+						['time'] = L['Remaining Time'],
+						['name'] = L["Show spell name:"].. L['Remaining Time'],
+					},
+				},			
+				offsetX = {
+					order = 4,
+					type = 'range',
+					name = L['X Offset'],
+					min = -500, max = 500, step = 1,
+					disabled = function() return E.db.sao.onlyTime == 'no' end,
+				},
+				offsetY = {
+					order = 5,
+					type = 'range',
+					name = L['Y Offset'],
+					min = -500, max = 500, step = 1,
+					disabled = function() return E.db.sao.onlyTime == 'no' end,
+				},		
+				fontSize = {
+					order = 6,
+					type = 'range',
+					name = L["Font Size"],
+					min = 5, max = 50, step = 1,
+				},
+			},
+		},
+--[[ 		useIcon = {
+			order = 6,
+			type = 'toggle',
+			name = 'useIcon',
+		},		
+		useBuffIcon = {
+			order = 7,
+			type = 'toggle',
+			name = 'useBuffIcon',
+			disabled = function() return E.db.sao.useIcon end,
+		},
+		iconSize = {
+			order = 8,
+			type = 'range',
+			name = 'iconSize',
+			min = 10, max = 100, step = 1,
+			disabled = function() return not E.db.sao.useIcon end,
+		},
+		iconGap = {
+			order = 9,
+			type = 'range',
+			name = 'iconGap',
+			min = 1, max = 20, step = 1,
+			disabled = function() return not E.db.sao.useIcon end,
+		}, ]]
+		spell = {
+			order = 100,
+			type = 'group',
+			name = L['Spells'],
+			guiInline = true,
+			disabled = function() return not E.db.sao.enable end,
+			args = {
+				addSpell = {
+					order = 1,
+					name = L['Add Spell']..'ID',
+					desc = L['Add a spell to the filter.'],
+					type = 'input',
+					get = function(info) return "" end,
+					set = function(info, value) 
+						if not tonumber(value) or not GetSpellInfo(tonumber(value)) then return; end
+						if not E.db.sao['spells'][E.myclass][tonumber(value)] then
+							E.db.sao['spells'][E.myclass][tonumber(value)] = { 
+								['texture'] = 'FURY_OF_STORMRAGE',
+								['position'] = 'TOP',
+								['showing'] = false,
+								['active'] = false,
+								['enable'] = true,
+							}
+						end
+						UpdateSAOGroup();
+					end,					
+				},
+				removeSpell = {
+					order = 2,
+					name = L['Remove Spell']..'ID',
+					desc = L['Remove a spell from the filter.'],
+					type = 'input',
+					get = function(info) return "" end,
+					set = function(info, value) 
+						if P['sao']['spells'][E.myclass] then
+							if P['sao']['spells'][E.myclass][tonumber(value)] then
+								E.db.sao['spells'][E.myclass][tonumber(value)].enable = false;
+								E:Print(L['You may not remove a spell from a default filter that is not customly added. Setting spell to false instead.'])
+							else
+								E.db.sao['spells'][E.myclass][tonumber(value)] = nil;
+							end
+						else
+							E.db.sao['spells'][E.myclass][tonumber(value)] = nil;
+						end
+						
+						UpdateSAOGroup();
+					end,				
+				},		
+				selectSpell = {
+					name = L["Select Spell"],
+					type = 'select',
+					order = 0,
+					get = function(info) return selectedspell end,
+					set = function(info, value) selectedspell = value; UpdateSAOGroup() end,							
+					values = function()
+						local spells = {}
+						spells[0] = NONE
+						for k in pairs(E.db.sao['spells'][E.myclass]) do
+							if type(k) == 'number' and GetSpellInfo(k) then
+								spells[k] = GetSpellInfo(k)..'( '..k..' )'
+							end
+						end
+
+						return spells
+					end,
+				},				
+			},
+		},
+	},
+}
+
+
 E.Options.args.chatfilter = {
 	type = "group",
 	name = '13.'..L["chatfilter"],

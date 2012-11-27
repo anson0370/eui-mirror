@@ -1368,6 +1368,7 @@ end
 
 --euiscript
 do
+	L['Display spell trigger graphics prompt'] = '技能触发图形提示';
 	L["All Mail"] = '所有信件';
 	L["All Cash"] = '所有金币';
 	L["lfg notification"] = "随机本奖励提示";

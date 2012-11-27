@@ -330,13 +330,15 @@ function UF:SetCastTicks(frame, numTicks, extraTickRatio)
 		for i = 1, numTicks do
 			if not ticks[i] then
 				ticks[i] = frame:CreateTexture(nil, 'OVERLAY')
-				ticks[i]:SetTexture(E["media"].normTex)
-				ticks[i]:SetVertexColor(0, 0, 0)
-				ticks[i]:SetWidth(1)
+			--	ticks[i]:SetTexture(E["media"].normTex)
+				ticks[i]:SetTexture[[Interface\CastingBar\UI-CastingBar-Spark]]
+				ticks[i]:SetVertexColor(1, .8, 1)
+			--	ticks[i]:SetWidth(2)
 				ticks[i]:SetHeight(frame:GetHeight())
+				ticks[i]:SetBlendMode('ADD')
 			end
 			ticks[i]:ClearAllPoints()
-			ticks[i]:SetPoint("CENTER", frame, "RIGHT", -(d * i), 0)
+			ticks[i]:SetPoint("CENTER", frame, "LEFT", d * i, 0)
 			ticks[i]:Show()
 		end
 	end

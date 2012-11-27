@@ -1148,6 +1148,7 @@ end
 
 --euiscript
 do
+	L['Display spell trigger graphics prompt'] = true;
 	L["All Mail"] = true;
 	L["All Cash"] = true;
 	L["lfg notification"] = true;
