@@ -11,7 +11,6 @@ V['general'] = {
 	["namefont"] = "ElvUI Font",
 	['bubbles'] = true,
 	['pixelPerfect'] = false, --USE AT YOUR OWN RISK!! NOT EVEN CLOSE TO DONE!
-	["raidIconStyle"] = "classic",
 	
 	['minimap'] = {
 		['enable'] = true,
@@ -29,7 +28,7 @@ V["nameplate"] = {
 
 V['auras'] = {
 	['enable'] = true,
-	['size'] = 26,
+	['size'] = 30,
 }
 
 V['chat'] = {
@@ -94,6 +93,7 @@ V['skins'] = {
 		["bgmap"] = true,
 		['mounts'] = true,
 		['petbattleui'] = true,
+		['losscontrol'] = true,
 	},
 }
 

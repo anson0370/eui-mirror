@@ -142,6 +142,12 @@ E.Options.args.euiscript = {
 					name = L["autogreed"],
 					disabled = (UnitLevel('player') ~= MAX_PLAYER_LEVEL),
 				},
+				autochangeloot = {
+					order = 24,
+					type = "toggle",
+					name = L["Auto change loot"],
+					desc = L["InGroup change loot to freecall, InRaid change loot to master"],
+				},
 				autoinvenable = {
 					order = 26,
 					type = "toggle",
@@ -704,6 +710,16 @@ E.Options.args.chatfilter = {
 					order = 11,
 					type = "toggle",
 					name = L["Filter the messages:'... has defeated/fled from ... in a duel'"],
+				},
+				FilterRaidAlert = {
+					order = 11,
+					type = 'toggle',
+					name = L["Filter the bullshit messages from RaidAlert"],
+				},
+				FilterDrunkMSG = {
+					order = 11,
+					type = 'toggle',
+					name = L["Filter the drunk messages:'... has drunked ...'"],
 				},
 				FilterAdvertising = {
 					order = 12,

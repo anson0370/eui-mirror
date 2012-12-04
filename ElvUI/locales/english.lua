@@ -202,8 +202,8 @@ L['Fade the chat text when there is no activity.'] = true;
 L['Invalid Target'] = true;
 L["AFK"] = true; --Also used in datatexts and tooltip
 L["Attempt to create URL links inside the chat."] = true;
-L["BG"] = true;
-L["BGL"] = true;
+L["I"] = true;
+L["IL"] = true;
 L["BN:"] = true;
 L["Chat"] = true;
 L["CHAT_DESC"] = "Adjust chat settings for ElvUI."
@@ -337,6 +337,9 @@ L["ELVUI_CREDITS"] = "I would like to give out a special shout out to the follow
 L["Testing:"] = true;
 
 --DataTexts
+L["World Boss(s)"] = true;
+L['Sha of Anger'] = true;
+L['Galleon'] = true;
 L['Crit'] = true;
 L['Datatext Panel (Left)'] = true;
 L['Datatext Panel (Right)'] = true;
@@ -1148,6 +1151,8 @@ end
 
 --euiscript
 do
+	L["Auto change loot"] = true;
+	L["InGroup change loot to freecall, InRaid change loot to master"] = true;
 	L['Display spell trigger graphics prompt'] = true;
 	L["All Mail"] = true;
 	L["All Cash"] = true;
@@ -1353,6 +1358,8 @@ end
 
 --ChatFilter
 do
+	L["Filter the bullshit messages from RaidAlert"] = true;
+	L["Filter the drunk messages:'... has drunked ...'"] = true;
 	L["chatfilter"] = true;
 	L["Enabled"] = true;
 	L["Scan ourself"] = true;

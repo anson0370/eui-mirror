@@ -217,7 +217,6 @@ function AB:PositionAndSizeBarPet()
 			button.CheckFixed = true;
 		end
 	end
-	possibleButtons = nil;
 	
 	RegisterStateDriver(bar, "show", self.db['barPet'].visibility);
 end

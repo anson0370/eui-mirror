@@ -4,13 +4,13 @@ local M = E:NewModule('Misc', 'AceEvent-3.0', 'AceTimer-3.0');
 E.Misc = M;
 local UIErrorsFrame = UIErrorsFrame;
 
-function M:ErrorFrameToggle(event)
-	if event == 'PLAYER_REGEN_DISABLED' then
-		UIErrorsFrame:UnregisterEvent('UI_ERROR_MESSAGE')
-	else
-		UIErrorsFrame:RegisterEvent('UI_ERROR_MESSAGE')
-	end
-end
+--function M:ErrorFrameToggle(event)
+--	if event == 'PLAYER_REGEN_DISABLED' then
+--		UIErrorsFrame:UnregisterEvent('UI_ERROR_MESSAGE')
+--	else
+--		UIErrorsFrame:RegisterEvent('UI_ERROR_MESSAGE')
+--	end
+--end
 
 function M:COMBAT_LOG_EVENT_UNFILTERED(_, _, event, _, sourceGUID, sourceName, _, _, _, destName, _, _, _, _, _, spellID, spellName)
 	if (event ~= "SPELL_INTERRUPT") or (select(2, IsInInstance()) == "pvp") then return end
@@ -168,8 +168,8 @@ function M:Initialize()
 	self:LoadLootRoll()
 	self:LoadChatBubbles()
 	self:RegisterEvent('MERCHANT_SHOW')
-	self:RegisterEvent('PLAYER_REGEN_DISABLED', 'ErrorFrameToggle')
-	self:RegisterEvent('PLAYER_REGEN_ENABLED', 'ErrorFrameToggle')
+--	self:RegisterEvent('PLAYER_REGEN_DISABLED', 'ErrorFrameToggle')
+--	self:RegisterEvent('PLAYER_REGEN_ENABLED', 'ErrorFrameToggle')
 	self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 	self:RegisterEvent('CHAT_MSG_BG_SYSTEM_HORDE', 'PVPMessageEnhancement')
 	self:RegisterEvent('CHAT_MSG_BG_SYSTEM_ALLIANCE', 'PVPMessageEnhancement')

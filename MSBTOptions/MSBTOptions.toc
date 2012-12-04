@@ -1,4 +1,4 @@
-## Interface: 50001
+## Interface: 50100
 ## Title: |cffC495DDEUI|rMSBT [|cffffff80Options|r]
 ## Title-zhCN: |cffC495DDEUI|r战斗文字设置MSBT [|cffffff80Options|r]
 ## Title-zhTW: |cffC495DDEUI|r戰鬥文字设置MSBT [|cffffff80Options|r]

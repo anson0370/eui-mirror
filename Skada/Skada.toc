@@ -1,4 +1,4 @@
-## Interface: 50001
+## Interface: 50100
 ## Title: |cffC495DDEUI|rSkada
 ## Title-zhCN: |cffC495DDEUI|r伤害统计插件Skada
 ## Title-zhTW: |cffC495DDEUI|r傷害統計插件Skada
@@ -9,10 +9,10 @@
 ## Notes-frFR: Un damage meter.
 ## Notes-zhCN: 伤害统计
 ## Author: Zarnivoop
-## Version: 1.4-5
+## Version: 1.4-7
 ## SavedVariables: SkadaDB
 ## SavedVariablesPerCharacter: SkadaPerCharDB
-## X-Curse-Packaged-Version: 1.4-5
+## X-Curse-Packaged-Version: 1.4-7
 ## X-Curse-Project-Name: Skada Damage Meter
 ## X-Curse-Project-ID: skada
 ## X-Curse-Repository-ID: wow/skada/mainline

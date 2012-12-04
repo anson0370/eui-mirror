@@ -874,6 +874,9 @@ end
 
 --Datatext
 do
+	L["World Boss(s)"] = "世界首领:";
+	L['Sha of Anger'] = "怒之煞";
+	L['Galleon'] = '炮舰';
 	L['Crit'] = '爆击';
 	L['Datatext Panel (Left)'] = '信息文字左面板';
 	L['Datatext Panel (Right)'] = '信息文字右面板';
@@ -1368,6 +1371,8 @@ end
 
 --euiscript
 do
+	L["Auto change loot"] = "自动更改分配方式";
+	L["InGroup change loot to freecall, InRaid change loot to master"] = "队伍中改为自由拾取,团队中改为团长分配,界限为史诗";
 	L['Display spell trigger graphics prompt'] = '技能触发图形提示';
 	L["All Mail"] = '所有信件';
 	L["All Cash"] = '所有金币';
@@ -1567,6 +1572,8 @@ end
 
 --ChatFilter
 do
+	L["Filter the bullshit messages from RaidAlert"] = '过滤RaidAlert信息';
+	L["Filter the drunk messages:'... has drunked ...'"] = '过滤某人喝醉了...的信息';
 	L["chatfilter"] = "信息过滤"
 	L["Enabled"] = "启用"
 	L["Scan ourself"] = "是否扫描自己的聊天信息"

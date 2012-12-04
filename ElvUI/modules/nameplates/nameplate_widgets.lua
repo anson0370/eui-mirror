@@ -166,15 +166,13 @@ function NP:CreateAuraIcon(parent)
 		button.Icon:SetPoint("BOTTOMRIGHT",button,"BOTTOMRIGHT",-noscalemult*3,noscalemult*3)
 		button.Icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)		
 	end
-		
+
 	button.TimeLeft = button:CreateFontString(nil, 'OVERLAY')
 	button.TimeLeft:Point('CENTER', 1, 1)
 	button.TimeLeft:SetJustifyH('CENTER')	
-	button.TimeLeft:FontTemplate(nil, E.db.nameplate.fontsize, 'OUTLINE')
 	button.TimeLeft:SetShadowColor(0, 0, 0, 0)
 	
 	button.Stacks = button:CreateFontString(nil,"OVERLAY")
-	button.Stacks:FontTemplate(nil,E.db.nameplate.fontsize,'OUTLINE')
 	button.Stacks:SetShadowColor(0, 0, 0, 0)
 	button.Stacks:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", 0, 2)
 	
@@ -252,7 +250,7 @@ end
 
 function NP:SearchNameplateByGUID(guid)
 	for frame, _ in pairs(NP.Handled) do
-		frame = _G[frame]
+		frame = _G[frame]:GetChildren()
 		if frame and frame:IsShown() and frame.guid == guid then
 			return frame
 		end
@@ -263,7 +261,7 @@ function NP:SearchNameplateByName(sourceName)
 	if not sourceName then return; end
 	local SearchFor = strsplit("-", sourceName)
 	for frame, _ in pairs(NP.Handled) do
-		frame = _G[frame]
+		frame = _G[frame]:GetChildren()
 		if frame and frame:IsShown() and frame.hp.name:GetText() == SearchFor and frame.hasClass then
 			return frame
 		end
@@ -280,7 +278,7 @@ function NP:SearchNameplateByIcon(UnitFlags)
 	end	
 
 	for frame, _ in pairs(NP.Handled) do
-		frame = _G[frame]
+		frame = _G[frame]:GetChildren()
 		if frame and frame:IsShown() and frame.isMarked and (frame.raidIconType == UnitIcon) then
 			return frame
 		end
@@ -290,7 +288,7 @@ end
 function NP:SearchNameplateByIconName(raidicon)
 	local frame
 	for frame, _ in pairs(NP.Handled) do
-		frame = _G[frame]
+		frame = _G[frame]:GetChildren()
 		if frame and frame:IsShown() and frame.isMarked and (frame.raidIconType == raidIcon) then
 			return frame
 		end

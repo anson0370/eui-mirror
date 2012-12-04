@@ -42,8 +42,8 @@ function CH:LoadChatbar()
 	CannelButton(self.chatbar, 16, 16, 8, "/4 ", "4", {213/255, 180/255, 140/255})
 	CannelButton(self.chatbar, 16, 16, 9, "/5 ", "5", {213/255, 180/255, 140/255})
 	CannelButton(self.chatbar, 16, 16, 10, "/6 ", "6", {213/255, 180/255, 140/255})
-	-- "战场(/BG)" -- 
-	CannelButton(self.chatbar, 16, 16, 11, "/BG ", "B", {255/255, 137/255, 0})
+	-- "副本(/I)" -- 
+	CannelButton(self.chatbar, 16, 16, 11, "/i ", "I", {255/255, 137/255, 0})
 
 	--Bigfootcannel
 	local big = CreateFrame("Button", "Bigfootcannel", self.chatbar)

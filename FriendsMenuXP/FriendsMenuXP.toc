@@ -1,4 +1,4 @@
-## Interface: 50001
+## Interface: 50100
 ## Author: Warbaby @ 网易有爱 w.163.com/163ui
 ## Title: |cffC495DDEUI|rFriendsMenuXP
 ## Title-zhCN: |cffC495DDEUI|r玩家菜单增强

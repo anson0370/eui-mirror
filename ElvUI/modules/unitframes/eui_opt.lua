@@ -183,6 +183,92 @@ E.Options.args.unitframe.args.target.args.tapped = {
 	},
 }
 
+E.Options.args.unitframe.args.target.args.range = {
+	order = 350,
+	type = 'group',
+	name = L["Range"],
+	get = function(info) return E.db.unitframe.units['target']['range'][ info[#info] ] end,
+	set = function(info, value) E.db.unitframe.units['target']['range'][ info[#info] ] = value; UF:CreateAndUpdateUF('target') end,
+	args = {
+		enable = {
+			order = 1,
+			type = 'toggle',
+			name = L['Enable'],
+		},
+		position = {
+			type = 'select',
+			order = 2,
+			name = L['Position'],
+			values = {
+				TOPLEFT = L['TOPLEFT'],
+				LEFT = L['LEFT'],
+				BOTTOMLEFT = L['BOTTOMLEFT'],
+				RIGHT = L['RIGHT'],
+				TOPRIGHT = L['TOPRIGHT'],
+				BOTTOMRIGHT = L['BOTTOMRIGHT'],
+				CENTER = L['CENTER'],
+				TOP = L['TOP'],
+				BOTTOM = L['BOTTOM'],
+			},
+		},		
+		offsetX = {
+			order = 3,
+			type = 'range',
+			name = L['X Offset'],
+			min = -500, max = 500, step = 1,
+		},
+		offsetY = {
+			order = 4,
+			type = 'range',
+			name = L['Y Offset'],
+			min = -500, max = 500, step = 1,
+		},	
+	},
+}
+
+E.Options.args.unitframe.args.focus.args.range = {
+	order = 350,
+	type = 'group',
+	name = L["Range"],
+	get = function(info) return E.db.unitframe.units['focus']['range'][ info[#info] ] end,
+	set = function(info, value) E.db.unitframe.units['focus']['range'][ info[#info] ] = value; UF:CreateAndUpdateUF('focus') end,
+	args = {
+		enable = {
+			order = 1,
+			type = 'toggle',
+			name = L['Enable'],
+		},
+		position = {
+			type = 'select',
+			order = 2,
+			name = L['Position'],
+			values = {
+				TOPLEFT = L['TOPLEFT'],
+				LEFT = L['LEFT'],
+				BOTTOMLEFT = L['BOTTOMLEFT'],
+				RIGHT = L['RIGHT'],
+				TOPRIGHT = L['TOPRIGHT'],
+				BOTTOMRIGHT = L['BOTTOMRIGHT'],
+				CENTER = L['CENTER'],
+				TOP = L['TOP'],
+				BOTTOM = L['BOTTOM'],
+			},
+		},		
+		offsetX = {
+			order = 3,
+			type = 'range',
+			name = L['X Offset'],
+			min = -500, max = 500, step = 1,
+		},
+		offsetY = {
+			order = 4,
+			type = 'range',
+			name = L['Y Offset'],
+			min = -500, max = 500, step = 1,
+		},	
+	},
+}
+
 E.Options.args.unitframe.args['raid10'] = nil
 E.Options.args.unitframe.args['raid40'] = nil
 

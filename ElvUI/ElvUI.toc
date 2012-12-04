@@ -1,12 +1,12 @@
-﻿## Interface: 50001
+﻿## Interface: 50100
 ## Author: Elv
-## Version: 4.69
+## Version: 5.04
 ## Title: |cffC495DDEUI|rCore
 ## Title-zhCN: |cffC495DDEUI|r核心
 ## Title-zhTW: |cffC495DDEUI|r核心
 ## Notes: User Interface replacement AddOn for World of Warcraft.
-## SavedVariables: ElvData, ElvPrivateData
-## SavedVariablesPerCharacter: ElvCharacterData
+## SavedVariables: ElvDB, ElvPrivateDB
+## SavedVariablesPerCharacter: ElvCharacterDB
 ## OptionalDeps: Blizzard_DebugTools, SharedMedia
 ## X-oUF: ElvUF
 

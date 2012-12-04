@@ -3,12 +3,12 @@ local L		= mod:GetLocalizedStrings()
 local sndWOP	= mod:NewSound(nil, "SoundWOP", true)
 local sndJK		= mod:NewSound(nil, "SoundJK", true)
 
-mod:SetRevision(("$Revision: 8148 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 8186 $"):sub(12, -3))
 mod:SetCreatureID(62442)--62919 Unstable Sha, 62969 Embodied Terror
 mod:SetModelID(42532)
+mod:SetReCombatTime(60)--fix lfr combat re-starts after killed.
 
 mod:RegisterCombat("combat")
-mod:RegisterKill("yell", L.Victory)
 
 mod:RegisterEventsInCombat(
 	"SPELL_AURA_APPLIED",
@@ -219,6 +219,8 @@ function mod:SPELL_CAST_SUCCESS(args)
 		if not mod:IsDps() then
 			sndWOP:Schedule(26, "Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_zbhx.mp3")
 		end
+	elseif args:IsSpellID(124176) then
+		DBM:EndCombat(self)
 	end
 end
 

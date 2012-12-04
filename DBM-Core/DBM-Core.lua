@@ -90,9 +90,9 @@ imsg.text:SetJustifyH("CENTER")
 --  Globals/Default Options  --
 -------------------------------
 DBM = {
-	Revision = tonumber(("$Revision: 8160 $"):sub(12, -3)),
-	DisplayVersion = "5.0.0 語音增強版", -- the string that is shown as version
-	ReleaseRevision = 8086 -- the revision of the latest stable version that is available
+	Revision = tonumber(("$Revision: 8195 $"):sub(12, -3)),
+	DisplayVersion = "5.1 語音增強版", -- the string that is shown as version
+	ReleaseRevision = 8187 -- the revision of the latest stable version that is available
 }
 
 -- Legacy crap; that stupid "Version" field was never a good idea.
@@ -284,16 +284,18 @@ local function removeEntry(t, val)
 	return existed
 end
 
--- automatically sends an addon message to the appropriate channel (BATTLEGROUND, RAID or PARTY)
+-- automatically sends an addon message to the appropriate channel (INSTANCE_CHAT, RAID or PARTY)
 local function sendSync(prefix, msg)
 	local zoneType = select(2, IsInInstance())
 	msg = msg or ""
-	if zoneType == "pvp" or zoneType == "arena" then
-		SendAddonMessage("D4", prefix .. "\t" .. msg, "BATTLEGROUND")
-	elseif IsInRaid() then
-		SendAddonMessage("D4", prefix .. "\t" .. msg, "RAID")
-	elseif IsInGroup() then
-		SendAddonMessage("D4", prefix .. "\t" .. msg, "PARTY")
+	if IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and IsInInstance() then--For BGs, LFR and LFG (we also check IsInInstance() so if you're in queue but fighting osmething outside like sha, it'll sync in "RAID" instead)
+		SendAddonMessage("D4", prefix .. "\t" .. msg, "INSTANCE_CHAT")
+	else
+		if IsInRaid() then
+			SendAddonMessage("D4", prefix .. "\t" .. msg, "RAID")
+		elseif IsInGroup(LE_PARTY_CATEGORY_HOME) then
+			SendAddonMessage("D4", prefix .. "\t" .. msg, "PARTY")
+		end
 	end
 end
 
@@ -882,7 +884,7 @@ SlashCmdList["DEADLYBOSSMODS"] = function(msg)
 		end
 		local timer = tonumber(cmd:sub(6)) or 5
 		local timer = timer * 60
-		local channel = (IsInRaid() and "RAID_WARNING") or "PARTY"
+		local channel = (IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and "INSTANCE_CHAT") or (IsInRaid() and "RAID_WARNING") or "PARTY"
 		DBM:CreatePizzaTimer(timer, DBM_CORE_TIMER_BREAK, true)
 		DBM:Unschedule(SendChatMessage)
 		SendChatMessage(DBM_CORE_BREAK_START:format(timer/60), channel)
@@ -896,7 +898,7 @@ SlashCmdList["DEADLYBOSSMODS"] = function(msg)
 			return DBM:AddMsg(DBM_ERROR_NO_PERMISSION)
 		end
 		local timer = tonumber(cmd:sub(5)) or 10
-		local channel = (IsInRaid() and "RAID_WARNING") or "PARTY"
+		local channel = (IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and "INSTANCE_CHAT") or (IsInRaid() and "RAID_WARNING") or "PARTY"
 		DBM:CreatePizzaTimer(timer, DBM_CORE_TIMER_PULL, true)
 		DBM:Unschedule(SendChatMessage)
 		SendChatMessage(DBM_CORE_ANNOUNCE_PULL:format(timer), channel)
@@ -2233,7 +2235,7 @@ do
 	end
 
 	function DBM:CHAT_MSG_ADDON(prefix, msg, channel, sender)
-		if prefix == "D4" and msg and (channel == "PARTY" or channel == "RAID" or channel == "BATTLEGROUND" or channel == "WHISPER" and self:GetRaidUnitId(sender) ~= "none") then
+		if prefix == "D4" and msg and (channel == "PARTY" or channel == "RAID" or channel == "INSTANCE_CHAT" or channel == "WHISPER" and self:GetRaidUnitId(sender) ~= "none") then
 			handleSync(channel, sender, strsplit("\t", msg))
 		end
 	end
@@ -2540,7 +2542,7 @@ local difficultyText
 function DBM:StartCombat(mod, delay, synced)
 	if not checkEntry(inCombat, mod) then
 		-- HACK: makes sure that we don't detect a false pull if the event fires again when the boss dies...
-		if mod.lastKillTime and GetTime() - mod.lastKillTime < 20 then return end -- increasing time to 20 sec for ToES lfr Tsulong combat detection bug.
+		if mod.lastKillTime and GetTime() - mod.lastKillTime < (mod.reCombatTime or 10) then return end
 		if not mod.combatInfo then return end
 		if mod.combatInfo.noCombatInVehicle and UnitInVehicle("player") then -- HACK
 			return
@@ -4996,6 +4998,11 @@ function bossModPrototype:SetWipeTime(t)
 		error("mod.combatInfo not yet initialized, use mod:RegisterCombat before using this method", 2)
 	end
 	self.combatInfo.wipeTimer = t
+end
+
+-- fix for LFR ToES Tsulong combat detection bug after killed.
+function bossModPrototype:SetReCombatTime(t)-- bad wording: ReCombat? 
+	self.reCombatTime = t
 end
 
 -- updated for status whisper.

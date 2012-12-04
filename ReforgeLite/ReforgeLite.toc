@@ -1,4 +1,4 @@
-## Interface: 50001
+## Interface: 50100
 ## Author: d07.RiV (Iroared)
 ## Title: |cffC495DDEUI|r ReforgeLite
 ## Title-zhCN: |cffC495DDEUI|r重铸助手

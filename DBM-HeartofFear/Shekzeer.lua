@@ -64,6 +64,8 @@ local timerCalamityCD			= mod:NewCDTimer(6, 124845, nil, mod:IsHealer())
 local timerVisionsCD			= mod:NewCDTimer(19.5, 124862)
 local timerConsumingTerrorCD	= mod:NewCDTimer(32, 124849, nil, not mod:IsTank())
 
+local berserkTimer				= mod:NewBerserkTimer(900)
+
 local timerQJ					= mod:NewTargetTimer(120, 124821)
 local timerDQ					= mod:NewBuffFadesTimer(30, 124827)
 
@@ -124,6 +126,9 @@ function mod:OnCombatStart(delay)
 	hp2 = 100
 	if self.Options.RangeFrame then
 		DBM.RangeCheck:Show(5)
+	end
+	if not self:IsDifficulty("lfr25") then
+		berserkTimer:Start(-delay)
 	end
 	self:RegisterShortTermEvents(
 		"UNIT_HEALTH_FREQUENT_UNFILTERED"

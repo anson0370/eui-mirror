@@ -1,6 +1,7 @@
 local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB, Localize Underscore
 local UF = E:GetModule('UnitFrames');
 local LSM = LibStub("LibSharedMedia-3.0");
+local RC = LibStub("LibRangeCheck-2.0")
 
 local abs = math.abs
 local _, ns = ...
@@ -330,10 +331,10 @@ function UF:SetCastTicks(frame, numTicks, extraTickRatio)
 		for i = 1, numTicks do
 			if not ticks[i] then
 				ticks[i] = frame:CreateTexture(nil, 'OVERLAY')
-			--	ticks[i]:SetTexture(E["media"].normTex)
-				ticks[i]:SetTexture[[Interface\CastingBar\UI-CastingBar-Spark]]
+				ticks[i]:SetTexture(E["media"].normTex)
+			--	ticks[i]:SetTexture[[Interface\CastingBar\UI-CastingBar-Spark]]
 				ticks[i]:SetVertexColor(1, .8, 1)
-			--	ticks[i]:SetWidth(2)
+				ticks[i]:SetWidth(1)
 				ticks[i]:SetHeight(frame:GetHeight())
 				ticks[i]:SetBlendMode('ADD')
 			end
@@ -503,11 +504,6 @@ end
 
 function UF:PostCastNotInterruptible(unit)
 	self:SetStatusBarColor(unpack(ElvUF.colors.castNoInterrupt))
-end
-
-function UF:VengeanceUpdate(event, value)
-	local frame = self:GetParent();
-	UF:UpdatePlayerFrameAnchors(frame, (frame.ClassBar and frame.ClassBar:IsShown()))
 end
 
 function UF:UpdateHoly(event, unit, powerType)
@@ -1104,6 +1100,7 @@ function UF:UpdateAuraWatch(frame)
 				icon.image = image
 				icon.spellID = spell["id"];
 				icon.anyUnit = spell["anyUnit"];
+				icon.style = spell['style'];
 				icon.onlyShowMissing = spell["onlyShowMissing"];
 				if spell["onlyShowMissing"] then
 					icon.presentAlpha = 0;
@@ -1115,25 +1112,36 @@ function UF:UpdateAuraWatch(frame)
 				icon:Width(db.size);
 				icon:Height(db.size);
 				icon:ClearAllPoints()
-				icon:SetPoint(spell["point"], 0, 0);
+				icon:SetPoint(spell["point"], E.PixelMode and UF:GetPositionOffset(spell["point"], 1) or 0, E.PixelMode and UF:GetPositionOffset(spell["point"], 1) or 0);
 
 				if not icon.icon then
 					icon.icon = icon:CreateTexture(nil, "BORDER");
 					icon.icon:SetAllPoints(icon);
 				end
 				
-				if db.colorIcons then
+				if not icon.text then
+					icon.text = icon:CreateFontString(nil, 'BORDER');
+				end
+				
+				
+				if icon.style == 'coloredIcon' then
 					icon.icon:SetTexture(E["media"].blankTex);
 					
 					if (spell["color"]) then
 						icon.icon:SetVertexColor(spell["color"].r, spell["color"].g, spell["color"].b);
 					else
 						icon.icon:SetVertexColor(0.8, 0.8, 0.8);
-					end			
-				else
+					end		
+					icon.text:Hide()
+				elseif icon.style == 'texturedIcon' then
 					icon.icon:SetVertexColor(1, 1, 1)
 					icon.icon:SetTexCoord(.18, .82, .18, .82);
 					icon.icon:SetTexture(icon.image);
+					icon.text:Hide()
+				else
+					icon.icon:SetTexture(nil)
+					icon.text:Show()
+					icon.text:SetTextColor(spell["color"].r, spell["color"].g, spell["color"].b)
 				end
 				
 				if not icon.cd then
@@ -1151,11 +1159,21 @@ function UF:UpdateAuraWatch(frame)
 					icon.border:SetVertexColor(0, 0, 0);
 				end
 				
+				if icon.style ~= 'coloredIcon' and icon.style ~= 'texturedIcon' then
+					icon.border:Hide();
+				else
+					icon.border:Show();
+				end
+				
 				if not icon.count then
 					icon.count = icon:CreateFontString(nil, "OVERLAY");
 					icon.count:SetPoint("CENTER", unpack(counterOffsets[spell["point"]]));
 				end
+				
 				icon.count:FontTemplate(LSM:Fetch("font", E.db['unitframe'].font), db.fontSize, 'OUTLINE');
+				icon.text:FontTemplate(LSM:Fetch("font", E.db['unitframe'].font), db.fontSize, 'OUTLINE');
+				icon.text:ClearAllPoints()
+				icon.text:SetPoint(spell["point"])
 				
 				if spell["enabled"] then
 					auras.icons[spell.id] = icon;
@@ -1440,4 +1458,30 @@ function UF:SmartAuraDisplay()
 			auraBars:SetPoint(anchorPoint..'RIGHT', auraBars.Holder, anchorTo..'RIGHT', 0, yOffset)		
 		end
 	end
+end
+
+local function UpdateRange(frameType)
+	local rcText
+	if not UnitName(frameType) then
+		rcText = ''
+	else
+		local minRange, maxRange = RC:getRange(frameType)
+		if maxRange then
+			rcText = minRange.. '-'.. maxRange
+		else
+			rcText = '80-?'
+		end
+	end	
+	
+	return rcText
+end
+
+function UF:UpdateTargetRange(frame)
+	local rcText = UpdateRange('target')
+	frame.Range.rcText:SetText(rcText)
+end
+
+function UF:UpdateFocusRange(frame)
+	local rcText = UpdateRange('focus')
+	frame.Range.rcText:SetText(rcText)
 end

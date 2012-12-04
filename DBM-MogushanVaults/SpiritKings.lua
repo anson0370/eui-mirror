@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 local sndWOP	= mod:NewSound(nil, "SoundWOP", true)
 local sndDSA	= mod:NewSound(nil, "SoundDSA", true)
 
-mod:SetRevision(("$Revision: 8143 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 8195 $"):sub(12, -3))
 mod:SetCreatureID(60701, 60708, 60709, 60710)--Adds: 60731 Undying Shadow, 60958 Pinning Arrow
 mod:SetModelID(41813)
 mod:SetZone()
@@ -524,8 +524,8 @@ end
 function mod:CHAT_MSG_MONSTER_YELL(msg, boss)
 	if not self:IsInCombat() or bossesActivated[boss] then return end--Ignore yells out of combat or from bosses we already activated.
 	if not bossesActivated[boss] then bossesActivated[boss] = true end--Once we activate off bosses first yell, add them to ignore.
-	warnActivated:Show(boss)
 	if boss == Zian then
+		warnActivated:Show(boss)
 		zianActive = true
 		timerChargingShadowsCD:Start()
 		timerUndyingShadowsCD:Start(20)
@@ -551,6 +551,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg, boss)
 			DBM.InfoFrame:Show(5, "playerbaddebuff", 118303)
 		end
 	elseif boss == Meng then
+		warnActivated:Show(boss)
 		mengActive = true
 		if self:IsDifficulty("heroic10", "heroic25") then
 			timerMaddeningShoutCD:Start(40)
@@ -571,22 +572,9 @@ function mod:CHAT_MSG_MONSTER_YELL(msg, boss)
 			sndWOP:Schedule(1, "Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_ddzb.mp3") --打斷準備
 		end
 	elseif boss == Qiang then
-	--[[
-		qiangActive = true
-		timerAnnihilateCD:Start(10.5)
-		timerFlankingOrdersCD:Start(25)
-		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_zwjh.mp3") --戰王激活
-		sndWOP:Schedule(21, "Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_bczb.mp3")
-		if self:IsDifficulty("heroic10", "heroic25") then
-			timerImperviousShieldCD:Start(40.7)
-			sndDSA:Schedule(37.5, "Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_zwhd.mp3") -- 戰王護盾準備
-			self:Schedule(37.5, function()
-				if UnitName("target") == Qiang then
-					specWarnDSoon:Show()
-				end
-			end)
-		end]]
+		warnActivated:Show(boss)
 	elseif boss == Subetai then
+		warnActivated:Show(boss)
 		subetaiActive = true
 		timerVolleyCD:Start(5)
 		timerPillageCD:Start(25)

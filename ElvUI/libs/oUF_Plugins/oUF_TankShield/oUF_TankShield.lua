@@ -75,7 +75,7 @@ local function warvalueChanged(self, event, unit)
 	end
 	
 	if UnitBuff('player', BS_Name) then
-		local _, _, icon, _, _, _, expires, _, _, _, _, _, _, value = UnitBuff('player', BS_Name)
+		local _, _, icon, _, _, _, expires, _, _, _, _, _, _, _, value = UnitBuff('player', BS_Name)
 		if icon then
 			bar:SetAlpha(1)
 			bar.Icon:SetDesaturated(false)
@@ -93,7 +93,7 @@ local function warvalueChanged(self, event, unit)
 	end
 
 	if UnitBuff('player', BS_Spell) then
-		local _, _, icon, _, _, etime, eexpires, _, _, _, _, _, _, evalue = UnitBuff('player', BS_Spell)	
+		local _, _, icon, _, _, etime, eexpires, _, _, _, _, _, _, _, evalue = UnitBuff('player', BS_Spell)	
 		if evalue then
 			bar.text:SetText(ShortValue(evalue))
 			bar.sb:SetMinMaxValues(0, etime)
@@ -133,7 +133,7 @@ local function doubleValueChanged(self, event, unit)
 	end
 	
 	if UnitBuff('player', BS_Name) then
-		local _, _, icon, _, _, _, expires, _, _, _, _, _, _, value = UnitBuff('player', BS_Name)
+		local _, _, icon, _, _, _, expires, _, _, _, _, _, _, _, value = UnitBuff('player', BS_Name)
 		if icon then
 			bar:SetAlpha(1)
 			bar.Icon:SetDesaturated(false)
@@ -159,7 +159,7 @@ local function doubleValueChanged(self, event, unit)
 		bs_value = BS_Value3
 	end
 	if bs_value then
-		local _, _, icon, _, _, etime, eexpires, _, _, _, _, _, _, evalue = UnitDebuff('player', bs_value)	
+		local _, _, icon, _, _, etime, eexpires, _, _, _, _, _, _, _, evalue = UnitDebuff('player', bs_value)	
 		if evalue then
 			bar.text:SetText(ShortValue(evalue))
 			bar.sb:SetMinMaxValues(0, etime)
@@ -210,7 +210,7 @@ local function valueChanged(self, event, unit)
 	end	
 	
 	if UnitBuff('player', BS_Name) then
-		local _, _, icon, _, _, _, expires, _, _, _, _, _, _, value = UnitBuff('player', BS_Name)
+		local _, _, icon, _, _, _, expires, _, _, _, _, _, _, _, value = UnitBuff('player', BS_Name)
 		if value and class == 'DEATHKNIGHT' then
 			if not bar.sb.max then bar.sb.max = UnitHealthMax("player") end
 			if value > bar.sb.max then value = bar.sb.max end

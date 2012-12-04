@@ -17,6 +17,7 @@ function UF:Construct_TargetFrame(frame)
 	frame.Portrait2D = self:Construct_Portrait(frame, 'texture')
 	
 	frame.TappedText = self:Construct_Tapped(frame)
+	frame.Range = self:ConstructTargetRange(frame)
 	
 	frame.Buffs = self:Construct_Buffs(frame)
 
@@ -35,7 +36,7 @@ function UF:Construct_TargetFrame(frame)
 	
 	frame.AuraBars = self:Construct_AuraBarHeader(frame)
 	
-	frame:Point('BOTTOMRIGHT', E.UIParent, 'BOTTOM', 417, 135)
+	frame:Point('BOTTOMRIGHT', E.UIParent, 'BOTTOM', 413, 135)
 	E:CreateMover(frame, frame:GetName()..'Mover', L['Target Frame'], nil, nil, nil, 'ALL,SOLO')
 	E:CreateMover(frame.AuraBars.Holder, frame:GetName()..'AuraMover',  L['Target Frame'].. L['Aura Bars'], nil, nil, nil, 'ALL,SOLO')
 end
@@ -183,6 +184,18 @@ function UF:Update_TargetFrame(frame, db)
 		tapped:Point(db.tapped.position, frame.Health, db.tapped.position, x, y)	
 
 		frame:Tag(tapped, db.tapped.text_format)
+	end
+	
+	--Range
+	do
+		local R = frame.Range
+		if db.range.enable then
+			R.rcText:ClearAllPoints()
+			R.rcText:Point(db.range.position, frame.Health, db.range.position, db.range.offsetX, db.range.offsetY)
+			R.rcText:Show()
+		else
+			R.rcText:Hide()
+		end
 	end
 	
 	--Power

@@ -382,6 +382,15 @@ function M:Initialize()
 			FarmModeMap:Hide()
 		end
 	end)
+	
+	--PET JOURNAL TAINT FIX AS OF 5.1
+	PetJournal_LoadUI();
+	local info = UIPanelWindows['PetJournalParent'];
+	for name, value in pairs(info) do
+		PetJournalParent:SetAttribute("UIPanelLayout-"..name, value);
+	end	
+
+	PetJournalParent:SetAttribute("UIPanelLayout-defined", true);	
 end
 
 E:RegisterInitialModule(M:GetName())

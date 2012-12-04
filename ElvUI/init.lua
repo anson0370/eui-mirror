@@ -39,54 +39,66 @@ local ACR = LibStub("AceConfigRegistry-3.0")
 local LibDualSpec = LibStub('LibDualSpec-1.0')
 
 function AddOn:OnInitialize()
-	if not ElvCharacterData then
-		ElvCharacterData = {};
+	if not ElvCharacterDB then
+		ElvCharacterDB = {};
 	end
+	
+	--Convert old DB.
+	if ElvCharacterData then
+		self:CopyTable(ElvCharacterDB, ElvCharacterData)
+	end
+	if ElvPrivateData then
+		self:CopyTable(ElvPrivateDB, ElvPrivateData)
+	end
+	if ElvData then
+		self:CopyTable(ElvDB, ElvData)
+	end
+	
+	ElvCharacterData = nil; --Depreciated
+	ElvPrivateData = nil; --Depreciated
+	ElvData = nil; --Depreciated
 	
 	self.db = table.copy(self.DF.profile, true);
 	self.global = table.copy(self.DF.global, true);
-	
-	if ElvData then
-		if ElvData.global then
-			self:CopyTable(self.global, ElvData.global)
+	if ElvDB then
+		if ElvDB.global then
+			self:CopyTable(self.global, ElvDB.global)
 		end
 		
 		local profileKey
-		if ElvData.profileKeys then
-			profileKey = ElvData.profileKeys[self.myname..' - '..self.myrealm]
+		if ElvDB.profileKeys then
+			profileKey = ElvDB.profileKeys[self.myname..' - '..self.myrealm]
 		end
 		
-		if profileKey and ElvData.profiles and ElvData.profiles[profileKey] then
-			self:CopyTable(self.db, ElvData.profiles[profileKey])
+		if profileKey and ElvDB.profiles and ElvDB.profiles[profileKey] then
+			self:CopyTable(self.db, ElvDB.profiles[profileKey])
 		end
 	end
-	
-	
+
 	self.private = table.copy(self.privateVars.profile, true);
-	if ElvPrivateData then
+	if ElvPrivateDB then
 		local profileKey
-		if ElvPrivateData.profileKeys then
-			profileKey = ElvPrivateData.profileKeys[self.myname..' - '..self.myrealm]
+		if ElvPrivateDB.profileKeys then
+			profileKey = ElvPrivateDB.profileKeys[self.myname..' - '..self.myrealm]
 		end
-		
-		if profileKey and ElvPrivateData.profiles and ElvPrivateData.profiles[profileKey] then
-			self:CopyTable(self.private, ElvPrivateData.profiles[profileKey])
+				
+		if profileKey and ElvPrivateDB.profiles and ElvPrivateDB.profiles[profileKey] then		
+			self:CopyTable(self.private, ElvPrivateDB.profiles[profileKey])
 		end
 	end	
-	
+
 	if self.private.general.pixelPerfect then
 		self.Border = 1;
 		self.Spacing = 0;
 		self.PixelMode = true;
 	end
-		
-	
+
 	self:UIScale();
 	self:UpdateMedia();
 	
 	self:RegisterEvent('PLAYER_REGEN_DISABLED')
 	self:RegisterEvent('PLAYER_LOGIN', 'Initialize')
-	self:Contruct_StaticPopups()
+	self:Contruct_StaticPopups()	
 	self:InitializeInitialModules()
 end
 
@@ -119,20 +131,16 @@ end
 
 function AddOn:OnProfileReset()
 	local profileKey
-	if ElvPrivateData.profileKeys then
-		profileKey = ElvPrivateData.profileKeys[self.myname..' - '..self.myrealm]
+	if ElvPrivateDB.profileKeys then
+		profileKey = ElvPrivateDB.profileKeys[self.myname..' - '..self.myrealm]
 	end
 	
-	if profileKey and ElvPrivateData.profiles and ElvPrivateData.profiles[profileKey] then
-		ElvPrivateData.profiles[profileKey] = nil;
+	if profileKey and ElvPrivateDB.profiles and ElvPrivateDB.profiles[profileKey] then
+		ElvPrivateDB.profiles[profileKey] = nil;
 	end	
 		
-	ElvCharacterData = nil;
+	ElvCharacterDB = nil;
 	ReloadUI()
-end
-
-function AddOn:OnProfileCopied(arg1, arg2, arg3)
-	self:StaticPopup_Show("COPY_PROFILE")
 end
 
 function AddOn:LoadConfig()	

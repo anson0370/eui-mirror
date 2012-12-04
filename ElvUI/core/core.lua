@@ -290,16 +290,6 @@ tinsert(E['snapBars'], E.UIParent)
 E.HiddenFrame = CreateFrame('Frame')
 E.HiddenFrame:Hide()
 
---Check if PTR version of WoW is loaded
-function E:IsPTRVersion()
-	if self.wowbuild > 14545 then
-		return true;
-	else
-		return false;
-	end
-	return false;
-end
-
 function E:CheckTalentTree(tree)
 	local activeGroup = GetActiveSpecGroup()
 	if type(tree) == 'number' then
@@ -413,9 +403,9 @@ function E:CopyTable(currentTable, defaultTable)
 end
 
 function E:SendMessage()
-	local inInstance, instanceType = IsInInstance()
-	if inInstance and instanceType == 'pvp' or instanceType == 'arena' then
-		SendAddonMessage("ElvUIVC", E.version, "BATTLEGROUND")	
+	local inInstance = IsInInstance()
+	if inInstance then
+		SendAddonMessage("ElvUIVC", E.version, "INSTANCE_CHAT")	
 	else
 		if IsInRaid() then
 			SendAddonMessage("ElvUIVC", E.version, "RAID")
@@ -457,7 +447,7 @@ f:RegisterEvent("CHAT_MSG_ADDON")
 f:SetScript('OnEvent', SendRecieve)
 
 function E:UpdateAll(ignoreInstall)
-	self.data = LibStub("AceDB-3.0"):New("ElvData", self.DF);
+	self.data = LibStub("AceDB-3.0"):New("ElvDB", self.DF);
 	self.data.RegisterCallback(self, "OnProfileChanged", "UpdateAll")
 	self.data.RegisterCallback(self, "OnProfileCopied", "UpdateAll")
 	self.data.RegisterCallback(self, "OnProfileReset", "OnProfileReset")
@@ -577,7 +567,6 @@ end
 function E:RegisterModule(name)
 	if self.initialized then
 		self:GetModule(name):Initialize()
-		tinsert(self['RegisteredModules'], name)
 	else
 		tinsert(self['RegisteredModules'], name)
 	end
@@ -628,141 +617,6 @@ function E:DBConversions()
 	if type(self.db.euiscript.lfgnoti) == 'boolean' then
 		self.db.euiscript.lfgnoti = P.euiscript.lfgnoti
 	end
-
-	if type(self.db.unitframe.units.arena.pvpTrinket) == 'boolean' then
-		self.db.unitframe.units.arena.pvpTrinket = table.copy(self.DF["profile"].unitframe.units.arena.pvpTrinket, true)
-	end	
-
-	local invalidValues = {
-		['current-percent'] = true,
-		['current-max'] = true,
-		['current'] = true,
-		['percent'] = true,
-		['deficit'] = true,
-		['blank'] = true,
-	}
-	
-	for unit, _ in pairs(self.db.unitframe.units) do
-		if self.db.unitframe.units[unit] and type(self.db.unitframe.units[unit]) == 'table' then
-			for optionGroup, _ in pairs(self.db.unitframe.units[unit]) do
-				if self.db.unitframe.units[unit][optionGroup] and type(self.db.unitframe.units[unit][optionGroup]) == 'table' then
-					if self.db.unitframe.units[unit][optionGroup].text_format and invalidValues[self.db.unitframe.units[unit][optionGroup].text_format] then
-						if P.unitframe.units[unit] then
-							self.db.unitframe.units[unit][optionGroup].text_format = P.unitframe.units[unit][optionGroup].text_format
-						else
-							P.unitframe.units[unit] = nil; --this is old old code that shoulda been removed.. pre 3.5 code
-						end
-					end
-				end
-			end
-		end
-	end
-	
-	--To prevent confusion
-	--If any of the following settings are differant from default settings, we'll disable smart aura display
-	--Because this option seems to cause a lot of confusion
-	if self.db.unitframe.units.target.buffs.enable ~= P.unitframe.units.target.buffs.enable then
-		E.db.unitframe.units.target.smartAuraDisplay = 'DISABLED'
-	end
-	
-	if self.db.unitframe.units.target.debuffs.enable ~= P.unitframe.units.target.debuffs.enable then
-		E.db.unitframe.units.target.smartAuraDisplay = 'DISABLED'
-	end	
-	
-	if self.db.unitframe.units.target.aurabar.enable ~= P.unitframe.units.target.aurabar.enable then
-		E.db.unitframe.units.target.smartAuraDisplay = 'DISABLED'
-	end	
-	
-	if self.db.unitframe.units.target.aurabar.anchorPoint ~= P.unitframe.units.target.aurabar.anchorPoint then
-		E.db.unitframe.units.target.smartAuraDisplay = 'DISABLED'
-	end		
-	
-	if type(self.db.tooltip.ufhide) == 'boolean' then
-		self.db.tooltip.ufhide = 'ALL';
-	end
-	
-	if self.db.auras.consolidedBuffs then
-		self.db.auras.consolidatedBuffs.enable = self.db.auras.consolidedBuffs
-		self.db.auras.consolidedBuffs = nil;
-	end
-	
-	if self.db.auras.filterConsolidated then
-		self.db.auras.consolidatedBuffs.filter = self.db.auras.filterConsolidated
-		self.db.auras.filterConsolidated = nil;
-	end	
-	
-	if self.db.auras.consolidatedDurations then
-		self.db.auras.consolidatedBuffs.durations = self.db.auras.consolidatedDurations
-		self.db.auras.consolidatedDurations = nil;
-	end	
-	
-	--Why?? Because these units can only have one type of reaction
-	local booleanUnits = {
-		['player'] = true,
-		['pet'] = true,
-		['boss'] = true,
-		['party'] = true,
-		['raid10'] = true,
-		['raid25'] = true,
-		['raid40'] = true,
-	}
-	
-	local changedOptions = {
-		['playerOnly'] = true,
-		['noConsolidated'] = true,
-		['useBlacklist'] = true,
-		['useWhitelist'] = true,
-		['noDuration'] = true,
-		['onlyDispellable'] = true
-	}
-	
-	for unit, _ in pairs(self.db.unitframe.units) do
-		if self.db.unitframe.units[unit] and type(self.db.unitframe.units[unit]) == 'table' then
-			for optionGroup, _ in pairs(self.db.unitframe.units[unit]) do
-				if (optionGroup == 'buffs' or optionGroup == 'debuffs' or optionGroup == 'aurabar') and self.db.unitframe.units[unit][optionGroup] and type(self.db.unitframe.units[unit][optionGroup]) == 'table' then
-					for option, value in pairs(self.db.unitframe.units[unit][optionGroup]) do
-						if changedOptions[option] then
-							if booleanUnits[unit] then
-								if self.db.unitframe.units[unit][optionGroup][option] == 'ALL' or self.db.unitframe.units[unit][optionGroup][option] == 'FRIENDLY' or self.db.unitframe.units[unit][optionGroup][option] == 'ENEMY' then
-									self.db.unitframe.units[unit][optionGroup][option] = true;
-								elseif self.db.unitframe.units[unit][optionGroup][option] == 'NONE' then
-									self.db.unitframe.units[unit][optionGroup][option] = false;
-								end
-							else
-								--Do this in an array? eh whatever
-								if self.db.unitframe.units[unit][optionGroup][option] == 'ALL' then
-									self.db.unitframe.units[unit][optionGroup][option] = {friendly = true, enemy = true};
-								elseif self.db.unitframe.units[unit][optionGroup][option] == 'FRIENDLY' then
-									self.db.unitframe.units[unit][optionGroup][option] = {friendly = true, enemy = false};
-								elseif self.db.unitframe.units[unit][optionGroup][option] == 'ENEMY' then
-									self.db.unitframe.units[unit][optionGroup][option] = {friendly = false, enemy = true};
-								elseif self.db.unitframe.units[unit][optionGroup][option] == 'NONE' then
-									self.db.unitframe.units[unit][optionGroup][option] = {friendly = false, enemy = false};
-								end
-							end
-						end
-					end
-				end
-			end
-		end
-		
-		if self.db.unitframe.units[unit] and self.db.unitframe.units[unit].castbar then
-			if unit == 'player' then
-				if self.db.unitframe.units[unit].castbar.color then
-					self.db.unitframe.colors.castColor = self.db.unitframe.units[unit].castbar.color
-				end
-				
-				if self.db.unitframe.units[unit].castbar.interruptcolor then
-					self.db.unitframe.colors.castNoInterrupt = self.db.unitframe.units[unit].castbar.interruptcolor
-				end				
-			end
-			
-			if self.db.unitframe.units[unit].castbar.color or self.db.unitframe.units[unit].castbar.interruptcolor then
-				self.db.unitframe.units[unit].castbar.color = nil;
-				self.db.unitframe.units[unit].castbar.interruptcolor = nil;
-			end
-		end
-	end	
 end
 
 function E:Initialize()
@@ -770,12 +624,12 @@ function E:Initialize()
 	table.wipe(self.global)
 	table.wipe(self.private)
 	
-	self.data = LibStub("AceDB-3.0"):New("ElvData", self.DF);
+	self.data = LibStub("AceDB-3.0"):New("ElvDB", self.DF);
 	self.data.RegisterCallback(self, "OnProfileChanged", "UpdateAll")
 	self.data.RegisterCallback(self, "OnProfileCopied", "UpdateAll")
 	self.data.RegisterCallback(self, "OnProfileReset", "OnProfileReset")
 	
-	self.charSettings = LibStub("AceDB-3.0"):New("ElvPrivateData", self.privateVars);	
+	self.charSettings = LibStub("AceDB-3.0"):New("ElvPrivateDB", self.privateVars);	
 	self.private = self.charSettings.profile
 	self.db = self.data.profile;
 	self.global = self.data.global;
@@ -794,10 +648,6 @@ function E:Initialize()
 	
 	if self.db.install_complete == nil then
 		self:Install()
-	elseif (self.db.install_complete and type(self.db.install_complete) == 'boolean') or (self.db.install_complete and type(tonumber(self.db.install_complete)) == 'number' and tonumber(self.db.install_complete) <= 4.22) then
-		self:Install()
-		ElvUIInstallFrame.SetPage(9)
-		self:StaticPopup_Show('CONFIGAURA_SET')
 	end
 	
 	if not string.find(date(), '04/01/') then	

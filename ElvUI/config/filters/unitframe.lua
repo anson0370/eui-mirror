@@ -657,9 +657,9 @@ E.ReverseTimer = {
 
 --BuffWatch
 --List of personal spells to show on unitframes as icon
-local function ClassBuff(id, point, color, anyUnit, onlyShowMissing)
+local function ClassBuff(id, point, color, anyUnit, onlyShowMissing, style)
 	local r, g, b = unpack(color)
-	return {["enabled"] = true, ["id"] = id, ["point"] = point, ["color"] = {["r"] = r, ["g"] = g, ["b"] = b}, ["anyUnit"] = anyUnit, ["onlyShowMissing"] = onlyShowMissing}
+	return {["enabled"] = true, ["id"] = id, ["point"] = point, ["color"] = {["r"] = r, ["g"] = g, ["b"] = b}, ["anyUnit"] = anyUnit, ["onlyShowMissing"] = onlyShowMissing, ['style'] = style or 'coloredIcon'}
 end
 
 G.unitframe.buffwatch = {
@@ -728,9 +728,12 @@ G.unitframe.ChannelTicks = {
 	[SpellName(5740)] = 4, -- "Rain of Fire"
 	[SpellName(755)] = 6, -- Health Funnel
 	[SpellName(103103)] = 4, --Malefic Grasp
+	[SpellName(1949)] = 15,	-- Hellfire
 	--Druid
 	[SpellName(44203)] = 4, -- "Tranquility"
 	[SpellName(16914)] = 10, -- "Hurricane"
+	[SpellName(106996)] = 10, -- ÐÇ½ç·ç±©
+	[SpellName(127663)] = 4, -- ¹µÓ¿ÐÇ½ç
 	--Priest
 	[SpellName(15407)] = 3, -- "Mind Flay"
 	[SpellName(48045)] = 5, -- "Mind Sear"
@@ -741,35 +744,18 @@ G.unitframe.ChannelTicks = {
 	[SpellName(5143)] = 5, -- "Arcane Missiles"
 	[SpellName(10)] = 8, -- "Blizzard"
 	[SpellName(12051)] = 4, -- "Evocation"
+	-- Monk
+	[SpellName(115175)] = 9,	-- Soothing Mist
+	-- Shaman
+	[SpellName(61882)] = 8,	-- Earthquake	
 }
 
 G.unitframe.ChannelTicksSize = {
-	-- Druid
-	[SpellName(44203)] = 4,	-- Tranquility
-	[SpellName(16914)] = 10,	-- Hurricane
-	[SpellName(106996)] = 10,-- Astral Storm
-	-- Mage
-	[SpellName(5143)] = 5,	-- Arcane Missiles
-	[SpellName(10)] = 8,		-- Blizzard
-	[SpellName(12051)] = 4,	-- Evocation
-	-- Monk
-	[SpellName(115175)] = 9,	-- Soothing Mist
-	-- Priest
-	[SpellName(15407)] = 3,	-- Mind Flay
-	[SpellName(48045)] = 5,	-- Mind Sear
-	[SpellName(47540)] = 2,	-- Penance
-	[SpellName(64901)] = 4,	-- Hymn of Hope
-	[SpellName(64843)] = 4,	-- Divine Hymn
-	-- Shaman
-	[SpellName(61882)] = 8,	-- Earthquake
-	-- Warlock
-	[SpellName(689)] = 6,	-- Drain Life
-	[SpellName(108371)] = 6, -- Harvest Life
-	[SpellName(1120)] = 6,	-- Drain Soul
-	[SpellName(755)] = 6,	-- Health Funnel
-	[SpellName(1949)] = 15,	-- Hellfire
-	[SpellName(5740)] = 4,	-- Rain of Fire
-	[SpellName(103103)] = 3,	-- Malefic Grasp
+    --Warlock
+    [SpellName(1120)] = 2, --"Drain Soul"
+    [SpellName(689)] = 1, -- "Drain Life"
+	[SpellName(108371)] = 1, -- "Harvest Life"
+	[SpellName(103103)] = 1, -- "Malefic Grasp"
 }
 
 --Spells Effected By Haste

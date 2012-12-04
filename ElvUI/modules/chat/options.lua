@@ -20,13 +20,20 @@ E.Options.args.chat = {
 			set = function(info, value) E.private.chat.enable = value; E:StaticPopup_Show("PRIVATE_RL") end
 		},
 		lockPositions = {
-			order = 6,
+			order = 3,
 			type = 'toggle',
 			name = L['Lock Positions'],
 			desc = L['Attempt to lock the left and right chat frame positions. Disabling this option will allow you to move the main chat frame anywhere you wish.'],	
+		},
+		panelTabBackdrop = {
+			order = 6,
+			type = 'toggle',
+			name = L['Tab Panel'],
+			desc = L['Toggle the chat tab panel backdrop.'],
+			set = function(info, value) E.db.chat.panelTabBackdrop = value; E:GetModule('Layout'):ToggleChatPanels(); end,
 		},		
 		panelBackdrop = {
-			order = 3,
+			order = 7,
 			type = 'select',
 			name = L['Panel Backdrop'],
 			desc = L['Toggle showing of the left and right chat panels.'],
@@ -40,7 +47,7 @@ E.Options.args.chat = {
 			},
 		},
 		panelBackdropNameLeft = {
-			order = 4,
+			order = 8,
 			type = 'input',
 			width = 'full',
 			name = L['Panel Texture (Left)'],
@@ -52,7 +59,7 @@ E.Options.args.chat = {
 			end,
 		},	
 		panelBackdropNameRight = {
-			order = 5,
+			order = 9,
 			type = 'input',
 			width = 'full',
 			name = L['Panel Texture (Right)'],

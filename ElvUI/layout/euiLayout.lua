@@ -1,9 +1,10 @@
 local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local LO = E:GetModule('Layout');
 local LSM = LibStub("LibSharedMedia-3.0")
+local RC = LibStub("LibRangeCheck-2.0")
 
 local PANEL_HEIGHT = 22;
-local MAX_BUTTON = 5;
+local MAX_BUTTON = 6;
 
 local menuList = LO.menuList
 
@@ -186,6 +187,61 @@ local function CreateLoc(parent)
 	end)	
 end
 
+local function RGB(r, g, b)
+	return string.format("%02x%02x%02x", r*255, g*255, b*255);	
+end
+
+local function GetRangeColorText(minRange, maxRange)
+	local color, text;
+	if (minRange) then
+		if (minRange > 100) then
+			maxRange = nil;
+		end		
+		
+		if (maxRange) then
+			local tmpText = format("%d-%d %s", minRange, maxRange, L["Yard"]);		
+	
+			if ( maxRange <= 5) then
+				color = RGB(0.9, 0.9, 0.9);
+			elseif (maxRange <= 20) then
+				color = RGB(0.055, 0.875, 0.825);
+			elseif (maxRange <= 30) then
+				color = RGB(0.035, 0.865, 0.0);
+			elseif (minRange >= 40) then
+				color = RGB(0.9, 0.055, 0.075);
+			else
+				color = RGB(1.0, 0.82, 0);
+			end
+			
+			text = format("|cff%s%s|r", color, tmpText);
+		end
+	end
+	
+	return text;
+end
+
+local function CreateRC(parent)
+	parent:SetScript("OnUpdate", function(self, elapsed)
+		if(self.elapsed and self.elapsed > 0.2) then
+			if not UnitName('target') then
+				self.text:SetText('? - ?')
+			else
+				local minRange, maxRange = RC:getRange('target')
+				if maxRange then
+					local text = GetRangeColorText(minRange, maxRange)
+					self.text:SetText(text)
+				else
+					self.text:SetText('|cFFB04F4F80+ '.. L["Yard"])
+				end
+			end
+			
+			self.elapsed = 0
+		else
+			self.elapsed = (self.elapsed or 0) + elapsed
+		end	
+	end)
+end
+
 local function CreateInfoBarButton(id, name, parent)
 	local f = CreateFrame("Button", nil, parent)
 	f:SetHeight(PANEL_HEIGHT)
@@ -203,7 +259,7 @@ local function CreateInfoBarButton(id, name, parent)
 	f.text:SetPoint("CENTER")
 	f.text:SetText(name)
 	f:SetScript("OnClick", function(self)
-		if InCombatLockdown() then return; end
+	--	if InCombatLockdown() then return; end
 		for i = 1, self:GetNumChildren() do
 			local f = select(i, self:GetChildren())
 			FadeShow(f)
@@ -296,6 +352,9 @@ function LO:InfoBar()
 	local loc = CreateInfoBarButton(5, "?, ?", anchor)
 	CreateLoc(loc)
 
+	local rc = CreateInfoBarButton(6, "? - ?", anchor)
+	CreateRC(rc)
+	
 	EuiInfoBar.Menu = menu
 	EuiInfoBar.Shortcuts = shortcuts
 	EuiInfoBar.RaidTool = raid

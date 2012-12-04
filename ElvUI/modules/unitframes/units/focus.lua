@@ -23,6 +23,8 @@ function UF:Construct_FocusFrame(frame)
 	frame.HealPrediction = self:Construct_HealComm(frame)
 	frame.AuraBars = self:Construct_AuraBarHeader(frame)
 	
+	frame.Range = self:ConstructFocusRange(frame)
+	
 	table.insert(frame.__elements, UF.SmartAuraDisplay)
 	frame:RegisterEvent('PLAYER_FOCUS_CHANGED', UF.SmartAuraDisplay)	
 	
@@ -404,6 +406,18 @@ function UF:Update_FocusFrame(frame, db)
 			end		
 		end
 	end	
+	
+	--Range
+	do
+		local R = frame.Range
+		if db.range.enable then
+			R.rcText:ClearAllPoints()
+			R.rcText:Point(db.range.position, frame.Health, db.range.position, db.range.offsetX, db.range.offsetY)
+			R.rcText:Show()
+		else
+			R.rcText:Hide()
+		end
+	end
 	
 	if db.customTexts then
 		for objectName, _ in pairs(db.customTexts) do

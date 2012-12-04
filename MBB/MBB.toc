@@ -1,4 +1,4 @@
-﻿## Interface: 50001
+﻿## Interface: 50100
 ## Title: |cffC495DDEUI|rMinimapButtonBag
 ## Title-zhCN: |cffC495DDEUI|r小地图图标整合MBB
 ## Title-zhTW: |cffC495DDEUI|r小地圖圖標整合MBB

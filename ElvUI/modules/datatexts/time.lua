@@ -142,18 +142,6 @@ local function OnEnter(self)
 		end
 	end	
 
-	local timeText
-	local Hr, Min, AmPm = CalculateTimeValues(true)
-
-	GameTooltip:AddLine(" ")
-	timeText = E.db.datatexts.localtime and TIMEMANAGER_TOOLTIP_REALMTIME or TIMEMANAGER_TOOLTIP_LOCALTIME
-	if AmPm == -1 then
-			GameTooltip:AddDoubleLine(timeText, string.format(europeDisplayFormat_nocolor, Hr, Min), 1, 1, 1, lockoutColorNormal.r, lockoutColorNormal.g, lockoutColorNormal.b)
-	else
-			GameTooltip:AddDoubleLine(timeText, string.format(ukDisplayFormat_nocolor, Hr, Min, APM[AmPm]), 1, 1, 1, lockoutColorNormal.r, lockoutColorNormal.g, lockoutColorNormal.b)
-	end
-	GameTooltip:AddDoubleLine(L["Game Time:"], SecondsToTime(GetSessionTime()), 1, 1, 1, lockoutColorNormal.r, lockoutColorNormal.g, lockoutColorNormal.b)
-	
 	local oneraid, lockoutColor
 	for i = 1, GetNumSavedInstances() do
 		local name, _, reset, _, locked, extended, _, isRaid, maxPlayers, difficulty, numEncounters, encounterProgress  = GetSavedInstanceInfo(i)
@@ -180,7 +168,33 @@ local function OnEnter(self)
 			end
 		end
 	end
+	
+	local timeText
+	local Hr, Min, AmPm = CalculateTimeValues(true)
 
+	GameTooltip:AddLine(" ")
+	timeText = E.db.datatexts.localtime and TIMEMANAGER_TOOLTIP_REALMTIME or TIMEMANAGER_TOOLTIP_LOCALTIME
+	if AmPm == -1 then
+		GameTooltip:AddDoubleLine(timeText, string.format(europeDisplayFormat_nocolor, Hr, Min), 1, 1, 1, lockoutColorNormal.r, lockoutColorNormal.g, lockoutColorNormal.b)
+	else
+		GameTooltip:AddDoubleLine(timeText, string.format(ukDisplayFormat_nocolor, Hr, Min, APM[AmPm]), 1, 1, 1, lockoutColorNormal.r, lockoutColorNormal.g, lockoutColorNormal.b)
+	end	
+	
+	GameTooltip:AddLine(" ")
+	GameTooltip:AddLine(L["World Boss(s)"])	
+	local quests = GetQuestsCompleted();
+	local shaKilled, galleonKilled = quests[32099], quests[32098]
+	if shaKilled then
+		GameTooltip:AddDoubleLine(L['Sha of Anger']..':', BOSS_DEAD, RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b, RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b)
+	else
+		GameTooltip:AddDoubleLine(L['Sha of Anger']..':', BOSS_ALIVE, GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b, GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b)
+	end
+	if galleonKilled then
+		GameTooltip:AddDoubleLine(L['Galleon']..':', BOSS_DEAD, RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b, RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b)
+	else
+		GameTooltip:AddDoubleLine(L['Galleon']..':', BOSS_DEAD, GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b, GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b)
+	end
+		
 	local avgItemLevel = GetAverageItemLevel()
 	if avgItemLevel >= 460 then
 		local dungeonId1 = 527
@@ -234,8 +248,21 @@ local function OnEnter(self)
 				GameTooltip:AddDoubleLine(bossName, BOSS_ALIVE, GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b, GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b)
 			end
 		end
+		
+		dungeonId1 = 526
+		GameTooltip:AddLine(" ")
+		for i = 1, 4 do
+			bossName, texture, isKilled, isIneligible = GetLFGDungeonEncounterInfo(dungeonId1, i)
+			if isKilled then
+				GameTooltip:AddDoubleLine(bossName, BOSS_DEAD, RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b, RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b)
+			elseif isIneligible then
+				GameTooltip:AddDoubleLine(bossName, BOSS_ALIVE_INELIGIBLE, GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b, GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b)
+			else
+				GameTooltip:AddDoubleLine(bossName, BOSS_ALIVE, GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b, GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b)
+			end
+		end		
 	end	
-	
+
 	GameTooltip:Show()
 end
 

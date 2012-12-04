@@ -26,6 +26,7 @@ local Config = E.db["chatfilter"]
 -- Locals
 -----------------------------------------------------------------------
 local L = {
+	["You"] = "You",
 	["Channel"] = "大脚世界频道",
 	["Achievement"] = "%shave earned the achievement%s!",
 	["LearnSpell"] = "You have learned: %s",
@@ -33,6 +34,7 @@ local L = {
 }
 if (GetLocale() == "zhCN") then
 	L = {
+		["You"] = "你",
 		["Channel"] = "大脚世界频道",
 		["Achievement"] = "%s获得了成就%s!",
 		["LearnSpell"] = "你学会了技能: %s",
@@ -40,6 +42,7 @@ if (GetLocale() == "zhCN") then
 	}
 elseif (GetLocale() == "zhTW") then
 	L = {
+		["You"] = "你",
 		["Channel"] = "大腳世界頻道",
 		["Achievement"] = "%s獲得了成就%s!",
 		["LearnSpell"] = "你學會了技能: %s",
@@ -51,6 +54,7 @@ end
 -----------------------------------------------------------------------
 local ChatFilter, ChatFrames = CreateFrame("Frame")
 
+local _G = _G
 local CacheTable, prevLineId = {}
 local achievements, alreadySent, spellList = {}, {}, {}
 local totalCreated, resetTimer, craftList, craftQuantity, craftItemID, prevCraft = {}, {}, {}
@@ -76,10 +80,20 @@ local petlearnabilitymsg = deformat(ERR_PET_LEARN_ABILITY_S)
 local petunlearnspellmsg = deformat(ERR_PET_SPELL_UNLEARNED_S)
 local auctionstartedmsg = deformat(ERR_AUCTION_STARTED)
 local auctionremovedmsg = deformat(ERR_AUCTION_REMOVED)
-local duelwinmsg = deformat(DUEL_WINNER_KNOCKOUT )
-local duellosemsg = deformat(DUEL_WINNER_RETREAT  )
+local duelwinmsg = deformat(DUEL_WINNER_KNOCKOUT)
+local duellosemsg = deformat(DUEL_WINNER_RETREAT)
 
 
+local drunkmsg = {
+	deformat(DRUNK_MESSAGE_ITEM_OTHER1),
+	deformat(DRUNK_MESSAGE_ITEM_OTHER2),
+	deformat(DRUNK_MESSAGE_ITEM_OTHER3),
+	deformat(DRUNK_MESSAGE_ITEM_OTHER4),
+	deformat(DRUNK_MESSAGE_OTHER1),
+	deformat(DRUNK_MESSAGE_OTHER2),
+	deformat(DRUNK_MESSAGE_OTHER3),
+	deformat(DRUNK_MESSAGE_OTHER4),
+}
 
 local function SendMessage(event, msg, r, g, b)
 	local info = ChatTypeInfo[strsub(event, 10)]
@@ -118,7 +132,7 @@ local function SendAchievement(event, achievementID, players)
 		end
 		players[i] = format("|cff%02x%02x%02x|Hplayer:%s|h[%s]|h|r", r*255, g*255, b*255, players[i].name, players[i].name)
 	end
-	SendMessage(event, format(L["Achievement"], table.concat(players, ", "), GetAchievementLink(achievementID)))
+	SendMessage(event, format(L["Achievement"], table.concat(players, ""), GetAchievementLink(achievementID)))
 end
 
 local function achievementReady(id, achievement)
@@ -291,7 +305,10 @@ local function ChatFilter_Rubbish(self, event, msg, player, _, _, _, flag, _, _,
 					end
 				end
 			end
-			if (guid and tonumber(guid) and tonumber(guid:sub(-12, -9), 16) >0) then return end
+			if (event ~= "CHAT_MSG_GUILD" and event ~= "CHAT_MSG_OFFICER") then
+				if (guid and tonumber(guid) and tonumber(guid:sub(-12, -9), 16) >0) then return end
+				if (Config.FilterRaidAlert and strmatch(msg, "%*%*(.+)%*%*")) then return true end
+			end
 		end
 		if (not Config.ScanOurself and UnitIsUnit(player,"player")) then return end
 		if (not Config.ScanFriend and not CanComplainChat(lineId)) then return end
@@ -381,8 +398,15 @@ local function ChatFilter_Rubbish(self, event, msg, player, _, _, _, flag, _, _,
 			end
 			for i = 1, getn(E.global.chatfilter.DangerWords) do
 				if (strfind(msg, E.global.chatfilter.DangerWords[i])) then
-					for k in gmatch(msg, E.global.chatfilter.DangerWords[i]) do
+					local Pos = 0
+					matchs = matchs + 1
+					Pos = strfind(msg, E.global.chatfilter.DangerWords[i], Pos +1)
+					if strfind(msg, E.global.chatfilter.DangerWords[i], Pos + 1) then 
 						matchs = matchs + 1
+						Pos = strfind(msg, E.global.chatfilter.DangerWords[i], Pos +1)
+						if strfind(msg, E.global.chatfilter.DangerWords[i], Pos + 1) then 
+							matchs = matchs + 1
+						end
 					end
 				end
 			end
@@ -434,6 +458,11 @@ local function ChatFilter_TalentSpec(self, event, msg)
 			return true
 		end
 	end
+	if (Config.FilterDrunkMSG and not strfind(msg, L["You"])) then
+		for i = 1, getn(drunkmsg) do
+			if strfind(msg, drunkmsg[i]) then return true end 
+		end
+	end
 	if (Config.FilterDuelMSG and (not strfind(msg, GetUnitName("player"))) and (strfind(msg, duelwinmsg) or strfind(msg, duellosemsg))) then return true end
 	if (Config.FilterAuctionMSG and (strfind(msg, auctionstartedmsg) or strfind(msg, auctionremovedmsg))) then return true end
 end
@@ -456,9 +485,17 @@ local function ChatFilter_Created(self, event, msg)
 end
 
 ChatFrame_AddMessageEventFilter("CHAT_MSG_CHANNEL", ChatFilter_Rubbish)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_GUILD", ChatFilter_Rubbish)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_OFFICER", ChatFilter_Rubbish)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_PARTY", ChatFilter_Rubbish)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_PARTY_LEADER", ChatFilter_Rubbish)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_RAID", ChatFilter_Rubbish)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_RAID_LEADER", ChatFilter_Rubbish)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_RAID_WARNING", ChatFilter_Rubbish)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_SAY", ChatFilter_Rubbish)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_YELL", ChatFilter_Rubbish)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER", ChatFilter_Rubbish)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_BN_WHISPER", ChatFilter_Rubbish)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_EMOTE", ChatFilter_Rubbish)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_DND", ChatFilter_Rubbish)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_AFK", ChatFilter_Rubbish)

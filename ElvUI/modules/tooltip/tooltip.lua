@@ -622,8 +622,12 @@ function TT:GameTooltip_OnTooltipSetUnit(tt)
 	-- Range line by eui.cc
 	if E.db.tooltip.range and UnitExists(unit) and unit ~= "player" and rc then
 		local minRange, maxRange = rc:getRange(unit)
-		local text = GetRangeColorText(minRange, maxRange)
-		GameTooltip:AddDoubleLine(L["Range"]..":", text)
+		if maxRange then
+			local text = GetRangeColorText(minRange, maxRange)
+			GameTooltip:AddDoubleLine(L["Range"]..":", text)
+		else
+			GameTooltip:AddDoubleLine(L["Range"]..":", '80+')
+		end
 	end	
 	
 	if E.db.tooltip.talent and talentSpec ~= "" and role ~= "" then

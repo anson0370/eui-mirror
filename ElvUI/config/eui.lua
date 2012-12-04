@@ -109,6 +109,8 @@ P["SoraClassTimer"] = {
 P['general'].font = 'EUI'
 P['nameplate'].font = 'EUI'
 P['auras'].font = 'EUI'
+P['auras'].auraFont = 'EUI'
+P['auras'].auraFontOutline = 'OUTLINE'
 P['auras'].fontOutline = 'OUTLINE'
 P['auras'].fontSize = 12
 P['auras'].consolidatedBuffs.consolidateTo = false
@@ -136,11 +138,20 @@ elseif GetLocale() == "zhTW" then
 	V["general"].namefont = "EUI"
 end	
 
-P['chat'].keywords = '%MYNAME%, EUI, DS, FL, 火源, 宝库, 恐惧之心, 永春台'
+P['chat'].keywords = ''
 P['chat'].sendRW = false
 P["actionbar"].euiabstyle = "None"
 P["actionbar"].keyDown = false
 P["actionbar"]["bar1"]["paging"]["ROGUE"] = "[stance:1] 7; [stance:2] 7; [stance:3] 10;"
+P["actionbar"]["bar1"].backdrop = true
+P["actionbar"]["bar1"].buttonspacing = 4
+P["actionbar"]["bar2"].buttonspacing = 4
+P["actionbar"]["bar3"].buttonspacing = 4
+P["actionbar"]["bar3"].backdrop = true
+P["actionbar"]["bar5"].buttonspacing = 4
+P["actionbar"]["barPet"].buttonspacing = 4
+P["actionbar"]["barPet"].backdrop = true
+P["actionbar"]["stanceBar"].buttonspacing = 4
 
 for i = 6, 9 do
 	P["actionbar"]['bar'..i] = {
@@ -152,7 +163,7 @@ for i = 6, 9 do
 		['backdrop'] = true,
 		['heightMult'] = 1,
 		['widthMult'] = 1,
-		["buttonsize"] = 30,
+		["buttonsize"] = 32,
 		["buttonspacing"] = 4,		
 		['alpha'] = 1,
 		['paging'] = {},
@@ -231,7 +242,18 @@ P['unitframe'].units.player.tankshield = {
 	['enable'] = true,
 	['position'] = 'RIGHT',
 }
-
+P['unitframe'].units.target.range = {
+	['enable'] = true,
+	['position'] = 'BOTTOMLEFT',
+	['offsetX'] = 2,
+	['offsetY'] = 2,
+}
+P['unitframe'].units.focus.range = {
+	['enable'] = true,
+	['position'] = 'TOPLEFT',
+	['offsetX'] = 2,
+	['offsetY'] = 2,
+}
 
 P['unitframe'].units.boss.health.text_format = '[healthcolor][health:current-percent]'
 
@@ -294,56 +316,69 @@ G['chatfilter'] = {
 		"|cff",
 		"raid",
 		"recount",
+		"skada",
+		"boss",
+		"dps",
 	},
 	DangerWords = {
-		"平.?.?[台臺]",
-		"工.?.?作.?.?室",
-		"点.?.?[卡心]",
-		"[担擔].?.?保",
-		"承.?.?接",
-		"手.?.?[工打]",
-		"代.?.?[打练刷]",
-		"带.?.?[打练刷]",
-		"dai.?.?[打练刷]",
-		"[打卖售].?.?金",
-		"[打卖售].?.?g",
-		"[刷扰].?.?屏.?.?见.?.?谅",
-		"信.?.?誉",
+		"[点點].?.?[卡心]",
+		"[评評].?[级級]",
+		"塞.?纳.*团.?队",
+		"赤.?焰.?星.?魂",
+		"平.?[台臺]",
+		"工.?作.?室",
+		"点.?[卡心]",
+		"[烧大小].?饼",
+		"[担擔].?保",
+		"承.?接",
+		"手.?[工打]",
+		"代.?[打练刷做]",
+		"带.?[打练刷做]",
+		"dai.?[打练刷做]",
+		"[带代].?评级",
+		"[打卖售].?金",
+		"[打卖售].?g",
+		"[代售].*s11",
+		"[刷扰].?屏.?[勿见]",
+		"详.?[情谈询]",
+		"信.?誉",
+		"服.?务",
 		"绑定.*上马",
 		"上马.*绑定",
-		"价.?.?格.?.?公.?.?道",
-		"价.?.?格.?.?公.?.?道",
-		"货.?.?到.?.?付.?.?款",
-		"先.*后.?.?款",
-		"游.?.?戏.?.?币",
-		"最.?.?低.?.?价",
-		"无.?.?黑.?.?金",
-		"[金g元].?.?=",
-		"支付.?.?[宝寶]",
-		"淘.?.?[宝寶]",
-		"[加q].?.?q",
-		"联.?.?系",
-		"电.?.?话",
-		"旺.?.?旺",
-		"口.?.?口",
-		"扣.?.?扣",
-		"叩.?.?叩",
-		"歪.?.?歪",
-		"y.?.?y",
-		"[萬万].?.?g",
-		"[萬万w].?.?金",
-		"tao.?.?bao",
-		"buy",
-		"cheap",
-		"code",
-		"express",
-		"gold",
-		"lowest",
-		"powerle?ve?l",
-		"price",
-		"promoti[on][gn]",
-		"sa[fl]e",
-		"serv[ei][rc]e?",
+		"价.?格.?公.?道",
+		"货.?到.?付.?款",
+		"非.?诚.?勿.?扰",
+		"先.*后.?[款钱]",
+		"游.?戏.?币",
+		"最.?低.?价",
+		"无.?黑.?金",
+		"不.?封.?号",
+		"无.?风.?险",
+		"[金g元].?=",
+		"支付.?[宝寶]",
+		"淘.?[宝寶]",
+		"[皇冲].?冠",
+		"[热促].?销",
+		"[加q].?q",
+		"企业.?q",
+		"咨.?询",
+		"联.?系",
+		"电.?话",
+		"旺.?旺",
+		"口.?口",
+		"扣.?扣",
+		"叩.?叩",
+		"歪.?歪",
+		"y.?y",
+		"[萬万].?g",
+		"[萬万w].?金",
+		"tao.?bao",
+		"1.?80",
+		"1.?85",
+		"1.?90",
+		"80.?85",
+		"80.?90",
+		"85.?90",
 	},	
 }
 	
@@ -363,8 +398,9 @@ P["chatfilter"] = {
 	["MergeManufacturing"] = true, --Merge the messages:"You has created..." // 合并显示“你制造了…”
 		
 	["FilterAuctionMSG"] = false, --Filter the messages:"Auction created/cancelled."// 过滤“已开始拍卖/拍卖取消.”
-	["FilterDuelMSG"] = false, --Filter the messages:"... has defeated/fled from ... in a duel." // 过滤“...在决斗中战胜了...”
-		
+	["FilterRaidAlert"] = true, --Filter the bullshit messages from RaidAlert. // 过滤煞笔RaidAlert的脑残信息
+	["FilterDuelMSG"] = true, --Filter the messages:"... has defeated/fled from ... in a duel." // 过滤“...在决斗中战胜了...”
+	["FilterDrunkMSG"] = true, --Filter the drunk messages:"... has drunked ..."// 过滤“...喝醉了.”	
 	["FilterAdvertising"] = true, --Filter the advertising messages. // 过滤广告信息
 	["AllowMatchs"] = 2, --How many words can be allowd to use. // 允许的关键字配对个数
 		
@@ -372,8 +408,8 @@ P["chatfilter"] = {
 	["AllowLines"] = 3, --How many lines can be allowd. // 允许的最大行数
 	
 	["FilterRepeat"] = true, --Filter the repeat messages. // 过滤重复聊天信息
-	["RepeatAlike"] = 60, --Set the similarity between the messages. // 设定重复信息相似度
-	["RepeatInterval"] = 60, --Set the interval between the messages. // 设定重复信息间隔时间
+	["RepeatAlike"] = 95, --Set the similarity between the messages. // 设定重复信息相似度
+	["RepeatInterval"] = 30, --Set the interval between the messages. // 设定重复信息间隔时间
 	["RepeatMaxCache"] = 200, --Set the max cache from the messages. // 设定最多缓存多少条消息
 }
 
@@ -527,6 +563,7 @@ P["euiscript"] = {
 	["achievementpoint"] = true,
 	["myslot"] = '',
 	["shift_marking"] = true,
+	["autochangeloot"] = false,
 }
 
 P["combattext"] = {

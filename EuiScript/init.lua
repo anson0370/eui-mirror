@@ -69,7 +69,7 @@ function S:ModifyChatSticky()
 	ChatTypeInfo['OFFICER'].sticky = 1
 	ChatTypeInfo['RAID'].sticky = 1
 	ChatTypeInfo['RAID_WARNING'].sticky = 0
-	ChatTypeInfo['BATTLEGROUND'].sticky = 1
+	ChatTypeInfo['INSTANCE_CHAT'].sticky = 1
 	ChatTypeInfo['WHISPER'].sticky = 0
 	ChatTypeInfo['CHANNEL'].sticky = 1
 end
@@ -226,6 +226,27 @@ function S:PLAYER_REGEN_ENABLED()
 	self:ChangeActionbarPage()
 end
 
+function S:AutoChangeLoot()
+	if not E.db.euiscript.autochangeloot then 
+		S:UnregisterEvent("GROUP_ROSTER_UPDATE")
+		return; 
+	end
+	if IsInGroup() and UnitIsGroupLeader('player') then SetLootMethod("freeforall") end
+	if IsInRaid() and UnitIsGroupLeader('player') then SetLootMethod("master"); SetLootThreshold(4) end
+end
+
+function S:RaidFinderFix() --修正暴雪默认LFR弹出窗口不显示已击杀BOSS进度信息
+	if IsAddOnLoaded('RaidFinderFix') then
+		self:UnregisterEvent("LFG_PROPOSAL_SHOW")
+		self:UnregisterEvent("LFG_PROPOSAL_UPDATE")
+		return
+	end
+	local _, _, _, _, _, _, _, _, _, completedEncounters, _, _, _, totalEncounters = GetLFGProposal(); 
+	if completedEncounters then
+		LFGDungeonReadyDialogInstanceInfoFrame.statusText:SetFormattedText(completedEncounters.." "..BOSS_DEAD)
+	end
+end
+
 function S:Initialize()
 	self:CreateVehicleExit()
 	self:AutoCollect()
@@ -234,9 +255,7 @@ function S:Initialize()
 	self:SupportMySlot()
 	
 	SetCVar("taintLog", 0); --禁止一些污染报告
-	--Module
---	self:LoadBloodShield()
-	
+
 	self:SecureHook('MerchantItemButton_OnModifiedClick', 'ByMaxNumber')
 	self:SecureHook('WorldStateAlwaysUpFrame_Update', 'MoveWorldState')
 	self:RegisterEvent("MERCHANT_SHOW", 'SellItem')
@@ -244,7 +263,10 @@ function S:Initialize()
 	self:RegisterEvent("CHAT_MSG_WHISPER", "AutoInvite")
 	self:RegisterEvent("ZONE_CHANGED_NEW_AREA", "ModifyCamera")
 	self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED", "FixoUF_Swing")
+	self:RegisterEvent("GROUP_ROSTER_UPDATE", "AutoChangeLoot")
 --	self:RegisterEvent("PLAYER_TARGET_CHANGED", "ChangeActionbarPage")
+	self:RegisterEvent("LFG_PROPOSAL_SHOW", "RaidFinderFix")
+	self:RegisterEvent("LFG_PROPOSAL_UPDATE", "RaidFinderFix")
 end
 
 E:RegisterModule(S:GetName())

@@ -206,18 +206,17 @@ function AB:PositionAndSizeBar(barName)
 		self:StyleButton(button);
 	end
 
-	if self.db[barName].enabled then
-		bar:Show()
-		
+	if self.db[barName].enabled then		
 		if not self.db[barName].mouseover then
 			bar:SetAlpha(self.db[barName].alpha);
 		end
-		RegisterStateDriver(bar, "show", self.db[barName].visibility);
+		bar:Show()
+		RegisterStateDriver(bar, "visibility", self.db[barName].visibility); -- this is ghetto
 		RegisterStateDriver(bar, "page", self:GetPage(barName, self['barDefaults'][barName].page, self['barDefaults'][barName].conditions));
 	else
 		bar:Hide()
-		UnregisterStateDriver(bar, "show");
-	end
+		UnregisterStateDriver(bar, "visibility");
+	end 
 	
 	E:SetMoverSnapOffset('ElvAB_'..bar.id, bar.db.buttonspacing / 2)
 end
@@ -249,15 +248,7 @@ function AB:CreateBar(id)
 		self:SetAttribute("state", newstate)
 		control:ChildUpdate("state", newstate)
 	]]);
-	
-	bar:SetAttribute("_onstate-show", [[		
-		if newstate == "hide" then
-			self:Hide();
-		else
-			self:Show();
-		end	
-	]])
-	
+		
 	self["handledBars"]['bar'..id] = bar;
 	self:PositionAndSizeBar('bar'..id);
 	E:CreateMover(bar, 'ElvAB_'..id, L['Bar '..id], nil, nil, nil,'ALL,ACTIONBARS')
