@@ -683,7 +683,7 @@ do
 	L['Add Spell'] = "添加技能";
 		L['Add a spell to the filter.'] = "添加一個技能到篩檢程式";
 	L['Remove Spell'] = "移除技能";
-		L['Remove a spell from the filter.'] = "重篩檢程式中移除一個技能";
+		L['Remove a spell from the filter.'] = "從篩檢程式中移除一個技能";
 	L['You may not remove a spell from a default filter that is not customly added. Setting spell to false instead.'] = "你不能移除一個內置技能, 可以禁用此技能.";
 	L['Unit Reaction'] = "單元聲望";
 		L['This filter only works for units with the set reaction.'] = "此篩檢程式只工作在那些單元有聲望時";

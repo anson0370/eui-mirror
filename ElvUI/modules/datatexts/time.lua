@@ -192,7 +192,7 @@ local function OnEnter(self)
 	if galleonKilled then
 		GameTooltip:AddDoubleLine(L['Galleon']..':', BOSS_DEAD, RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b, RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b)
 	else
-		GameTooltip:AddDoubleLine(L['Galleon']..':', BOSS_DEAD, GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b, GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b)
+		GameTooltip:AddDoubleLine(L['Galleon']..':', BOSS_ALIVE, GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b, GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b)
 	end
 		
 	local avgItemLevel = GetAverageItemLevel()
