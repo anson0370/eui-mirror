@@ -585,6 +585,9 @@ L["Use this filter."] = true;
 L["You can't remove a default name from the filter, disabling the name."] = true;
 
 --Skins
+L['Loss Control'] = true;
+L['Void Storage'] = true;
+L['Item Upgrade'] = true;
 L["You do not own this pet."] = true;
 L["Owned: "] = true;
 L['Black Market AH'] = true;

@@ -124,7 +124,7 @@ L= DBM:GetModLocalization(741)
 
 L:SetWarningLocalization({
 	specWarnQuickeningX = "%s - 快驅散!",
-	specWarnBH			= "給 >> %s <<保護!"
+	specWarnBH			= "保護: >> %s <<"
 })
 
 L:SetOptionLocalization({
@@ -160,7 +160,7 @@ L:SetOptionLocalization({
 
 L:SetMiscLocalization({
 	Helpme				= "救我 ~~~",
-	Reinforcements		= "Wind Lord Mel'jarak calls for reinforcements!"
+	Reinforcements		= "風領主瑪爾加拉克召喚增援!"
 })
 
 ------------
@@ -192,8 +192,12 @@ L:SetOptionLocalization({
 	specwarnAmberExplosionAM	= "特殊警告：打斷琥珀巨怪的$spell:122402",
 	specwarnAmberExplosionOther	= "特殊警告：打斷無人控制傀儡體的$spell:122398",
 	timerAmberExplosionAMCD		= "計時器：琥珀巨怪的下一次$spell:122402",
-	InfoFrame					= "資訊框：玩家的意志力",
-	FixNameplates				= "開戰自動禁用干擾的單位名條(離開戰鬥後恢復)"
+	AdvInfoFrame				= "資訊框：意志力與首領$spell:123059",
+	FixNameplates				= "開戰自動禁用干擾的單位名條(離開戰鬥後恢復)",
+	optInfoFrame				= "<能量與動搖>監視資訊框",
+	noIF						= "不監視",
+	IF1							= "主要監視能量(DPS)",
+	IF2							= "主要監視動搖(TANK)"
 })
 
 L:SetMiscLocalization({

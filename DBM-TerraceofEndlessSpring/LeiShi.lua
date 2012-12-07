@@ -3,7 +3,7 @@ local L		= mod:GetLocalizedStrings()
 local sndWOP	= mod:NewSound(nil, "SoundWOP", true)
 local sndMW		= mod:NewSound(nil, "SoundMW", true)
 
-mod:SetRevision(("$Revision: 8206 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 8232 $"):sub(12, -3))
 mod:SetCreatureID(62983)--62995 Animated Protector
 mod:SetModelID(42811)
 
