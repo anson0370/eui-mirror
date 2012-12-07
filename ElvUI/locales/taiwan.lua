@@ -1084,6 +1084,9 @@ end
 
 --Skins
 do
+	L['Loss Control'] = '迷失控制';
+	L['Void Storage'] = '虛空儲存';
+	L['Item Upgrade'] = '物品升級';
 	L["You do not own this pet."] = "你沒有此類型寵物。";
 	L["Owned: "] = "我的寵物: ";
 	L['Black Market AH'] = "黑市";
