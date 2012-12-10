@@ -98,7 +98,8 @@ L= DBM:GetModLocalization(713)
 L:SetWarningLocalization({
 	specwarnUnder	= "离开紫圈!",
 	specWarnPungencyOtherFix = "%s 敏感 (%d)",
-	specwarnCrushH	= "重碾 (%d)"
+	specwarnCrushH	= "重碾 (%d)",
+	SpecWarnJSA		= "5秒后重碾 >>注意减伤<<"
 })
 
 L:SetOptionLocalization({
@@ -112,7 +113,17 @@ L:SetOptionLocalization({
 	SoundZN				= "语音警告：碾碎倒计时(英雄模式)",
 	specWarnPungencyOtherFix = "特别警告：当别人的$spell:123081达到设定层数时",
 	HudMAP				= "高级定位监视(HUD)：$spell:122835的位置",
-	SoundFS				= "坦克倒计时：$spell:122735"
+	SoundFS				= "坦克倒计时：$spell:122735",
+	SpecWarnJSA			= "特殊警告：注意開減傷",
+	unseenjs1			= "减伤提示：重碾1",
+	unseenjs2			= "减伤提示：重碾2",
+	unseenjs3			= "减伤提示：重碾3",
+	unseenjs4			= "减伤提示：重碾4",
+	unseenjs5			= "减伤提示：重碾5",
+	unseenjs6			= "减伤提示：重碾6",
+	unseenjs7			= "减伤提示：重碾7",
+	unseenjs8			= "减伤提示：重碾8",
+	unseenjs9			= "减伤提示：重碾9"
 })
 
 L:SetMiscLocalization({

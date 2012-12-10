@@ -732,6 +732,7 @@ function infoFrame:Show(maxLines, event, threshold, ...)
 		updateTime()
 	elseif currentEvent == "bossdebuffstacks" then
 		updateBossDebuffStacks()
+	elseif currentEvent == "test" then
 	else		
 		error("DBM-InfoFrame: Unsupported event", 2)
 	end

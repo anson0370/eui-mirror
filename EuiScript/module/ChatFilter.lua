@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 -- Title: ChatFilter
--- Version: v5.02
+-- Version: v5.1.0
 -- Author: aliluya555
 -- Config
 local E, _, DF = unpack(ElvUI); --Engine
@@ -28,7 +28,8 @@ local Config = E.db["chatfilter"]
 local L = {
 	["You"] = "You",
 	["Channel"] = "大脚世界频道",
-	["Achievement"] = "%shave earned the achievement%s!",
+	["QuestReport"] = "Quest progress%s?:",
+	["Achievement"] = "[%s] have earned the achievement %s!",
 	["LearnSpell"] = "You have learned: %s",
 	["UnlearnSpell"] = "You have unlearned: %s",
 }
@@ -36,7 +37,8 @@ if (GetLocale() == "zhCN") then
 	L = {
 		["You"] = "你",
 		["Channel"] = "大脚世界频道",
-		["Achievement"] = "%s获得了成就%s!",
+		["QuestReport"] = "任务进度%s?[:：]",
+		["Achievement"] = "[%s]获得了成就%s!",
 		["LearnSpell"] = "你学会了技能: %s",
 		["UnlearnSpell"] = "你遗忘了技能: %s",
 	}
@@ -44,7 +46,8 @@ elseif (GetLocale() == "zhTW") then
 	L = {
 		["You"] = "你",
 		["Channel"] = "大腳世界頻道",
-		["Achievement"] = "%s獲得了成就%s!",
+		["QuestReport"] = "任務進度%s?[:：]",
+		["Achievement"] = "[%s]獲得了成就%s!",
 		["LearnSpell"] = "你學會了技能: %s",
 		["UnlearnSpell"] = "你遺忘了技能: %s",
 	}
@@ -55,7 +58,8 @@ end
 local ChatFilter, ChatFrames = CreateFrame("Frame")
 
 local _G = _G
-local CacheTable, prevLineId = {}
+local prevLineId, orgmsg
+local CacheTable, ShieldTable = {}, {}
 local achievements, alreadySent, spellList = {}, {}, {}
 local totalCreated, resetTimer, craftList, craftQuantity, craftItemID, prevCraft = {}, {}, {}
 local spamCategories, specialFilters = {[95] = true, [155] = true, [168] = true, [14807] = true, [15165] = true}, {[456] = true, [1400] = true, [1402] = true, [2186] = true, [2187] = true, [2903] = true, [2904] = true, [3004] = true, [3005] = true, [3117] = true, [3259] = true, [3316] = true, [3808] = true, [3809] = true, [3810] = true, [3817] = true, [3818] = true, [3819] = true, [4078] = true, [4079] = true, [4080] = true, [4156] = true, [4576] = true, [7485] = true, [7486] = true, [7487] = true}
@@ -71,8 +75,8 @@ end
 
 local createmsg = deformat(LOOT_ITEM_CREATED_SELF)
 local createmultimsg = deformat(LOOT_ITEM_CREATED_SELF_MULTIPLE)
-local learnspellmsg = deformat(ERR_LEARN_SPELL_S)
 local learnpassivemsg = deformat(ERR_LEARN_PASSIVE_S)
+local learnspellmsg = deformat(ERR_LEARN_SPELL_S)
 local learnabilitymsg = deformat(ERR_LEARN_ABILITY_S)
 local unlearnspellmsg = deformat(ERR_SPELL_UNLEARNED_S)
 local petlearnspellmsg = deformat(ERR_PET_LEARN_SPELL_S)
@@ -82,8 +86,6 @@ local auctionstartedmsg = deformat(ERR_AUCTION_STARTED)
 local auctionremovedmsg = deformat(ERR_AUCTION_REMOVED)
 local duelwinmsg = deformat(DUEL_WINNER_KNOCKOUT)
 local duellosemsg = deformat(DUEL_WINNER_RETREAT)
-
-
 local drunkmsg = {
 	deformat(DRUNK_MESSAGE_ITEM_OTHER1),
 	deformat(DRUNK_MESSAGE_ITEM_OTHER2),
@@ -122,7 +124,7 @@ local function SendAchievement(event, achievementID, players)
 		local class, color, r, g, b
 		if (players[i].guid and tonumber(players[i].guid)) then
 			class = select(2, GetPlayerInfoByGUID(players[i].guid))
-			color = RAID_CLASS_COLORS[class]
+			color = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[class]
 		end
 		if (not color) then
 			local info = ChatTypeInfo[strsub(event, 10)]
@@ -130,9 +132,9 @@ local function SendAchievement(event, achievementID, players)
 		else
 			r, g, b = color.r, color.g, color.b
 		end
-		players[i] = format("|cff%02x%02x%02x|Hplayer:%s|h[%s]|h|r", r*255, g*255, b*255, players[i].name, players[i].name)
+		players[i] = format("|cff%02x%02x%02x|Hplayer:%s|h%s|h|r", r*255, g*255, b*255, players[i].name, players[i].name)
 	end
-	SendMessage(event, format(L["Achievement"], table.concat(players, ""), GetAchievementLink(achievementID)))
+	SendMessage(event, format(L["Achievement"], table.concat(players, ", "), GetAchievementLink(achievementID)))
 end
 
 local function achievementReady(id, achievement)
@@ -282,7 +284,7 @@ local function ChatFilter_Rubbish(self, event, msg, player, _, _, _, flag, _, _,
 	if (lineId ~= prevLineId) then
 		if (event == "CHAT_MSG_CHANNEL") then
 			if (Config.BlockInstance and select(2, IsInInstance()) ~= "none") or (Config.BlockCombat and InCombatLockdown()) or (Config.BlockBossCombat and UnitExists("boss1")) then
-				local i, id, channel
+				local id, channel
 				for i = 1, NUM_CHAT_WINDOWS do
 					local channels = {GetChatWindowChannels(i)}
 					for id, channel in ipairs(channels) do
@@ -305,10 +307,9 @@ local function ChatFilter_Rubbish(self, event, msg, player, _, _, _, flag, _, _,
 					end
 				end
 			end
-			if (event ~= "CHAT_MSG_GUILD" and event ~= "CHAT_MSG_OFFICER") then
-				if (guid and tonumber(guid) and tonumber(guid:sub(-12, -9), 16) >0) then return end
-				if (Config.FilterRaidAlert and strmatch(msg, "%*%*(.+)%*%*")) then return true end
-			end
+			if (guid and tonumber(guid) and tonumber(guid:sub(-12, -9), 16) >0) then return end
+			if (Config.FilterRaidAlert and strfind(msg, "%*%*(.+)%*%*")) then return true end
+			if (Config.FilterQuestReport and strfind(msg, L["QuestReport"])) then return true end
 		end
 		if (not Config.ScanOurself and UnitIsUnit(player,"player")) then return end
 		if (not Config.ScanFriend and not CanComplainChat(lineId)) then return end
@@ -327,30 +328,51 @@ local function ChatFilter_Rubbish(self, event, msg, player, _, _, _, flag, _, _,
 		if player and E.global.chatfilter.BlankName[player] then
 			return true
 		end
+		for i = 1, getn(E.global.chatfilter.ShieldPlayers) do
+			if (strfind(player, E.global.chatfilter.ShieldPlayers[i])) then
+				return true
+			end
+		end	
+		if (Config.ShieldAdvPlayer) then
+			for i = getn(ShieldTable), 1, -1 do
+				local value = ShieldTable[i]
+				if (strfind(player, value.Name)) then
+					if (GetTime() - value.Time  > Config.ShieldTimes * 60) then
+						tremove(ShieldTable, i)
+					end
+					return true
+				end
+			end
+		end		
 		if (Config.FilterRepeat or Config.FilterAdvertising) then
-			msg = (msg):lower()
-			local Symbols = {" ","`","~","@","#","^","*","/","，","。","、","？","！","：","；","’","‘","“","”","【","】","《","》","（","）","<",">"}
+			orgmsg = msg
+			msg = msg:lower()
+
+			local Symbols = {"{rt[1-8]}","%s","%p","，","。","、","？","！","：","；","’","‘","“","”","【","】","《","》","（","）","—","…"}
 			for i = 1, getn(Symbols) do
 				msg = gsub(msg, Symbols[i], "")
 			end
-		end		
-		
-		local Data = {Name = player, Msg = msg, Time = GetTime()}
+
+
+		end	
+	
+		local Msg_Data = {Name = player, Msg = msg, Time = GetTime()}
+		local Player_Data = {Name = player, Time = GetTime()}
 		if (Config.FilterRepeat or Config.FilterMultiLine) then
 
 			local lines = 1
 			for i = getn(CacheTable), 1, -1 do
-				value = CacheTable[i]
+				local value = CacheTable[i]
 				if (GetTime() - value.Time  > Config.RepeatInterval) then
 					tremove(CacheTable, i)
-					break
+
 				elseif (value.Name == player) then
 					if (Config.FilterMultiLine) then
 						if (GetTime() - value.Time < 0.400) then
 							if (event == "CHAT_MSG_CHANNEL") then
 								lines = lines +1
 							else
-								if (strmatch(msg, "%d?%..*%d+%.?%d?%(%d+%.?%d?%,?%d+%.?%d?%%%)") or strmatch(msg, "%d?%..*%d+%.?%d?.*%d+%.?%d?%%.*%(%d+%.?%d?%)")) then
+								if (strfind(orgmsg, "%d?%..*%d+%.?%d?%a?%s?%(%d+%.?%d?%,?%s?%d+%.?%d?%%%)") or strfind(orgmsg, "%d?%..*%d+%.?%d?.*%d+%.?%d?%%.*%(%d+%.?%d?%)")) then
 									return
 								else
 									lines = lines +1
@@ -417,12 +439,15 @@ local function ChatFilter_Rubbish(self, event, msg, player, _, _, _, flag, _, _,
 				if (strlen(msg) > 120) then matchs = matchs + 1 end
 				if (event == "CHAT_MSG_WHISPER" and UnitLevel(player) == 0) then matchs = matchs + 1 end
 			end
-			if (matchs > Config.AllowMatchs) then return true end
+			if (matchs > Config.AllowMatchs) then
+				tinsert(ShieldTable, Player_Data)
+				return true
+			end
 		end
-		if (getn(CacheTable) > Config.RepeatMaxCache) then
+		if (getn(CacheTable) > 200) then
 			tremove(CacheTable, 1)
 		end
-		tinsert(CacheTable, Data)
+		tinsert(CacheTable, Msg_Data)
 		prevLineId = lineId
 	end
 end

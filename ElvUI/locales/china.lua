@@ -1798,7 +1798,7 @@ do
 	L["Q22"] = "其它单体插件与EUI的兼容性问题"
 		L["A22"] = "原则上EUI兼容所有的单体插件,但注意如果单体插件提供的功能是EUI已经有的功能,则可能造成冲突.如右上角的BUFF显示插件."
 	L["Q23"] = "常用设置命令有哪些"
-		L["A23"] = "/ec 打开设置界面\n /luaerror 开关显示插件错误 \n /egrid 显示网格线方便对齐\n /moveui 解锁框体移动\n /resetui 重置EUI插件\n /resetgold 重设金币统计\n /frammode 采集模式小地图\n /kb 设置动作条快捷键\n /skada toggle 开关Skada窗口"
+		L["A23"] = "/ec 打开设置界面\n /luaerror 开关显示插件错误 \n /egrid 显示网格线方便对齐\n /moveui 解锁框体移动\n /resetui 重置EUI插件\n /resetgold 重设金币统计\n /frammode 采集模式小地图\n /kb 设置动作条快捷键\n /cleanguild 清理公会会员\n /skada toggle 开关Skada窗口"
 end		
 
 --Tukui_ElvUI_Skins

@@ -14,7 +14,7 @@ function ChatEdit_CustomTabPressed(self)
          self:SetAttribute("chatType", "RAID");
          ChatEdit_UpdateHeader(self);
       elseif (GetNumBattlefieldScores()>0) then
-         self:SetAttribute("chatType", "BATTLEGROUND");
+         self:SetAttribute("chatType", "INSTANCE_CHAT");
          ChatEdit_UpdateHeader(self);
       elseif (IsInGuild()) then
          self:SetAttribute("chatType", "GUILD");
@@ -27,7 +27,7 @@ function ChatEdit_CustomTabPressed(self)
          self:SetAttribute("chatType", "RAID");
          ChatEdit_UpdateHeader(self);
       elseif (GetNumBattlefieldScores()>0) then
-         self:SetAttribute("chatType", "BATTLEGROUND");
+         self:SetAttribute("chatType", "INSTANCE_CHAT");
          ChatEdit_UpdateHeader(self);
       elseif (IsInGuild()) then
          self:SetAttribute("chatType", "GUILD");
@@ -38,7 +38,7 @@ function ChatEdit_CustomTabPressed(self)
       end         
    elseif (self:GetAttribute("chatType") == "RAID") then
       if (GetNumBattlefieldScores()>0) then
-         self:SetAttribute("chatType", "BATTLEGROUND");
+         self:SetAttribute("chatType", "INSTANCE_CHAT");
          ChatEdit_UpdateHeader(self);
       elseif (IsInGuild()) then
          self:SetAttribute("chatType", "GUILD");
@@ -47,7 +47,7 @@ function ChatEdit_CustomTabPressed(self)
          self:SetAttribute("chatType", "SAY");
          ChatEdit_UpdateHeader(self);
       end
-   elseif (self:GetAttribute("chatType") == "BATTLEGROUND") then
+   elseif (self:GetAttribute("chatType") == "INSTANCE_CHAT") then
       if (IsInGuild) then
          self:SetAttribute("chatType", "GUILD");
          ChatEdit_UpdateHeader(self);
@@ -66,7 +66,7 @@ function ChatEdit_CustomTabPressed(self)
          self:SetAttribute("chatType", "RAID");
          ChatEdit_UpdateHeader(self);
       elseif (GetNumBattlefieldScores()>0) then
-         self:SetAttribute("chatType", "BATTLEGROUND");
+         self:SetAttribute("chatType", "INSTANCE_CHAT");
          ChatEdit_UpdateHeader(self);
       elseif (IsInGuild()) then
          self:SetAttribute("chatType", "GUILD");
