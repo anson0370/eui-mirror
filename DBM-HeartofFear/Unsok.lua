@@ -88,7 +88,6 @@ local berserkTimer				= mod:NewBerserkTimer(600)
 
 local countdownAmberExplosionAM	= mod:NewCountdown(46, 122402)
 
---mod:AddBoolOption("AdvInfoFrame", true, "sound")
 mod:AddBoolOption("FixNameplates", true)--Because having 215937495273598637205175t9 hostile nameplates on screen when you enter a construct is not cool.
 
 mod:AddDropdownOption("optInfoFrame", {"noIF", "IF1", "IF2"}, "IF1", "sound")
@@ -99,6 +98,7 @@ local Puddles = 0
 local Constructs = 0
 local bossdebuff = 0
 local boss2debuff = 0
+local otherconstruct = nil
 local playerIsConstruct = false
 local warnedWill = false
 local lastStrike = 0
@@ -170,6 +170,7 @@ function mod:OnCombatStart(delay)
 	Puddles = 0
 	Constructs = 0
 	lastStrike = 0
+	otherconstruct = nil
 	table.wipe(canInterrupt)
 	playerIsConstruct = false
 	timerAmberScalpelCD:Start(9-delay)
@@ -182,7 +183,7 @@ function mod:OnCombatStart(delay)
 		DBM.InfoFrame:SetHeader("首領動搖:"..bossdebuff)
 		DBM.InfoFrame:Show(5, "playerpower", 1, ALTERNATE_POWER_INDEX, nil, nil, true)--At a point i need to add an arg that lets info frame show the 5 LOWEST not the 5 highest, instead of just showing 10
 	elseif self.Options.optInfoFrame == "IF2" then
-		DBM.InfoFrame:SetHeader("我的能量:0")
+		DBM.InfoFrame:SetHeader("我的能量:"..UnitPower("player", ALTERNATE_POWER_INDEX))
 		DBM.InfoFrame:Show(2, "bossdebuffstacks", 123059)
 	end
 	if self.Options.FixNameplates then
@@ -286,6 +287,9 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(122784) then
 		Constructs = Constructs + 1
 		warnReshapeLife:Show(args.destName)
+		if args.destName ~= UnitName("player") then
+			otherconstruct = args.destName
+		end
 		if args:IsPlayer() then
 			playerIsConstruct = true
 			warnedWill = true -- fix bad low will special warning on entering Construct. After entering vehicle, this will be return to false. (on alt.power changes)
@@ -322,6 +326,9 @@ function mod:SPELL_AURA_REMOVED(args)
 		timerDestabalize:Cancel(args.destName)
 	elseif args:IsSpellID(122370) then
 		Constructs = Constructs - 1
+		if args.destName == otherconstruct then
+			otherconstruct = nil
+		end
 		if args:IsPlayer() then
 			playerIsConstruct = false
 			if IsAddOnLoaded("TidyPlates_ThreatPlates") then
@@ -451,7 +458,11 @@ function mod:UNIT_POWER(uId)
 		warnedWill = false
 	end
 	if self.Options.optInfoFrame == "IF2" then
-		DBM.InfoFrame:SetHeader("我的能量:"..UnitPower("player", ALTERNATE_POWER_INDEX))
+		if otherconstruct and (Phase < 3) and (not self:IsDifficulty("lfr25")) then
+			DBM.InfoFrame:SetHeader("我的能量:"..UnitPower("player", ALTERNATE_POWER_INDEX).."  其他能量"..UnitPower(otherconstruct, ALTERNATE_POWER_INDEX))
+		else
+			DBM.InfoFrame:SetHeader("我的能量:"..UnitPower("player", ALTERNATE_POWER_INDEX))
+		end
 	end
 end
 

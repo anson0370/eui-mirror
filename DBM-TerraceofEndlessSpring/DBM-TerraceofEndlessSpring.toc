@@ -1,12 +1,12 @@
 ﻿## Interface: 50100
 ## X-Min-Interface: 50001
-## Title:|cffC495DDEUI|r|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Terrace of Endless Spring|r
-## Title-zhTW:|cffC495DDEUI|r|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0豐泉台  (ToES)|r
-## Title-zhCN:|cffC495DDEUI|r|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0永春台|r
+## Title:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0Terrace of Endless Spring|r
+## Title-zhTW:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0豐泉台  (ToES)|r
+## Title-zhCN:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff69ccf0永春台|r
 ## Author: Nitram/Tandanu
 ## LoadOnDemand: 1
 ## RequiredDeps: DBM-Core
-## SavedVariablesPerCharacter: DBMTerraceofEndlessSpring_SavedVars, DBMTerraceofEndlessSpring_SavedStats
+## SavedVariablesPerCharacter: DBMTerraceofEndlessSpring_SavedVars, DBMTerraceofEndlessSpring_SavedStats, ShaAssistDB
 ## X-DBM-Mod: 1
 ## X-DBM-Mod-Category: MOP
 ## X-DBM-Mod-Has-Heroic-Mode: 1

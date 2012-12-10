@@ -94,7 +94,8 @@ L= DBM:GetModLocalization(713)
 L:SetWarningLocalization({
 	specwarnUnder	= "離開紫圈!",
 	specWarnPungencyOtherFix = "%s 敏感 (%d)",
-	specwarnCrushH	= "碾碎 (%d)"
+	specwarnCrushH	= "碾碎 (%d)",
+	SpecWarnJSA		= "5秒後碾壓 >>注意減傷<<"
 })
 
 L:SetOptionLocalization({
@@ -109,7 +110,17 @@ L:SetOptionLocalization({
 	SoundZN				= "語音警告：碾碎倒計時(英雄模式)",
 	specWarnPungencyOtherFix = "特別警告：當$spell:123081達到15層時",
 	HudMAP				= "高級定位監視(HUD)：$spell:122835的位置",
-	SoundFS				= "坦克倒計時：$spell:122735"
+	SoundFS				= "坦克倒計時：$spell:122735",
+	SpecWarnJSA			= "特殊警告：注意開減傷",
+	unseenjs1			= "減傷提示：碾碎1",
+	unseenjs2			= "減傷提示：碾碎2",
+	unseenjs3			= "減傷提示：碾碎3",
+	unseenjs4			= "減傷提示：碾碎4",
+	unseenjs5			= "減傷提示：碾碎5",
+	unseenjs6			= "減傷提示：碾碎6",
+	unseenjs7			= "減傷提示：碾碎7",
+	unseenjs8			= "減傷提示：碾碎8",
+	unseenjs9			= "減傷提示：碾碎9"
 })
 
 L:SetMiscLocalization({

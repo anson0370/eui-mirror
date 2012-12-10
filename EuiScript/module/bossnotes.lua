@@ -73,9 +73,9 @@ SlashCmdList["BOSS"] = function(input)
 			if(type(info.raiders)=="string") then
 				if bossname == info.name then
 					if UnitInRaid("player") then
-						SendChatMessage(info.raiders, "RAID");
+						SendChatMessage(info.raiders, IsPartyLFG() and "INSTANCE_CHAT" or "RAID");
 					else
-						SendChatMessage(info.raiders, "PARTY");
+						SendChatMessage(info.raiders, IsPartyLFG() and "INSTANCE_CHAT" or "PARTY");
 					end
 					return;
 				end

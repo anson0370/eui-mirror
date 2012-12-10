@@ -100,15 +100,7 @@ local OnLeave = function(self)
 end
 
 local OnMouseDown = function(self, button)
-	if button == "LeftButton" then
-		if IsInRaid() then
-			SendChatMessage(sformat("EUI_ClassCD".." %s: %s", self.left:GetText(), self.right:GetText()), "RAID")
-		elseif IsInGroup() and not UnitInRaid("player") then
-			SendChatMessage(sformat("EUI_ClassCD".." %s: %s", self.left:GetText(), self.right:GetText()), "PARTY")
-		else
-			SendChatMessage(sformat("EUI_ClassCD".." %s: %s", self.left:GetText(), self.right:GetText()), "SAY")
-		end
-	elseif button == "RightButton" then
+	if button == "RightButton" then
 		StopTimer(self)
 	end
 end

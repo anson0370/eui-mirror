@@ -1,4 +1,6 @@
 ﻿if IsAddOnLoaded("ShaOfFearAssist") then return end
+
+ShaOfFearAssistEnabled = true
 -----------------------------------------------------------------------
 -- Locals
 --
@@ -779,6 +781,7 @@ local function detectInstanceChange()
 end
 
 local function CLEU(...)
+	if not ShaOfFearAssistEnabled then return end
 	local timestamp, etype, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, player, destFlags, destRaidFlags, spellId, spellName, spellSchool, missType,  amountMissed = ...
 	if etype == "SPELL_AURA_APPLIED" and spellId == 118977 then               --Fearless
 		if UnitIsUnit("player", player) then

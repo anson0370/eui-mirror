@@ -201,16 +201,16 @@ function RC:CheckRaidBuff()
 	end
 	
 	if next(NoMONKBuffName) == nil and next(NoMSBuffName) == nil and next(NoFSBuffName) == nil and next(NoQS1BuffName) == nil and next(NoQS2BuffName) == nil and next(NoXDBuffName) == nil and next(NoFOODBuffName) == nil then
-		SendChatMessage(L.RaidCheckMsgFullBuff, "RAID")
+		SendChatMessage(L.RaidCheckMsgFullBuff, IsPartyLFG() and "INSTANCE_CHAT" or "RAID")
 	else
-		SendChatMessage(L.RaidCheckMsgNoBuff, "RAID")
-		if next(NoMSBuffName) then SendChatMessage(L.RaidCheckBuffMS.. ": ".. table.concat(NoMSBuffName, ","), "RAID") end
-		if next(NoFSBuffName) then SendChatMessage(L.RaidCheckBuffFS.. ": ".. table.concat(NoFSBuffName, ","), "RAID") end
-		if next(NoQS1BuffName) then SendChatMessage(L.RaidCheckBuffQS1.. ": ".. table.concat(NoQS1BuffName, ","), "RAID") end
-		if next(NoQS2BuffName) then SendChatMessage(L.RaidCheckBuffQS2.. ": ".. table.concat(NoQS2BuffName, ","), "RAID") end
-		if next(NoXDBuffName) then SendChatMessage(L.RaidCheckBuffXD.. ": ".. table.concat(NoXDBuffName, ","), "RAID") end
-		if next(NoFOODBuffName) then SendChatMessage(L.RaidCheckBuffFOOD.. ": ".. table.concat(NoFOODBuffName, ","), "RAID") end
-		if next(NoMONKBuffName) then SendChatMessage(L.RaidCheckBuffFOOD.. ": ".. table.concat(NoMONKBuffName, ","), "RAID") end
+		SendChatMessage(L.RaidCheckMsgNoBuff, IsPartyLFG() and "INSTANCE_CHAT" or "RAID")
+		if next(NoMSBuffName) then SendChatMessage(L.RaidCheckBuffMS.. ": ".. table.concat(NoMSBuffName, ","), "INSTANCE_CHAT" or "RAID") end
+		if next(NoFSBuffName) then SendChatMessage(L.RaidCheckBuffFS.. ": ".. table.concat(NoFSBuffName, ","), "INSTANCE_CHAT" or "RAID") end
+		if next(NoQS1BuffName) then SendChatMessage(L.RaidCheckBuffQS1.. ": ".. table.concat(NoQS1BuffName, ","), "INSTANCE_CHAT" or "RAID") end
+		if next(NoQS2BuffName) then SendChatMessage(L.RaidCheckBuffQS2.. ": ".. table.concat(NoQS2BuffName, ","), "INSTANCE_CHAT" or "RAID") end
+		if next(NoXDBuffName) then SendChatMessage(L.RaidCheckBuffXD.. ": ".. table.concat(NoXDBuffName, ","), "INSTANCE_CHAT" or "RAID") end
+		if next(NoFOODBuffName) then SendChatMessage(L.RaidCheckBuffFOOD.. ": ".. table.concat(NoFOODBuffName, ","), "INSTANCE_CHAT" or "RAID") end
+		if next(NoMONKBuffName) then SendChatMessage(L.RaidCheckBuffFOOD.. ": ".. table.concat(NoMONKBuffName, ","), "INSTANCE_CHAT" or "RAID") end
 	end
 end
 
@@ -282,7 +282,7 @@ function RC:CheckPosition()
 		end
 	end
 	
-	SendChatMessage(msg, "RAID")
+	SendChatMessage(msg, "INSTANCE_CHAT" or "RAID")
 end
 
 -------------------------------------------------------------------------------------------------------------------
@@ -333,7 +333,7 @@ function RC:CheckRaidFlask()
 	else
 		msg = msg..format(L.RaidCheckMsgHasFlask, FlaskPlayerCount)..": "..FlaskPlayer
 	end
-	SendChatMessage(msg, "RAID")
+	SendChatMessage(msg, "INSTANCE_CHAT" or "RAID")
 end
 
 -------------------------------------------------------------------------------------------------------------------
