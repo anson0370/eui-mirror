@@ -1,3 +1,7 @@
+** v1.20
+
+- Updated to work with item upgrades
+
 ** v1.19
 
 - Fixed a couple lua errors reported earlier

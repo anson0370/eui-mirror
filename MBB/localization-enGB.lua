@@ -15,6 +15,6 @@ MBB_OPTIONS_MAXBUTTONSINFO = "(0=infinity)";
 MBB_OPTIONS_ALTEXPANSIONLABEL = "Alt. Expand to:";
 MBB_HELP1 = "Type \"/mmbb <cmd>\" where <cmd> is one of the following:";
 MBB_HELP2 = "  |c00ffffffbuttons|r: Shows a list of all frames in the MBB bar";
-MBB_HELP3 = "  |c00ffffffreset position|r: resets the position of the MBB minimap button";
-MBB_HELP4 = "  |c00ffffffreset all|r: resets all options";
+MBB_HELP3 = "  |c00ffffffreset position|r: Resets the position of the MBB minimap button";
+MBB_HELP4 = "  |c00ffffffreset all|r: Resets all options";
 MBB_NOERRORS = "No errors found!";

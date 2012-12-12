@@ -4,14 +4,10 @@
 ## Title-zhCN: |cffC495DDEUI|r重铸助手
 ## Title-zhTW: |cffC495DDEUI|r重鑄助手
 ## Notes: Calculates optimal reforging for given weights/caps.
-## Version: 1.19
+## Version: 1.20
 ## SavedVariables: ReforgeLiteDB
 ## Dependencies: 
-## X-Curse-Packaged-Version: v1.13
-## X-Curse-Project-Name: ReforgeLite
-## X-Curse-Project-ID: reforgelite
-## X-Curse-Repository-ID: wow/reforgelite/mainline
-## X-Curse-Packaged-Version: v1.19
+## X-Curse-Packaged-Version: v1.20
 ## X-Curse-Project-Name: ReforgeLite
 ## X-Curse-Project-ID: reforgelite
 ## X-Curse-Repository-ID: wow/reforgelite/mainline

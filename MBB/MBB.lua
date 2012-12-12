@@ -36,33 +36,55 @@ v1.12 - Elchizen's localisation had bug and forced it to be in French
 v1.13 - Update for patch 4.2
 
 v1.20 - Update for patch 4.3
+
+v1.31 - Update for patch 5.0.4
+
+v1.32 - Update to ignore other Add-On's minimap elements.
+
+v1.33 - Fixed saving button position when detached.
+
+v1.34 - Added another Slash Handler.
+		Fix a reset position issue.
+		Add additional buttons to ignore.
+		Drop some explicitly included buttons because they weren't working.
+		
+v1.35 - Added ignore for Gatherer's Archaeology Nodes.
+		
+v1.36 - Added ignore for Zygor Guides.
+		
+v1.37 - Update for 5.1.
+
 --]]
-local E, L, V, P, G, _ = unpack(ElvUI); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
-MBB_Version = "1.20";
+
+MBB_Version = "1.37";
+
+-- Setup some variable for debugging.
 MBB_DebugFlag = 0;
+MBB_DebugInfo = {};
+
 MBB_DragFlag = 0;
 MBB_ShowTimeout = -1;
 MBB_CheckTime = 0;
 MBB_IsShown = 0;
 MBB_FuBar_MinimapContainer = "FuBarPlugin-MinimapContainer-2.0";
+
 MBB_Buttons = {};
 MBB_Exclude = {};
-MBB_DebugInfo = {};
+
 MBB_DefaultOptions = {
 	["ButtonPos"] = {-18, -100},
 	["AttachToMinimap"] = 1,
+	["DetachedButtonPos"] = "CENTER",
 	["CollapseTimeout"] = 1,
 	["ExpandDirection"] = 1,
 	["MaxButtonsPerLine"] = 0,
 	["AltExpandDirection"] = 4
 };
 
-MBB_Include = {
-	[1] = "WIM_IconFrame",
-	[2] = "CTMod2_MinimapButton",
-	[3] = "PoisonerMinimapButton",
-};
+-- Buttons to include with scanning for them first.  Currently unused.
+MBB_Include = {};
 
+-- Button names to always ignore.
 MBB_Ignore = {
 	[1] = "MiniMapTrackingFrame",
 	[2] = "MiniMapMeetingStoneFrame",
@@ -93,9 +115,14 @@ MBB_Ignore = {
 	[27] = "GameTimeFrame",
 	[28] = "DA_Minimap",
 	[29] = "ElvConfigToggle",
-	[30] = "UpperRepExpBarHolder",
-	[31] = "HelpOpenTicketButton",
-	[32] = "QueueStatusMinimapButton",
+	[30] = "MiniMapInstanceDifficulty",
+	[31] = "MinimapZoneTextButton",
+	[32] = "GuildInstanceDifficulty",
+	[33] = "MiniMapVoiceChatFrame",
+	[34] = "MiniMapRecordingButton",
+	[35] = "QueueStatusMinimapButton",
+	[36] = "GatherArchNote",
+	[37] = "ZGVMarker"
 };
 
 MBB_IgnoreSize = {
@@ -159,16 +186,22 @@ function MBB_OnLoad()
 	end
 	
 	MBBFrame:RegisterEvent("ADDON_LOADED");
-	SLASH_MBB1 = "/mmbb";
+	SLASH_MBB1 = "/mbb";
 	SLASH_MBB2 = "/minimapbuttonbag";
+	SLASH_MBB3 = "/mmbb";
 	SlashCmdList["MBB"] = MBB_SlashHandler;
 end
 
 function MBB_SlashHandler(cmd)
 	if( cmd == "buttons" ) then
 		MBB_Print("MBB Buttons:");
-		for i,name in ipairs(MBB_Buttons) do
-			MBB_Print("  " .. name);
+		
+		if( #MBB_Buttons > 0 ) then
+			for i,name in ipairs(MBB_Buttons) do
+				MBB_Print("  " .. name);
+			end
+		else
+			MBB_Print("No Minimap buttons are currently stored.");
 		end
 	elseif( string.sub(cmd, 1, 6) == "debug " ) then
 		local iStart, iEnd, sFrame = string.find(cmd, "debug (.+)");
@@ -202,14 +235,19 @@ function MBB_SlashHandler(cmd)
 			MBB_Debug("  has no OnLeave script");
 		end
 	elseif( cmd == "reset position" ) then
-		MBB_ResetPosition()
+		-- Reset the main button position.
+		MBB_ResetButtonPosition()
 	elseif( cmd == "reset all" ) then
 		MBB_Options = MBB_DefaultOptions;
+		
+		-- Reset the main button position.
+		MBB_ResetButtonPosition()
+		
 		for i=1,table.maxn(MBB_Exclude) do
 			MBB_AddButton(MBB_Exclude[i]);
 		end
+		
 		MBB_SetPositions();
-		MBB_SetButtonPosition();
 	elseif( cmd == "errors" ) then
 		if( table.maxn(MBB_DebugInfo) > 0 ) then
 			for name, arr in pairs(MBB_DebugInfo) do
@@ -299,68 +337,6 @@ function MBB_OnEvent(self, event, ...)
 		MBB_Options = MBB_DefaultOptions;
 	end
 	MBB_SetButtonPosition();
-end
-
-function MBB_NotSureIfThisIsNeeded()
-	local children = {Minimap:GetChildren()};
-	local additional = {MinimapBackdrop:GetChildren()};
-	for _,child in ipairs(additional) do
-		table.insert(children, child);
-	end
-	for _,child in ipairs(MBB_Include) do
-		local childframe = _G[child]
-		if( childframe ) then
-			table.insert(children, childframe);
-		end
-	end
-	
-	for _,child in ipairs(children) do
-		if( child:GetName() ) then
-			local ignore = false;
-			local exclude = false;
-			for i,needle in ipairs(MBB_Ignore) do
-				if( string.find(child:GetName(), needle) ) then
-					ignore = true;
-				end
-			end
-			if( not ignore ) then
-				if( not child:HasScript("OnClick") ) then
-					for _,subchild in ipairs({child:GetChildren()}) do
-						if( subchild:HasScript("OnClick") ) then
-							child = subchild;
-							child.hasParentFrame = true;
-							break;
-						end
-					end
-				end
-				
-				local hasClick, hasMouseUp, hasMouseDown, hasEnter, hasLeave = MBB_TestFrame(child:GetName());
-				
-				if( hasClick or hasMouseUp or hasMouseDown ) then
-					local name = child:GetName();
-					
-					MBB_PrepareButton(name);
-					if( not MBB_IsInArray(MBB_Exclude, name) ) then
-						if( child:IsVisible() ) then
-							MBB_Debug("Button is visible: " .. name);
-						else
-							MBB_Debug("Button is not visible: " .. name);
-						end
-						MBB_Debug("Button added: " .. name);
-						MBB_AddButton(name);
-					else
-						MBB_Debug("Button excluded: " .. name);
-					end
-				else
-					MBB_Debug("Frame is no button: " .. child:GetName());
-				end
-			else
-				MBB_Debug("Frame ignored: " .. child:GetName());
-			end
-		end
-	end
-	
-	MBB_SetPositions()
 end
 
 function MBB_PrepareButton(name)
@@ -565,7 +541,10 @@ function MBB_AddButton(name)
 			child.oshow(child);
 			parent.ohide(parent);
 		else
-			child.ohide(child);
+			-- TODO: Not sure why ohide would be nil but it is.  We'll fix this later.
+			if(child.ohide) then
+				child.ohide(child);
+			end
 		end
 	end
 	table.insert(MBB_Buttons, name);
@@ -677,12 +656,12 @@ function MBB_OnClick(arg1)
 			local scale = GetCVar("uiScale");]]
 			MBB_Options.AttachToMinimap = 0;
 			MBB_Options.ButtonPos = {0, 0};	--{(xpos/scale)-10, (ypos/scale)-10};
-			MBB_SetButtonPosition();
+			MBB_Options.DetachedButtonPos = MBB_DefaultOptions.DetachedButtonPos;
 		else
 			MBB_Options.AttachToMinimap = 1;
 			MBB_Options.ButtonPos = MBB_DefaultOptions.ButtonPos;
-			MBB_SetButtonPosition();
 		end
+		MBB_SetButtonPosition();
 	elseif( arg1 and arg1 == "RightButton" ) then
 		MBB_OptionsFrame:Show();
 	else
@@ -816,9 +795,10 @@ function MBB_OnUpdate(elapsed)
 	end
 end
 
-function MBB_ResetPosition()
-	MBB_Options.ButtonPos = MBB_DefaultOptions.ButtonPos;
+function MBB_ResetButtonPosition()
 	MBB_Options.AttachToMinimap = MBB_DefaultOptions.AttachToMinimap;
+	MBB_Options.ButtonPos = MBB_DefaultOptions.ButtonPos;
+	MBB_Options.DetachedButtonPos = MBB_DefaultOptions.DetachedButtonPos;
 	
 	MBB_SetButtonPosition();
 end
@@ -829,7 +809,7 @@ function MBB_SetButtonPosition()
 		MBB_MinimapButtonFrame:SetPoint("TOPLEFT", Minimap, "TOPLEFT", MBB_Options.ButtonPos[1], MBB_Options.ButtonPos[2]);
 	else
 		MBB_MinimapButtonFrame:ClearAllPoints();
-		MBB_MinimapButtonFrame:SetPoint("CENTER", UIParent, "CENTER", MBB_Options.ButtonPos[1], MBB_Options.ButtonPos[2]);
+		MBB_MinimapButtonFrame:SetPoint(MBB_Options.DetachedButtonPos, UIParent, MBB_Options.DetachedButtonPos, MBB_Options.ButtonPos[1], MBB_Options.ButtonPos[2]);
 	end
 end
 
@@ -1002,4 +982,67 @@ end
 
 function MBB_Print(msg)
 	DEFAULT_CHAT_FRAME:AddMessage(msg, 0.2, 0.8, 0.8);
+end
+
+-- This looks to be used for testing only.
+function MBB_NotSureIfThisIsNeeded()
+	local children = {Minimap:GetChildren()};
+	local additional = {MinimapBackdrop:GetChildren()};
+	for _,child in ipairs(additional) do
+		table.insert(children, child);
+	end
+	for _,child in ipairs(MBB_Include) do
+		local childframe = _G[child]
+		if( childframe ) then
+			table.insert(children, childframe);
+		end
+	end
+	
+	for _,child in ipairs(children) do
+		if( child:GetName() ) then
+			local ignore = false;
+			local exclude = false;
+			for i,needle in ipairs(MBB_Ignore) do
+				if( string.find(child:GetName(), needle) ) then
+					ignore = true;
+				end
+			end
+			if( not ignore ) then
+				if( not child:HasScript("OnClick") ) then
+					for _,subchild in ipairs({child:GetChildren()}) do
+						if( subchild:HasScript("OnClick") ) then
+							child = subchild;
+							child.hasParentFrame = true;
+							break;
+						end
+					end
+				end
+				
+				local hasClick, hasMouseUp, hasMouseDown, hasEnter, hasLeave = MBB_TestFrame(child:GetName());
+				
+				if( hasClick or hasMouseUp or hasMouseDown ) then
+					local name = child:GetName();
+					
+					MBB_PrepareButton(name);
+					if( not MBB_IsInArray(MBB_Exclude, name) ) then
+						if( child:IsVisible() ) then
+							MBB_Debug("Button is visible: " .. name);
+						else
+							MBB_Debug("Button is not visible: " .. name);
+						end
+						MBB_Debug("Button added: " .. name);
+						MBB_AddButton(name);
+					else
+						MBB_Debug("Button excluded: " .. name);
+					end
+				else
+					MBB_Debug("Frame is no button: " .. child:GetName());
+				end
+			else
+				MBB_Debug("Frame ignored: " .. child:GetName());
+			end
+		end
+	end
+	
+	MBB_SetPositions()
 end

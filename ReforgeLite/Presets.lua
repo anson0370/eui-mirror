@@ -602,7 +602,7 @@ function ReforgeLite:InitPresets ()
       if type (v) == "function" then
         v = v ()
       end
-      info.text = k:gsub("<(.*)>",function(s) return ReforgeLiteLocale[s] end)
+      info.text = k:gsub("<([^>]*)>",function(s) return ReforgeLiteLocale[s] end)
       info.value = v
       if v.caps or v.weights or v.leaf or v.prio then
         info.func = function ()

@@ -1,3 +1,64 @@
+ReforgeLiteItemLevelTable = {
+  [458] = 4914,
+  [463] = 5152,
+  [466] = 5293,
+  [470] = 5496,
+  [471] = 5550,
+  [474] = 5704,
+  [476] = 5812,
+  [478] = 5920,
+  [480] = 6032,
+  [483] = 6206,
+  [484] = 6261,
+  [487] = 6441,
+  [489] = 6564,
+  [490] = 6628,
+  [491] = 6685,
+  [493] = 6812,
+  [494] = 6879,
+  [496] = 7007,
+  [497] = 7071,
+  [498] = 7140,
+  [500] = 7272,
+  [502] = 7408,
+  [503] = 7478,
+  [504] = 7548,
+  [506] = 7688,
+  [507] = 7761,
+  [509] = 7907,
+  [510] = 7980,
+  [511] = 8055,
+  [513] = 8206,
+  [516] = 8441,
+  [517] = 8518,
+  [520] = 8761,
+  [524] = 9093,
+}
+function GetItemStatsUp(link, table)
+  local result = GetItemStats(link, table)
+  if not result then
+    return result
+  end
+  local id = tonumber (link:match ("item:%d+:%d+:%d+:%d+:%d+:%d+:%-?%d+:%-?%d+:%d+:%d+:(%d+)"))
+  local _, _, _, iLvl = GetItemInfo(link)
+  iLvl = iLvl or 0
+  if iLvl >= 458 then
+    local iLvl2 = iLvl
+    if id == 452 or id == 447 then
+      iLvl2 = iLvl2 + 8
+    elseif id == 446 then
+      iLvl2 = iLvl2 + 4
+    end
+    if iLvl2 > iLvl and ReforgeLiteItemLevelTable[iLvl] and ReforgeLiteItemLevelTable[iLvl2] then
+      for k, v in pairs(result) do
+        if tonumber(v) then
+          result[k] = math.floor(tonumber(v) * ReforgeLiteItemLevelTable[iLvl2] / ReforgeLiteItemLevelTable[iLvl] + 0.5)
+        end
+      end
+    end
+  end
+  return result
+end
 
 ReforgeLiteScalingTable = {
   -- Credits to SimulationCraft

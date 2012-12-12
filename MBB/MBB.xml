@@ -89,8 +89,9 @@
 				else
 					self:StopMovingOrSizing();
 				end
-				local _,_,_,xpos,ypos = self:GetPoint();
+				local point,_,_,xpos,ypos = self:GetPoint();
 				MBB_Options.ButtonPos = {xpos,ypos};
+				MBB_Options.DetachedButtonPos = point;
 			</OnDragStop>
 			<OnUpdate>
 				MBB_OnUpdate(elapsed);

@@ -489,12 +489,4 @@ G['extracd']['data'] = {
 		cd = 55,
 		duration = 15
 	}, -- Lightweave Embroidery
-	[104993] = {
-		desc = "",
-		type = "enchant",
-		enchant = {4442},
-		slot = 16,
-		cd = 50,
-		duration = 12
-	}, -- Jade Spirit
 }

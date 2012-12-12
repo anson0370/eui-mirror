@@ -414,6 +414,7 @@ G.unitframe.aurafilters['Whitelist'] = {
 		[SpellName(32182)] = Defaults(), -- Heroism	
 		[SpellName(80353)] = Defaults(), --Time Warp
 		[SpellName(90355)] = Defaults(), --Ancient Hysteria		
+		[SpellName(104993)] = Defaults(), --jade spirit		
 	},
 }
 

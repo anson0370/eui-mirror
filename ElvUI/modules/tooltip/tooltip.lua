@@ -354,18 +354,26 @@ local SlotName = {
 	"Trinket0","Trinket1","MainHand","SecondaryHand"
 }
 
+local upgrades = {
+	["0"] = 0, ["1"] = 8, ["373"] = 4, ["374"] = 8, ["375"] = 4, ["376"] = 4,
+	["377"] = 4, ["379"] = 4, ["380"] = 4, ["445"] = 0, ["446"] = 4, ["447"] = 8,
+	["451"] = 0, ["452"] = 8, ["453"] = 0, ["454"] = 4, ["455"] = 8, ["456"] = 0,
+	["457"] = 8, ["458"] = 0, ["459"] = 4, ["460"] = 8, ["461"] = 12, ["462"] = 16
+}
+
 function TT:GetItemLvL(unit)
 	local total, item = 0, 0
 
 	for i in pairs(SlotName) do
 		local slot = GetInventoryItemLink(unit, GetInventorySlotInfo(SlotName[i].."Slot"))
 		if not slot then break; end
+		local upgrade = slot:match(":(%d+)\124h%[")
 		local itemLevel = select(4, GetItemInfo(slot)) or UnitLevel(unit)
 		if (slot ~= nil) then
 			local _, _, _, ilvl = GetItemInfo(slot)
 			if ilvl ~= nil then
 				item = item + 1
-				total = total + ilvl
+				total = total + ilvl + (upgrades[upgrade] or 0)
 			end
 		end
 	end
@@ -533,6 +541,7 @@ function TT:GameTooltip_OnTooltipSetUnit(tt)
 				if inspectCache.GUID == GUID then
 					iLevel = inspectCache.ItemLevel or 0
 					talentSpec = inspectCache.TalentSpec or ""
+					role = inspectCache.Role or ""
 					lastUpdate = inspectCache.LastUpdate and math.abs(inspectCache.LastUpdate - math.floor(GetTime())) or 30
 				end
 			end	

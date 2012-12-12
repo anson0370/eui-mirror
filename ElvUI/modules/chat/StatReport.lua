@@ -165,7 +165,7 @@ local function StatReport_TalentData()
 	local spec = GetSpecialization(); -- 得到当前天赋类别1,2,3
 	local role = GetSpecializationRole(spec); --得到当前天赋职责 tank, healer,dps..
 	local _, specinfo = GetSpecializationInfo(spec); -- 得到天赋描述
-	return specinfo.. " (".. _G[role]..")", ''
+	return specinfo, _G[role]
 end
 
 local function StatReport_UnitAttackPower()
@@ -200,19 +200,28 @@ local function StatReport_UnitDefense()
 end
 
 local slotName = {
-	"HeadSlot", "NeckSlot", "ShoulderSlot", "BackSlot", "ChestSlot", "WristSlot",
-	"HandsSlot", "WaistSlot", "LegsSlot", "FeetSlot", "Finger0Slot", "Finger1Slot",
-	"Trinket0Slot", "Trinket1Slot", "MainHandSlot", "SecondaryHandSlot", "AmmoSlot"
+	"Head","Neck","Shoulder","Back","Chest","Wrist",
+	"Hands","Waist","Legs","Feet","Finger0","Finger1",
+	"Trinket0","Trinket1","MainHand","SecondaryHand"
 }
+
+local upgrades = {
+	["0"] = 0, ["1"] = 8, ["373"] = 4, ["374"] = 8, ["375"] = 4, ["376"] = 4,
+	["377"] = 4, ["379"] = 4, ["380"] = 4, ["445"] = 0, ["446"] = 4, ["447"] = 8,
+	["451"] = 0, ["452"] = 8, ["453"] = 0, ["454"] = 4, ["455"] = 8, ["456"] = 0,
+	["457"] = 8, ["458"] = 0, ["459"] = 4, ["460"] = 8, ["461"] = 12, ["462"] = 16
+}
+
 local function GetAiL(unit)
 	local i, total, slot, itn, level = 0, 0, nil, 0
 
 	for i in pairs(slotName) do
-		slot = GetInventoryItemLink(unit, GetInventorySlotInfo(slotName[i]))
+		slot = GetInventoryItemLink(unit, GetInventorySlotInfo(slotName[i].."Slot"))
 		if slot ~= nil then
+			local upgrade = slot:match(":(%d+)\124h%[")
 			itn = itn + 1
 			level = select(4, GetItemInfo(slot))
-			total = total + level
+			total = total + level + (upgrades[upgrade] or 0)
 		end
 	end
 
@@ -270,7 +279,7 @@ function CH:SendReport()
 	StatReport_UpdateMyData()
 	msg = msg..MyData.CLASS;
 	msg = msg..", ";
-	msg = msg..L.INFO_DURABILITY_TIP4..':'..MyData.TKEY..MyData.TDATA;
+	msg = msg..L.INFO_DURABILITY_TIP4..':'..MyData.TKEY..'('..MyData.TDATA..')';
 	msg = msg..", ";
 	msg = msg..L.INFO_DURABILITY_TIP5..':'..MyData.ILVL;
 	msg = msg..", ";
