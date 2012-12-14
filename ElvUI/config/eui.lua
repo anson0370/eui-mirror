@@ -234,6 +234,8 @@ P['unitframe'].units.target.name.position = 'LEFT'
 P['unitframe'].units.target.power.position = 'BOTTOMRIGHT'
 P['unitframe'].units.target.debuffs.useWhitelist = {friendly = false, enemy = true}
 P['unitframe'].units.target.buffs.playerOnly = {friendly = false, enemy = false}
+P['unitframe'].units.target.castbar.InterruptSound = false
+P['unitframe'].units.focus.castbar.InterruptSound = false
 P['unitframe'].units.player.classbar.text = true
 P['unitframe'].units.player.aurabar.auraBarWidth = 270
 P['unitframe'].units.player.aurabar.auraBarHeight = 20
@@ -578,6 +580,7 @@ P["euiscript"] = {
 	["myslot"] = '',
 	["shift_marking"] = true,
 	["autochangeloot"] = false,
+	['inviteRank'] = 4,
 }
 
 P["combattext"] = {

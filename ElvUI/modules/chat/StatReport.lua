@@ -156,6 +156,10 @@ local function StatReport_GetTankText()
 	text = text..", ";
 	text = text..L.INFO_DURABILITY_STAT13..':'..format("%.1f%%", MyData.BLOCK);
 	text = text..", ";
+	text = text..L.INFO_DURABILITY_STAT2..':'..MyData.MHIT;
+	text = text..", ";
+	text = text..L.INFO_DURABILITY_STAT9..':'..format("%.1f%%", MyData.MEXPER);
+	text = text..", ";
 	text = text..L.INFO_DURABILITY_STAT14..':'..MyData.ARMOR;
 	return text;
 end
@@ -199,37 +203,6 @@ local function StatReport_UnitDefense()
 	return floor(baseDEF + posDEF);
 end
 
-local slotName = {
-	"Head","Neck","Shoulder","Back","Chest","Wrist",
-	"Hands","Waist","Legs","Feet","Finger0","Finger1",
-	"Trinket0","Trinket1","MainHand","SecondaryHand"
-}
-
-local upgrades = {
-	["0"] = 0, ["1"] = 8, ["373"] = 4, ["374"] = 8, ["375"] = 4, ["376"] = 4,
-	["377"] = 4, ["379"] = 4, ["380"] = 4, ["445"] = 0, ["446"] = 4, ["447"] = 8,
-	["451"] = 0, ["452"] = 8, ["453"] = 0, ["454"] = 4, ["455"] = 8, ["456"] = 0,
-	["457"] = 8, ["458"] = 0, ["459"] = 4, ["460"] = 8, ["461"] = 12, ["462"] = 16
-}
-
-local function GetAiL(unit)
-	local i, total, slot, itn, level = 0, 0, nil, 0
-
-	for i in pairs(slotName) do
-		slot = GetInventoryItemLink(unit, GetInventorySlotInfo(slotName[i].."Slot"))
-		if slot ~= nil then
-			local upgrade = slot:match(":(%d+)\124h%[")
-			itn = itn + 1
-			level = select(4, GetItemInfo(slot))
-			total = total + level + (upgrades[upgrade] or 0)
-		end
-	end
-
-	if total < 1 or itn < 1 then return 0 end
-
-	return floor(total / itn)
-end
-
 local function StatReport_UpdateMyData()
 	MyData.Name = UnitName("player");							--名称
 	MyData.LV = UnitLevel("player");							--等级
@@ -237,8 +210,7 @@ local function StatReport_UpdateMyData()
 	MyData.HP = UnitHealthMax("player");						--生命值
 	MyData.MP = UnitManaMax("player");							--法力值
 	MyData.TKEY, MyData.TDATA = StatReport_TalentData();		--天赋
---	MyData.ILVL = floor(GetAverageItemLevel());					--平均装备等级
-	MyData.ILVL = GetAiL("player");
+	MyData.ILVL = select(2, GetAverageItemLevel());				--平均装备等级
 	MyData.Mastery = format("%.2f%%", GetMasteryEffect());		--精通点数
 	--基础属性
 	MyData.STR = UnitStat("player", 1);							--力量

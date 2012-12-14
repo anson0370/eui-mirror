@@ -16,6 +16,7 @@ LSM:Register("sound", "Runaway Fast", [[Interface\AddOns\ElvUI\media\sounds\runf
 LSM:Register("sound", "Stop Running", [[Interface\AddOns\ElvUI\media\sounds\stoprunningslimball.mp3]])
 LSM:Register("sound","Warning", [[Interface\AddOns\ElvUI\media\sounds\warning.mp3]])
 LSM:Register("sound","Whisper Alert", [[Interface\AddOns\ElvUI\media\sounds\whisper.mp3]])
+LSM:Register("sound", "Kick Cast", [[Interface\AddOns\ElvUI\media\sounds\kickcast.mp3]])
 LSM:Register("statusbar","ElvUI Gloss", [[Interface\AddOns\ElvUI\media\textures\normTex.tga]])
 LSM:Register("statusbar","ElvUI Norm", [[Interface\AddOns\ElvUI\media\textures\normTex2.tga]])
 LSM:Register("statusbar","Minimalist", [[Interface\AddOns\ElvUI\media\textures\Minimalist.tga]])

@@ -247,6 +247,49 @@ function S:RaidFinderFix() --修正暴雪默认LFR弹出窗口不显示已击杀BOSS进度信息
 	end
 end
 
+function S:GetGuildRanks()
+	local value = {}
+	if IsInGuild() then
+		local ranks = GuildControlGetNumRanks()
+		for i = 1, ranks do
+			value[i] = GuildControlGetRankName(i)
+		end
+	end
+	return value
+end
+
+function S:InviteRanks()
+	if not IsInGuild() then return end
+	
+	local numMembers = GetNumGuildMembers();
+	for i = 1, numMembers do
+		local name, _, rankIndex, _, _, _, _, _, online = GetGuildRosterInfo(i)
+		if online and rankIndex <= E.db.euiscript.inviteRank then
+			InviteUnit(name)
+		end
+		if not IsInGuild() and IsInGroup() and UnitIsGroupLeader("player") then ConvertToRaid(); end
+	end
+end
+
+function S:TradeTargetLevel(event)
+	if event == 'TRADE_SHOW' then
+		local targetLevel
+		if not targetLevel then
+			targetLevel = CreateFrame("Frame")
+			S.targetLevel = targetLevel
+			targetLevel.text = targetLevel:CreateFontString(nil, 'OVERLAY')
+			targetLevel.text:FontTemplate(nil, 12, 'OUTLINE')
+			targetLevel.text:SetPoint("BOTTOMLEFT", TradeFrame, "BOTTOMLEFT", 8, 8)
+			targetLevel:SetFrameLevel(TradeFrame:GetFrameLevel()+2)
+		end
+		targetLevel.text:SetText(TARGET..LEVEL.. ': '.. UnitLevel('NPC'))
+		if UnitLevel('NPC') < 10 then targetLevel.text:SetTextColor(1,0,0) end
+		S.targetLevel:Show()
+	elseif event == 'TRADE_CLOSED' then
+		if S.targetLevel then S.targetLevel:Hide() end
+	end
+end
+
 function S:Initialize()
 	self:CreateVehicleExit()
 	self:AutoCollect()
@@ -267,6 +310,9 @@ function S:Initialize()
 --	self:RegisterEvent("PLAYER_TARGET_CHANGED", "ChangeActionbarPage")
 	self:RegisterEvent("LFG_PROPOSAL_SHOW", "RaidFinderFix")
 	self:RegisterEvent("LFG_PROPOSAL_UPDATE", "RaidFinderFix")
+
+	self:RegisterEvent("TRADE_SHOW", "TradeTargetLevel")
+	self:RegisterEvent("TRADE_CLOSED", "TradeTargetLevel")
 end
 
 E:RegisterModule(S:GetName())

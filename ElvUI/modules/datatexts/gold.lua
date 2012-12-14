@@ -10,7 +10,11 @@ local function formatMoney(money)
 	local silver = mod(floor(math.abs(money) / 100), 100)
 	local copper = mod(floor(math.abs(money)), 100)
 	if gold ~= 0 then
-		return format("%s"..L.goldabbrev.." %s"..L.silverabbrev.." %s"..L.copperabbrev, BreakUpLargeNumbers(gold), silver, copper)
+		if gold > 999 then
+			return format("%s"..L.goldabbrev, BreakUpLargeNumbers(gold))
+		else
+			return format("%s"..L.goldabbrev.." %s"..L.silverabbrev.." %s"..L.copperabbrev, BreakUpLargeNumbers(gold), silver, copper)
+		end
 	elseif silver ~= 0 then
 		return format("%s"..L.silverabbrev.." %s"..L.copperabbrev, silver, copper)
 	else

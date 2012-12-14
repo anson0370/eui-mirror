@@ -504,6 +504,10 @@ end
 
 --UNITFRAMES
 do
+	L['Interrupting the voice prompts'] = '打断声音提示';
+	L["Block Non-Personal Auras"] = '阻止非个人光环';
+	L["Block Non-Whitelisted Auras"] = '阻止不在白名单的光环';
+	L['Block Non-Dispellable Auras'] = '阻止不可驱散的光环';	
 	L['By Type'] = '按类型';
 	L['Color aurabar debuffs by type.'] = '按DEBUFF类型彩色化光环条';
 	L['TOPLEFT'] = '左上';
@@ -1374,6 +1378,13 @@ end
 
 --euiscript
 do
+	L['About UI'] = '界面相关';
+	L['About Prompt info'] = '提示信息相关';
+	L['About Invite'] = '邀请组队相关';
+	L['About Loot'] = '拾取相关';
+	L['Invite guild ranks member'] = '按会阶邀请成员进团';
+	L['Start Invite'] = '发起邀请';
+	L['Invite guild ranks is %s member, in 10 sec.'] = '会阶为 %s 的成员,将在10秒后被邀请进团.';
 	L["Auto change loot"] = "自动更改分配方式";
 	L["InGroup change loot to freecall, InRaid change loot to master"] = "队伍中改为自由拾取,团队中改为团长分配,界限为史诗";
 	L['Display spell trigger graphics prompt'] = '技能触发图形提示';

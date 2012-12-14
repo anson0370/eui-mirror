@@ -713,6 +713,10 @@ L['You can toggle the microbar by using your middle mouse button on the minimap 
 L['You can use the /resetui command to reset all of your movers. You can also use the command to reset a specific mover, /resetui <mover name>.\nExample: /resetui Player Frame'] = true;
 
 --UnitFrames
+L['Interrupting the voice prompts'] = true;
+L["Block Non-Personal Auras"] = true;
+L["Block Non-Whitelisted Auras"] = true;
+L['Block Non-Dispellable Auras'] = true;
 L['By Type'] = true;
 L['Color aurabar debuffs by type.'] = true;
 L['Raid Icon'] = true;
@@ -1154,6 +1158,13 @@ end
 
 --euiscript
 do
+	L['About UI'] = true;
+	L['About Prompt info'] = true;
+	L['About Invite'] = true;
+	L['About Loot'] = true;
+	L['Invite guild ranks member'] = true;
+	L['Start Invite'] = true;
+	L['Invite guild ranks is %s member, in 10 sec.'] = true;
 	L["Auto change loot"] = true;
 	L["InGroup change loot to freecall, InRaid change loot to master"] = true;
 	L['Display spell trigger graphics prompt'] = true;

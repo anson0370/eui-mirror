@@ -226,6 +226,18 @@ E.Options.args.unitframe.args.target.args.range = {
 	},
 }
 
+E.Options.args.unitframe.args.target.args.castbar.args.InterruptSound = {
+	order = 100,
+	type = 'toggle',
+	name = L['Interrupting the voice prompts'],
+}
+
+E.Options.args.unitframe.args.focus.args.castbar.args.InterruptSound = {
+	order = 100,
+	type = 'toggle',
+	name = L['Interrupting the voice prompts'],
+}
+
 E.Options.args.unitframe.args.focus.args.range = {
 	order = 350,
 	type = 'group',

@@ -341,6 +341,15 @@ function UF:SetCastTicks(frame, numTicks, extraTickRatio)
 	end
 end
 
+local function CanInterrupt()
+	for k, v in pairs(E.global.interruptSpell[E.myclass]) do
+		if v and IsSpellKnown(k) and E:GetModule('Reminder'):CanSpellBeUsed(k) then
+			return true
+		end
+	end
+	return false
+end
+
 function UF:PostCastStart(unit, name, rank, castid)
 	if unit == "vehicle" then unit = "player" end
 	local db = self:GetParent().db
@@ -410,10 +419,11 @@ function UF:PostCastStart(unit, name, rank, castid)
 		if UnitCanAttack("player", unit) then
 			self:SetStatusBarColor(unpack(ElvUF.colors.castNoInterrupt))
 		else
-			self:SetStatusBarColor(unpack(ElvUF.colors.castColor))			
+			self:SetStatusBarColor(unpack(ElvUF.colors.castColor))
 		end
 	else
 		self:SetStatusBarColor(unpack(ElvUF.colors.castColor))
+		if db.castbar.InterruptSound and CanInterrupt() then PlaySoundFile(LSM:Fetch("sound", "Kick Cast")) end;
 	end
 end
 

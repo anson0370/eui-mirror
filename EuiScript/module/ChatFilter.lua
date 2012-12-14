@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 -- Title: ChatFilter
--- Version: v5.1.0
+-- Version: v5.1.1
 -- Author: aliluya555
 -- Config
 local E, _, DF = unpack(ElvUI); --Engine
@@ -27,6 +27,7 @@ local Config = E.db["chatfilter"]
 -----------------------------------------------------------------------
 local L = {
 	["You"] = "You",
+	["Space"] = ", ",
 	["Channel"] = "大脚世界频道",
 	["QuestReport"] = "Quest progress%s?:",
 	["Achievement"] = "[%s] have earned the achievement %s!",
@@ -36,6 +37,7 @@ local L = {
 if (GetLocale() == "zhCN") then
 	L = {
 		["You"] = "你",
+		["Space"] = "、",
 		["Channel"] = "大脚世界频道",
 		["QuestReport"] = "任务进度%s?[:：]",
 		["Achievement"] = "[%s]获得了成就%s!",
@@ -45,6 +47,7 @@ if (GetLocale() == "zhCN") then
 elseif (GetLocale() == "zhTW") then
 	L = {
 		["You"] = "你",
+		["Space"] = "、",
 		["Channel"] = "大腳世界頻道",
 		["QuestReport"] = "任務進度%s?[:：]",
 		["Achievement"] = "[%s]獲得了成就%s!",
@@ -94,7 +97,10 @@ local drunkmsg = {
 	deformat(DRUNK_MESSAGE_OTHER1),
 	deformat(DRUNK_MESSAGE_OTHER2),
 	deformat(DRUNK_MESSAGE_OTHER3),
-	deformat(DRUNK_MESSAGE_OTHER4),
+	deformat(DRUNK_MESSAGE_OTHER4),}
+local reportmsg = {
+	"%d+%..+%d+%.?%d?%a?%s?%(%d+%.?%d?%,?%s?%d+%.?%d?%%%)",
+	"%d?%..*%d+%.?%d?.*%d+%.?%d?%%.*%(%d+%.?%d?%)",
 }
 
 local function SendMessage(event, msg, r, g, b)
@@ -134,7 +140,7 @@ local function SendAchievement(event, achievementID, players)
 		end
 		players[i] = format("|cff%02x%02x%02x|Hplayer:%s|h%s|h|r", r*255, g*255, b*255, players[i].name, players[i].name)
 	end
-	SendMessage(event, format(L["Achievement"], table.concat(players, ", "), GetAchievementLink(achievementID)))
+	SendMessage(event, format(L["Achievement"], table.concat(players, L["Space"]), GetAchievementLink(achievementID)))
 end
 
 local function achievementReady(id, achievement)
@@ -282,7 +288,9 @@ end)
 
 local function ChatFilter_Rubbish(self, event, msg, player, _, _, _, flag, _, _, _, _, lineId, guid)
 	if (lineId ~= prevLineId) then
+		local RepeatInterval, RepeatAlike = 10, 95
 		if (event == "CHAT_MSG_CHANNEL") then
+			RepeatInterval, RepeatAlike = Config.RepeatInterval, Config.RepeatAlike
 			if (Config.BlockInstance and select(2, IsInInstance()) ~= "none") or (Config.BlockCombat and InCombatLockdown()) or (Config.BlockBossCombat and UnitExists("boss1")) then
 				local id, channel
 				for i = 1, NUM_CHAT_WINDOWS do
@@ -310,6 +318,11 @@ local function ChatFilter_Rubbish(self, event, msg, player, _, _, _, flag, _, _,
 			if (guid and tonumber(guid) and tonumber(guid:sub(-12, -9), 16) >0) then return end
 			if (Config.FilterRaidAlert and strfind(msg, "%*%*(.+)%*%*")) then return true end
 			if (Config.FilterQuestReport and strfind(msg, L["QuestReport"])) then return true end
+			if (Config.FilterRepeat or Config.FilterMultiLine) then
+				for i = 1, getn(reportmsg) do
+					if strfind(msg, reportmsg[i]) then return end
+				end
+			end
 		end
 		if (not Config.ScanOurself and UnitIsUnit(player,"player")) then return end
 		if (not Config.ScanFriend and not CanComplainChat(lineId)) then return end
@@ -335,9 +348,9 @@ local function ChatFilter_Rubbish(self, event, msg, player, _, _, _, flag, _, _,
 		end	
 		if (Config.ShieldAdvPlayer) then
 			for i = getn(ShieldTable), 1, -1 do
-				local value = ShieldTable[i]
-				if (strfind(player, value.Name)) then
-					if (GetTime() - value.Time  > Config.ShieldTimes * 60) then
+				local shield = ShieldTable[i]
+				if (strfind(player, shield.Name)) then
+					if (GetTime() - shield.Time  > Config.ShieldTimes * 60) then
 						tremove(ShieldTable, i)
 					end
 					return true
@@ -352,48 +365,37 @@ local function ChatFilter_Rubbish(self, event, msg, player, _, _, _, flag, _, _,
 			for i = 1, getn(Symbols) do
 				msg = gsub(msg, Symbols[i], "")
 			end
-
-
 		end	
 	
 		local Msg_Data = {Name = player, Msg = msg, Time = GetTime()}
 		local Player_Data = {Name = player, Time = GetTime()}
 		if (Config.FilterRepeat or Config.FilterMultiLine) then
-
 			local lines = 1
 			for i = getn(CacheTable), 1, -1 do
-				local value = CacheTable[i]
-				if (GetTime() - value.Time  > Config.RepeatInterval) then
+				local cache = CacheTable[i]
+				local interval = GetTime() - cache.Time
+				if (interval > Config.RepeatInterval) then
 					tremove(CacheTable, i)
-
-				elseif (value.Name == player) then
+				elseif (cache.Name == player) then
 					if (Config.FilterMultiLine) then
-						if (GetTime() - value.Time < 0.400) then
-							if (event == "CHAT_MSG_CHANNEL") then
-								lines = lines +1
-							else
-								if (strfind(orgmsg, "%d?%..*%d+%.?%d?%a?%s?%(%d+%.?%d?%,?%s?%d+%.?%d?%%%)") or strfind(orgmsg, "%d?%..*%d+%.?%d?.*%d+%.?%d?%%.*%(%d+%.?%d?%)")) then
-									return
-								else
-									lines = lines +1
-								end
-							end
-							if (lines >= Config.AllowLines) then
-								return true
-							end
+						if (interval < 0.400) then
+							lines = lines + 1
+						end
+						if (lines >= Config.AllowLines) then
+							return true
 						end
 					end
-					if (Config.FilterRepeat) then
-						if  (value.Msg == msg) then
+					if (Config.FilterRepeat and interval < RepeatInterval) then
+						if  (cache.Msg == msg) then
 							return true
 						end
 						if (Config.RepeatAlike and Config.RepeatAlike < 100) then
 							local count = 0
-							if (strlen(msg) > strlen(value.Msg)) then
+							if (strlen(msg) > strlen(cache.Msg)) then
 								bigs = msg
-								smalls = value.Msg
+								smalls = cache.Msg
 							else
-								bigs = value.Msg
+								bigs = cache.Msg
 								smalls = msg
 							end
 							for i = 1, strlen(smalls) do
@@ -401,15 +403,13 @@ local function ChatFilter_Rubbish(self, event, msg, player, _, _, _, flag, _, _,
 									count = count + 1
 								end
 							end
-							if (count / strlen(bigs) * 100 > Config.RepeatAlike) then
+							if (count / strlen(bigs) * 100 > RepeatAlike) then
 								return true
 							end
 						end
 					end
 				end
 			end
-
-
 		end
 		if (Config.FilterAdvertising) then
 			local matchs = 0
@@ -517,6 +517,8 @@ ChatFrame_AddMessageEventFilter("CHAT_MSG_PARTY_LEADER", ChatFilter_Rubbish)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_RAID", ChatFilter_Rubbish)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_RAID_LEADER", ChatFilter_Rubbish)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_RAID_WARNING", ChatFilter_Rubbish)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_INSTANCE_CHAT", ChatFilter_Rubbish)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_INSTANCE_CHAT_LEADER", ChatFilter_Rubbish)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_SAY", ChatFilter_Rubbish)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_YELL", ChatFilter_Rubbish)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER", ChatFilter_Rubbish)

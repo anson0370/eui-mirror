@@ -497,6 +497,17 @@ end
 
 --UNITFRAMES
 do	
+	L['About UI'] = '界面相關';
+	L['About Prompt info'] = '提示信息相關';
+	L['About Invite'] = '邀請組隊相關';
+	L['About Loot'] = '拾取相關';
+	L['Invite guild ranks member'] = '按會階邀請成員進團';
+	L['Start Invite'] = '發起邀請';
+	L['Invite guild ranks is %s member, in 10 sec.'] = '會階為 %s 的成員,將在10秒後被邀請進團.';
+	L['Interrupting the voice prompts'] = '打斷聲音提示';
+	L["Block Non-Personal Auras"] = '阻止非個人光環';
+	L["Block Non-Whitelisted Auras"] = '阻止不在白名單的光環';
+	L['Block Non-Dispellable Auras'] = '阻止不可驅散的光環';
 	L['By Type'] = '按類型';
 	L['Color aurabar debuffs by type.'] = '按DEBUFF類型彩色化光環條';
 	L['TOPLEFT'] = '左上';

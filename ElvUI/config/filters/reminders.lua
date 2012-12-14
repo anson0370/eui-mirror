@@ -55,7 +55,7 @@ G['reminder']['filters'] = {
 				[13165] = true, -- hawk
 				[5118] = true, -- cheetah
 				[13159] = true, -- wild
-				[82661] = true, -- fox	
+			--	[82661] = true, -- fox	
 			},
 			["combat"] = true,
 			["instance"] = true,

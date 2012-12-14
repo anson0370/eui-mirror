@@ -50,6 +50,7 @@ end
 
 function R:CanSpellBeUsed(id)
 	local name = GetSpellInfo(id);
+	if not name then return false end
 	local start, duration, enabled = GetSpellCooldown(name)
 	if enabled == 0 or start == nil or duration == nil then 
 		return false
