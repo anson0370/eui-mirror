@@ -60,7 +60,7 @@ local raid_spells = {
 	[62618] = 180,  -- 真言术: 障
 	[51052] = 120,  -- 反魔法领域
 	[70940] = 180,  -- 神圣守卫(FQ)
-	[31821] = 120,  -- 光环掌握(NQ)
+	[31821] = 180,  -- 虔诚光环(NQ)
 	[64843] = 180,  -- 神圣赞美诗 *
 	[64901] = 360,	-- 希望圣歌
 	[740]   = 180,  -- 宁静(ND) *
@@ -70,6 +70,9 @@ local raid_spells = {
 	[6940] = 120, --QS 牺牲之手
 	[115213] = 180, --MONK 慈悲庇护
 	[108280] = 180, --SM治疗之潮TT
+	[114207] = 180, --颅骨战旗ZS
+	[114203] = 180, --挫志战旗
+	[114192] = 180, --挑战战旗
 }
 
 local filter = COMBATLOG_OBJECT_AFFILIATION_RAID + COMBATLOG_OBJECT_AFFILIATION_PARTY + COMBATLOG_OBJECT_AFFILIATION_MINE

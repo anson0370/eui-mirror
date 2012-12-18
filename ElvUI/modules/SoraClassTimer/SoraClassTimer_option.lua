@@ -139,7 +139,7 @@ E.Options.args.SoraClassTimer =  {
 						['NONE'] = L['None'],
 						['OUTLINE'] = 'OUTLINE',
 					--	['MONOCHROME'] = 'MONOCHROME',
-						['MONOCHROMEOUTLINE'] = 'MONOCROMEOUTLINE',
+					--	['MONOCHROMEOUTLINE'] = 'MONOCROMEOUTLINE',
 						['THICKOUTLINE'] = 'THICKOUTLINE',
 					},
 				},	

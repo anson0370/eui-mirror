@@ -1,7 +1,7 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
 	<Script file="GuildRosterSelectedFix.lua"/>
 	<Script file="InspectFix.lua"/>
-	<!--Script file="achievementpoint.lua"/-->
+	<Script file="ProfessionsDatabase.lua"/>
 	<Script file='drag.lua'/>
 	<Script file='Durability.lua'/>
 	<Script file="tradetabs.lua"/>

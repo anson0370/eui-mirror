@@ -423,7 +423,7 @@ function UF:PostCastStart(unit, name, rank, castid)
 		end
 	else
 		self:SetStatusBarColor(unpack(ElvUF.colors.castColor))
-		if db.castbar.InterruptSound and CanInterrupt() then PlaySoundFile(LSM:Fetch("sound", "Kick Cast")) end;
+		if db.castbar.InterruptSound and CanInterrupt() then PlaySoundFile(LSM:Fetch("sound", "Kick Cast"), "Master") end;
 	end
 end
 
@@ -941,7 +941,7 @@ function UF:AuraFilter(unit, icon, name, rank, texture, count, dtype, duration, 
 
 	local returnValue = true;
 	local returnValueChanged = false;
-	if caster == 'player' or caster == 'vehicle' then isPlayer = true end
+	if caster == 'player' or caster == 'vehicle' or caster == 'pet' then isPlayer = true end
 	if UnitIsFriend('player', unit) then isFriend = true end
 	
 	icon.isPlayer = isPlayer
@@ -1273,7 +1273,7 @@ function UF:AuraBarFilter(unit, name, rank, icon, count, debuffType, duration, e
 		return false;
 	end
 	
-	if unitCaster == 'player' or unitCaster == 'vehicle' then isPlayer = true end
+	if unitCaster == 'player' or unitCaster == 'vehicle' or unitCaster == 'pet' then isPlayer = true end
 	if UnitIsFriend('player', unit) then isFriend = true end
 	if isFriend then
 		auraType = db.friendlyAuraType

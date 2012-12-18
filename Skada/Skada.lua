@@ -570,15 +570,15 @@ function Skada:Command(param)
 		local max = tonumber(w3 or 10)
 
 		-- Sanity checks.
-		if chan and (chan == "say" or chan == "guild" or chan == "raid" or chan == "party" or chan == "officer") and (report_mode_name and find_mode(report_mode_name)) then
+		if chan and (chan == "instance_chat" or chan == "say" or chan == "guild" or chan == "raid" or chan == "party" or chan == "officer") and (report_mode_name and find_mode(report_mode_name)) then
 			self:Report(chan, "preset", report_mode_name, "current", max)
 		else
 			self:Print("Usage:")
-			self:Print(("%-20s"):format("/skada report [raid|guild|party|officer|say] [mode] [max lines]"))
+			self:Print(("%-20s"):format("/skada report [instance_chat][raid|guild|party|officer|say] [mode] [max lines]"))
 		end
 	else
 		self:Print("Usage:")
-		self:Print(("%-20s"):format("/skada report [raid|guild|party|officer|say] [mode] [max lines]"))
+		self:Print(("%-20s"):format("/skada report [instance_chat][raid|guild|party|officer|say] [mode] [max lines]"))
 		self:Print(("%-20s"):format("/skada reset"))
 		self:Print(("%-20s"):format("/skada toggle"))
 		self:Print(("%-20s"):format("/skada newsegment"))

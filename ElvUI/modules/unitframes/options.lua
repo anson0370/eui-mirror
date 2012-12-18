@@ -78,8 +78,8 @@ function UF:CreateCustomTextGroup(unit, objectName)
 				values = {
 					['NONE'] = L['None'],
 					['OUTLINE'] = 'OUTLINE',
-					['MONOCHROME'] = 'MONOCHROME',
-					['MONOCHROMEOUTLINE'] = 'MONOCROMEOUTLINE',
+				--	['MONOCHROME'] = 'MONOCHROME',
+				--	['MONOCHROMEOUTLINE'] = 'MONOCROMEOUTLINE',
 					['THICKOUTLINE'] = 'THICKOUTLINE',
 				},	
 			},
@@ -871,8 +871,8 @@ E.Options.args.unitframe = {
 							values = {
 								['NONE'] = L['None'],
 								['OUTLINE'] = 'OUTLINE',
-								['MONOCHROME'] = 'MONOCHROME',
-								['MONOCHROMEOUTLINE'] = 'MONOCROMEOUTLINE',
+							--	['MONOCHROME'] = 'MONOCHROME',
+							--	['MONOCHROMEOUTLINE'] = 'MONOCROMEOUTLINE',
 								['THICKOUTLINE'] = 'THICKOUTLINE',
 							},
 							set = function(info, value) E.db.unitframe[ info[#info] ] = value; UF:Update_FontStrings() end,

@@ -74,8 +74,8 @@ E.Options.args.auras = {
 					values = {
 						['NONE'] = L['None'],
 						['OUTLINE'] = 'OUTLINE',
-						['MONOCHROME'] = 'MONOCHROME',
-						['MONOCHROMEOUTLINE'] = 'MONOCROMEOUTLINE',
+					--	['MONOCHROME'] = 'MONOCHROME',
+					--	['MONOCHROMEOUTLINE'] = 'MONOCROMEOUTLINE',
 						['THICKOUTLINE'] = 'THICKOUTLINE',
 					},
 				},					
@@ -140,8 +140,8 @@ E.Options.args.auras = {
 					values = {
 						['NONE'] = L['None'],
 						['OUTLINE'] = 'OUTLINE',
-						['MONOCHROME'] = 'MONOCHROME',
-						['MONOCHROMEOUTLINE'] = 'MONOCROMEOUTLINE',
+					--	['MONOCHROME'] = 'MONOCHROME',
+					--	['MONOCHROMEOUTLINE'] = 'MONOCROMEOUTLINE',
 						['THICKOUTLINE'] = 'THICKOUTLINE',
 					},
 				},					

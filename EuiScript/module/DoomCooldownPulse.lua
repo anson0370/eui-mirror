@@ -164,7 +164,7 @@ local function OnUpdate(_,update)
                     DCPT:SetVertexColor(unpack(E.db.euiscript.dcp_saved.petOverlay))
                 end
 
-                PlaySoundFile("Interface\\AddOns\\Doom_CooldownPulse\\lubdub.wav")
+            --  PlaySoundFile("Interface\\AddOns\\Doom_CooldownPulse\\lubdub.wav")
             end
             local alpha = maxAlpha
             if (runtimer < fadeInTime) then
@@ -190,6 +190,7 @@ end
 function DCP:ADDON_LOADED(addon)
     RefreshLocals()
     self:SetPoint("CENTER",UIParent,"BOTTOMLEFT",E.db.euiscript.dcp_saved.x,E.db.euiscript.dcp_saved.y)
+	self:UnregisterEvent("ADDON_LOADED")
 end
 DCP:RegisterEvent("ADDON_LOADED")
 

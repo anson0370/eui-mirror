@@ -1,4 +1,4 @@
-ReforgeLiteItemLevelTable = {
+local spTable = {
   [458] = 4914,
   [463] = 5152,
   [466] = 5293,
@@ -20,19 +20,56 @@ ReforgeLiteItemLevelTable = {
   [497] = 7071,
   [498] = 7140,
   [500] = 7272,
+  [501] = 7337,
   [502] = 7408,
   [503] = 7478,
   [504] = 7548,
+  [505] = 7619,
   [506] = 7688,
   [507] = 7761,
+  [508] = 7836,
   [509] = 7907,
   [510] = 7980,
-  [511] = 8055,
+  [511] = 8054,
+  [512] = 8132,
   [513] = 8206,
+  [514] = 8286,
+  [515] = 8364,
   [516] = 8441,
   [517] = 8518,
+  [518] = 8603,
+  [519] = 8680,
   [520] = 8761,
+  [521] = 8841,
   [524] = 9093,
+  [525] = 9179,
+  [528] = 9439,
+  [532] = 9797,
+}
+local upTable = {
+  [1]   =  8, -- 1/1
+  [373] =  4, -- 1/2
+  [374] =  8, -- 2/2
+  [375] =  4, -- 1/3
+  [376] =  4, -- 2/3
+  [377] =  4, -- 3/3
+  [379] =  4, -- 1/2
+  [380] =  4, -- 2/2
+  [445] =  0, -- 0/2
+  [446] =  4, -- 1/2
+  [447] =  8, -- 2/2
+  [451] =  0, -- 0/1
+  [452] =  8, -- 1/1
+  [453] =  0, -- 0/2
+  [454] =  4, -- 1/2
+  [455] =  8, -- 2/2
+  [456] =  0, -- 0/1
+  [457] =  8, -- 1/1
+  [458] =  0, -- 0/4
+  [459] =  4, -- 1/4
+  [460] =  8, -- 2/4
+  [461] = 12, -- 3/4
+  [462] = 16, -- 4/4
 }
 function GetItemStatsUp(link, table)
   local result = GetItemStats(link, table)
@@ -42,17 +79,12 @@ function GetItemStatsUp(link, table)
   local id = tonumber (link:match ("item:%d+:%d+:%d+:%d+:%d+:%d+:%-?%d+:%-?%d+:%d+:%d+:(%d+)"))
   local _, _, _, iLvl = GetItemInfo(link)
   iLvl = iLvl or 0
-  if iLvl >= 458 then
-    local iLvl2 = iLvl
-    if id == 452 or id == 447 then
-      iLvl2 = iLvl2 + 8
-    elseif id == 446 then
-      iLvl2 = iLvl2 + 4
-    end
-    if iLvl2 > iLvl and ReforgeLiteItemLevelTable[iLvl] and ReforgeLiteItemLevelTable[iLvl2] then
+  if iLvl >= 458 and upTable[id] then
+    local iLvl2 = iLvl + upTable[id]
+    if iLvl2 > iLvl and spTable[iLvl] and spTable[iLvl2] then
       for k, v in pairs(result) do
         if tonumber(v) then
-          result[k] = math.floor(tonumber(v) * ReforgeLiteItemLevelTable[iLvl2] / ReforgeLiteItemLevelTable[iLvl] + 0.5)
+          result[k] = math.floor(tonumber(v) * spTable[iLvl2] / spTable[iLvl] + 0.5)
         end
       end
     end

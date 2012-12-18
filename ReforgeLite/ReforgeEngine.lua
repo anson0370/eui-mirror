@@ -379,7 +379,7 @@ function ReforgeLite:InitReforgeClassic ()
     end
   end
 
-  data.cheat = math.ceil(statsSum / 800)
+  data.cheat = math.ceil(statsSum / 1000)
   if data.cheat < 1 then
     data.cheat = 1
   end

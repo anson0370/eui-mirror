@@ -53,8 +53,14 @@ local function OnEvent(self, event, ...)
 	ElvDB['gold'][E.myrealm][E.myname] = NewMoney
 end
 
-local function Click()
-	ToggleAllBags()
+local function Click(self, btn)
+	if btn == "RightButton" and IsShiftKeyDown() then
+		ElvDB.gold = nil;
+		OnEvent(self)
+		GameTooltip:Hide();
+	else
+		ToggleAllBags()
+	end
 end
 
 local function OnEnter(self)
@@ -93,6 +99,9 @@ local function OnEnter(self)
 		if name and count then GameTooltip:AddDoubleLine(name, count, 1, 1, 1) end
 	end
 
+	GameTooltip:AddLine' '
+	GameTooltip:AddLine("|cffaaaaaa"..L["Reset Data: Hold Shift + Right Click"].."|r")
+	
 	GameTooltip:Show()
 end
 

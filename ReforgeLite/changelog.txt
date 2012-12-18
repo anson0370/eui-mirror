@@ -1,3 +1,10 @@
+** v1.21
+
+- Fixed 25-man item upgrades (Asian version)
+- Fixed expertise for Dwarf hunters
+- Slightly reduced the default calculation speed; slider isn't back yet
+- Fixed a bug that was preventing the addon from loading on certain characters
+
 ** v1.20
 
 - Updated to work with item upgrades

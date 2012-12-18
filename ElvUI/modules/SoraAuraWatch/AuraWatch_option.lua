@@ -271,7 +271,7 @@ E.Options.args.AuraWatch = {
 						['NONE'] = L['None'],
 						['OUTLINE'] = 'OUTLINE',
 					--	['MONOCHROME'] = 'MONOCHROME',
-						['MONOCHROMEOUTLINE'] = 'MONOCROMEOUTLINE',
+					--	['MONOCHROMEOUTLINE'] = 'MONOCROMEOUTLINE',
 						['THICKOUTLINE'] = 'THICKOUTLINE',
 					},
 				},	

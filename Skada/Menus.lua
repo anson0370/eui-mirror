@@ -266,6 +266,11 @@ function Skada:OpenMenu(window)
 	            info.checked = (Skada.db.profile.report.channel == "Raid")
 	            info.func = function() Skada.db.profile.report.channel = "Raid"; Skada.db.profile.report.chantype = "preset" end
 	            UIDropDownMenu_AddButton(info, level)
+				
+				info.text = L["instance_chat"]
+	            info.checked = (Skada.db.profile.report.channel == "instance_chat")
+	            info.func = function() Skada.db.profile.report.channel = "instance_chat"; Skada.db.profile.report.chantype = "preset" end
+	            UIDropDownMenu_AddButton(info, level)
 
 	            info.text = L["Party"]
 	            info.checked = (Skada.db.profile.report.channel == "Party")
@@ -456,6 +461,7 @@ function Skada:CreateReportWindow(window)
 
 	local channellist = {
 		whisper 	= { L["Whisper"], "whisper"},
+		instance_chat = { L["instance_chat"], "preset"},
 		target		= { "Whisper Target", "whisper"},
 		say			= { L["Say"], "preset"},
 		raid 		= { L["Raid"], "preset"},

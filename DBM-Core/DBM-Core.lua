@@ -90,7 +90,7 @@ imsg.text:SetJustifyH("CENTER")
 --  Globals/Default Options  --
 -------------------------------
 DBM = {
-	Revision = tonumber(("$Revision: 8250 $"):sub(12, -3)),
+	Revision = tonumber(("$Revision: 8275 $"):sub(12, -3)),
 	DisplayVersion = "5.1 語音增強版", -- the string that is shown as version
 	ReleaseRevision = 8187 -- the revision of the latest stable version that is available
 }
@@ -1098,6 +1098,7 @@ end
 do
 	local ignore, cancel
 	StaticPopupDialogs["DBM_CONFIRM_IGNORE"] = {
+		preferredIndex = STATICPOPUP_NUMDIALOGS,
 		text = DBM_PIZZA_CONFIRM_IGNORE,
 		button1 = YES,
 		button2 = NO,
@@ -1106,8 +1107,7 @@ do
 			DBM.Bars:CancelBar(cancel)
 		end,
 		timeout = 0,
-		hideOnEscape = 1,
-		preferredIndex = 3,
+		hideOnEscape = 1
 	}
 
 	DEFAULT_CHAT_FRAME:HookScript("OnHyperlinkClick", function(self, link, string, button, ...)
@@ -1497,6 +1497,7 @@ end
 do
 	local function showOldVerWarning()
 		StaticPopupDialogs["DBM_OLD_VERSION"] = {
+			preferredIndex = STATICPOPUP_NUMDIALOGS,
 			text = DBM_CORE_ERROR_DBMV3_LOADED,
 			button1 = DBM_CORE_OK,
 			OnAccept = function()
@@ -1505,8 +1506,7 @@ do
 			end,
 			timeout = 0,
 			exclusive = 1,
-			whileDead = 1,
-			preferredIndex = 3,
+			whileDead = 1
 		}
 		StaticPopup_Show("DBM_OLD_VERSION")
 	end
@@ -1966,6 +1966,7 @@ do
 		local accessList
 		
 		StaticPopupDialogs["DBM_INSTANCE_ID_PERMISSION"] = {
+			preferredIndex = STATICPOPUP_NUMDIALOGS,
 			text = DBM_REQ_INSTANCE_ID_PERMISSION,
 			button1 = YES,
 			button2 = NO,
@@ -1981,8 +1982,7 @@ do
 			noCancelOnReuse = 1,
 			multiple = 1,
 			showAlert = 1,
-			whileDead = 1,
-			preferredIndex = 3,
+			whileDead = 1
 		}
 		
 		syncHandlers["IR"] = function(sender)
@@ -3049,7 +3049,7 @@ do
 		-- ignore oQueue messages
 		if msg and msg:sub(1, 3) == "OQ," then
 			return
-		end	
+		end
 		if msg == "status" and #inCombat > 0 and DBM.Options.StatusEnabled then
 			if not difficultyText then -- prevent error when timer recovery function worked and etc (StartCombat not called)
 				difficultyText = select(2, DBM:GetCurrentInstanceDifficulty())

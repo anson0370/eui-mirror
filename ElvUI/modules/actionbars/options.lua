@@ -593,8 +593,8 @@ E.Options.args.actionbar = {
 					values = {
 						['NONE'] = L['None'],
 						['OUTLINE'] = 'OUTLINE',
-						['MONOCHROME'] = 'MONOCHROME',
-						['MONOCHROMEOUTLINE'] = 'MONOCROMEOUTLINE',
+					--	['MONOCHROME'] = 'MONOCHROME',
+					--	['MONOCHROMEOUTLINE'] = 'MONOCROMEOUTLINE',
 						['THICKOUTLINE'] = 'THICKOUTLINE',
 					},
 				},	

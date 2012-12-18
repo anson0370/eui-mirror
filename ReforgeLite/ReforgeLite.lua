@@ -1,4 +1,4 @@
--- ReforgeLite v1.20 by d07.RiV (Iroared)
+-- ReforgeLite v1.21 by d07.RiV (Iroared)
 -- All rights reserved
 
 local function DeepCopy (t, cache)
@@ -164,8 +164,12 @@ function ReforgeLite:UpgradeDB ()
   end
   if pdb.prio then
     for i = 1, #pdb.prio do
-      pdb.prio[i].preset = pdb.prio[i].preset or 1
-      pdb.prio[i].value = pdb.prio[i].value or 0
+      if pdb.prio[i] then
+        pdb.prio[i].preset = pdb.prio[i].preset or 1
+        pdb.prio[i].value = pdb.prio[i].value or 0
+      else
+        pdb.prio[i] = {stat = 0, capped = false, preset = 1, value = 0}
+      end
     end
   end
 end

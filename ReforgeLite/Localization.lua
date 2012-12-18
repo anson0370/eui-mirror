@@ -800,7 +800,7 @@ elseif gameLocale == "zhCN" then
   L["MasteryLong"] = "精通等级"
   L["Melee DW hit cap"] = "双持近战命中上限"
   L["Melee hit cap"] = "近战命中上限"
---   L["Move down"] = ""
+  L["Move down"] = "下移"
   L["Move up"] = "上移"
   L["None"] = "无"
   L["No reforge"] = "未能重铸"
@@ -941,12 +941,12 @@ elseif gameLocale == "zhTW" then
   L["Active window color"] = "活動視窗的顏色"
   L["Add cap"] = "增加上限"
   L["Add stat"] = "增加屬性"
-  L["Advanced mode"] = "指定的比重" -- Needs review
+  L["Advanced mode"] = "進階模式"
   L["All Stats"] = [=[所有屬性
 +5%所有屬性增益]=]
   L["At least"] = "至少(可超過)"
   L["At most"] = "最多(低於上限)"
-  L["Avoidance"] = "抗性" -- Needs review
+  L["Avoidance"] = "閃招"
   L["Bear"] = "熊"
   L["Best result"] = "最好的結果"
   L["Block chance"] = "格擋機率"
@@ -956,7 +956,7 @@ elseif gameLocale == "zhTW" then
   L["Clear"] = "清除"
   L["Click an item to lock it"] = "點擊物品鎖定"
   L["Compute"] = "計算"
-  L["Control"] = "控制" -- Needs review
+  L["Control"] = "控制"
   L["Crit"] = "致命"
   L["Crit block"] = "致命格擋"
   L["CritLong"] = "致命"
@@ -985,8 +985,8 @@ elseif gameLocale == "zhTW" then
   L["MasteryLong"] = "精通"
   L["Melee DW hit cap"] = "近戰雙持命中上限"
   L["Melee hit cap"] = "近戰命中上限"
-  L["Move down"] = "往下移動" -- Needs review
-  L["Move up"] = "往上移動" -- Needs review
+  L["Move down"] = "往下移動"
+  L["Move up"] = "往上移動"
   L["None"] = "無"
   L["No reforge"] = "未重鑄"
   L["Only one cap allowed with spirit-to-hit conversion"] = "精神到命中的轉換只允許一個上限"
@@ -997,13 +997,13 @@ elseif gameLocale == "zhTW" then
   L["Parry chance"] = "招架機率"
   L["ParryLong"] = "招架"
   L["Pawn scales"] = "Pawn尺度"
-  L["Please press Compute button to update the reforge."] = "請點擊『計算』按鈕來更新重鑄數據" -- Needs review
+  L["Please press Compute button to update the reforge."] = "請點擊『計算』按鈕來更新重鑄數據"
   L["Presets"] = "預設"
   L["PvP (+0)"] = "PvP(+0)"
   L["Raids (+3)"] = "團隊(+3)"
   L["ReforgeLite failed to compute your optimal reforge. Try increasing the speed by moving the speed slider.\\nError message: %s"] = "ReforgeLite計算你的最理想重鑄失敗。藉由移動速度條來嘗試提高速度。\\n錯誤訊息：%s"
   L["Reforging window must be open"] = "重鑄視窗必須開啟"
-  L["Remove line"] = "移除上限" -- Needs review
+  L["Remove line"] = "移除邊線"
   L["Reset"] = "重置"
   L["Restore"] = "恢復"
   L["Result"] = "結果"
@@ -1026,7 +1026,7 @@ elseif gameLocale == "zhTW" then
   L["Tanking model"] = "坦克模式"
   L["Target level"] = "目標等級"
   L["Titan's Grip"] = "泰坦之握"
-  L["to"] = "到" -- Needs review
+  L["to"] = "到"
   L["Total"] = "總共"
   L["Weight after cap"] = "超過上限後比重"
 

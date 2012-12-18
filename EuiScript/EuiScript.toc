@@ -1,10 +1,10 @@
 ﻿## Interface: 50100
 ## Title: |cffC495DDEui|r Script
-## Title-zhCN: |cffC495DDEUI|r附加模块
-## Title-zhTW: |cffC495DDEUI|r附加模塊
+## Title-zhCN: |cffC495DDEUI|r增强功能
+## Title-zhTW: |cffC495DDEUI|r增強功能
 ## Author: eui.cc
 ## X-Category: ElvUI
-## Version: 20121213A
+## Version: 20121217A
 ## RequiredDeps: ElvUI
 
 init.lua

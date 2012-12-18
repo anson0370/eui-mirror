@@ -878,6 +878,7 @@ end
 
 --Datatext
 do
+	L["Reset Data: Hold Shift + Right Click"] = '重設數據: 按Shift + 右鍵點擊';
 	L["World Boss(s)"] = "世界首領:";
 	L['Sha of Anger'] = "怒之煞";
 	L['Galleon'] = '炮艦';
@@ -1806,7 +1807,7 @@ do
 	L["Q22"] = "其他單體插件與EUI的相容性問題"
 		L["A22"] = "原則上EUI相容所有的單體插件,但注意如果單體插件提供的功能是EUI已經有的功能,則可能造成衝突.如右上角的BUFF顯示插件."
 	L["Q23"] = "常用設置命令有哪些"
-		L["A23"] = "/ec 打開設置介面\n /luaerror 開關顯示插件錯誤 \n /egrid 顯示網格線方便對齊\n /moveui 解鎖框體移動\n /resetui 重置EUI插件\n /resetgold 重設金幣統計\n /frammode 採集模式小地圖\n /kb 設置動作條快捷鍵\n /cleanguild 清理公會會員\n /skada toggle 開關Skada窗口"
+		L["A23"] = "/ec 打開設置介面\n /luaerror 開關顯示插件錯誤 \n /egrid 顯示網格線方便對齊\n /moveui 解鎖框體移動\n /resetui 重置EUI插件\n /frammode 採集模式小地圖\n /kb 設置動作條快捷鍵\n /cleanguild 清理公會會員\n /skada toggle 開關Skada窗口"
 end			
 
 --Tukui_ElvUI_Skins

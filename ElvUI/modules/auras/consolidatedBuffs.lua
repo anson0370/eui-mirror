@@ -88,7 +88,7 @@ function A:CheckFilterForActiveBuff(filter)
 			spellName, _, texture = GetSpellInfo(spell)
 			
 			assert(spellName, spell..': ID is not correct.')
-			
+					
 			if UnitAura("player", spellName) then
 				return spellName, texture
 			end
@@ -171,11 +171,17 @@ function A:UpdateReminder(event, unit)
 		frame['spell'..i].t:SetTexture(texture)
 		
 		if hasBuff then
-			local spellName, duration, expirationTime, _
+			local spellName, duration, expirationTime, _, spellId
 			for i=1, 32 do
-				spellName, _, _, _, _, duration, expirationTime = UnitBuff('player', i)
+				spellName, _, _, _, _, duration, expirationTime, _, _, _, spellId = UnitBuff('player', i)
 				if spellName == hasBuff then
-					break;
+					if hasBuff == GetSpellInfo(30809) then
+						if spellId == 30809 then
+							break;
+						end
+					else
+						break;
+					end
 				end
 			end
 			
