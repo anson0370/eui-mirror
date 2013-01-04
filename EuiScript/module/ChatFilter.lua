@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------
 -- Title: ChatFilter
--- Version: v5.1.1
+-- Version: v5.1.2 beta1
 -- Author: aliluya555
 -- Config
 local E, _, DF = unpack(ElvUI); --Engine
@@ -288,9 +288,7 @@ end)
 
 local function ChatFilter_Rubbish(self, event, msg, player, _, _, _, flag, _, _, _, _, lineId, guid)
 	if (lineId ~= prevLineId) then
-		local RepeatInterval, RepeatAlike = 10, 95
 		if (event == "CHAT_MSG_CHANNEL") then
-			RepeatInterval, RepeatAlike = Config.RepeatInterval, Config.RepeatAlike
 			if (Config.BlockInstance and select(2, IsInInstance()) ~= "none") or (Config.BlockCombat and InCombatLockdown()) or (Config.BlockBossCombat and UnitExists("boss1")) then
 				local id, channel
 				for i = 1, NUM_CHAT_WINDOWS do
@@ -318,11 +316,6 @@ local function ChatFilter_Rubbish(self, event, msg, player, _, _, _, flag, _, _,
 			if (guid and tonumber(guid) and tonumber(guid:sub(-12, -9), 16) >0) then return end
 			if (Config.FilterRaidAlert and strfind(msg, "%*%*(.+)%*%*")) then return true end
 			if (Config.FilterQuestReport and strfind(msg, L["QuestReport"])) then return true end
-			if (Config.FilterRepeat or Config.FilterMultiLine) then
-				for i = 1, getn(reportmsg) do
-					if strfind(msg, reportmsg[i]) then return end
-				end
-			end
 		end
 		if (not Config.ScanOurself and UnitIsUnit(player,"player")) then return end
 		if (not Config.ScanFriend and not CanComplainChat(lineId)) then return end
@@ -370,6 +363,10 @@ local function ChatFilter_Rubbish(self, event, msg, player, _, _, _, flag, _, _,
 		local Msg_Data = {Name = player, Msg = msg, Time = GetTime()}
 		local Player_Data = {Name = player, Time = GetTime()}
 		if (Config.FilterRepeat or Config.FilterMultiLine) then
+			local AllowLines, RepeatInterval, RepeatAlike = 10, 10, 95
+			if (event == "CHAT_MSG_CHANNEL" or "CHAT_MSG_SAY" or "CHAT_MSG_YELL") then
+				RepeatInterval, RepeatAlike, AllowLines = Config.RepeatInterval, Config.RepeatAlike, Config.AllowLines
+			end
 			local lines = 1
 			for i = getn(CacheTable), 1, -1 do
 				local cache = CacheTable[i]
@@ -381,7 +378,12 @@ local function ChatFilter_Rubbish(self, event, msg, player, _, _, _, flag, _, _,
 						if (interval < 0.400) then
 							lines = lines + 1
 						end
-						if (lines >= Config.AllowLines) then
+						if (lines >= AllowLines) then
+							if (event ~= "CHAT_MSG_CHANNEL") then
+								for i = 1, getn(reportmsg) do
+									if strfind(orgmsg, reportmsg[i]) then return end
+								end
+							end
 							return true
 						end
 					end
@@ -432,9 +434,11 @@ local function ChatFilter_Rubbish(self, event, msg, player, _, _, _, flag, _, _,
 					end
 				end
 			end
-			if (Config.ScanFriend and not CanComplainChat(lineId)) then matchs = matchs - 2 end
-			if (Config.ScanTeam and (UnitInRaid(player) or UnitInParty(player))) then matchs = matchs - 1 end
-			if (Config.ScanGuild and UnitIsInMyGuild(player)) then matchs = matchs - 1 end
+			if (Config.AllowMatchs < 3) then
+				if (not CanComplainChat(lineId)) then matchs = matchs - 2 end
+				if (UnitInRaid(player) or UnitInParty(player) or UnitIsInMyGuild(player)) then matchs = matchs - 1 end
+			end
+			
 			if (Config.AllowMatchs > 1) then
 				if (strlen(msg) > 120) then matchs = matchs + 1 end
 				if (event == "CHAT_MSG_WHISPER" and UnitLevel(player) == 0) then matchs = matchs + 1 end
@@ -523,7 +527,7 @@ ChatFrame_AddMessageEventFilter("CHAT_MSG_SAY", ChatFilter_Rubbish)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_YELL", ChatFilter_Rubbish)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER", ChatFilter_Rubbish)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_BN_WHISPER", ChatFilter_Rubbish)
-ChatFrame_AddMessageEventFilter("CHAT_MSG_EMOTE", ChatFilter_Rubbish)
+ChatFrame_AddMessageEventFilter("CHAT_MSG_TEXT_EMOTE", ChatFilter_Rubbish)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_DND", ChatFilter_Rubbish)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_AFK", ChatFilter_Rubbish)
 ChatFrame_AddMessageEventFilter("CHAT_MSG_LOOT", ChatFilter_Created)

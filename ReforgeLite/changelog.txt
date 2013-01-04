@@ -1,3 +1,11 @@
+** v1.23
+
+- Fixed a typo that caused an error
+
+** v1.22
+
+- Fixed a bug with expertise for casters
+
 ** v1.21
 
 - Fixed 25-man item upgrades (Asian version)

@@ -2,6 +2,7 @@ local E, L, DF = unpack(ElvUI); --Engine
 if E.db["euiscript"].drag ~= true then return end
 
 local addon = CreateFrame("Frame")
+local gmatch = string.gmatch
 
 -- Used to detect 4.0 and 5.0 clients
 local cata = select(4, GetBuildInfo()) >= 40000
@@ -173,7 +174,7 @@ function addon:HookFrame(name, moveParent)
   -- name may contain dots for children, e.g. ReforgingFrame.InvisibleButton
   local frame = _G
   local s
-  for s in string.gmatch(name, "%w+") do
+  for s in gmatch(name, "%w+") do
     if frame then
       frame = frame[s]
     end

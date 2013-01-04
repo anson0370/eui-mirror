@@ -39,6 +39,9 @@ end
 
 local UnitAura = UnitAura
 local InCombatLockdown = InCombatLockdown
+local format = string.format
+local gsub = string.gsub
+local floor = math.floor
 
 local function ShortValue(v)
 	if v >= 1e6 then
@@ -62,7 +65,7 @@ local function OnUpdate(self, elapsed)
 		self:SetScript("OnUpdate", nil)
 	else
 		local remaining = self.expires - time
-		self.time:SetText(tostring(math.floor(remaining)))
+		self.time:SetText(tostring(floor(remaining)))
 	end
 end
 
@@ -97,7 +100,7 @@ local function warvalueChanged(self, event, unit)
 		if evalue then
 			bar.text:SetText(ShortValue(evalue))
 			bar.sb:SetMinMaxValues(0, etime)
-			bar.sb:SetValue(math.floor(eexpires - GetTime()))
+			bar.sb:SetValue(floor(eexpires - GetTime()))
 			bar.sb:SetAlpha(1)
 			bar:SetAlpha(1)
 		end
@@ -163,7 +166,7 @@ local function doubleValueChanged(self, event, unit)
 		if evalue then
 			bar.text:SetText(ShortValue(evalue))
 			bar.sb:SetMinMaxValues(0, etime)
-			bar.sb:SetValue(math.floor(eexpires - GetTime()))
+			bar.sb:SetValue(floor(eexpires - GetTime()))
 			bar.sb:SetAlpha(1)
 			bar:SetAlpha(1)
 		end

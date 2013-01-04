@@ -130,7 +130,7 @@ local function SkinIcon(self)
 	if not SkilletShowOptionsButton.text then
 		SkilletShowOptionsButton.text = SkilletShowOptionsButton:CreateFontString(nil, 'OVERLAY')
 	
-		SkilletShowOptionsButton.text:SetFont(AS.font, 12, 'OUTLINE')
+		SkilletShowOptionsButton.text:SetFont([[Interface\AddOns\ElvUI\media\fonts\PT_Sans_Narrow.ttf]], 12, 'OUTLINE')
 		SkilletShowOptionsButton.text:SetText(" ?")
 		SkilletShowOptionsButton.text:SetTextColor(1, 0, 0)	
 		SkilletShowOptionsButton.text:SetJustifyH('CENTER')

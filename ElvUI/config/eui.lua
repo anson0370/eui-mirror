@@ -193,8 +193,8 @@ P["general"].panelWidth = 360
 P["general"].transparent = false
 P["general"].classcolor = false
 P['general'].bottomPanel = false
-V["general"].autoscale = true
-V["general"].uiscale = 0.71
+P["general"].autoscale = true
+P["general"].uiscale = 0.71
 
 P["skins"] = {
 	fontSize = 12,
@@ -228,7 +228,7 @@ P["unitframe"].colors.nameclasscolor = false
 P["unitframe"].targetGlow = true
 P["unitframe"].unitframeType = 1
 P["unitframe"].transparent = false
-
+P["unitframe"].powertrans = true
 P['unitframe'].units.target.smartAuraDisplay = 'DISABLED'
 P['unitframe'].units.target.name.position = 'LEFT'
 P['unitframe'].units.target.power.position = 'BOTTOMRIGHT'
@@ -300,7 +300,8 @@ P["unitframe"].units.raid25.debuffs.anchorPoint = 'BOTTOMRIGHT'
 P["unitframe"].units.raid25.debuffs['growth-x'] = 'LEFT'
 P["unitframe"].units.raid25.debuffs.useFilter = 'RaidDebuffs'
 P["unitframe"].units.raid25.rdebuffs.enable = true
-P["unitframe"].units.raid25.rdebuffs.offsetY = 2
+P["unitframe"].units.raid25.rdebuffs.xOffset = 0
+P["unitframe"].units.raid25.rdebuffs.yOffset = 2
 P["unitframe"].units.raid25.roleIcon.position = 'BOTTOMLEFT'
 P["unitframe"].colors.nameclasscolor = true
 
@@ -399,6 +400,7 @@ G['chatfilter'] = {
 }
 	
 P["chatfilter"] = {
+	["chatfilterbylevel"] = 0, --过滤低等级玩家信息，默认为5
 	["ScanOurself"] = false, --Scan ourself. // 是否扫描自己的聊天信息
 	["ScanFriend"] = false, --Scan friends. // 是否扫描好友的聊天信息
 	["ScanTeam"] = false, --Scan raid/party members. // 是否扫描队友的聊天信息

@@ -89,7 +89,11 @@ chatmod:SetScript("OnEvent", function(self, event, ...)
 				local chat = format("ChatFrame%s",i)
 				_G[chat.."EditBoxLanguage"]:ClearAllPoints()
 				_G[chat.."EditBoxLanguage"]:SetPoint("LEFT", _G[chat.."EditBox"], "RIGHT", E:Scale(3), 0)
-				_G[chat.."EditBoxLanguage"].SetPoint = E.noop
+				hooksecurefunc(_G[chat.."EditBoxLanguage"], "SetPoint", function(self, point, attachTo, anchorPoint, xOffset, yOffset)
+					if point ~= 'LEFT' or attachTo ~= _G[chat.."EditBox"] or anchorPoint ~= 'RIGHT' or xOffset ~= E:Scale(3) or yOffset ~= 0 then
+						_G[chat.."EditBoxLanguage"]:SetPoint("LEFT", _G[chat.."EditBox"], "RIGHT", E:Scale(3), 0)
+					end
+				end)
 				_G[chat.."EditBoxLanguage"]:Size(_G[chat.."EditBox"]:GetHeight()-6)
 				_G[chat.."EditBoxLanguage"]:StripTextures()
 				_G[chat.."EditBoxLanguage"]:SetTemplate("Default", true)

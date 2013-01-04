@@ -1,5 +1,8 @@
 ﻿local E = unpack(ElvUI) -- Import Functions/Constants, Config, Locales
 if E.db.euiscript.autobuy ~= true or (UnitLevel('player') ~= MAX_PLAYER_LEVEL) then return end
+local find = string.find
+local min = math.min
+local max = math.max
 
 ----------------------------------------------------------------------------------------
 --	Auto buy reagents by (ShestakUI)
@@ -34,14 +37,14 @@ local function CheckReagents(CheckID, RequiredAmount)
 	for bag = 0, NUM_BAG_FRAMES do
 		for slot = 1, GetContainerNumSlots(bag) do
 			ItemLink = GetContainerItemLink(bag, slot)
-			if ItemLink and CheckID == tonumber(select(3, string.find(ItemLink, ItemIDPattern))) then
+			if ItemLink and CheckID == tonumber(select(3, find(ItemLink, ItemIDPattern))) then
 				stack = select(2, GetContainerItemInfo(bag, slot))
 				total = total + stack
 			end
 		end
 	end
 
-	return math.max(0, (RequiredAmount - total))
+	return max(0, (RequiredAmount - total))
 end
 
 local function BuyReagents(reagents)
@@ -51,7 +54,7 @@ local function BuyReagents(reagents)
 		ItemLink = GetMerchantItemLink(i)
 
 		if ItemLink then
-			ItemID = tonumber(select(3, string.find(ItemLink, ItemIDPattern)))
+			ItemID = tonumber(select(3, find(ItemLink, ItemIDPattern)))
 		end
 
 		if ItemID and reagents[ItemID] then
@@ -60,7 +63,7 @@ local function BuyReagents(reagents)
 
 			if quantity > 0 then
 				if stock ~= -1 then
-					quantity = math.min(quantity, stock)
+					quantity = min(quantity, stock)
 				end
 
 				subtotal = price * (quantity / stack)

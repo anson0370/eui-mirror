@@ -39,7 +39,7 @@ local timerTempestSlashCD				= mod:NewNextTimer(15.5, 125692)
 local timerOverwhelmingAssault			= mod:NewTargetTimer(45, 123474, nil, mod:IsTank())
 local timerOverwhelmingAssaultCD		= mod:NewCDTimer(20.5, 123474, nil, mod:IsTank() or mod:IsHealer())--Only ability with a variation in 2 pulls so far. He will use every 20.5 seconds unless he's casting something else, then it can be delayed as much as an extra 15-20 seconds. TODO: See if there is a way to detect when variation is going to occur and call update timer.
 local timerWindStepCD					= mod:NewCDTimer(25, 123175)
-local timerUnseenStrike					= mod:NewCastTimer(5, 123017)
+local timerUnseenStrike					= mod:NewCastTimer(4.8, 123017)
 local timerUnseenStrikeCD				= mod:NewNextCountTimer(61, 123017) -- this spell seems to have 2 cooldowns. some fight 55, some  61. 
 local timerIntensifyCD					= mod:NewNextTimer(60, 123471)
 local timerBladeTempest					= mod:NewBuffActiveTimer(9, 125310)
@@ -82,6 +82,7 @@ local function checkUnseenEmote()
 		warnUnseenStrike:Show()
 		specWarnUnseenStrike:Show()
 		unseencount = unseencount + 1
+		sndWOP:Cancel("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_wxdjzb.mp3")
 		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\gather.mp3") --快集合
 		timerUnseenStrike:Start(4.2)
 		timerUnseenStrikeCD:Start(61, unseencount + 1)
@@ -234,6 +235,7 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg, _, _, _, target)
 		specWarnUnseenStrike:Show(target)
 		timerUnseenStrike:Start()
 		timerUnseenStrikeCD:Start(61, unseencount + 1)
+		sndWOP:Cancel("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_wxdjzb.mp3")
 		if target == UnitName("player") then
 			yellUnseenStrike:Yell()
 			sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\targetyou.mp3") --目標是你

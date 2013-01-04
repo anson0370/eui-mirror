@@ -460,6 +460,7 @@ L["Disband Group"] = true;
 L['Display emotion icons in chat.'] = true;
 L["Don't scale the large world map to block out sides of the screen."] = true;
 L["ELVUI_DESC"] = "ElvUI is a complete User Interface replacement addon for World of Warcraft."
+L['EUI_DONATOR'] = "Donator EUI";
 L['Emotion Icons'] = true;
 L["Enable/Disable the loot frame."] = true;
 L["Enable/Disable the loot roll frame."] = true;
@@ -529,6 +530,10 @@ L["Experience Bar"] = true;
 L["Reputation Bar"] = true;
 
 --NamePlates
+L["Small Plates"] = true;
+L["Adjust nameplate size on smaller mobs to scale down. This will only adjust the health bar width not the actual nameplate hitbox you click on."] = true;
+L["Class Icons"] = true;
+L["Display a class icon on nameplates."] = true;
 L['Mistweaver'] = true;
 L['Background Multiplier'] = true;
 L['The backdrop of the nameplates color is scaled to match the color of the nameplate by this percentage. Set to zero to have no color in the nameplate backdrop.'] = true;
@@ -669,6 +674,9 @@ L["You have changed your UIScale, however you still have the AutoScale option en
 L["You must purchase a bank slot first!"] = true;
 
 --Tooltip
+L['Display the health text on the tooltip.'] = true;
+L['Health Height'] = true;
+L['Set the height of the tooltip healthbar.'] = true;
 L['Spell/Item IDs'] = true;
 L['Display the spell or item ID when mousing over a spell or item tooltip.'] = true;
 L['Item Count'] = true;
@@ -713,6 +721,9 @@ L['You can toggle the microbar by using your middle mouse button on the minimap 
 L['You can use the /resetui command to reset all of your movers. You can also use the command to reset a specific mover, /resetui <mover name>.\nExample: /resetui Player Frame'] = true;
 
 --UnitFrames
+L["Transparent Power"] = true;
+L['Show Aura From Other Players'] = true;
+L['Show When Not Active'] = true;
 L['Interrupting the voice prompts'] = true;
 L["Block Non-Personal Auras"] = true;
 L["Block Non-Whitelisted Auras"] = true;
@@ -1372,6 +1383,7 @@ end
 
 --ChatFilter
 do
+	L["Filter low-level players chat"] = true;
 	L["Filter the bullshit messages from RaidAlert"] = true;
 	L["Filter the drunk messages:'... has drunked ...'"] = true;
 	L["chatfilter"] = true;

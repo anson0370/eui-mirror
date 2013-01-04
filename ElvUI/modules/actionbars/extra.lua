@@ -27,6 +27,10 @@ function AB:SetupExtraButton()
 			_G["ExtraActionButton"..i]:SetCheckedTexture(tex)
 		end
 	end
+
+	if HasExtraActionBar() then
+		ExtraActionBarFrame:Show();
+	end
 	
 	E:CreateMover(holder, 'BossButton', L['Boss Button'], nil, nil, nil, 'ALL,ACTIONBARS');
 end

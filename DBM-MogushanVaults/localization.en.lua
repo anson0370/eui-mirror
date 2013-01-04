@@ -58,7 +58,10 @@ L:SetOptionLocalization({
 	specWarnDrawFlame 	= "Voice warning: $spell:116711",
 	specWarnArcaneVelocity 	= "Voice warning: $spell:116364",
 	specWarnEpicenter 	= "Voice warning: $spell:116018",
-	specWarnSiphoningShield = "Voice warning: $spell:117203"
+	specWarnSiphoningShield = "Voice warning: $spell:117203",
+	RangeFrame	= "Show range frame (6) during arcane phase",
+	SetIconOnWS	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(116784),
+	SetIconOnAR	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(116417)
 })
 
 L:SetMiscLocalization({
@@ -204,7 +207,8 @@ L:SetMiscLocalization({
 L= DBM:GetModLocalization(677)
 
 L:SetWarningLocalization({
-	specWarnBomb				= ">> Bomb(%d) <<"
+	specWarnBomb				= ">> Bomb(%d) <<",
+	specWarnKZ					= ">> Control(%d) <<",
 })
 
 L:SetOptionLocalization({

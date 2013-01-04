@@ -1,6 +1,6 @@
 InspectFix = CreateFrame("Button", "InspectFixHiddenFrame", UIParent)
 local addonName = "InspectFix"
-local revision = tonumber(("$Revision: 26 $"):match("%d+"))
+local revision = tonumber(("$Revision: 43 $"):match("%d+"))
 
 local BlizzardNotifyInspect = _G.NotifyInspect
 local InspectPaperDollFrame_SetLevel = nil
@@ -8,6 +8,11 @@ local InspectPaperDollFrame_OnShow = nil
 local InspectGuildFrame_Update = nil
 local loaded = false
 local debugging = false
+local allowDetarget = false   	-- allow window to remain open when target is not inspectable (experimental)
+local serverTimeout = 1		-- timeout for INSPECT_READY response to assume server dropped it 
+local match = string.match
+local gsub = string.gsub
+local find = string.find
 
 local function debug(msg)
   if debugging then
@@ -15,24 +20,28 @@ local function debug(msg)
   end
 end
 
-local lastunit
-local function unitchange(self)
-  local unit = self.unit
-  if loaded and unit and unit ~= lastunit then
-    lastunit = unit
-    BlizzardNotifyInspect(unit)
-    InspectFrame_UnitChanged(InspectFrame)
-  end
-end
+local lastUINIGUID, lastUINITime, lastUIIRTime
 
 local function inspectfilter(self, event, ...) 
   --myprint(event,...)
   if loaded then
-    -- ignore an inspect target disappearance or change to non-player - ie, keep the window open
-    if (event == "PLAYER_TARGET_CHANGED" or event == nil) and
-       self.unit == "target" and
-       (not UnitExists("target") or not UnitIsPlayer("target")) then
-      return false
+    local unit = InspectFrame.unit
+    local inspectable = unit and UnitExists(unit) and CanInspect(unit)
+    if not allowDetarget and not inspectable then -- disallow target dissappearance
+       return true
+    elseif event == nil and not inspectable then
+       return false
+    elseif event == "PLAYER_TARGET_CHANGED" then -- suppress close on change 
+       if inspectable and InspectFix.UserInspecting() then
+          InspectFrame_UnitChanged(InspectFrame);
+       end
+       return false
+    end
+    if inspectable and lastUINITime and not lastUIIRTime and 
+       InspectFix.UserInspecting() and 
+       (lastUINITime + serverTimeout) < GetTime() then
+       debug("Re-issuing dropped notify")
+       InspectFrame_UnitChanged(InspectFrame);
     end
   end
   return true
@@ -49,27 +58,44 @@ local function inspectonupdate(self)
     InspectFix:Update()
   end
 end
+local function talentonevent(self, event, ...)
+  if inspectfilter(self, event, ...) then
+    InspectTalentFrame_OnEvent(self, event, ...)
+    InspectFix:Update()
+  end
+end
 
 -- cache the inspect contents in case we lose our target (so GameTooltip:SetInventoryItem() no longer works)
 local scantt = CreateFrame("GameTooltip", "InspectFix_Tooltip", UIParent, "GameTooltipTemplate")
 scantt:SetOwner(UIParent, "ANCHOR_NONE");
 local inspect_item = {}
 local inspect_unit = nil
+local inspect_guid = nil
 local function pdfupdate(self)
   if loaded then
     local id = self:GetID()
-    local unit = InspectFrame.unit
+    local unit = InspectFrame and InspectFrame.unit
     if unit and id then
       local link = GetInventoryItemLink(unit, id)
+      local guid = UnitGUID(unit)
+      if guid and guid ~= inspect_guid then
+        inspect_guid = guid
+        wipe(inspect_item)
+      end
       inspect_unit = unit
-      inspect_item[id] = link
+      local oldlink = inspect_item[id]
+      if link then
+        inspect_item[id] = link
+      end
 
       scantt:SetOwner(UIParent, "ANCHOR_NONE");
       scantt:SetInventoryItem(unit, id)
       local _, scanlink = scantt:GetItem()
-      if scanlink and scanlink ~= link then
+      if scanlink then
         inspect_item[id] = scanlink
-        debug("Updating "..(link or "nil").." to "..scanlink)
+      end
+      if oldlink and inspect_item[id] ~= oldlink then
+        debug("Updating "..(inspect_item[id] or "nil").." to "..scanlink)
       end
       --if debugging then printlink(id.." "..(link or "nil")) end
     end
@@ -107,6 +133,17 @@ end
 
 local blockmsg = {}
 
+local function UserInspecting()
+  if InspectFrame and InspectFrame:IsVisible() then
+     return "Blizzard_InspectUI"
+  elseif Examiner and Examiner:IsVisible() then
+     return "Examiner"
+  else
+     return nil
+  end
+end
+InspectFix.UserInspecting = UserInspecting
+
 -- prevent NotifyInspect interference from other addons
 local function NIhook(unit)
   InspectFix:tryhook()
@@ -114,25 +151,27 @@ local function NIhook(unit)
     debug("Blocked a bogus NotifyInspect("..(unit or "nil")..")")
     return
   end
-  local ifvis = InspectFrame and InspectFrame:IsVisible()
-  local exvis = Examiner and Examiner:IsVisible()
-  if loaded and (ifvis or exvis) then
+  local ui = UserInspecting()
+  if loaded and ui then
+    local now = GetTime()
     local str = debugstack(2)
     --print(str)
-    local addon = string.match(str,'[%s%c]+([^:%s%c]*)\\[^\\:%s%c]+:')
-    addon = string.gsub(addon or "unknown",'I?n?t?e?r?f?a?c?e\\AddOns\\',"")
-    if not string.find(str,ifvis and "Blizzard_InspectUI" or "Examiner") then
+    local addon = match(str,'[%s%c]+([^:%s%c]*)\\[^\\:%s%c]+:')
+    addon = gsub(addon or "unknown",'I?n?t?e?r?f?a?c?e\\AddOns\\',"")
+    if not find(str,ui) then
       blockmsg[addon] = blockmsg[addon] or {}
       local count = (blockmsg[addon].count or 0) + 1
       blockmsg[addon].count = count
-      local now = GetTime()
       if not blockmsg[addon].lastwarn or (now - blockmsg[addon].lastwarn > 30) then -- throttle warnings
-    --    print("InspectFix blocked a conflicting inspect request from "..addon.." ("..count.." occurences)")
+ --       print("InspectFix blocked a conflicting inspect request from "..addon.." ("..count.." occurences)")
 	debug(str)
         blockmsg[addon].lastwarn = now
       end
       return
     end
+    lastUINIGUID = UnitGUID(unit)
+    lastUINITime = now
+    lastUIIRTime = nil
   end
   BlizzardNotifyInspect(unit)
 end
@@ -169,10 +208,6 @@ end
 local hookcnt = 0
 local hooked = {}
 function InspectFix:tryhook()
-  if false and not hooked[unitchange] and InspectFrame_UnitChanged then
-    hooksecurefunc("InspectFrame_UnitChanged", unitchange)
-    hooked[unitchange] = true
-  end
 
   if _G.NotifyInspect and _G.NotifyInspect ~= NIhook then
     if not hooked["notifyinspect"] then
@@ -181,7 +216,8 @@ function InspectFix:tryhook()
       hookcnt = hookcnt + 1
       hooked["notifyinspect"] = true
       debug("Hooked notifyinspect")
-    else
+    elseif not hooked["notifywarn"] then
+      hooked["notifywarn"] = true
       debug("NotifyInspect hooked by another addon")
     end
   end
@@ -205,6 +241,17 @@ function InspectFix:tryhook()
       debug("Hooked inspectonupdate")
     else
       debug("Re-Hooked inspectonupdate")
+    end
+  end
+
+  if _G.InspectTalentFrame_OnEvent and InspectTalentFrame:GetScript("OnEvent") ~= talentonevent then
+    InspectTalentFrame:SetScript("OnEvent", talentonevent)
+    if not hooked[talentonevent] then
+      hookcnt = hookcnt + 1
+      hooked[inspectonevent] = true
+      debug("Hooked talentonevent")
+    else
+      debug("Re-Hooked talentonevent")
     end
   end
 
@@ -253,18 +300,32 @@ function InspectFix:tryhook()
     debug("Hooked pdfupdate")
   end
 
-  if hookcnt == 7 then
+  if hookcnt == 8 then
     hookcnt = hookcnt + 1
 --    print("InspectFix hook activated.")
   end
 end
-function InspectFix_OnEvent(self, event)
+local function InspectFix_OnEvent(self, event, ...)
   if event == "ADDON_LOADED" then
     InspectFix:tryhook()
+  elseif event == "INSPECT_READY" and loaded and UserInspecting() then
+    local guid = select(1,...)
+    local unit = InspectFrame and InspectFrame.unit
+    local iguid = unit and UnitGUID(unit)
+    debug("INSPECT_READY: "..guid)
+    if guid and iguid and guid ~= iguid then
+--       print("InspectFix blocked a conflicting inspect reply")
+       BlizzardNotifyInspect(unit)
+    end
+    if guid == lastUINIGUID then
+      lastUIIRTime = GetTime()
+    end
+    InspectFix:Update()
   end
 end
 InspectFix:SetScript("OnEvent", InspectFix_OnEvent)
 InspectFix:RegisterEvent("ADDON_LOADED")
+InspectFix:RegisterEvent("INSPECT_READY")
 
 function InspectFix:Load()
   InspectFix:tryhook()
@@ -274,7 +335,7 @@ function InspectFix:Load()
   if not revstr then
   revstr = GetAddOnMetadata("InspectFix", "Version")
   end
-  if not revstr or string.find(revstr, "@") then
+  if not revstr or find(revstr, "@") then
     revstr = "r"..tostring(revision)
   end
 --  print("InspectFix "..revstr.." loaded.")

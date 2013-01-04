@@ -8,6 +8,7 @@ local Monomyth = CreateFrame("Frame")
 Monomyth:SetScript("OnEvent", function(self, event, ...) self[event](...) end)
 
 local atBank, atMail
+local sub = string.sub
 
 function Monomyth:Register(event, func)
 	self:RegisterEvent(event)
@@ -96,7 +97,7 @@ local darkmoonNPC = {
 
 Monomyth:Register("GOSSIP_CONFIRM", function(index)
 	local GUID = UnitGUID("target") or ""
-	local creatureID = tonumber(string.sub(GUID, -12, -9), 16)
+	local creatureID = tonumber(sub(GUID, -12, -9), 16)
 
 	if creatureID and darkmoonNPC[creatureID] then
 		SelectGossipOption(index, "", true)

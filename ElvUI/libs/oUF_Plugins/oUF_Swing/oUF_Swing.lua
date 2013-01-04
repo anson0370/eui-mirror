@@ -47,6 +47,8 @@ local MainhandID = GetInventoryItemID("player", 16)
 local OffhandID = GetInventoryItemID("player", 17)
 local RangedID = GetInventoryItemID("player", 18)
 
+local find = string.find
+
 local toc = select(4, GetBuildInfo())
 
 local SwingStopped = function(element)
@@ -287,7 +289,7 @@ function oUF_Swing_Melee(...)
 
 	if UnitGUID("player") ~= GUID then return end
 
-	if not string.find(subevent, "SWING") then return end
+	if not find(subevent, "SWING") then return end
 	
 	local bar = self.Swing
 
@@ -355,7 +357,7 @@ function oUF_Swing_ParryHaste(...)
 
 	if UnitGUID("player") ~= tarGUID then return end
 	if not meleeing then return end
-	if not string.find(subevent, "MISSED") then return end
+	if not find(subevent, "MISSED") then return end
 	if missType ~= "PARRY" then return end
 	
 	local bar = self.Swing

@@ -1,19 +1,6 @@
 local L = LibStub("AceLocale-3.0"):GetLocale("Skada", false)
 local AceGUI = LibStub("AceGUI-3.0")
 
-if not StaticPopupDialogs["ResetSkadaDialog"] then
-	StaticPopupDialogs["ResetSkadaDialog"] = {
-		preferredIndex = 4,
-		text = L["Do you want to reset Skada?"],
-		button1 = ACCEPT,
-		button2 = CANCEL,
-		timeout = 30,
-		whileDead = 0,
-		hideOnEscape = 1,
-		OnAccept = function() Skada:Reset() end,
-	}
-end
-
 -- Configuration menu.
 function Skada:OpenMenu(window)
 	if not self.skadamenu then
@@ -266,15 +253,15 @@ function Skada:OpenMenu(window)
 	            info.checked = (Skada.db.profile.report.channel == "Raid")
 	            info.func = function() Skada.db.profile.report.channel = "Raid"; Skada.db.profile.report.chantype = "preset" end
 	            UIDropDownMenu_AddButton(info, level)
-				
-				info.text = L["instance_chat"]
-	            info.checked = (Skada.db.profile.report.channel == "instance_chat")
-	            info.func = function() Skada.db.profile.report.channel = "instance_chat"; Skada.db.profile.report.chantype = "preset" end
-	            UIDropDownMenu_AddButton(info, level)
 
 	            info.text = L["Party"]
 	            info.checked = (Skada.db.profile.report.channel == "Party")
 	            info.func = function() Skada.db.profile.report.channel = "Party"; Skada.db.profile.report.chantype = "preset" end
+	            UIDropDownMenu_AddButton(info, level)
+
+	            info.text = L["Instance"]
+	            info.checked = (Skada.db.profile.report.channel == "INSTANCE_CHAT")
+	            info.func = function() Skada.db.profile.report.channel = "INSTANCE_CHAT"; Skada.db.profile.report.chantype = "preset" end
 	            UIDropDownMenu_AddButton(info, level)
 
 	            info.text = L["Guild"]
@@ -461,11 +448,11 @@ function Skada:CreateReportWindow(window)
 
 	local channellist = {
 		whisper 	= { L["Whisper"], "whisper"},
-		instance_chat = { L["instance_chat"], "preset"},
 		target		= { "Whisper Target", "whisper"},
 		say			= { L["Say"], "preset"},
 		raid 		= { L["Raid"], "preset"},
 		party 		= { L["Party"], "preset"},
+		instance_chat 		= { L["Instance"], "preset"},
 		guild 		= { L["Guild"], "preset"},
 		officer 	= { L["Officer"], "preset"},
 		self 		= { L["Self"], "self"},

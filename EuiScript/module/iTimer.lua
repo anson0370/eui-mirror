@@ -5,6 +5,8 @@ SetCVar('displaySpellActivationOverlays', 1)
 -- SpellOverlayTimer v1.15.2 by DarkStarX, modified by nj55top  ( iTimer v1.1 )
 -- modify by eui.cc at 2012/11/26
 local LSM = LibStub("LibSharedMedia-3.0")
+local find = string.find
+
 local SAO = {}
 local nextUpdate = 0.2
 local iconNum = 0
@@ -74,7 +76,7 @@ function SAO_ShowTimer(...)
 	end
 	if timeleft == false then return end
 
-	local showicon = not string.find(texturePath, "TEXTURES\\SPELLACTIVATIONOVERLAYS\\")
+	local showicon = not find(texturePath, "TEXTURES\\SPELLACTIVATIONOVERLAYS\\")
 	if not showicon and E.db.sao.useIcon then
 		overlay.texture:SetTexture(icon)
 		showicon = true

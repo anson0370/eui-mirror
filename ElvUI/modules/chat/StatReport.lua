@@ -23,7 +23,7 @@ if (GetLocale() == "zhCN") then
 	L.INFO_DURABILITY_TIP3 = "角色数据报告: "
 	L.INFO_DURABILITY_TIP4 = "天赋"
 	L.INFO_DURABILITY_TIP5 = "装备等级"
-	L.INFO_DURABILITY_TIP6 = "精通点数"
+	L.INFO_DURABILITY_TIP6 = "精通"
 	L.INFO_DURABILITY_TIP7 = "韧性"
 	L.INFO_DURABILITY_TIP = "点击发送用户状态报告"
 elseif (GetLocale() == "zhTW") then
@@ -45,7 +45,7 @@ elseif (GetLocale() == "zhTW") then
 	L.INFO_DURABILITY_TIP3 = "角色數據報告: "
 	L.INFO_DURABILITY_TIP4 = "天賦"
 	L.INFO_DURABILITY_TIP5 = "裝備等級"
-	L.INFO_DURABILITY_TIP6 = "精通點數"
+	L.INFO_DURABILITY_TIP6 = "精通"
 	L.INFO_DURABILITY_TIP7 = "韌性"
 	L.INFO_DURABILITY_TIP = "點擊發送用戶狀態報告"
 else
@@ -210,8 +210,9 @@ local function StatReport_UpdateMyData()
 	MyData.HP = UnitHealthMax("player");						--生命值
 	MyData.MP = UnitManaMax("player");							--法力值
 	MyData.TKEY, MyData.TDATA = StatReport_TalentData();		--天赋
-	MyData.ILVL = select(2, GetAverageItemLevel());				--平均装备等级
-	MyData.Mastery = format("%.2f%%", GetMasteryEffect());		--精通点数
+	MyData.ILVL = format('%d', select(2, GetAverageItemLevel()));--平均装备等级
+	MyData.Mastery = format("%.2f%%", GetMasteryEffect()); 		--精通点数
+
 	--基础属性
 	MyData.STR = UnitStat("player", 1);							--力量
 	MyData.AGI = UnitStat("player", 2);							--敏捷

@@ -1,5 +1,5 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
-	<Script file="GuildRosterSelectedFix.lua"/>
+	<!--Script file="GuildRosterSelectedFix.lua"/-->
 	<Script file="InspectFix.lua"/>
 	<Script file="ProfessionsDatabase.lua"/>
 	<Script file='drag.lua'/>
@@ -35,4 +35,5 @@
 	<Script file='RaidCheck.lua'/>
 	<Script file='ws.lua'/>
 	<Script file='iTimer.lua'/>
+	<Script file='mgChatFilter.lua'/>
 </Ui>

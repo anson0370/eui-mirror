@@ -2,6 +2,8 @@ local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, Priv
 local UF = E:GetModule('UnitFrames');
 local LSM = LibStub("LibSharedMedia-3.0");
 
+local format = string.format
+
 function UF:SpawnMenu()
 	local unit = E:StringTitle(self.unit)
 	if self.unit:find("targettarget") then return; end
@@ -128,7 +130,12 @@ function UF:Construct_HealthBar(frame, bg, text, textPos, orientation)
 end
 
 function UF:Construct_PowerBar(frame, bg, text, textPos, lowtext)
-	local power = CreateFrame('StatusBar', nil, frame)
+	local power
+	if E.db.unitframe.transparent and E.db.unitframe.powertrans then
+		power = E:TranseBar(frame)
+	else
+		power = CreateFrame('StatusBar', nil, frame)
+	end
 	UF['statusbars'][power] = true
 	
 	--power.frequentUpdates = true
@@ -136,9 +143,21 @@ function UF:Construct_PowerBar(frame, bg, text, textPos, lowtext)
 	power.PostUpdate = self.PostUpdatePower
 
 	if bg then
-		power.bg = power:CreateTexture(nil, 'BORDER')
-		power.bg:SetAllPoints()
-		power.bg:SetTexture(E["media"].blankTex)
+		if E.db.unitframe.transparent and E.db.unitframe.powertrans then
+			local pbg = CreateFrame("Frame", nil, power)
+			pbg:SetFrameLevel(power:GetFrameLevel()-2)
+			pbg:SetAllPoints(power)
+			pbg:SetAlpha(0)
+			local b = pbg:CreateTexture(nil, "BACKGROUND")
+			b:SetTexture(E["media"].normTex)
+			b:SetAllPoints(power)
+			power.bg = b
+			power.pbg = pbg
+		else
+			power.bg = power:CreateTexture(nil, 'BORDER')
+			power.bg:SetAllPoints()
+			power.bg:SetTexture(E["media"].blankTex)
+		end
 		power.bg.multiplier = 0.2
 	end
 	
@@ -224,7 +243,7 @@ function UF:Construct_AuraIcon(button)
 		local auraName = self.name
 		
 		if auraName then
-			E:Print(string.format(L['The spell "%s" has been added to the Blacklist unitframe aura filter.'], auraName))
+			E:Print(format(L['The spell "%s" has been added to the Blacklist unitframe aura filter.'], auraName))
 			E.global['unitframe']['aurafilters']['Blacklist']['spells'][auraName] = {
 				['enable'] = true,
 				['priority'] = 0,			
@@ -564,19 +583,13 @@ function UF:Construct_Combobar(frame)
 		
 		CPoints[i]:CreateBackdrop('Default')
 		CPoints[i].backdrop:SetParent(CPoints)
-		CPoints[i].backdrop:CreateShadow('Default')
-		CPoints[i].backdrop.shadow:Point("TOPLEFT", -4, 4)
 	end
 	
 	CPoints[1]:SetStatusBarColor(0.69, 0.31, 0.31)		
 	CPoints[2]:SetStatusBarColor(0.69, 0.31, 0.31)
 	CPoints[3]:SetStatusBarColor(0.65, 0.63, 0.35)
 	CPoints[4]:SetStatusBarColor(0.65, 0.63, 0.35)
-	CPoints[5]:SetStatusBarColor(0.33, 0.59, 0.33)	
-	
-	for i = 1, MAX_COMBO_POINTS do
-		CPoints[i].backdrop.shadow:SetBackdropBorderColor(CPoints[i]:GetStatusBarColor())
-	end
+	CPoints[5]:SetStatusBarColor(0.33, 0.59, 0.33)
 	
 	return CPoints
 end
@@ -595,7 +608,6 @@ end
 
 function UF:Construct_RaidDebuffs(frame)
 	local rdebuff = CreateFrame('Frame', nil, frame.RaisedElementParent)
-	rdebuff:Point('BOTTOM', frame, 'BOTTOM', 0, 2)
 	rdebuff:SetTemplate("Default")
 
 	if E.PixelMode then
@@ -770,7 +782,7 @@ function UF:Construct_AuraBars()
 		local auraName = self:GetParent().aura.name
 		
 		if auraName then
-			E:Print(string.format(L['The spell "%s" has been added to the Blacklist unitframe aura filter.'], auraName))
+			E:Print(format(L['The spell "%s" has been added to the Blacklist unitframe aura filter.'], auraName))
 			E.global['unitframe']['aurafilters']['Blacklist']['spells'][auraName] = {
 				['enable'] = true,
 				['priority'] = 0,			
@@ -804,7 +816,7 @@ local function CreateSwingStatusBar(parent)
 	sbar:SetPoint("TOPLEFT")
 	sbar:SetPoint("BOTTOMRIGHT")
 	sbar:SetStatusBarTexture(E["media"].normTex)
-	sbar:SetStatusBarColor(unpack(E["media"].bordercolor))
+	sbar:SetStatusBarColor(unpack(ElvUF.colors.castColor))
 	sbar:SetFrameLevel(20)
 	sbar:SetFrameStrata("LOW")
 	sbar:Hide()

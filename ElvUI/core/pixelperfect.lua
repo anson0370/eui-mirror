@@ -2,7 +2,14 @@ local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, Priv
 
 --Determine if Eyefinity is being used, setup the pixel perfect script.
 local scale
+local match = string.match
+local abs, floor, min, max = math.abs, math.floor, math.min, math.max
+
 function E:UIScale(event)
+	if IsMacClient() and self.global.screenheight and self.global.screenwidth and (self.screenheight ~= self.global.screenheight or self.screenwidth ~= self.global.screenwidth) then
+		self.screenheight = self.global.screenheight
+		self.screenwidth = self.global.screenwidth
+	end
 	if self.db.general.autoscale then
 		scale = max(0.64, min(1.15, 768/self.screenheight));
 	else
@@ -41,7 +48,7 @@ function E:UIScale(event)
 		self.eyefinity = width;
 	end
 	
-	self.mult = 768/string.match(GetCVar("gxResolution"), "%d+x(%d+)")/scale;
+	self.mult = 768/match(GetCVar("gxResolution"), "%d+x(%d+)")/scale;
 
 	--Set UIScale, NOTE: SetCVar for UIScale can cause taints so only do this when we need to..
 	if E.Round and E:Round(UIParent:GetScale(), 5) ~= E:Round(scale, 5) and (event == 'PLAYER_LOGIN') then
@@ -82,7 +89,7 @@ function E:UIScale(event)
 		
 		local change
 		if E.Round then
-			change = math.abs((E:Round(UIParent:GetScale(), 5) * 100) - (E:Round(scale, 5) * 100))
+			change = abs((E:Round(UIParent:GetScale(), 5) * 100) - (E:Round(scale, 5) * 100))
 		end
 
 		if event == 'UI_SCALE_CHANGED' and change and change > 1 and self.db.general.autoscale then
@@ -98,5 +105,5 @@ end
 -- pixel perfect script of custom ui scale.
 function E:Scale(x)
 	if not self.mult then self:UIScale() end
-    return self.mult*math.floor(x/self.mult+.5);
+    return self.mult*floor(x/self.mult+.5);
 end

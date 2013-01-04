@@ -43,7 +43,7 @@ L:SetOptionLocalization({
 })
 
 L:SetMiscLocalization({
-	Platform	= "%s flies to one of his platforms!",
+	Platform			= "flies to one of his platforms!",
 	Defeat		= "We will not give in to the despair of the dark void. If Her will for us is to perish, then it shall be so."
 })
 
@@ -179,6 +179,7 @@ L= DBM:GetModLocalization(743)
 
 L:SetWarningLocalization({
 	warnAmberTrap		= "Amber Trap progress: (%d/5)",
+	specWarnTT			= "Thriller Totem <%d> <%d.s>"
 })
 
 L:SetOptionLocalization({

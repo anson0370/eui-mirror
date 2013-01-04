@@ -158,7 +158,7 @@ L["Officer"] = "Officer"
 L["Self"] = "Self"
 
 L["'s Healing"] = "'s Healing"
-L["instance_chat"] = "INSTANCE_CHAT"
+
 L["Enemy damage done"] = "Enemy damage done"
 L["Enemy damage taken"] = "Enemy damage taken"
 L["Damage on"] = "Damage on"
@@ -379,3 +379,4 @@ L["Use class icons where applicable."] = "Use class icons where applicable."
 L["Class icons"] = "Class icons"
 
 L["RealID"] = "RealID"
+L["Instance"] = "Instance"

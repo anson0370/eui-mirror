@@ -6,6 +6,7 @@ for _, slot in pairs({"Head", "Shoulder", "Chest", "Waist", "Legs", "Feet", "Wri
 	SLOTIDS[slot] = GetInventorySlotInfo(slot.."Slot")
 end
 local frame = CreateFrame("Frame", nil, CharacterFrame)
+local format = string.format
 
 local function RYGColorGradient(perc)
 	local relperc = perc * 2 % 1
@@ -42,7 +43,7 @@ function frame:OnEvent(event, arg1)
 			local str = fontstrings[slot]
 			str:SetTextColor(RYGColorGradient(v1 / v2))
 			if v1 < v2 then
-				str:SetText(string.format("%d%%", v1 / v2 * 100))
+				str:SetText(format("%d%%", v1 / v2 * 100))
 			else
 				str:SetText(nil)
 			end

@@ -5,6 +5,7 @@ local LSM = LibStub("LibSharedMedia-3.0")
 local OVERLAY = [=[Interface\TargetingFrame\UI-TargetingFrame-Flash]=]
 local numChildren = -1
 local backdrop
+
 NP.Handled = {} --Skinned Nameplates
 NP.BattleGroundHealers = {};
 
@@ -19,6 +20,8 @@ NP.Healers = {
 	[L['Mistweaver']] = true,
 }
 
+local twipe = table.wipe
+
 function NP:Initialize()
 	self.db = E.db["nameplate"]
 	if E.private["nameplate"].enable ~= true then return end
@@ -29,10 +32,11 @@ function NP:Initialize()
 	end
 	
 	CreateFrame('Frame'):SetScript('OnUpdate', function(self, elapsed)
-		if(WorldFrame:GetNumChildren() ~= numChildren) then
-			numChildren = WorldFrame:GetNumChildren()
+		local count = WorldFrame:GetNumChildren()
+		if(count ~= numChildren) then
+			numChildren = count
 			NP:HookFrames(WorldFrame:GetChildren())
-		end	
+		end
 		
 		NP:ForEachPlate(NP.InvalidCastCheck)
 		NP:ForEachPlate(NP.CheckFilter)
@@ -57,23 +61,17 @@ function NP:QueueObject(frame, object)
 	if not frame.queue then frame.queue = {} end
 	frame.queue[object] = true
 	
-	if object.OldShow then
-		object.Show = object.OldShow
-		object:Show()
-	end
-	
 	if object.OldTexture then
 		object:SetTexture(object.OldTexture)
 	end
 end
 
 function NP:CreateVirtualFrame(parent, point)
-	if point == nil then point = parent end
+	point = point or parent
 	local noscalemult = E.mult * UIParent:GetScale()
 	
-	if point.backdrop then return end
+	if point.bordertop then return end
 
-	
 	point.backdrop2 = parent:CreateTexture(nil, "BORDER")
 	point.backdrop2:SetDrawLayer("BORDER", -4)
 	point.backdrop2:SetAllPoints(point)
@@ -166,19 +164,18 @@ function NP:ForEachPlate(functionToRun, ...)
 end
 
 function NP:HideObjects(frame)
-	for object in pairs(frame.queue) do
-		object.OldShow = object.Show
-		object.Show = E.noop
-		
-		if object:GetObjectType() == "Texture" then
+	local objectType
+	for object in pairs(frame.queue) do		
+		objectType = object:GetObjectType()  
+		if objectType == "Texture" then
 			object.OldTexture = object:GetTexture()
 			object:SetTexture(nil)
 			object:SetTexCoord(0, 0, 0, 0)
-		elseif object:GetObjectType() == 'FontString' then
+		elseif objectType == 'FontString' then
 			object:SetWidth(0.001)
+		else
+			object:Hide()
 		end
-		
-		object:Hide()
 	end
 end
 
@@ -190,13 +187,14 @@ function NP:Update_LevelText(frame)
 	
 	if frame.hp.oldlevel:IsShown() then
 		if self.db.showlevel == true then
-			local level, elite, mylevel = frame.hp.oldlevel:GetObjectType() == 'FontString' and tonumber(frame.hp.oldlevel:GetText()) or nil, frame.hp.elite:IsShown(), UnitLevel("player")
-			if frame.isBoss then
+			local level, elite, boss, mylevel = frame.hp.oldlevel:GetObjectType() == 'FontString' and tonumber(frame.hp.oldlevel:GetText()) or nil, frame.isElite, frame.isBoss, UnitLevel("player")
+			if boss then
 				frame.hp.level:SetText("??")
 				frame.hp.level:SetTextColor(0.8, 0.05, 0)
 				frame.hp.level:Show()
 			elseif not elite and level == mylevel then
 				frame.hp.level:Hide()
+				frame.hp.level:SetText(nil)
 			elseif level then
 				frame.hp.level:SetText(level..(elite and "+" or ""))
 				frame.hp.level:SetTextColor(frame.hp.oldlevel:GetTextColor())
@@ -206,6 +204,7 @@ function NP:Update_LevelText(frame)
 			frame.hp.oldlevel:SetWidth(000.1)
 		elseif frame.hp.level then
 			frame.hp.level:Hide()
+			frame.hp.level:SetText(nil)
 		end
 	elseif frame.isBoss and self.db.showlevel and frame.hp.level:GetText() ~= '??' then
 		frame.hp.level:SetText("??")
@@ -227,7 +226,7 @@ function NP:Colorize(frame, r, g, b)
 		end
 		
 		if RAID_CLASS_COLORS[class].r == r and RAID_CLASS_COLORS[class].g == g and RAID_CLASS_COLORS[class].b == bb then
-			frame.hasClass = true
+			frame.hasClass = class
 			frame.isFriendly = false
 			frame.hp:SetStatusBarColor(RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b)
 			frame.hp.rcolor, frame.hp.gcolor, frame.hp.bcolor = RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b
@@ -262,7 +261,7 @@ function NP:Colorize(frame, r, g, b)
 	else -- enemy player
 		frame.isFriendly = false
 	end
-	frame.hasClass = false
+	frame.hasClass = nil
 	frame.hp.rcolor, frame.hp.gcolor, frame.hp.bcolor = r, g, b
 	frame.hp:SetStatusBarColor(r,g,b)
 end
@@ -295,19 +294,37 @@ function NP:HealthBar_OnShow(frame)
 	NP:Colorize(frame, r, g, b)
 	frame.hp.hpbg:SetTexture(frame.hp.rcolor, frame.hp.gcolor, frame.hp.bcolor, 0.25)
 	
+	if frame.hasClass and self.db.classIcons then
+		local tCoords = CLASS_BUTTONS[frame.hasClass]
+		frame.classIcon:SetTexCoord(tCoords[1], tCoords[2], tCoords[3], tCoords[4])
+		frame.classIcon:Show()
+	elseif frame.classIcon:IsShown() then
+		frame.classIcon:Hide()
+	end
+	
 	--Set the name text
-	frame.hp.name:SetText(frame.hp.oldname:GetText())	
+	frame.hp.name:SetText(frame.hp.oldname:GetText())
+	local isSmallNP
 	while frame.hp:GetEffectiveScale() < 1 do
 		frame.hp:SetScale(frame.hp:GetScale() + 0.01)
+		isSmallNP = true;
 	end
-	frame.AuraWidget:SetScale(frame.hp:GetScale())
 	
-	--Level Text
-	frame.isBoss = frame.hp.boss:IsShown()
-	NP:Update_LevelText(frame)
+	frame.isSmallNP = isSmallNP and NP.db.smallPlates
+	
+	if frame.isSmallNP then
+		frame.hp:Width(frame:GetWidth() * frame:GetEffectiveScale())
+	end
+	
+	frame.AuraWidget:SetScale(frame.hp:GetScale())
 	
 	NP.ScanHealth(frame.oldhp)
 	NP:CheckFilter(frame)
+	
+	frame.isBoss = frame.hp.boss:IsShown()
+	frame.isElite = frame.hp.elite:IsShown()
+	NP:Update_LevelText(frame)
+	
 	self:HideObjects(frame)
 end
 
@@ -323,15 +340,18 @@ function NP:OnHide(frame)
 	frame.hp.name:SetTextColor(1, 1, 1)
 	frame.hp:SetScale(1)
 	frame.cb:SetScale(1)
+	frame.classIcon:Hide()
 	frame.AuraWidget:SetScale(1)
 	frame.cb:Hide()
+	frame.isBoss = nil
+	frame.isElite = nil
 	frame.unit = nil
 	frame.isMarked = nil
+	frame.isSmallNP = nil
 	frame.raidIconType = nil
 	frame.threatStatus = nil
 	frame.guid = nil
 	frame.hasClass = nil
-	frame.isBoss = nil;
 	frame.customColor = nil
 	frame.customScale = nil
 	frame.isFriendly = nil
@@ -350,6 +370,7 @@ function NP:OnHide(frame)
 			icon:Hide()
 		end
 	end	
+	
 end
 
 function NP:SkinPlate(frame, nameFrame)
@@ -411,6 +432,15 @@ function NP:SkinPlate(frame, nameFrame)
 	frame.hp.level:FontTemplate(font, self.db.fontSize, self.db.fontOutline)
 	if oldlevel:GetObjectType() == 'FontString' then
 		frame.hp.level:SetText(oldlevel:GetText())
+		frame.hp.level:SetTextColor(oldlevel:GetTextColor())
+	end
+	
+	if not frame.classIcon then
+		frame.classIcon = frame.hp:CreateTexture(nil, "ARTWORK");
+		frame.classIcon:Size(30);
+		frame.classIcon:Point("RIGHT", frame.hp.level, "LEFT", -1, 0);
+		frame.classIcon:SetTexture([[Interface\WorldStateFrame\Icons-Classes]]);
+		frame.classIcon:Hide();
 	end
 	
 	--Name Text
@@ -515,8 +545,9 @@ function NP:SkinPlate(frame, nameFrame)
 	
 	for index = 1, NP.MAX_DISPLAYABLE_DEBUFFS do 
 		if frame.AuraWidget.AuraIconFrames and frame.AuraWidget.AuraIconFrames[index] then
-			frame.AuraWidget.AuraIconFrames[index].TimeLeft:FontTemplate(LSM:Fetch("font", self.db.auraFont), self.db.auraFontSize, self.db.auraFontOutline)
-			frame.AuraWidget.AuraIconFrames[index].Stacks:FontTemplate(LSM:Fetch("font", self.db.auraFont), self.db.auraFontSize, self.db.auraFontOutline)
+			local auraFont = LSM:Fetch("font", self.db.auraFont)
+			frame.AuraWidget.AuraIconFrames[index].TimeLeft:FontTemplate(auraFont, self.db.auraFontSize, self.db.auraFontOutline)
+			frame.AuraWidget.AuraIconFrames[index].Stacks:FontTemplate(auraFont, self.db.auraFontSize, self.db.auraFontOutline)
 		end
 	end
 		
@@ -824,10 +855,10 @@ function NP:PLAYER_ENTERING_WORLD()
 	self:UpdateRoster()
 	self:CleanAuraLists()
 	
-	table.wipe(self.BattleGroundHealers)
+	twipe(self.BattleGroundHealers)
 	local inInstance, instanceType = IsInInstance()
 	if inInstance and instanceType == 'pvp' and self.db.markBGHealers then
-		self.CheckHealerTimer = self:ScheduleRepeatingTimer("CheckBGHealers", 1)
+		self.CheckHealerTimer = self:ScheduleRepeatingTimer("CheckBGHealers", 3)
 		self:CheckBGHealers()
 	else
 		if self.CheckHealerTimer then
@@ -863,8 +894,9 @@ function NP:HookFrames(...)
 	for index = 1, select('#', ...) do
 		local frame = select(index, ...)
 		local region = frame:GetRegions()
+		local name = frame:GetName()
 		
-		if(not NP.Handled[frame:GetName()] and (frame:GetName() and frame:GetName():find("NamePlate%d"))) then
+		if(not NP.Handled[name] and (name and name:find("NamePlate%d"))) then
 			NP:SkinPlate(frame:GetChildren())
 		end
 	end

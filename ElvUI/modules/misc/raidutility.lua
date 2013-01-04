@@ -4,6 +4,7 @@ local RU = E:NewModule('RaidUtility', 'AceEvent-3.0');
 E.RaidUtility = RU
 
 local PANEL_HEIGHT = 125
+local find = string.find
 
 --Check if We are Raid Leader or Raid Officer
 local function CheckRaidStatus()
@@ -97,7 +98,7 @@ function RU:Initialize()
 
 		local point = self:GetPoint();		
 		local raidUtilPoint, closeButtonPoint, yOffset
-		if string.find(point, "BOTTOM") then
+		if find(point, "BOTTOM") then
 			raidUtilPoint = "BOTTOM"
 			closeButtonPoint = "TOP"
 			yOffset = 1						

@@ -25,7 +25,7 @@ L= DBM:GetModLocalization(742)
 
 L:SetOptionLocalization ({
 	SoundWOP 	= "voice warning: important skills",
-	SoundJK 	= "voice warning: $spell:123011 advance warning",
+	WarnJK 	= "voice warning: $spell:123011 advance warning",
 	HudMAP 		= "HudMAP:$spell:122770 (only 10N/10H Mode) ",
 	optDS 		= "shadow of terror, how many stacks start warning",
 	six 		= "6",
@@ -38,7 +38,7 @@ L:SetOptionLocalization ({
 L:SetMiscLocalization{
 	Victory	= "I thank you, strangers. I have been freed."
 }
-
+ 
 
 -------------------------------
 -- Lei Shi --
@@ -46,18 +46,22 @@ L:SetMiscLocalization{
 L= DBM:GetModLocalization(729)
 
 L:SetWarningLocalization({
-	warnHideOver			= "%s has ended"
+	warnHideOver			= "%s has ended",
+	warnHideProgress		= "Hits: %s. Damage: %s. Time: %s"
 })
 
 L:SetTimerLocalization({
-	timerSpecialCD			= "Next Special"
+	timerSpecialCD			= "Special CD (%d)"
 })
 
 L:SetOptionLocalization({
 	warnHideOver			= "Show warning when $spell:123244 has ended",
-	timerSpecialCD			= "Show timer for when next special ability will be cast.",
+	warnHideProgress		= "Show statistics for $spell:123244 when it ends",
+	timerSpecialCD			= "Show timer for special ability CD",
 	SoundWOP 				= "voice warning: important skills",
-	SetIconOnGuard		= "Set icons on $journal:6224"
+	SetIconOnGuardfix		= "Set icons on $journal:6224",
+	RangeFrame				= "Show range frame (3) for $spell:123121\n(Shows everyone during Hide, otherwise, only shows tanks)",
+	GWHealthFrame			= "Show remaining health frame for $spell:123461 fades\n(Requires boss health frame enabled)" -- maybe bad wording, needs review
 })
 
 L:SetMiscLocalization{
@@ -73,6 +77,7 @@ L= DBM:GetModLocalization(709)
 L:SetWarningLocalization({
 	specWarnyinmo		= "Submerge >%d<",
 	specWarnweisuo		= "Huddle in Terror >%d<",
+	specWarnfuxian		= ">%d< Sons",
 })
 
 L:SetTimerLocalization({
@@ -80,6 +85,7 @@ L:SetTimerLocalization({
 })
 
 L:SetOptionLocalization ({
+	RangeFrame			= "Show range frame (2) for $spell:119519",
 	SoundDD = "voice warning: $spell:131996",
 	SoundWOP = "voice warning: important skills"
 })

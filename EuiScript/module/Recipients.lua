@@ -1,6 +1,10 @@
 ﻿local E = unpack(ElvUI)
 if E.db["euiscript"].recipients ~= true then return end
 local L
+local trim = string.trim
+local lower = string.lower
+local format = string.format
+
 if GetLocale() == 'zhCN' then
 	L = {
 		["title"] = "EUI Recipients",
@@ -52,7 +56,7 @@ end
 
 -- Obtain the name from SendMailNameEditBox
 local function GetRecipientName()
-	local name = string.trim(SendMailNameEditBox:GetText() or "");
+	local name = trim(SendMailNameEditBox:GetText() or "");
 	if name == "" then
 		name = nil;
 	end
@@ -75,11 +79,11 @@ end
 -- Finds a name from list, case insensitive
 local function FindRecipientName(name)
 	if type(name) == "string" then
-		name = string.trim(string.lower(name));
+		name = trim(lower(name));
 		if name ~= "" then
 			local i;
 			for i = 1, table.getn(profile) do
-				if string.lower(profile[i]) == name then
+				if lower(profile[i]) == name then
 					return i;
 				end
 			end
@@ -104,7 +108,7 @@ local function RecipientNameDropdownInit()
 				local name = table.remove(profile, id);
 				if name then
 					SetRecipientName("", true);
-					PrintMessage(string.format(L["name removed"], name));
+					PrintMessage(format(L["name removed"], name));
 				end
 			end
 		else
@@ -115,7 +119,7 @@ local function RecipientNameDropdownInit()
 				if table.getn(profile) < LIST_MAX then
 					table.insert(profile, name);
 					table.sort(profile);
-					PrintMessage(string.format(L["name added"], name));
+					PrintMessage(format(L["name added"], name));
 				else
 					PrintMessage(L["full"]);
 				end
@@ -185,7 +189,7 @@ RecipientsDropDownButton:SetScript("OnEnter", function(self)
 	GameTooltip:ClearLines();
 	GameTooltip:SetText(L["title"]);
 	local count = table.getn(profile);
-	GameTooltip:AddLine(string.format(L["count"], count));
+	GameTooltip:AddLine(format(L["count"], count));
 	if count > 0 or GetRecipientName() then
 		GameTooltip:AddLine(L["click open"]);
 	else

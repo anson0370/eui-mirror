@@ -1,5 +1,7 @@
 ﻿local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB, Localize Underscore
 
+local tsort, tinsert = table.sort, table.insert
+
 E.Options.args = {
 	ElvUI_Header = {
 		order = 1,
@@ -585,6 +587,7 @@ E.Options.args.media = {
 }
 
 local DONATOR_STRING = ""
+local CNDONATOR_STRING = ""
 local DEVELOPER_STRING = ""
 local TESTER_STRING = ""
 local LINE_BREAK = "\n"
@@ -627,6 +630,60 @@ local DONATORS = {
 	"Smorg"
 }
 
+local CNDONATORS = {
+	"wxbbf",
+	"sammyda",
+	"zmmjoy1028",
+	"lileimu0126",
+	"happy_fly_pig",
+	"lulu5205200701",
+	"qq52776758",
+	"lulu5205200701",
+	"玩酷轨迹",
+	"泉0510",
+	"皮蛋oo",
+	"雨季雷",
+	"lmnno",
+	"feliciagao",
+	"炽天使zz",
+	"忘归猪",
+	"marger52",
+	"maimang",
+	"凌乱兰花",
+	"不会吐泡的鱼",
+	"gd2933",
+	"realzhumen",
+	"itachi_203",
+	"wzadjl",
+	"chaoyi3456",
+	"shameless_pig",
+	"chise1",
+	"默默远去",
+	"大只标",
+	"波谲云诡1314",
+	"大唐风羽",
+	"叹息的足迹",
+	"曦月刃语",
+	"samwoody",
+	"oinoon",
+	"tb379270_2012",
+	"被人踹下天",
+	"风之路人11",
+	"wargreymon1234",
+	"chris6522",
+	"情侣t恤",
+	"lyq402631678",
+	"silverhawx",
+	"terrymu",
+	"jianxinbang",
+	"yydatou2",
+	"liubin5381",
+	"jh967354",
+	"shome",
+	"santon123",
+	"chenyunlong00",
+}
+
 local DEVELOPERS = {
 	"Tukz",
 	"Haste",
@@ -654,22 +711,26 @@ local TESTERS = {
 	'Catok'
 }
 
-table.sort(DONATORS, function(a,b) return a < b end) --Alphabetize
+tsort(DONATORS, function(a,b) return a < b end) --Alphabetize
 for _, donatorName in pairs(DONATORS) do
-	table.insert(E.CreditsList, donatorName)
+	tinsert(E.CreditsList, donatorName)
 	DONATOR_STRING = DONATOR_STRING..LINE_BREAK..donatorName
 end
 
-table.sort(DEVELOPERS, function(a,b) return a < b end) --Alphabetize
+tsort(DEVELOPERS, function(a,b) return a < b end) --Alphabetize
 for _, devName in pairs(DEVELOPERS) do
-	table.insert(E.CreditsList, devName)
+	tinsert(E.CreditsList, devName)
 	DEVELOPER_STRING = DEVELOPER_STRING..LINE_BREAK..devName
 end
 
-table.sort(TESTERS, function(a,b) return a < b end) --Alphabetize
+tsort(TESTERS, function(a,b) return a < b end) --Alphabetize
 for _, testerName in pairs(TESTERS) do
-	table.insert(E.CreditsList, testerName)
+	tinsert(E.CreditsList, testerName)
 	TESTER_STRING = TESTER_STRING..LINE_BREAK..testerName
+end
+
+for _, cndonatorName in pairs(CNDONATORS) do
+	CNDONATOR_STRING = CNDONATOR_STRING..LINE_BREAK..cndonatorName
 end
 
 E.Options.args.credits = {
@@ -684,3 +745,8 @@ E.Options.args.credits = {
 		},
 	},
 }
+
+if E.zhlocale then
+	E.Options.args.credits.args.text.name = L['EUI_DONATOR']..'\n\n'..CNDONATOR_STRING
+	E.Options.args.credits.name = L['Donations:']
+end

@@ -1,4 +1,5 @@
 local E, _, DF = unpack(ElvUI)
+local upper = string.upper
 
 local GetNextChar = function(word,num)
 	local c = word:byte(num)
@@ -48,7 +49,7 @@ local nextstep = function()
 	a,step = GetNextChar (word,step)
 	flowingtext:SetText(stringE)
 	stringE = stringE..a
-	a = string.upper(a)
+	a = upper(a)
 	rightchar:SetText(a)
 end
 
@@ -103,27 +104,23 @@ end
 
 local CombatNotification = CreateFrame ("Frame")
 local L = {}
-local _,localizedName = GetWorldPVPAreaInfo(2)
+local _,localizedName1 = GetWorldPVPAreaInfo(1)
+local _,localizedName2 = GetWorldPVPAreaInfo(2)
+
 if(GetLocale()=="zhCN") then
-	L.INFO_WOWTIME_TIP1 = localizedName.. "即将在1分钟内开始"
-	L.INFO_WOWTIME_TIP2 = localizedName.. "即将在5分钟内开始"
-	L.INFO_WOWTIME_TIP3 = localizedName.. "即将在15分钟内开始"
+	L.INFO_WOWTIME_TIP = "即将在15分钟内开始"
 	L.need = " 有奖励包包了!!!"
 	L.Tank = "<坦克>"
 	L.Healer = "<治疗>"
 	L.DPS = "<输出>"
 elseif (GetLocale()=="zhTW") then
-	L.INFO_WOWTIME_TIP1 = localizedName.. "即將在1分鐘內開始"
-	L.INFO_WOWTIME_TIP2 = localizedName.. "即將在5分鐘內開始"
-	L.INFO_WOWTIME_TIP3 = localizedName.. "即將在15分鐘內開始"
+	L.INFO_WOWTIME_TIP = "即將在15分鐘內開始"
 	L.need = " 有獎勵包包了!!!"
 	L.Tank = "<坦克>"
 	L.Healer = "<治療>"
 	L.DPS = "<輸出>"		
 elseif (GetLocale()=="enUS") then
-	L.INFO_WOWTIME_TIP1 = localizedName.. "will start within 1 minute"
-	L.INFO_WOWTIME_TIP2 = localizedName.. "will start within 5 minute"
-	L.INFO_WOWTIME_TIP3 = localizedName.. "will start within 15 minute"
+	L.INFO_WOWTIME_TIP = "will start within 15 minute"
 	L.need = " reward bags!"
 	L.Tank = "<Tank>"
 	L.Healer = "<Healer>"
@@ -149,23 +146,24 @@ local clocks_update = function(self,t)
 	if E.db["euiscript"].wgtimenoti == 'NONE' then return end
 	int = int - t
 	if int > 0 then return end
-		
-	int = 1
-	local _,_,_,canQueue,wgtime = GetWorldPVPAreaInfo(2)
-
-	local canSend = (IsInGuild() and E.db["euiscript"].wgtimenoti == 'GUILD') or (IsInGroup() and E.db["euiscript"].wgtimenoti == 'PARTY') or (IsInRaid() and E.db["euiscript"].wgtimenoti == 'RAID')
+	local INFO_WOWTIME_TIP = L.INFO_WOWTIME_TIP
 	
-	if canQueue == false then
-		if wgtime == 60 then 
-			E.EuiAlertRun (L.INFO_WOWTIME_TIP1)
-			if canSend then SendChatMessage('EUI:'.. L.INFO_WOWTIME_TIP1, E.db["euiscript"].wgtimenoti, nil, nil) end
-		elseif wgtime == 300 then 
-			E.EuiAlertRun (L.INFO_WOWTIME_TIP2)
-			if canSend then SendChatMessage('EUI:'.. L.INFO_WOWTIME_TIP2, E.db["euiscript"].wgtimenoti, nil, nil) end
-		elseif wgtime == 900 then 
-			E.EuiAlertRun (L.INFO_WOWTIME_TIP3)
-			if canSend then SendChatMessage('EUI:'.. L.INFO_WOWTIME_TIP3, E.db["euiscript"].wgtimenoti, nil, nil) end
-		end
+	int = 1
+	local _,_,_,canQueue1,wgtime1 = GetWorldPVPAreaInfo(1)
+	local _,_,_,canQueue2,wgtime2 = GetWorldPVPAreaInfo(2)
+	local canSend = (IsInGuild() and E.db["euiscript"].wgtimenoti == 'GUILD') or (IsInGroup() and E.db["euiscript"].wgtimenoti == 'PARTY') or (IsInRaid() and E.db["euiscript"].wgtimenoti == 'RAID')
+	local isActive = 0
+	if canQueue1 == false and wgtime1 == 900 then
+		isActive = 1;
+		INFO_WOWTIME_TIP = localizedName1.. INFO_WOWTIME_TIP
+	end
+	if canQueue2 == false and wgtime2 == 900 then
+		isActive = 2;
+		INFO_WOWTIME_TIP = localizedName2.. INFO_WOWTIME_TIP
+	end
+	if isActive > 0 then
+		E.EuiAlertRun (INFO_WOWTIME_TIP)
+		if canSend then SendChatMessage('EUI:'.. INFO_WOWTIME_TIP, E.db["euiscript"].wgtimenoti, nil, nil) end
 	end
 end
 

@@ -2,7 +2,9 @@ local E, L, DF = unpack(ElvUI); --Engine
 local S = E:NewModule('EuiScript', 'AceEvent-3.0', 'AceHook-3.0');
 E.build = GetAddOnMetadata("EuiScript", "Version")
 E.Euiscript = S
-CreateFrame("Frame", "U1Frame", UIParent);
+local format = string.format
+local floor = math.floor
+local split = string.split
 
 -- buy max number value with alt
 function S:ByMaxNumber(self, ...)
@@ -35,7 +37,7 @@ function S:SellItem()
 		end
 	end
 	if c>0 then
-		local g, s, c = math.floor(c/10000) or 0, math.floor((c%10000)/100) or 0, c%100
+		local g, s, c = floor(c/10000) or 0, floor((c%10000)/100) or 0, c%100
 		E:Print(" |cffffffff"..g..L.goldabbrev.." |cffffffff"..s..L.silverabbrev.." |cffffffff"..c..L.copperabbrev..".")			
 	end
 end
@@ -91,10 +93,20 @@ end
 
 --移动战斗积分位置
 function S:MoveWorldState()
-   _G["WorldStateAlwaysUpFrame"]:ClearAllPoints()
-   _G["WorldStateAlwaysUpFrame"].ClearAllPoints = E.noop
-   _G["WorldStateAlwaysUpFrame"]:SetPoint("TOP", UIParent, "TOP", -30, -40)
-   _G["WorldStateAlwaysUpFrame"].SetPoint = E.noop
+	if not NUM_ALWAYS_UP_UI_FRAMES then return end
+	for i = 1, NUM_ALWAYS_UP_UI_FRAMES do
+		local f = _G["AlwaysUpFrame"..i]
+
+		if f then
+			f:ClearAllPoints()
+			f:SetFrameStrata("BACKGROUND")
+			if i == 1 then
+				f:SetPoint("TOP", UIParent, "TOP", -30, -40)
+			else
+				f:SetPoint("TOPLEFT", _G["AlwaysUpFrame"..i-1], "BOTTOMLEFT", 0, 0)
+			end
+		end
+	end   
 end
 
 -- Auto invite by whisper
@@ -188,11 +200,11 @@ function S:ConvertUFDb()
 		if E.db.unitframe.units.positions and E.db.unitframe.units.positions[k] then
 			if E.db.movers == nil then E.db.movers = {} end
 			if E.db.unitframe.units.positions[k] then
-				local p1, p2, p3, p4, p5 = string.split('\031',E.db.unitframe.units.positions[k])
+				local p1, p2, p3, p4, p5 = split('\031',E.db.unitframe.units.positions[k])
 				if p5 then
-					E.db.movers[v] = string.format('%s\031%s\031%s\031%d\031%d', p1, p2, p3, p4, p5)
+					E.db.movers[v] = format('%s\031%s\031%s\031%d\031%d', p1, p2, p3, p4, p5)
 				else
-					E.db.movers[v] = string.format('%s\031%s\031%s\031%d\031%d', p1, p2, p1, p3, p4)
+					E.db.movers[v] = format('%s\031%s\031%s\031%d\031%d', p1, p2, p1, p3, p4)
 				end
 				E.db.unitframe.units.positions[k] = nil
 				self.convert = true
@@ -273,20 +285,17 @@ end
 
 function S:TradeTargetLevel(event)
 	if event == 'TRADE_SHOW' then
-		local targetLevel
-		if not targetLevel then
-			targetLevel = CreateFrame("Frame")
-			S.targetLevel = targetLevel
-			targetLevel.text = targetLevel:CreateFontString(nil, 'OVERLAY')
-			targetLevel.text:FontTemplate(nil, 12, 'OUTLINE')
-			targetLevel.text:SetPoint("BOTTOMLEFT", TradeFrame, "BOTTOMLEFT", 8, 8)
-			targetLevel:SetFrameLevel(TradeFrame:GetFrameLevel()+2)
+		if not TradeFrame.targetLevel then
+			TradeFrame.targetLevel = TradeFrame:CreateFontString(nil, 'OVERLAY')
+			TradeFrame.targetLevel:FontTemplate(nil, 12, 'OUTLINE')
+			TradeFrame.targetLevel:SetPoint("BOTTOMLEFT", TradeFrame, "BOTTOMLEFT", 8, 8)
 		end
-		targetLevel.text:SetText(TARGET..LEVEL.. ': '.. UnitLevel('NPC'))
-		if UnitLevel('NPC') < 10 then targetLevel.text:SetTextColor(1,0,0) end
-		S.targetLevel:Show()
+		TradeFrame.targetLevel:SetText(TARGET..LEVEL.. ': '.. UnitLevel('NPC'))
+		if UnitLevel('NPC') < 10 then TradeFrame.targetLevel:SetTextColor(1,0,0) end
+		TradeFrame.targetLevel:Show()
 	elseif event == 'TRADE_CLOSED' then
-		if S.targetLevel then S.targetLevel:Hide() end
+		if not TradeFrame.targetLevel then return; end
+		TradeFrame.targetLevel:Hide()
 	end
 end
 
@@ -310,7 +319,7 @@ function S:Initialize()
 --	self:RegisterEvent("PLAYER_TARGET_CHANGED", "ChangeActionbarPage")
 	self:RegisterEvent("LFG_PROPOSAL_SHOW", "RaidFinderFix")
 	self:RegisterEvent("LFG_PROPOSAL_UPDATE", "RaidFinderFix")
-
+	
 	self:RegisterEvent("TRADE_SHOW", "TradeTargetLevel")
 	self:RegisterEvent("TRADE_CLOSED", "TradeTargetLevel")
 end

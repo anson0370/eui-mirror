@@ -204,13 +204,36 @@ local StartTimer = function(name, spellId, cd)
 	UpdatePositions()
 end
 
+local blankName = {
+	["ROGUE"] = {
+		[58423] = true, --无情打击
+		[98440] = true, --无情打击
+	},
+}
+
 function CD:COMBAT_LOG_EVENT_UNFILTERED(...)
 	local _, _, eventType, _, _, sourceName, sourceFlags = ...
 	if band(sourceFlags, filter) == 0 or sourceName ~= E.myname then return end
 	local spellId = select(13, ...)
+	local spellName = select(14, ...)
+
+	if blankName[E.myclass] and blankName[E.myclass][spellId] then
+		return
+	end
 	
 	if E.global.extracd.data[spellId] and EVENT[eventType] then
 		StartTimer(sourceName, spellId, E.global.extracd.data[spellId].cd)
+		return
+	end
+
+	if not E.global.extracd.data[spellId] and EVENT[eventType] then
+		for k, v in pairs(E.global.extracd.data) do
+			local name = GetSpellInfo(k)
+			if name == spellName then
+				StartTimer(sourceName, k, v.cd)
+				return
+			end
+		end
 	end
 end
 

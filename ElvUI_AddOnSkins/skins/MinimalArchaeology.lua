@@ -4,7 +4,7 @@ local S = E:GetModule('Skins')
 
 local name = "MinimalArchaeologySkin"
 local function SkinMinimalArchaeology(self)
-	local font = AS.font
+	local font = [[Interface\AddOns\ElvUI\media\fonts\Homespun.ttf]] 
 	local fontSize = 10
 	AS:SkinFrame(MinArchMain)
 	AS:SkinStatusBar(MinArchMainSkillBar)
@@ -26,7 +26,7 @@ local function SkinMinimalArchaeology(self)
 	AS:SkinFrame(MinArchHist)
 	S:HandleCloseButton(MinArchHistButtonClose)
 
-	for i = 1, 10 do
+	for i = 1, 11 do
 		AS:SkinStatusBar(_G["MinArchMainArtifactBar"..i])
 		_G["MinArchMainArtifactBar"..i]:SetStatusBarColor(1.0, 0.4, 0)
 		S:HandleButton(_G["MinArchMainArtifactBar"..i.."ButtonSolve"])

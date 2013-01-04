@@ -33,9 +33,12 @@
 ]]
 
 local _, ns = ...
-local oUF = ns.oUF or oUF
+local oUF = oUF or ns.oUF
 if not oUF then return end
- 
+
+local gsub = string.gsub
+local sub = string.sub
+
 local function Update(object, event, unit)
 	if not object or InCombatLockdown() then return end
 
@@ -49,18 +52,18 @@ local function Update(object, event, unit)
 
 	local key_tmp
 	for key, value in pairs(object.ClickSet[spec]) do
-		key_tmp = string.gsub(key,"z","-")
+		key_tmp = gsub(key,"z","-")
 		if value == "NONE" then
 			object:SetAttribute(key_tmp, nil)
 		elseif value == "target" or value == "menu" or value == "focus" then
 			object:SetAttribute(key_tmp, value)
 		elseif value ~= "NONE" and key ~= "enable" and type(value) == "string" then
-			if string.sub(value, 1, 2) ~= "#*" then
+			if sub(value, 1, 2) ~= "#*" then
 				object:SetAttribute(key_tmp, 'spell')
-				object:SetAttribute(string.gsub(key_tmp,"type",'spell'), value)
+				object:SetAttribute(gsub(key_tmp,"type",'spell'), value)
 			else
 				object:SetAttribute(key_tmp, 'macro')
-				object:SetAttribute('macrotext', string.sub(value, 3))
+				object:SetAttribute('macrotext', sub(value, 3))
 			end
 		end
 	end
@@ -86,18 +89,18 @@ local function Enable(object)
 		end
 		local key_tmp
 		for key, value in pairs(object.ClickSet[spec]) do
-			key_tmp = string.gsub(key,"z","-")
+			key_tmp = gsub(key,"z","-")
 			if value == "NONE" then
 				object:SetAttribute(key_tmp, nil)			
 			elseif value == "target" or value == "menu" or value == "focus" then
 				object:SetAttribute(key_tmp, value)
 			elseif value ~= "NONE" and key ~= "enable" and type(value) == "string" then
-				if string.sub(value, 1, 2) ~= "#*" then
+				if sub(value, 1, 2) ~= "#*" then
 					object:SetAttribute(key_tmp, 'spell')
-					object:SetAttribute(string.gsub(key_tmp,"type",'spell'), value)
+					object:SetAttribute(gsub(key_tmp,"type",'spell'), value)
 				else
 					object:SetAttribute(key_tmp, 'macro')
-					object:SetAttribute('macrotext', string.sub(value, 3))
+					object:SetAttribute('macrotext', sub(value, 3))
 				end
 			end
 		end

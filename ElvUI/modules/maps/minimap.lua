@@ -2,8 +2,11 @@ local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, Priv
 local M = E:NewModule('Minimap', 'AceHook-3.0', 'AceEvent-3.0', 'AceTimer-3.0');
 E.Minimap = M
 
-local calendar_string = string.gsub(SLASH_CALENDAR1, "/", "")
-calendar_string = string.gsub(calendar_string, "^%l", string.upper)
+local gsub = string.gsub
+local upper = string.upper
+
+local calendar_string = gsub(SLASH_CALENDAR1, "/", "")
+calendar_string = gsub(calendar_string, "^%l", upper)
 
 local menuFrame = CreateFrame("Frame", "MinimapRightClickMenu", E.UIParent, "UIDropDownMenuTemplate")
 local menuList = {
@@ -314,10 +317,6 @@ function M:Initialize()
 	end
 	
 	E:CreateMover(MMHolder, 'MinimapMover', L['Minimap'])
---[[	Minimap.SetPoint = E.noop;
-	MMHolder.SetPoint = E.noop;
-	Minimap.ClearAllPoints = E.noop;
-	MMHolder.ClearAllPoints = E.noop;]]
 	Minimap:EnableMouseWheel(true)
 	Minimap:SetScript("OnMouseWheel", M.Minimap_OnMouseWheel)	
 	Minimap:SetScript("OnMouseUp", M.Minimap_OnMouseUp)
@@ -384,7 +383,6 @@ function M:Initialize()
 	end)
 	
 	--PET JOURNAL TAINT FIX AS OF 5.1
-	PetJournal_LoadUI();
 	local info = UIPanelWindows['PetJournalParent'];
 	for name, value in pairs(info) do
 		PetJournalParent:SetAttribute("UIPanelLayout-"..name, value);

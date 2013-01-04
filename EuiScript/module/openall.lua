@@ -6,6 +6,7 @@ local deletedelay, t = 0.5, 0
 local takingOnlyCash = false
 local button, button2, waitForMail, doNothing, openAll, openAllCash, openMail, lastopened, stopOpening, onEvent, needsToWait, copper_to_pretty_money, total_cash
 local _G = _G
+local format = string.format
 local baseInboxFrame_OnClick
 function doNothing() end
 
@@ -97,7 +98,7 @@ S:HandleButton(button2)
 
 button:SetScript("OnEnter", function()
 	GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
-	GameTooltip:AddLine(string.format("%d messages", GetInboxNumItems()), 1, 1, 1)
+	GameTooltip:AddLine(format("%d messages", GetInboxNumItems()), 1, 1, 1)
 	GameTooltip:Show()
 end)
 button:SetScript("OnLeave", function() GameTooltip:Hide() end)

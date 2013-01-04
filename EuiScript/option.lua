@@ -1,5 +1,6 @@
 local E, L, V, P, G, _ = unpack(ElvUI); --Engine
 local class = select(2, UnitClass("player"));
+local format = string.format
 
 E.Options.args.euiscript = {
 	type = "group",
@@ -223,8 +224,14 @@ E.Options.args.euiscript = {
 							disabled = function() return not IsInGuild() end,
 							values = E:GetModule('EuiScript'):GetGuildRanks(),
 						},
-						startInvite = {
+						refresh = {
 							order = 5,
+							type = 'execute',
+							name = REFRESH..RANK,
+							func = function() E.Options.args.euiscript.args.euiscript_general.args.inviteGroup.args.inviteRank.values = E:GetModule('EuiScript'):GetGuildRanks(); end,
+						},
+						startInvite = {
+							order = 6,
 							type = 'execute',
 							name = L['Start Invite'],
 							disabled = function() return not IsInGuild() end,
@@ -233,6 +240,7 @@ E.Options.args.euiscript = {
 								E:ScheduleTimer(E:GetModule('EuiScript').InviteRanks, 10);
 							end,
 						},
+						
 					},
 				},
 				lootGroup = {
@@ -691,8 +699,14 @@ E.Options.args.chatfilter = {
 			get = function(info) return E.global.chatfilter.Enabled end,
 			set = function(info, value) E.global.chatfilter.Enabled = value; E:StaticPopup_Show("CONFIG_RL") end,
 		},
-		chatfilter_general = {
+		chatfilterbylevel = {
 			order = 1,
+			type = "range",
+			min = 0, max = MAX_PLAYER_LEVEL - 1, step = 1,
+			name = L["Filter low-level players chat"],
+		},
+		chatfilter_general = {
+			order = 2,
 			type = "group",
 			name = L["General"],
 			guiInline = true,
@@ -816,7 +830,7 @@ E.Options.args.chatfilter = {
 			},
 		},
 		BlackList = {
-			order = 2,
+			order = 3,
 			type = "group",
 			name = L["Word BlackList"],
 			disabled = function() return not E.global.chatfilter.Enabled end,
@@ -862,7 +876,7 @@ E.Options.args.chatfilter = {
 			},
 		},
 		WhiteList = {
-			order = 3,
+			order = 4,
 			type = "group",
 			name = L["Word WhiteList"],
 			disabled = function() return not E.global.chatfilter.Enabled end,
@@ -908,7 +922,7 @@ E.Options.args.chatfilter = {
 			},
 		},
 		BlankName = {
-			order = 4,
+			order = 5,
 			type = "group",
 			name = L["sender blanklist"],
 			disabled = function() return not E.global.chatfilter.Enabled end,
@@ -1006,7 +1020,7 @@ E.Options.args.combattext = {
 					local loaded, failureReason = LoadAddOn(optionsName)
 					if (not loaded) then
 						local failureMessage = _G["ADDON_" .. failureReason] or failureReason or ""
-						E:Print(string.format(ADDON_LOAD_FAILED, optionsName, failureMessage))
+						E:Print(format(ADDON_LOAD_FAILED, optionsName, failureMessage))
 					end
 				end
 				if (IsAddOnLoaded(optionsName)) then MSBTOptions.Main.ShowMainFrame(); E:ToggleConfig() end

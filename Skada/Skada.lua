@@ -4,7 +4,8 @@ local ldb = LibStub:GetLibrary("LibDataBroker-1.1")
 local icon = LibStub("LibDBIcon-1.0", true)
 local media = LibStub("LibSharedMedia-3.0")
 local boss = LibStub("LibBossIDs-1.0")
-
+local Skada = Skada
+local lds = LibStub:GetLibrary("LibDualSpec-1.0", 1)
 local dataobj = ldb:NewDataObject("Skada", {label = "Skada", type = "data source", icon = "Interface\\Icons\\Spell_Lightning_LightningBolt01", text = "n/a"})
 
 -- Client version number
@@ -41,6 +42,41 @@ function Skada:GetGroupTypeAndCount()
 	end
 
 	return type, count
+end
+
+do
+	local popup = CreateFrame("Frame", nil, UIParent)
+	popup:SetBackdrop({bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background-Dark",
+		edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
+		tile = true, tileSize = 16, edgeSize = 16,
+		insets = {left = 1, right = 1, top = 1, bottom = 1}}
+	)
+	popup:SetSize(250, 70)
+	popup:SetPoint("CENTER", UIParent, "CENTER")
+	popup:SetFrameStrata("DIALOG")
+	popup:Hide()
+
+	local text = popup:CreateFontString()
+	text:SetFontObject(ChatFontNormal)
+	text:SetPoint("TOP", popup, "TOP", 0, -10)
+	text:SetText(L["Do you want to reset Skada?"])
+
+	local accept = CreateFrame("Button", nil, popup)
+	accept:SetNormalTexture("Interface\\Buttons\\UI-CheckBox-Check")
+	accept:SetHighlightTexture("Interface\\Buttons\\UI-CheckBox-Highlight", "ADD")
+	accept:SetSize(50, 50)
+	accept:SetPoint("BOTTOM", popup, "BOTTOM", -50, 0)
+	accept:SetScript("OnClick", function(f) Skada:Reset() f:GetParent():Hide() end)
+
+	local close = CreateFrame("Button", nil, popup)
+	close:SetNormalTexture("Interface\\Buttons\\UI-Panel-MinimizeButton-Up")
+	close:SetHighlightTexture("Interface\\Buttons\\UI-Panel-MinimizeButton-Highlight", "ADD")
+	close:SetSize(50, 50)
+	close:SetPoint("BOTTOM", popup, "BOTTOM", 50, 0)
+	close:SetScript("OnClick", function(f) f:GetParent():Hide() end)
+	function Skada:ShowPopup()
+		popup:Show()
+	end
 end
 
 -- Keybindings
@@ -570,15 +606,15 @@ function Skada:Command(param)
 		local max = tonumber(w3 or 10)
 
 		-- Sanity checks.
-		if chan and (chan == "instance_chat" or chan == "say" or chan == "guild" or chan == "raid" or chan == "party" or chan == "officer") and (report_mode_name and find_mode(report_mode_name)) then
+		if chan and (chan == "say" or chan == "guild" or chan == "raid" or chan == "party" or chan == "officer") and (report_mode_name and find_mode(report_mode_name)) then
 			self:Report(chan, "preset", report_mode_name, "current", max)
 		else
 			self:Print("Usage:")
-			self:Print(("%-20s"):format("/skada report [instance_chat][raid|guild|party|officer|say] [mode] [max lines]"))
+			self:Print(("%-20s"):format("/skada report [raid|guild|party|officer|say] [mode] [max lines]"))
 		end
 	else
 		self:Print("Usage:")
-		self:Print(("%-20s"):format("/skada report [instance_chat][raid|guild|party|officer|say] [mode] [max lines]"))
+		self:Print(("%-20s"):format("/skada report [raid|guild|party|officer|say] [mode] [max lines]"))
 		self:Print(("%-20s"):format("/skada reset"))
 		self:Print(("%-20s"):format("/skada toggle"))
 		self:Print(("%-20s"):format("/skada newsegment"))
@@ -750,22 +786,6 @@ end
 local wasininstance
 local wasinpvp
 
-local function ask_for_reset()
-	if not StaticPopupDialogs["ResetSkadaDialog"] then
-		StaticPopupDialogs["ResetSkadaDialog"] = {
-			preferredIndex = 4,
-			text = L["Do you want to reset Skada?"],
-			button1 = ACCEPT,
-			button2 = CANCEL,
-			timeout = 30,
-			whileDead = 0,
-			hideOnEscape = 1,
-			OnAccept = function() Skada:Reset() end,
-		}
-	end
-	StaticPopup_Show("ResetSkadaDialog")
-end
-
 -- Are we in a PVP zone?
 local pvp_zones = {}
 local function is_in_pvp()
@@ -783,7 +803,7 @@ function Skada:PLAYER_ENTERING_WORLD()
 	-- If we are entering an instance, and we were not previously in an instance, and we got this event before... and we have some data...
 	if isininstance and wasininstance ~= nil and not wasininstance and self.db.profile.reset.instance ~= 1 and total ~= nil then
 		if self.db.profile.reset.instance == 3 then
-			ask_for_reset()
+			Skada:ShowPopup()
 		else
 			self:Reset()
 		end
@@ -825,7 +845,7 @@ local function check_for_join_and_leave()
 		-- We left a party.
 
 		if Skada.db.profile.reset.leave == 3 then
-			ask_for_reset()
+			Skada:ShowPopup()
 		elseif Skada.db.profile.reset.leave == 2 then
 			Skada:Reset()
 		end
@@ -840,7 +860,7 @@ local function check_for_join_and_leave()
 		-- We joined a raid.
 
 		if Skada.db.profile.reset.join == 3 then
-			ask_for_reset()
+			Skada:ShowPopup()
 		elseif Skada.db.profile.reset.join == 2 then
 			Skada:Reset()
 		end
@@ -2036,6 +2056,12 @@ function Skada:OnInitialize()
 	-- Profiles
 	LibStub("AceConfig-3.0"):RegisterOptionsTable("Skada-Profiles", LibStub("AceDBOptions-3.0"):GetOptionsTable(self.db))
 	self.profilesFrame = LibStub("AceConfigDialog-3.0"):AddToBlizOptions("Skada-Profiles", "Profiles", "Skada")
+	
+	-- Dual spec profiles
+	if lds then
+		lds:EnhanceDatabase(self.db, "SkadaDB")
+		lds:EnhanceOptions(LibStub("AceDBOptions-3.0"):GetOptionsTable(self.db), self.db)
+	end
 
 	self:RegisterChatCommand("skada", "Command")
 	self.db.RegisterCallback(self, "OnProfileChanged", "ReloadSettings")

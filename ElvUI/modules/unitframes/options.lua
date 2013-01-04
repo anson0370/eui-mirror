@@ -6,6 +6,7 @@ local ElvUF = ns.oUF
 local selectedSpell;
 local selectedFilter;
 local filters;
+local tinsert = table.insert
 
 function UF:CreateCustomTextGroup(unit, objectName)
 	if E.Options.args.unitframe.args[unit].args[objectName] then return end
@@ -331,7 +332,7 @@ local function UpdateFilterGroup()
 						elseif not GetSpellInfo(value) then
 							E:Print(L["Not valid spell id"])
 						else	
-							table.insert(E.global.unitframe.buffwatch.PET, {["enabled"] = true, ["id"] = tonumber(value), ["point"] = "TOPRIGHT", ["color"] = {["r"] = 1, ["g"] = 0, ["b"] = 0}, ["anyUnit"] = true})
+							tinsert(E.global.unitframe.buffwatch.PET, {["enabled"] = true, ["id"] = tonumber(value), ["point"] = "TOPRIGHT", ["color"] = {["r"] = 1, ["g"] = 0, ["b"] = 0}, ["anyUnit"] = true})
 							UpdateFilterGroup();
 							UF:Update_AllFrames();
 							selectedSpell = nil;
@@ -457,12 +458,12 @@ local function UpdateFilterGroup()
 						end,						
 					},
 					anyUnit = {
-						name = L['Any Unit'],
+						name = L['Show Aura From Other Players'],
 						order = 5,
 						type = 'toggle',	
 					},
 					onlyShowMissing = {
-						name = L['Show Missing'],
+						name = L['Show When Not Active'],
 						order = 6,
 						type = 'toggle',	
 						disabled = function() return E.global.unitframe.buffwatch.PET[tableIndex].style == 'text' end,
@@ -502,7 +503,7 @@ local function UpdateFilterGroup()
 						elseif not GetSpellInfo(value) then
 							E:Print(L["Not valid spell id"])
 						else	
-							table.insert(E.global.unitframe.buffwatch[E.myclass], {["enabled"] = true, ["id"] = tonumber(value), ["point"] = "TOPRIGHT", ["color"] = {["r"] = 1, ["g"] = 0, ["b"] = 0}, ["anyUnit"] = false})
+							tinsert(E.global.unitframe.buffwatch[E.myclass], {["enabled"] = true, ["id"] = tonumber(value), ["point"] = "TOPRIGHT", ["color"] = {["r"] = 1, ["g"] = 0, ["b"] = 0}, ["anyUnit"] = false})
 							UpdateFilterGroup();
 							UF:Update_AllFrames();
 							selectedSpell = nil;
@@ -628,12 +629,12 @@ local function UpdateFilterGroup()
 						end,						
 					},
 					anyUnit = {
-						name = L['Any Unit'],
+						name = L['Show Aura From Other Players'],
 						order = 5,
 						type = 'toggle',	
 					},
 					onlyShowMissing = {
-						name = L['Show Missing'],
+						name = L['Show When Not Active'],
 						order = 6,
 						type = 'toggle',	
 						disabled = function() return E.global.unitframe.buffwatch[E.myclass][tableIndex].style == 'text' end,
@@ -9426,7 +9427,19 @@ for i=10, 40, 15 do
 						name = L['Font Size'],
 						order = 3,
 						min = 7, max = 22, step = 1,
-					},				
+					},
+					xOffset = {
+						order = 4,
+						type = 'range',
+						name = L['xOffset'],
+						min = -300, max = 300, step = 1,
+					},
+					yOffset = {
+						order = 5,
+						type = 'range',
+						name = L['yOffset'],
+						min = -300, max = 300, step = 1,
+					},					
 				},
 			},
 			raidicon = {

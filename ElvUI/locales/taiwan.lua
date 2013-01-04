@@ -16,7 +16,7 @@ if not L then return end
 do
 	L["You have changed your UIScale, however you still have the AutoScale option enabled in ElvUI. Press accept if you would like to disable the Auto Scale option."] = '你改變了UI縮放比率,但是你仍啟用了EUI的自動縮放, 點確定將禁用自動縮放並重載界面.';
 	L["One or more of the changes you have made require a ReloadUI."] = "一個或更多的改變,需要重載插件";
-	L["A taint has occured that is preventing you from using your talents/glyphs, this can happen if you've inspected someone. Unfortionatly theres nothing we can do to fix it, please reload your ui and try again."] = "壹個戰鬥汙染發生在你查看天賦/幻化窗口時, 你可以輸入/rl 重載界面.";
+	L["A taint has occured that is preventing you from using your talents/glyphs, this can happen if you've inspected someone. Unfortionatly theres nothing we can do to fix it, please reload your ui and try again."] = "壹個戰鬥汙染發生在你查看天賦/雕文窗口時, 你可以輸入/rl 重載界面.";
 end
 
 --General
@@ -64,6 +64,7 @@ do
 	
 	L["Credits"] = "創作組";
 	L['ELVUI_CREDITS'] = "我想用一個特別的方式感謝那些測試,翻譯和通過捐助幫助我的人. 請捐助過的人在論壇中PM給我, 我將把你的名字添加到這兒."
+	L['EUI_DONATOR'] = "這裏列表的是一些通過淘寶捐過EUI的朋友們, 感謝你們！";
 	L['Coding:'] = "翻譯";
 	L['Testing:'] = "測試";
 	L['Donations:'] = "捐助";
@@ -277,6 +278,10 @@ end
 
 --NamePlate Config
 do
+	L["Small Plates"] = "小型姓名版";
+	L["Adjust nameplate size on smaller mobs to scale down. This will only adjust the health bar width not the actual nameplate hitbox you click on."] = "啟用較小寬度尺寸的姓名版,這通常用來顯示低級的怪.";
+	L["Class Icons"] = '職業圖標';
+	L["Display a class icon on nameplates."] = '在姓名版在顯示職業圖標';
 	L['Mistweaver'] = '織霧';
 	L['Background Multiplier'] = "背景色透明度";
 	L['The backdrop of the nameplates color is scaled to match the color of the nameplate by this percentage. Set to zero to have no color in the nameplate backdrop.'] = "姓名版背景色透明度, 設為0時姓名版背景沒有顏色(黑色)";
@@ -497,6 +502,9 @@ end
 
 --UNITFRAMES
 do	
+	L["Transparent Power"] = "透明能量條";
+	L['Show Aura From Other Players'] = '顯示其它玩家的光環';
+	L['Show When Not Active'] = '當不活動時顯示';
 	L['About UI'] = '界面相關';
 	L['About Prompt info'] = '提示信息相關';
 	L['About Invite'] = '邀請組隊相關';
@@ -1005,6 +1013,9 @@ end
 
 --Tooltip
 do
+	L['Display the health text on the tooltip.'] = '在滑鼠提示中顯示血條';
+	L['Health Height'] = '血條高度';
+	L['Set the height of the tooltip healthbar.'] = '設置滑鼠提示中的血條高度';
 	L['Spell/Item IDs'] = '技能/物品ID';
 	L['Display the spell or item ID when mousing over a spell or item tooltip.'] = '在鼠標提示中顯示技能或物品的ID';
 	L['Item Count'] = '物品數量';
@@ -1453,7 +1464,7 @@ do
 	L["combatnoti"] = "進出戰鬥提示"
 		L["combatnoti_leaving"] = "離開戰鬥提示資訊"
 		L["combatnoti_entering"] = "進入戰鬥提示資訊"
-	L["wgtimenoti"] = "托巴倒計時提示"
+	L["wgtimenoti"] = "托巴冬握倒計時提示"
 	L["chatemote"] = "聊天表情"
 	L["autogreed"] = "自動貪婪/分解綠裝"
 	L["buffreminder"] = "BUFF提示"
@@ -1584,6 +1595,7 @@ end
 
 --ChatFilter
 do
+	L["Filter low-level players chat"] = "過濾低等級玩家聊天信息";
 	L["Filter the bullshit messages from RaidAlert"] = '過濾RaidAlert信息';
 	L["Filter the drunk messages:'... has drunked ...'"] = '過濾某人喝醉了...的信息';
 	L["chatfilter"] = "資訊過濾"

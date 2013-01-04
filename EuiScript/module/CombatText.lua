@@ -1,5 +1,7 @@
 ﻿local E, L, V, P, G, _ = unpack(ElvUI); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 if E.db.combattext.enable ~= true or IsAddOnLoaded('xCT') or IsAddOnLoaded('MikScrollingBattleText') then return end
+local lower = string.lower
+local floor = math.floor
 
 if GetLocale() == 'zhCN' then
 	L_COMBATTEXT_KILLING_BLOW = "最后一击"
@@ -559,7 +561,7 @@ local function OnEvent(self, event, subevent, ...)
 	elseif event == "UNIT_MANA" and COMBAT_TEXT_SHOW_LOW_HEALTH_MANA == "1" then
 		if subevent == ct.unit then
 			local _, powerToken = UnitPowerType(ct.unit)
-			if not COMBAT_TEXT_LOW_HEALTH_THRESHOLD then COMBAT_TEXT_LOW_HEALTH_THRESHOLD = 0 end
+			if not COMBAT_TEXT_LOW_MANA_THRESHOLD then COMBAT_TEXT_LOW_MANA_THRESHOLD = 0.2 end
 			if powerToken == "MANA" and (UnitPower(ct.unit) / UnitPowerMax(ct.unit)) <= COMBAT_TEXT_LOW_MANA_THRESHOLD then
 				if not lowMana then
 					xCT3:AddMessage(MANA_LOW, 1, 0.1, 0.1)
@@ -588,6 +590,7 @@ local function OnEvent(self, event, subevent, ...)
 		local arg1, arg2 = subevent, ...
 		if arg2 then
 			local rune = GetRuneType(arg1)
+			if not rune then return; end
 			local msg = COMBAT_TEXT_RUNE[rune]
 			if rune == 1 then
 				r, g, b = 0.75, 0, 0
@@ -919,7 +922,7 @@ StaticPopupDialogs.XCT_LOCK = {
 
 -- Slash commands
 SlashCmdList.XCT = function(input)
-	input = string.lower(input)
+	input = lower(input)
 	if input == "unlock" then
 		if ct.locked then
 			StartConfigmode()
@@ -1236,7 +1239,7 @@ if E.db.combattext.healing then
 						local color = {}
 						local rawamount = amount
 						if E.db.combattext.show_overhealing and abs(overhealing) > 0 then
-							amount = math.floor(amount-overhealing).." ["..floor(overhealing).."]"
+							amount = floor(amount-overhealing).." ["..floor(overhealing).."]"
 						end
 						if critical then
 							amount = "|cffFF0000"..E.db.combattext.crit_prefix.."|r"..amount.."|cffFF0000"..E.db.combattext.crit_postfix.."|r"

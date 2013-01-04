@@ -2,15 +2,22 @@ local E, L, V, P, G, _ = unpack(select(2, ...)); --Inport: Engine, Locales, Priv
 local UF = E:GetModule('UnitFrames');
 
 E.Options.args.unitframe.name = '04.'.. L["UnitFrames"]
-E.Options.args.unitframe.args.general.args.transparent = {
-	order = 2,
+E.Options.args.unitframe.args.general.args.generalGroup.args.transparent = {
+	order = 5,
 	type = 'toggle',
 	name = L["Transparent Theme"],
 	disabled = function() return E.db.general.transparent == false end,
-	set = function(info, value) E.db.unitframe.transparent = value; StaticPopup_Show("GLOBAL_RL") end,
-}						
-E.Options.args.unitframe.args.general.args.unitframeType = {
-	order = 2,
+	set = function(info, value) E.db.unitframe.transparent = value; StaticPopup_Show("CONFIG_RL") end,
+}
+E.Options.args.unitframe.args.general.args.generalGroup.args.powertrans = {
+	order = 6,
+	type = 'toggle',
+	name = L["Transparent Power"],
+	disabled = function() return E.db.general.transparent == false end,
+	set = function(info, value) E.db.unitframe.powertrans = value; StaticPopup_Show("CONFIG_RL") end,
+}
+E.Options.args.unitframe.args.general.args.generalGroup.args.unitframeType = {
+	order = 7,
 	name = E.ValColor..L["Eui UF Style"].."|r",
 	type = 'range',
 	min = 1, max = 9, step = 1,

@@ -3,6 +3,7 @@ if E.db["euiscript"].sr ~= true then return end
 
 local SR_REP_MSG = "%s: %+d (%d/%d)";
 local rep = {};
+local format = string.format
 
 local function SR_Update(self)
 	local numFactions = GetNumFactions();
@@ -17,7 +18,7 @@ local function SR_Update(self)
 			local change = barValue - rep[name];
 			if (change > 0) then
 				rep[name] = barValue;
-				local msg = string.format(SR_REP_MSG, name, change, barValue - barMin, barMax - barMin);
+				local msg = format(SR_REP_MSG, name, change, barValue - barMin, barMax - barMin);
 				
 				local info = ChatTypeInfo["COMBAT_FACTION_CHANGE"];
 				for j = 1, 4, 1 do
