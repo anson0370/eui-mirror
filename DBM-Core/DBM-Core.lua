@@ -87,7 +87,7 @@ imsg.text:SetJustifyH("CENTER")
 --  Globals/Default Options  --
 -------------------------------
 DBM = {
-	Revision = tonumber(("$Revision: 8460 $"):sub(12, -3)),
+	Revision = tonumber(("$Revision: 8480 $"):sub(12, -3)),
 	DisplayVersion = "5.1 語音增強版", -- the string that is shown as version
 	ReleaseRevision = 8421 -- the revision of the latest stable version that is available
 }
@@ -1686,7 +1686,7 @@ function DBM:UPDATE_MOUSEOVER_UNIT()
 					break
 				end
 			end
-		elseif (cId == 62346 or cId == 60491) and not IsAddOnLoaded("DBM-Pandaria") then--Mists of Pandaria World Bosses: Anger, Salyis
+		elseif (cId == 62346 or cId == 60491 or cId == 69161) and not IsAddOnLoaded("DBM-Pandaria") then--Mists of Pandaria World Bosses: Anger, Salyis
 			for i, v in ipairs(DBM.AddOns) do
 				if v.modId == "DBM-Pandaria" then
 					DBM:LoadMod(v)
@@ -1723,7 +1723,7 @@ function DBM:PLAYER_TARGET_CHANGED()
 					break
 				end
 			end
-		elseif (cId == 62346 or cId == 60491) and not IsAddOnLoaded("DBM-Pandaria") then
+		elseif (cId == 62346 or cId == 60491 or cId == 69161) and not IsAddOnLoaded("DBM-Pandaria") then
 			for i, v in ipairs(DBM.AddOns) do
 				if v.modId == "DBM-Pandaria" then
 					DBM:LoadMod(v)
@@ -3681,10 +3681,10 @@ function bossModPrototype:IsMelee()
 	return class == "ROGUE"
 	or class == "WARRIOR"
 	or class == "DEATHKNIGHT"
+	or class == "MONK"--Monk always melee, including healer
 	or (class == "PALADIN" and not IsSpellKnown(112859))--Meditation Check (False)
     or (class == "SHAMAN" and IsSpellKnown(86629))--Dual Wield Check (True)
 	or (class == "DRUID" and IsSpellKnown(84840))--Vengeance Check (True)
-	or (class == "MONK" and (IsSpellKnown(121278) or IsSpellKnown(113656)))--Iffy slope, monk healers will be ranged and melee. :\
 end
 
 function bossModPrototype:IsRanged()
@@ -3705,6 +3705,7 @@ function bossModPrototype:IsManaUser()--Similar to ranged, but includes all pala
 	or class == "PALADIN"
     or class == "SHAMAN"
 	or (class == "DRUID" and not IsSpellKnown(84840))--Vengeance Check (False)
+	or (class == "MONK" and IsSpellKnown(121278))
 end
 
 function bossModPrototype:IsDps()--For features that simply should only be on for dps and not healers or tanks and without me having to use "not is heal or not is tank" rules :)

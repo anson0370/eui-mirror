@@ -59,7 +59,6 @@ V["skins"]["addons"] = {
 	["QuestItemBarSkin"] = true,
 	["RaidInviteOrganizerSkin"] = true,
 	["RaidBuffStatusSkin"] = true,
-	["RavenSkin"] = true,
 	["RecountSkin"] = true,
 	["ReforgenatorSkin"] = true,
 	["SearingPlasmaTrackerSkin"] = true,

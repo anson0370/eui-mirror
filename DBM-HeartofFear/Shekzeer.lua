@@ -18,6 +18,7 @@ mod:RegisterEventsInCombat(
 	"SPELL_CAST_SUCCESS",
 	"SPELL_CAST_START",
 	"CHAT_MSG_MONSTER_YELL",
+	"RAID_BOSS_EMOTE",
 	"SPELL_DAMAGE",
 	"SPELL_MISSED",
 	"UNIT_SPELLCAST_SUCCEEDED"
@@ -571,7 +572,6 @@ function mod:OnSync(msg, guid, hp)
 				DeadEg = register(DBMHudMap:AddEdge(1, 1, 1, 1, 5, "player", nil, nil, nil, RunPos[hp][1],RunPos[hp][2]))
 			end
 		end
-		print("接收分配: <"..guid.."> - "..hp.."區")
 	end
 end
 
@@ -590,3 +590,9 @@ function mod:SPELL_DAMAGE(sourceGUID, _, _, _, _, _, _, _, spellId)
 	end
 end
 mod.SPELL_MISSED = mod.SPELL_DAMAGE
+
+function mod:RAID_BOSS_EMOTE(msg)
+	if msg:find("spell:126121") then
+		sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_yyfh.mp3") --音域腐化
+	end
+end

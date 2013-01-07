@@ -733,6 +733,11 @@ function UF:Construct_HealComm(frame)
 		otherBar = ohpb,
 		maxOverflow = 1,
 		PostUpdate = function(self)
+			if E.db.unitframe.transparent then
+				local w = (frame.Health:GetValue()/select(2,frame.Health:GetMinMaxValues())-1)*frame.Health:GetWidth()
+				self.myBar:SetPoint('BOTTOMLEFT', frame.Health:GetStatusBarTexture(), 'BOTTOMRIGHT', w, 0)
+				self.myBar:SetPoint('TOPLEFT', frame.Health:GetStatusBarTexture(), 'TOPRIGHT', w, 0)
+			end		
 			if self.myBar:GetValue() == 0 then self.myBar:SetAlpha(0) else self.myBar:SetAlpha(1) end
 			if self.otherBar:GetValue() == 0 then self.otherBar:SetAlpha(0) else self.otherBar:SetAlpha(1) end
 		end

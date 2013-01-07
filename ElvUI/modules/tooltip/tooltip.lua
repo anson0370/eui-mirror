@@ -571,10 +571,10 @@ function TT:GameTooltip_OnTooltipSetUnit(tt)
 		if guildName then
 			if E.db.tooltip.guildranks then
 				if UnitIsInMyGuild(unit) then
-					GameTooltipTextLeft2:SetText(("<%s%s|r> [%s%s|r]"):format(E["media"].hexvaluecolor, guildName, E["media"].hexvaluecolor, guildRankName))
+					GameTooltipTextLeft2:SetText(("<%s%s|r> [%s] [%s%s|r]"):format(E["media"].hexvaluecolor, guildName, guildRankIndex, E["media"].hexvaluecolor, guildRankName))
 				else
-					GameTooltipTextLeft2:SetText(("<|cff00ff10%s|r> [|cff00ff10%s|r]"):format(guildName, guildRankName))
-				end
+					GameTooltipTextLeft2:SetText(("<|cff00ff10%s|r> [%s] [|cff00ff10%s|r]"):format(guildName, guildRankIndex, guildRankName))
+				end			
 			else
 				if UnitIsInMyGuild(unit) then
 					GameTooltipTextLeft2:SetText(("<%s%s|r>"):format(E["media"].hexvaluecolor, guildName))

@@ -106,7 +106,7 @@ local function CreateAuraBar(oUF, anchor)
 	spark:SetTexture([[Interface\CastingBar\UI-CastingBar-Spark]]);
 	spark:SetWidth(12);
 	spark:SetBlendMode("ADD");
-	spark:SetPoint('CENTER', statusBar:GetStatusBarTexture(), 'RIGHT')		
+	spark:SetPoint('CENTER', statusBar:GetStatusBarTexture(), E.db.unitframe.transparent and 'LEFT' or 'RIGHT')
 	statusBar.spark = spark
 	
 	statusBar.iconHolder = CreateFrame('Button', nil, statusBar)

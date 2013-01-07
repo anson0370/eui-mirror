@@ -82,7 +82,7 @@ function AS:Initialize()
 	for skin,funcs in pairs(AS.skins) do
 		if AS:CheckOption(skin) then
 			for func,_ in pairs(funcs) do
-				func(f,"PLAYER_ENTERING_WORLD")
+				pcall(func, f, "PLAYER_ENTERING_WORLD")
 			end
 		end
 	end

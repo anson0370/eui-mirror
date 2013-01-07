@@ -819,6 +819,7 @@ function OnUpdate(_, elapsed)
 		if rangeTimer <= 0 then
 			rangeTimer = TOOLTIP_UPDATE_TIME
 		end
+		if UnitHasVehicleUI('player') then ForAllButtons(Update) end --by eui.cc
 	end
 end
 
