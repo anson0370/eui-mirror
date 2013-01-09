@@ -82,6 +82,7 @@ L= DBM:GetModLocalization(709)
 L:SetWarningLocalization({
 	specWarnyinmo		= "Submerge >%d<",
 	specWarnweisuo		= "Huddle in Terror >%d<",
+	specWarningpreHud	= "Huddle in Terror SOON!",
 	specWarnfuxian		= ">%d< Sons",
 	MoveWarningLeft		= "¡û ¡û Left",
 	MoveWarningRight	= "Right ¡ú ¡ú",

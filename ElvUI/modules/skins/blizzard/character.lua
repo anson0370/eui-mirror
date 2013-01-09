@@ -199,6 +199,7 @@ local function LoadSkin()
 				end
 			end)
 			
+			
 			hooksecurefunc(object.icon, "SetSize", function(self, width, height)
 				if width == 30 or height == 30 then
 					self:Size(36, 36)
@@ -262,7 +263,7 @@ local function LoadSkin()
 						local region = select(i, tab:GetRegions())
 						region:SetTexCoord(0.16, 0.86, 0.16, 0.86)
 						hooksecurefunc(region, "SetTexCoord", function(self, x1, y1, x2, y2)
-							if x1 ~= 0.16 or y1 ~= 0.86 or x2 ~= 0.16 or y2 ~= 0.86 then
+							if (x1 ~= 0.16 or y1 ~= 0.86 or x2 ~= 0.16 or y2 ~= 0.86) and x1 ~= nil then
 								self:SetTexCoord(0.16, 0.86, 0.16, 0.86)
 							end
 						end)

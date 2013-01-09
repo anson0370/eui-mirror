@@ -23,7 +23,7 @@ local enteredFrame = false;
 
 local Update, lastPanel; -- UpValue
 local localizedName, isActive, canQueue, startTime, canEnter
-local name, reset, locked, extended, isRaid, maxPlayers, difficulty, numEncounters, encounterProgress
+local name, reset, locked, instanceDifficulty, extended, isRaid, maxPlayers, difficulty, numEncounters, encounterProgress
 local quests = {}
 local updateQuestTable = false
 
@@ -132,7 +132,7 @@ local function OnEnter(self)
 
 	local oneraid, lockoutColor
 	for i = 1, GetNumSavedInstances() do
-		name, _, reset, _, locked, extended, _, isRaid, maxPlayers, difficulty, numEncounters, encounterProgress  = GetSavedInstanceInfo(i)
+		name, _, reset, instanceDifficulty, locked, extended, _, isRaid, maxPlayers, _, numEncounters, encounterProgress  = GetSavedInstanceInfo(i)
 		if isRaid and (locked or extended) and name then
 			local tr,tg,tb,diff
 			if not oneraid then
@@ -143,9 +143,9 @@ local function OnEnter(self)
 			if extended then lockoutColor = lockoutColorExtended else lockoutColor = lockoutColorNormal end
 
 			if (numEncounters and numEncounters > 0) and (encounterProgress and encounterProgress > 0) then
-				GameTooltip:AddDoubleLine(format(lockoutInfoFormat, maxPlayers, (difficulty:match("Normal") and "N" or "H"), name, encounterProgress, numEncounters), formatResetTime(reset), 1,1,1, lockoutColor.r,lockoutColor.g,lockoutColor.b)
+				GameTooltip:AddDoubleLine(format(lockoutInfoFormat, maxPlayers, (instanceDifficulty > 2 and "N" or "H"), name, encounterProgress, numEncounters), formatResetTime(reset), 1,1,1, lockoutColor.r,lockoutColor.g,lockoutColor.b)
 			else
-				GameTooltip:AddDoubleLine(format(lockoutInfoFormatNoEnc, maxPlayers, (difficulty:match("Normal") and "N" or "H"), name), formatResetTime(reset), 1,1,1, lockoutColor.r,lockoutColor.g,lockoutColor.b)
+				GameTooltip:AddDoubleLine(format(lockoutInfoFormatNoEnc, maxPlayers, (instanceDifficulty > 2 and "N" or "H"), name), formatResetTime(reset), 1,1,1, lockoutColor.r,lockoutColor.g,lockoutColor.b)
 			end
 		end
 	end

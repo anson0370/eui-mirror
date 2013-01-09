@@ -1573,6 +1573,10 @@ function CH:ChatFrame_RemoveMessageEventFilter (event, filter)
 	end
 end
 
+function CH:FCF_SetWindowAlpha(frame, alpha, doNotSave)
+	frame.oldAlpha = alpha or 1;
+end
+
 DEFAULT_CHAT_FRAME:UnregisterEvent("GUILD_MOTD")
 function CH:Initialize()
 	self.db = E.db.chat
@@ -1666,6 +1670,8 @@ function CH:Initialize()
 	--Now hook onto Blizzards functions for other addons
 	self:SecureHook("ChatFrame_AddMessageEventFilter");
 	self:SecureHook("ChatFrame_RemoveMessageEventFilter");
+	
+	self:SecureHook("FCF_SetWindowAlpha")
 	
 	ChatFrame_AddMessageEventFilter("CHAT_MSG_CHANNEL", CH.CHAT_MSG_CHANNEL)
 	ChatFrame_AddMessageEventFilter("CHAT_MSG_YELL", CH.CHAT_MSG_YELL)

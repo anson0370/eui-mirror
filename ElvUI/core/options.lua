@@ -63,18 +63,19 @@ E.Options.args.general = {
 			name = L["General"],
 			guiInline = true,
 			args = {
-				autoscale = {
+				autoScale = {
 					order = 0,
 					name = L["Auto Scale"],
 					desc = L["Automatically scale the User Interface based on your screen resolution"],
 					type = "toggle",	
-					set = function(info, value) E.db.general[ info[#info] ] = value; E:StaticPopup_Show("CONFIG_RL") end
+					get = function(info) return E.global.general.autoScale end,
+					set = function(info, value) E.global.general[ info[#info] ] = value; E:StaticPopup_Show("GLOBAL_RL") end
 				},
 				uiscale = {
 					order = 1,
 					name = L["UI Scale"],
 					desc = L["Controls the scaling of the entire User Interface"],
-					disabled = function(info) return E.db.general.autoscale end,
+					disabled = function(info) return E.global.general.autoScale end,
 					type = "range",
 					min = 0.64, max = 1.15, step = 0.01,
 					isPercent = true,
@@ -682,6 +683,7 @@ local CNDONATORS = {
 	"shome",
 	"santon123",
 	"chenyunlong00",
+	"kaminakeita",
 }
 
 local DEVELOPERS = {

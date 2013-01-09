@@ -238,13 +238,28 @@ function S:PLAYER_REGEN_ENABLED()
 	self:ChangeActionbarPage()
 end
 
+local function changeLoot()
+	if IsInGroup() and UnitIsGroupLeader('player') then
+		if GetLootMethod() ~= "freeforall" then
+			SetLootMethod("freeforall")
+		end
+	end
+	if IsInRaid() and UnitIsGroupLeader('player') then
+		if GetLootMethod() ~= "master" then
+			SetLootMethod("master")
+		end
+		if GetLootThreshold() ~= 4 then
+			SetLootThreshold(4)
+		end
+	end
+end
+
 function S:AutoChangeLoot()
 	if not E.db.euiscript.autochangeloot then 
 		S:UnregisterEvent("GROUP_ROSTER_UPDATE")
 		return; 
 	end
-	if IsInGroup() and UnitIsGroupLeader('player') then SetLootMethod("freeforall") end
-	if IsInRaid() and UnitIsGroupLeader('player') then SetLootMethod("master"); SetLootThreshold(4) end
+	E:ScheduleTimer(changeLoot, 5)
 end
 
 function S:RaidFinderFix() --修正暴雪默认LFR弹出窗口不显示已击杀BOSS进度信息

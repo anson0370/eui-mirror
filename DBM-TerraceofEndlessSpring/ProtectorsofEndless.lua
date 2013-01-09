@@ -376,11 +376,9 @@ function mod:SPELL_CAST_SUCCESS(args)
 		timerDefiledGroundCD:Start()
 		for i = 1, 3 do
 			if UnitName("boss"..i) == args.sourceName then
-				if UnitName("boss"..i.."target") == UnitName("player") then
-					if mod:IsTank() then
-						specWarnDefiledGround:Show()
-						sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\runaway.mp3")--快躲開
-					end
+				if UnitDetailedThreatSituation("player", "boss"..i) then
+					specWarnDefiledGround:Show()
+					sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\runaway.mp3")--快躲開
 				end
 			end
 		end

@@ -16,6 +16,7 @@ mod:RegisterEventsInCombat(
 	"SPELL_AURA_REMOVED",
 	"SPELL_CAST_START",
 	"CHAT_MSG_TARGETICONS",
+	"UNIT_DIED",
 	"UNIT_SPELLCAST_SUCCEEDED"
 )
 
@@ -160,18 +161,6 @@ do
 	end
 end
 
-local function checkdebuffend(destname)
-    if UnitDebuff(destname, GetSpellInfo(123705)) then
-        mod:Schedule(0.5, function()
-			checkdebuffend(destname)
-		end)
-	else
-		if MWMarkers[destname] then
-			MWMarkers[destname] = free(MWMarkers[destname])
-		end
-	end
-end
-
 function mod:OnCombatStart(delay)
 	if self.Options.RangeFrame then
 		DBM.RangeCheck:Show(3, bossTank)
@@ -286,8 +275,9 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 		if self.Options.HudMAP then
 			if (args.amount or 1) < 5 then return end
-			MWMarkers[args.destName] = register(DBMHudMap:PlaceRangeMarkerOnPartyMember("timer", args.destName, 5, nil, 1, 1, 1, 0.5):RegisterForAlerts())
-			checkdebuffend(args.destName)
+			if not MWMarkers[args.destName] then
+				MWMarkers[args.destName] = register(DBMHudMap:PlaceRangeMarkerOnPartyMember("timer", args.destName, 5, nil, 1, 1, 1, 0.5):RegisterForAlerts())
+			end
 		end
 	end
 end
@@ -311,6 +301,10 @@ function mod:SPELL_AURA_REMOVED(args)
 		timerGetAway:Cancel()
 		if self.Options.GWHealthFrame then
 			hideDamagedHealthBar()
+		end
+	elseif args:IsSpellID(123705) then
+		if MWMarkers[args.destName] then
+			MWMarkers[args.destName] = free(MWMarkers[args.destName])
 		end
 	end
 end
@@ -416,5 +410,11 @@ function mod:INSTANCE_ENCOUNTER_ENGAGE_UNIT(event)
 	sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_ysjs.mp3") --隱身結束
 	if self.Options.RangeFrame then
 		DBM.RangeCheck:Show(3, bossTank)--Go back to showing only tanks
+	end
+end
+
+function mod:UNIT_DIED(args)
+	if MWMarkers[args.destName] then
+		MWMarkers[args.destName] = free(MWMarkers[args.destName])
 	end
 end

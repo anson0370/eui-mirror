@@ -110,6 +110,7 @@ L:SetWarningLocalization({
 	specWarnyinmo		= "隱沒 > %d <",
 	specWarnfuxian		= "浮現! 新出現>%d<個畏懼之子",
 	specWarnweisuo		= "恐懼畏縮 > %d <",
+	specWarningpreHud	= "恐懼畏縮 即將來臨",
 	MoveWarningLeft		= "← ← 向左一格",
 	MoveWarningRight	= "向右一格 → →",
 	MoveWarningBack		= "→ → 回原位 ← ←"
@@ -133,6 +134,7 @@ L:SetOptionLocalization({
 	specWarnyinmo		= "特殊警告：$spell:120455",
 	specWarnfuxian		= "特殊警告：$spell:120458",
 	specWarnweisuo		= "特殊警告：$spell:120629",
+	specWarningpreHud	= "特殊警告：即將$spell:120629",
 	MoveWarningLeft		= "特殊警告：向左一格",
 	MoveWarningRight	= "特殊警告：向右一格",
 	MoveWarningBack		= "特殊警告：回原位",
@@ -140,5 +142,6 @@ L:SetOptionLocalization({
 	ShaStarMode			= "治療/DPS的恐怖噴散指示使用星辰跑位模式(硬吃一擊以減少跑位)",
 	timerSpoHudCD		= "計時器：下一次$spell:120629或$spell:120519",
 	timerSpoStrCD		= "計時器：下一次$spell:120519或$spell:120672",
-	timerHudStrCD		= "計時器：下一次$spell:120629或$spell:120672"
+	timerHudStrCD		= "計時器：下一次$spell:120629或$spell:120672",
+	SetIconOnWS			= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(120629)
 })

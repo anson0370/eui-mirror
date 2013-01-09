@@ -193,7 +193,6 @@ P["general"].panelWidth = 360
 P["general"].transparent = false
 P["general"].classcolor = false
 P['general'].bottomPanel = false
-P["general"].autoscale = true
 P["general"].uiscale = 0.71
 
 P["skins"] = {

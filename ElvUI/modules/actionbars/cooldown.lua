@@ -17,6 +17,14 @@ local cooldown = getmetatable(ActionButton1Cooldown).__index
 local hooked, active = {}, {};
 local threshold
 
+local TimeColors = {
+	[0] = '|cfffefefe',
+	[1] = '|cfffefefe',
+	[2] = '|cfffefefe',
+	[3] = '|cfffefefe',
+	[4] = '|cfffe0000',
+}
+
 local function Cooldown_OnUpdate(cd, elapsed)
 	if cd.nextUpdate > 0 then
 		cd.nextUpdate = cd.nextUpdate - elapsed
@@ -31,7 +39,7 @@ local function Cooldown_OnUpdate(cd, elapsed)
 		else
 			local timervalue, formatid
 			timervalue, formatid, cd.nextUpdate = A:AuraTimeGetInfo(remain, threshold)		
-			cd.text:SetFormattedText(("%s%s|r"):format(A.TimeColors[formatid], A.TimeFormats[formatid][2]), timervalue)
+			cd.text:SetFormattedText(("%s%s|r"):format(TimeColors[formatid], A.TimeFormats[formatid][2]), timervalue)
 		end
 	else
 		AB:Cooldown_StopTimer(cd)
@@ -176,7 +184,22 @@ end
 
 function AB:UpdateCooldownSettings()
 	threshold = self.db.treshold
-
+	
+	local color = E.db.actionbar.expiringcolor
+	TimeColors[4] = E:RGBToHex(color.r, color.g, color.b) -- color for timers that are soon to expire
+	
+	color = E.db.actionbar.secondscolor
+	TimeColors[3] = E:RGBToHex(color.r, color.g, color.b) -- color for timers that have seconds remaining
+	
+	color = E.db.actionbar.minutescolor
+	TimeColors[2] = E:RGBToHex(color.r, color.g, color.b) -- color for timers that have minutes remaining
+	
+	color = E.db.actionbar.hourscolor
+	TimeColors[1] = E:RGBToHex(color.r, color.g, color.b) -- color for timers that have hours remaining
+	
+	color = E.db.actionbar.dayscolor
+	TimeColors[0] = E:RGBToHex(color.r, color.g, color.b) -- color for timers that have days remaining	
+	
 	if self.db.enablecd then
 		self:EnableCooldown()
 	else
