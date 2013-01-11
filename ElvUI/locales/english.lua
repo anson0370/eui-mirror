@@ -1169,6 +1169,7 @@ end
 
 --euiscript
 do
+	L["Shift+LeftButton set focus"] = true;
 	L['About UI'] = true;
 	L['About Prompt info'] = true;
 	L['About Invite'] = true;
@@ -1383,6 +1384,9 @@ end
 
 --ChatFilter
 do
+	L["Filter the bullshit messages from QuestReport"] = true;
+	L["Shield the player who`s advertising"] = true;
+	L["How many times shall we shield."] = true;
 	L["Filter low-level players chat"] = true;
 	L["Filter the bullshit messages from RaidAlert"] = true;
 	L["Filter the drunk messages:'... has drunked ...'"] = true;

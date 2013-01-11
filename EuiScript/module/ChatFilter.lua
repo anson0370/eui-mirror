@@ -421,8 +421,9 @@ local function ChatFilter_Rubbish(self, event, msg, player, _, _, _, flag, _, _,
 				end
 			end
 			for i = 1, getn(E.global.chatfilter.DangerWords) do
+				local Pos = 0
 				if (strfind(msg, E.global.chatfilter.DangerWords[i])) then
-					local Pos = 0
+					
 					matchs = matchs + 1
 					Pos = strfind(msg, E.global.chatfilter.DangerWords[i], Pos +1)
 					if strfind(msg, E.global.chatfilter.DangerWords[i], Pos + 1) then 

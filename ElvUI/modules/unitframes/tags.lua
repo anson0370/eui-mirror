@@ -401,7 +401,7 @@ end
 
 ElvUF.Tags.Events['tapped'] = 'UNIT_HEALTH_FREQUENT PLAYER_TARGET_CHANGED'
 ElvUF.Tags.Methods['tapped'] = function(unit)
-	local tapped = UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit)
+	local tapped = UnitIsTapped(unit) and not UnitPlayerControlled(unit) and not UnitIsTappedByPlayer(unit) and not UnitIsTappedByAllThreatList(unit)
 	if tapped then
 		return L['Tapped']
 	else

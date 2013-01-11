@@ -1390,6 +1390,7 @@ end
 
 --euiscript
 do
+	L["Shift+LeftButton set focus"] = "Shift+左键设置焦点";
 	L['About UI'] = '界面相关';
 	L['About Prompt info'] = '提示信息相关';
 	L['About Invite'] = '邀请组队相关';
@@ -1598,6 +1599,9 @@ end
 
 --ChatFilter
 do
+	L["Filter the bullshit messages from QuestReport"] = "过滤任务通告信息";
+	L["Shield the player who`s advertising"] = "屏蔽发广告的玩家";
+	L["How many times shall we shield."] = "屏蔽多长时间后解封(分钟)";
 	L["Filter low-level players chat"] = "过滤低等级玩家聊天信息";
 	L["Filter the bullshit messages from RaidAlert"] = '过滤RaidAlert信息';
 	L["Filter the drunk messages:'... has drunked ...'"] = '过滤某人喝醉了...的信息';

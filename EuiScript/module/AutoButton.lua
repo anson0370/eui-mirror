@@ -40,7 +40,7 @@ local frameItem = {
 	[85219] = true, --特殊种子
 	[91806] = true, --传送门
 	['日歌农场'] = true,
-	['日歌農荘'] = true,
+	['日歌農莊'] = true,
 	['Sunsong Ranch'] = true,
 }
 

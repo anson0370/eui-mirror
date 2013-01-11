@@ -416,18 +416,22 @@ P["chatfilter"] = {
 		
 	["FilterAuctionMSG"] = false, --Filter the messages:"Auction created/cancelled."// 过滤“已开始拍卖/拍卖取消.”
 	["FilterRaidAlert"] = false, --Filter the bullshit messages from RaidAlert. // 过滤煞笔RaidAlert的脑残信息
+	["FilterQuestReport"] = true, --Filter the bullshit messages from QuestReport. // 过滤掉烦人的任务通报信息
 	["FilterDuelMSG"] = true, --Filter the messages:"... has defeated/fled from ... in a duel." // 过滤“...在决斗中战胜了...”
 	["FilterDrunkMSG"] = true, --Filter the drunk messages:"... has drunked ..."// 过滤“...喝醉了.”	
 	["FilterAdvertising"] = true, --Filter the advertising messages. // 过滤广告信息
 	["AllowMatchs"] = 2, --How many words can be allowd to use. // 允许的关键字配对个数
+
+	["ShieldAdvPlayer"] = true, --Shield the player who`s advertising. // 屏蔽发广告的玩家
+	["ShieldTimes"] = 30, --How many times shall we shield. // 屏蔽多长时间后解封(分钟)
 		
 	["FilterMultiLine"] = true, --Filter the multiple messages. // 过滤多行信息
 	["AllowLines"] = 3, --How many lines can be allowd. // 允许的最大行数
 	
 	["FilterRepeat"] = true, --Filter the repeat messages. // 过滤重复聊天信息
-	["RepeatAlike"] = 95, --Set the similarity between the messages. // 设定重复信息相似度
+	["RepeatAlike"] = 85, --Set the similarity between the messages. // 设定重复信息相似度
 	["RepeatInterval"] = 30, --Set the interval between the messages. // 设定重复信息间隔时间
-	["RepeatMaxCache"] = 200, --Set the max cache from the messages. // 设定最多缓存多少条消息
+--	["RepeatMaxCache"] = 200, --Set the max cache from the messages. // 设定最多缓存多少条消息
 }
 
 P["clickset"] = {
@@ -582,6 +586,7 @@ P["euiscript"] = {
 	["shift_marking"] = true,
 	["autochangeloot"] = false,
 	['inviteRank'] = 4,
+	['embedfocuser'] = true,
 }
 
 P["combattext"] = {

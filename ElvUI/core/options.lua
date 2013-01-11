@@ -684,6 +684,8 @@ local CNDONATORS = {
 	"santon123",
 	"chenyunlong00",
 	"kaminakeita",
+	"gypazyy",
+	"belthil17",
 }
 
 local DEVELOPERS = {
@@ -731,8 +733,14 @@ for _, testerName in pairs(TESTERS) do
 	TESTER_STRING = TESTER_STRING..LINE_BREAK..testerName
 end
 
+local cni = 0
 for _, cndonatorName in pairs(CNDONATORS) do
-	CNDONATOR_STRING = CNDONATOR_STRING..LINE_BREAK..cndonatorName
+	cni = cni + 1
+	if mod(cni, 10) == 0 then
+		CNDONATOR_STRING = CNDONATOR_STRING..LINE_BREAK..LINE_BREAK..cndonatorName
+	else
+		CNDONATOR_STRING = CNDONATOR_STRING.. (CNDONATOR_STRING ~= "" and ", " or "")..cndonatorName
+	end
 end
 
 E.Options.args.credits = {
@@ -749,6 +757,6 @@ E.Options.args.credits = {
 }
 
 if E.zhlocale then
-	E.Options.args.credits.args.text.name = L['EUI_DONATOR']..'\n\n'..CNDONATOR_STRING
+	E.Options.args.credits.args.text.name = L['EUI_DONATOR']..'\n\n\n'..CNDONATOR_STRING
 	E.Options.args.credits.name = L['Donations:']
 end

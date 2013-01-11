@@ -115,11 +115,10 @@ E.Options.args.euiscript = {
 							type = "toggle",
 							name = L["bossnotes"],
 						},	
-						spacer = {
-							type = 'description',
-							name = '',
-							desc = '',
+						embedfocuser = {
 							order = 18,
+							type = "toggle",
+							name = L["Shift+LeftButton set focus"],
 						},						
 						camerafactor = {
 							order = 19,
@@ -782,6 +781,11 @@ E.Options.args.chatfilter = {
 					type = 'toggle',
 					name = L["Filter the drunk messages:'... has drunked ...'"],
 				},
+				FilterQuestReport = {
+					order = 11,
+					type = 'toggle',
+					name = L["Filter the bullshit messages from QuestReport"],
+				},
 				FilterAdvertising = {
 					order = 12,
 					type = "toggle",
@@ -821,11 +825,16 @@ E.Options.args.chatfilter = {
 					min = 1, max = 300, step = 5,
 					name = L["Set the interval between the messages"],
 				},
-				RepeatMaxCache = {
+				ShieldAdvPlayer = {
 					order = 19,
+					type = "toggle",
+					name = L["Shield the player who`s advertising"],
+				},
+				ShieldTimes = {
+					order = 20,
 					type = "range",
-					min = 1, max = 1000, step = 5,
-					name = L["Set the max cache from the messages"],
+					min = 1, max = 60, step = 1,
+					name = L["How many times shall we shield."],
 				},
 			},
 		},

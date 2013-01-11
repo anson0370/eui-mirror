@@ -3,6 +3,8 @@
 --				     2011/04/29 zhTW Billy				--
 --  http://home.gamer.com.tw/home.php?owner=billy6719	--
 ----------------------------------------------------------
+local E = unpack(ElvUI) -- Import Functions/Constants, Config, Locales
+if not E.db.euiscript.embedfocuser then return; end
 
 local modifier = "shift" -- "shift" , "alt" , "ctrl"  --更改鍵盤搭配
 local mouseButton = "1" -- "1" = 左鍵, "2" = 右鍵, "3" = 中鍵, "4" and "5" --更改滑鼠搭配

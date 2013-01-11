@@ -1394,6 +1394,7 @@ end
 
 --euiscript
 do
+	L["Shift+LeftButton set focus"] = "Shift+左鍵設置焦點";
 	L["Auto change loot"] = "自動更改分配方式";
 	L["InGroup change loot to freecall, InRaid change loot to master"] = "隊伍中改爲自由拾取,團隊中改爲團長分配,界限爲史詩";
 	L['Display spell trigger graphics prompt'] = '技能觸發圖形提示';
@@ -1595,6 +1596,9 @@ end
 
 --ChatFilter
 do
+	L["Filter the bullshit messages from QuestReport"] = "過濾任務通告信息";
+	L["Shield the player who`s advertising"] = "屏蔽發廣告的玩家";
+	L["How many times shall we shield."] = "屏蔽多長時間後解封(分鐘)";
 	L["Filter low-level players chat"] = "過濾低等級玩家聊天信息";
 	L["Filter the bullshit messages from RaidAlert"] = '過濾RaidAlert信息';
 	L["Filter the drunk messages:'... has drunked ...'"] = '過濾某人喝醉了...的信息';
