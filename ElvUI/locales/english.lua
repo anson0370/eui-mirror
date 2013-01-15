@@ -187,6 +187,7 @@ L['Wrap After'] = true;
 L['Your Auras First'] = true;
 
 --Chat
+L['Embed Right'] = true;
 L['Send to Screen'] = true;
 L['Chat EditBox Position'] = true;
 L['Position of the Chat EditBox, if datatexts are disabled this will be forced to be above chat.'] = true;
@@ -721,6 +722,16 @@ L['You can toggle the microbar by using your middle mouse button on the minimap 
 L['You can use the /resetui command to reset all of your movers. You can also use the command to reset a specific mover, /resetui <mover name>.\nExample: /resetui Player Frame'] = true;
 
 --UnitFrames
+L['CCDebuffs'] = true;
+L['TurtleBuffs'] = true;
+L['PlayerBuffs'] = true;
+L['Blacklist'] = true;
+L['Whitelist'] = true;
+L['RaidDebuffs'] = true;
+L['Buff Indicator'] = true;
+L['Buff Indicator (Pet)'] = true;
+L['AuraBar Colors'] = true;
+L['Blacklist (Strict)'] = true;
 L["Transparent Power"] = true;
 L['Show Aura From Other Players'] = true;
 L['Show When Not Active'] = true;
@@ -1180,6 +1191,8 @@ do
 	L["Auto change loot"] = true;
 	L["InGroup change loot to freecall, InRaid change loot to master"] = true;
 	L['Display spell trigger graphics prompt'] = true;
+	L['useIcon style'] = true;
+	L['use Buff Icon'] = true;
 	L["All Mail"] = true;
 	L["All Cash"] = true;
 	L["lfg notification"] = true;

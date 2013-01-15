@@ -509,6 +509,16 @@ end
 
 --UNITFRAMES
 do
+	L['CCDebuffs'] = '控制类DEBUFF';
+	L['TurtleBuffs'] = '减伤类BUFF';
+	L['PlayerBuffs'] = '玩家BUFF';
+	L['Blacklist'] = '黑名单';
+	L['Whitelist'] = '白名单';
+	L['RaidDebuffs'] = '副本DEBUFF';
+	L['Buff Indicator'] = '四角BUFF提示器';
+	L['Buff Indicator (Pet)'] = '四角BUFF提示器(宠物)';
+	L['AuraBar Colors'] = '光环条颜色';
+	L['Blacklist (Strict)'] = true;
 	L["Transparent Power"] = "透明能量条";
 	L['Show Aura From Other Players'] = '显示其它玩家的光环';
 	L['Show When Not Active'] = '当不活动时显示';
@@ -1051,6 +1061,7 @@ end
 
 --Chat
 do
+	L['Embed Right'] = '关闭-绑定到左聊天框';
 	L['Send to Screen'] = '转发至屏幕';
 	L['Chat EditBox Position'] = '聊天编辑框位置';
 	L['Position of the Chat EditBox, if datatexts are disabled this will be forced to be above chat.'] = '聊天编辑框位置,如果底部的信息文字被禁用的话,将会强制显示在聊天框顶部';
@@ -1401,6 +1412,8 @@ do
 	L["Auto change loot"] = "自动更改分配方式";
 	L["InGroup change loot to freecall, InRaid change loot to master"] = "队伍中改为自由拾取,团队中改为团长分配,界限为史诗";
 	L['Display spell trigger graphics prompt'] = '技能触发图形提示';
+	L['useIcon style'] = '使用图标样式';
+	L['use Buff Icon'] = '使用BUFF的图标';
 	L["All Mail"] = '所有信件';
 	L["All Cash"] = '所有金币';
 	L["lfg notification"] = "随机本奖励提示";

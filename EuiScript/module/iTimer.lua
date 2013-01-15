@@ -47,7 +47,7 @@ local function SAOTimer_OnUpdate(self, elapsed)
 	local timeleft, spellname, count = SAO_UnitBuff(self.spellID, self.checkwho)
 	if timeleft and E.db.sao.onlyTime ~= 'no' then
 		spellname = (E.db.sao.onlyTime == 'time' or self.showicon) and "" or format("|cff3366ff%s|r ", spellname)
-		self.text:SetText(spellname..floor(timeleft).." s")
+		self.text:SetText(spellname..floor(timeleft))
 	else
 		self.text:SetText("")
 	end
@@ -85,6 +85,7 @@ function SAO_ShowTimer(...)
 	if not SAO[spellID] then
 		SAO[spellID] = {}
 		SAO[spellID].timer = CreateFrame("frame", spellID)
+		SAO[spellID].timer:SetFrameStrata("DIALOG")
 		SAO[spellID].timer.spellID = spellID
 		SAO[spellID].timer.checkwho = checkwho
 		SAO[spellID].timer.showicon = showicon
@@ -102,16 +103,17 @@ function SAO_ShowTimer(...)
 	end
 
 	SAO[spellID].timer.text:ClearAllPoints()
---	if E.db.sao.spells[class][spellID] and E.db.sao.spells[class][spellID].width then
---		overlay:SetSize(E.db.sao.spells[class][spellID].width, E.db.sao.spells[class][spellID].height)
---	end
 	
 	if SAO[spellID].timer.showicon then
 		overlay:SetSize(E.db.sao.iconSize, E.db.sao.iconSize)
 		overlay:ClearAllPoints()
-		overlay:SetPoint("TOP", SAOF, "BOTTOM", ( iconNum - 1 ) * ( E.db.sao.iconSize + E.db.sao.iconGap ), -16)
+		if E.db.sao.spells[E.myclass][spellID] then
+			overlay:SetPoint("TOP", SAOF, "BOTTOM", E.db.sao.spells[E.myclass][spellID].offsetX, E.db.sao.spells[E.myclass][spellID].offsetY)
+		else	
+			overlay:SetPoint("TOP", SAOF, "BOTTOM", ( iconNum - 1 ) * ( E.db.sao.iconSize + E.db.sao.iconGap ), -16)
+		end
 		SAO[spellID].timer.count:SetPoint("BOTTOMRIGHT", overlay, "BOTTOMRIGHT", -1, 1)
-		SAO[spellID].timer.text:SetPoint("TOP", overlay, "BOTTOM")
+		SAO[spellID].timer.text:SetPoint("CENTER", overlay, "CENTER")
 	elseif SAO[spellID].position ~= position then
 		SAO[spellID].timer.text:SetPoint("CENTER", overlay, "BOTTOM", 135, 0)
 	else

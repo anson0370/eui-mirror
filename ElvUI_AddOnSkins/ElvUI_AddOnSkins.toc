@@ -2,7 +2,7 @@
 ## Title: |cffC495DDEUI|r|cff1784d1ElvUI |rAddOnSkins
 ## Title-zhCN: |cffC495DDEUI|r美化皮肤模块
 ## Title-zhTW: |cffC495DDEUI|r美化皮膚模塊
-## Version: 1.07
+## Version: 1.08
 ## Author: Sortokk, Azilroka, others in Credits.txt
 ## RequiredDeps: ElvUI
 ## OptionalDeps: Skada, ElvUI_SLE

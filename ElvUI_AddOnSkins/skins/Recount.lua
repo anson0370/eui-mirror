@@ -51,7 +51,7 @@ local function SkinRecount(self)
 
 	Recount.UpdateBarTextures = function(self)
 		for k, v in pairs(Recount.MainWindow.Rows) do
-			v.StatusBar:SetStatusBarTexture(E["media"].normTex)
+			v.StatusBar:SetStatusBarTexture(AS.LSM:Fetch("statusbar",E.private.general.normTex))
 			v.StatusBar:GetStatusBarTexture():SetHorizTile(false)
 			v.StatusBar:GetStatusBarTexture():SetVertTile(false)
 			if IsAddOnLoaded("Tukui") then
@@ -65,7 +65,7 @@ local function SkinRecount(self)
 	Recount.SetupBar_ = Recount.SetupBar
 	Recount.SetupBar = function(self, bar)
 		self:SetupBar_(bar)
-		bar.StatusBar:SetStatusBarTexture(E["media"].normTex)
+		bar.StatusBar:SetStatusBarTexture(AS.LSM:Fetch("statusbar",E.private.general.normTex))
 	end
 
 	Recount.CreateFrame_ = Recount.CreateFrame
@@ -123,29 +123,6 @@ local function SkinRecount(self)
 	AS:Desaturate(Recount.DetailWindow.LeftButton)
 	AS:Desaturate(Recount.DetailWindow.ReportButton)
 	AS:Desaturate(Recount.DetailWindow.SummaryButton)
-
-	if AS:CheckOption("EmbedRecount") then AS:EmbedRecount() end
-	
 end
 
 AS:RegisterSkin(name,SkinRecount)
-
-function AS:EmbedRecount()
-	local Recount = _G.Recount
-
-	if (AS:CheckOption("EmbedOoC")) then
-		if (AS:CheckOption("EmbedRecount")) then
-			Recount_MainWindow:Hide()
-		end
-	end
-	Recount:LockWindows(true)
-	Recount_MainWindow:ClearAllPoints()
-	self:EmbedRecountResize()
-	if RightChatPanel then Recount_MainWindow:SetParent(RightChatPanel) end
-	Recount.MainWindow:SetFrameStrata("HIGH")
-end
-
-function AS:EmbedRecountResize()
-	Recount_MainWindow:SetPoint("TOPLEFT", EmbeddingWindow,"TOPLEFT", 0, 7)
-	Recount_MainWindow:SetPoint("BOTTOMRIGHT", EmbeddingWindow,"BOTTOMRIGHT", 0, 2)
-end

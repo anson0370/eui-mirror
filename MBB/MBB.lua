@@ -1,61 +1,4 @@
---[[
-
-	MBB Author: Tunhadil, Fixed by Pericles for patch 2.23 onwards
-	Addon to reduces minimap buttons and makes them accessible through a menu!
-	fixed by yossa for patch 4.0.1
-]]
-
---[[
-
-v0.50 - Fixed a few loose button issues, and child/parent frame issues that were causing stack overflows
-
-v0.51 - Changed bar strata to HIGH from LOW to put it in front of things like GRID.
-
-v0.52 - Changed TOC for patch 2.3
-
-v0.60 - Fixed SecureStateAnchor bug for WotLK
-
-v0.61 - Added exclusion for DAGAssist
-
-v0.62 - Fixed stack overflow at line 438
-
-v0.63 - Move button strata from high to medium
-
-v1.00 - Fixes by Yossa for Patch 4.0.1
-
-v1.01 - Replaced old Variables_loaded event with Player_login
-
-v1.10 - replaced getglobals with _G[
-          Fixed saving of position on reload
-		Added French Localisation thanks to Elchizen for providing the data
-		
-v1.11 - Fixed stack overflow issue
-
-v1.12 - Elchizen's localisation had bug and forced it to be in French
-
-v1.13 - Update for patch 4.2
-
-v1.20 - Update for patch 4.3
-
-v1.31 - Update for patch 5.0.4
-
-v1.32 - Update to ignore other Add-On's minimap elements.
-
-v1.33 - Fixed saving button position when detached.
-
-v1.34 - Added another Slash Handler.
-		Fix a reset position issue.
-		Add additional buttons to ignore.
-		Drop some explicitly included buttons because they weren't working.
-		
-v1.35 - Added ignore for Gatherer's Archaeology Nodes.
-		
-v1.36 - Added ignore for Zygor Guides.
-		
-v1.37 - Update for 5.1.
-
---]]
-
+local E, L, V, P, G,_ = unpack(ElvUI)
 MBB_Version = "1.37";
 
 -- Setup some variable for debugging.
@@ -146,6 +89,7 @@ function MBB_OnLoad()
 --	hooksecurefunc("SecureHandlerClickTemplate_OnEnter", MBB_SecureOnEnter);
 --	hooksecurefunc("SecureHandlerClickTemplate_OnLeave", MBB_SecureOnLeave);
 	
+	
 	if( AceLibrary ) then
 		if( AceLibrary:HasInstance(MBB_FuBar_MinimapContainer) ) then
 			AceLibrary(MBB_FuBar_MinimapContainer).oldAddPlugin = AceLibrary(MBB_FuBar_MinimapContainer).AddPlugin;
@@ -189,7 +133,7 @@ function MBB_OnLoad()
 	SLASH_MBB1 = "/mbb";
 	SLASH_MBB2 = "/minimapbuttonbag";
 	SLASH_MBB3 = "/mmbb";
-	SlashCmdList["MBB"] = MBB_SlashHandler;
+	SlashCmdList["MBB"] = MBB_SlashHandler;	
 end
 
 function MBB_SlashHandler(cmd)
@@ -323,6 +267,35 @@ function MBB_TestFrame(name)
 	return hasClick, hasMouseUp, hasMouseDown, hasEnter, hasLeave;
 end
 
+local function SkinButton(frame)
+	frame:SetPushedTexture(nil)
+	frame:SetHighlightTexture(nil)
+	frame:SetDisabledTexture(nil)
+	frame:Size(24)
+
+	for i = 1, frame:GetNumRegions() do
+		local region = select(i, frame:GetRegions())
+		if(region:GetObjectType() == "Texture") then
+			local tex = region:GetTexture()
+
+			if(tex and (tex:find("Border") or tex:find("Background") or tex:find("AlphaMask"))) then
+				region:SetTexture(nil)
+			else
+				region:ClearAllPoints()
+				region:Point("TOPLEFT", frame, "TOPLEFT", 2, -2)
+				region:Point("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -2, 2)
+				region:SetTexCoord( 0.1, 0.9, 0.1, 0.9 )
+				region:SetDrawLayer( "ARTWORK" )
+				if(frame:GetName() == "PS_MinimapButton") then
+					region.SetPoint = E.dummy
+				end
+			end
+		end
+	end
+
+	frame:SetTemplate("Default")
+end
+
 function MBB_OnEvent(self, event, ...)
 	if( MBB_Options ) then
 		for opt,val in pairs(MBB_DefaultOptions) do
@@ -337,6 +310,8 @@ function MBB_OnEvent(self, event, ...)
 		MBB_Options = MBB_DefaultOptions;
 	end
 	MBB_SetButtonPosition();
+	if not IsAddOnLoaded('ElvUI') then return; end
+	SkinButton(_G['MBB_MinimapButtonFrame'])
 end
 
 function MBB_PrepareButton(name)

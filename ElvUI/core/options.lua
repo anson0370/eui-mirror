@@ -686,6 +686,8 @@ local CNDONATORS = {
 	"kaminakeita",
 	"gypazyy",
 	"belthil17",
+	"deathduo",
+	"吧嗒吧嗒大学生",
 }
 
 local DEVELOPERS = {

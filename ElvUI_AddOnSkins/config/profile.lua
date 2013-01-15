@@ -70,7 +70,6 @@ V["skins"]["addons"] = {
 	["SpineCounterSkin"] = true,
 	["SpySkin"] = true,
 	["SwatterSkin"] = true,
-	["TellMeWhenSkin"] = true,
 	["TinyDPSSkin"] = true,
 	["TitanPanelSkin"] = true,
 	["TradeSkillDWSkin"] = true,
@@ -95,5 +94,6 @@ V["skins"]["addons"] = {
 	["DBMSkinHalf"] = false,
 	["RecountBackdrop"] = true,
 	["SkadaBackdrop"] = true,
+	["EmbedRight"] = true,
 	["MinimapButton"] = true,
 }

@@ -170,9 +170,6 @@ local Skins = {
 	["PetBattleTeamsSkin"] = {
 		["addon"] = "PetBattleTeams",
 	},
-	--["PoisonerSkin"] = {
-	--	["addon"] = "Poisoner",
-	--},
 	["PoMTrackerSkin"] = {
 		["addon"] = "PoMTracker",
 	},
@@ -195,9 +192,6 @@ local Skins = {
 	["RaidBuffStatusSkin"] = {
 		["buttonText"] = "Raid Buff Status",
 		["addon"] = "RaidBuffStatus",
-	},
-	["RavenSkin"] = {
-		["addon"] = "Raven",
 	},
 	["RecountSkin"] = {
 		["addon"] = "Recount",
@@ -241,9 +235,6 @@ local Skins = {
 		["buttonText"] = "Tukui Combo",
 		["addon"] = "tCombo",
 	},
-	--["TellMeWhenSkin"] = {
-	--	["addon"] = "TellMeWhen",
-	--},
 	["TinyDPSSkin"] = {
 		["addon"] = "TinyDPS",
 	},
@@ -328,7 +319,7 @@ function AS:GenerateOptions()
       end
       return iter
     end
-    E.Options.args.skins.args.addonEnable = {
+     E.Options.args.skins.args.addonEnable = {
     	order = 4,
 		type = 'toggle',
 		name = 'AddOns',
@@ -448,6 +439,12 @@ function AS:GenerateOptions()
 						desc = L['TOGGLESKIN_DESC'],
 						order = 12,
 						disabled = function() return not IsAddOnLoaded("CoolLine") end,
+					},
+					EmbedRight = {
+						type = 'toggle',
+						name = 'Embed Right',
+						desc = L['TOGGLESKIN_DESC'],
+						order = 13,
 					},
 				}
 			}

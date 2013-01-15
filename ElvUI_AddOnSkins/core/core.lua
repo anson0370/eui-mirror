@@ -56,8 +56,8 @@ function AS:Initialize()
 	E.private.skins.addons['AlwaysTrue'] = true
 
 	if IsAddOnLoaded("Tukui_UIPackages_Skins") or IsAddOnLoaded("Tukui_ElvUI_Skins") then E:StaticPopup_Show("OLD_SKIN_PACKAGE") end
-	self.font = E["media"].normFont
-	self.pixelFont = LSM:Fetch("font","EUI")
+	self.font = LSM:Fetch("font",E.db.general.font)
+	self.pixelFont = IsAddOnLoaded("DSM") and LSM:Fetch("font","Tukui Pixel") or LSM:Fetch("font","EUI")
 	self.datatext_font = LSM:Fetch("font",E.db.datatexts.font)
 
 	self:GenerateOptions()
@@ -152,7 +152,7 @@ function AS:SkinFrameD(frame, override)
 end
 
 function AS:SkinStatusBar(bar, ClassColor)
-	bar:SetStatusBarTexture(E["media"].normTex)
+	bar:SetStatusBarTexture(LSM:Fetch("statusbar",E.private.general.normTex))
 	if ClassColor then
 		bar:CreateBackdrop("ClassColor")
 		local color = RAID_CLASS_COLORS[AS.ccolor]
@@ -175,7 +175,7 @@ function AS:SkinIconButton(self, strip, style, shrinkIcon)
 	elseif self:GetName() and _G[self:GetName().."Icon"] then
 		icon = _G[self:GetName().."Icon"]
 	end
-
+	icon:SetDrawLayer("OVERLAY")
 	if icon then
 		icon:SetTexCoord(.08,.88,.08,.88)
 

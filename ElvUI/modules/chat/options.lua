@@ -288,7 +288,15 @@ E.Options.args.chat = {
 					set = function(info, value) E.private.skins.addons.EmbedOoC = value; E:StaticPopup_Show("PRIVATE_RL") end,
 					get = function() return E.private.skins.addons.EmbedOoC end,
 					disabled = function() return not IsAddOnLoaded("ElvUI_AddOnSkins") end,
-				},					
+				},
+				EmbedRight = {
+					type = 'toggle',
+					name = L['Embed Right'],
+					order = 202,
+					set = function(info, value) E.private.skins.addons.EmbedRight = value; E:StaticPopup_Show("PRIVATE_RL") end,
+					get = function() return E.private.skins.addons.EmbedRight end,
+					disabled = function() return not IsAddOnLoaded("ElvUI_AddOnSkins") end,					
+				},
 			},
 		},
 		panel = {

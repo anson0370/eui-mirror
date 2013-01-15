@@ -509,25 +509,45 @@ local function UpdateSAOGroup()
 		guiInline = true,
 		args = {
 			enable = {
+				order = 1,
 				name = L["Enable"],
 				type = "toggle",
 				get = function() return E.db.sao['spells'][E.myclass][selectedspell].enable end,
 				set = function(info, value) E.db.sao['spells'][E.myclass][selectedspell].enable = value; UpdateSAOGroup(); end
 			},
 			texture = {
+				order = 2,
 				name = L["Textures"], dialogControl = 'LSM30_Background',
 				type = "select",
 				get = function() return E.db.sao['spells'][E.myclass][selectedspell].texture end,
 				set = function(info, value) E.db.sao['spells'][E.myclass][selectedspell].texture = value; UpdateSAOGroup(); end,
+				disabled = function() return E.db.sao.useBuffIcon end,
 				values = LibStub("LibSharedMedia-3.0"):HashTable("sao"),
 			},
 			position = {
+				order = 3,
 				name = L['Position'],
 				type = "select",
 				get = function() return E.db.sao['spells'][E.myclass][selectedspell].position end,
 				set = function(info, value) E.db.sao['spells'][E.myclass][selectedspell].position = value; UpdateSAOGroup(); end,
 				values = positionValues,
 			},
+			offsetX = {
+				order = 4,
+				type = 'range',
+				name = L['X Offset'],
+				min = -800, max = 800, step = 1,
+				get = function() return E.db.sao['spells'][E.myclass][selectedspell].offsetX end,
+				set = function(info, value) E.db.sao['spells'][E.myclass][selectedspell].offsetX = value; UpdateSAOGroup(); end,
+			},
+			offsetY = {
+				order = 5,
+				type = 'range',
+				name = L['Y Offset'],
+				min = -600, max = 600, step = 1,
+				get = function() return E.db.sao['spells'][E.myclass][selectedspell].offsetY end,
+				set = function(info, value) E.db.sao['spells'][E.myclass][selectedspell].offsetY = value; UpdateSAOGroup(); end,
+			},			
 		},				
 	}	
 end
@@ -565,21 +585,19 @@ E.Options.args.sao = {
 						['time'] = L['Remaining Time'],
 						['name'] = L["Show spell name:"].. L['Remaining Time'],
 					},
-				},			
+				},
 				offsetX = {
 					order = 4,
 					type = 'range',
 					name = L['X Offset'],
-					min = -500, max = 500, step = 1,
-					disabled = function() return E.db.sao.onlyTime == 'no' end,
+					min = -800, max = 800, step = 1,
 				},
 				offsetY = {
 					order = 5,
 					type = 'range',
 					name = L['Y Offset'],
-					min = -500, max = 500, step = 1,
-					disabled = function() return E.db.sao.onlyTime == 'no' end,
-				},		
+					min = -600, max = 600, step = 1,
+				},					
 				fontSize = {
 					order = 6,
 					type = 'range',
@@ -588,31 +606,41 @@ E.Options.args.sao = {
 				},
 			},
 		},
---[[ 		useIcon = {
+ 		useIcon = {
 			order = 6,
-			type = 'toggle',
-			name = 'useIcon',
-		},		
-		useBuffIcon = {
-			order = 7,
-			type = 'toggle',
-			name = 'useBuffIcon',
-			disabled = function() return E.db.sao.useIcon end,
+			type = 'group',
+			name = L['useIcon style'],
+			guiInline = true,
+			disabled = function() return not E.db.sao.enable end,
+			args = {
+				useIcon = {
+					order = 1,
+					type = 'toggle',
+					name = L['useIcon style'],
+					set = function(info, value) if value then E.db.sao.useIcon = value; E.db.sao.useBuffIcon = value; end end,
+				},
+				useBuffIcon = {
+					order = 7,
+					type = 'toggle',
+					name = L['use Buff Icon'],
+					disabled = function() return not E.db.sao.useIcon end,
+				},
+				iconSize = {
+					order = 8,
+					type = 'range',
+					name = L["Icon Size"],
+					min = 10, max = 100, step = 1,
+					disabled = function() return not E.db.sao.useIcon end,
+				},
+				iconGap = {
+					order = 9,
+					type = 'range',
+					name = L['X Spacing'],
+					min = 1, max = 20, step = 1,
+					disabled = function() return not E.db.sao.useIcon end,
+				}, 			
+			},
 		},
-		iconSize = {
-			order = 8,
-			type = 'range',
-			name = 'iconSize',
-			min = 10, max = 100, step = 1,
-			disabled = function() return not E.db.sao.useIcon end,
-		},
-		iconGap = {
-			order = 9,
-			type = 'range',
-			name = 'iconGap',
-			min = 1, max = 20, step = 1,
-			disabled = function() return not E.db.sao.useIcon end,
-		}, ]]
 		spell = {
 			order = 100,
 			type = 'group',

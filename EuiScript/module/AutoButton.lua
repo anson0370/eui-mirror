@@ -165,6 +165,7 @@ local function CreateButton(name)
 	AutoButton:SetAttribute("type", "item")
 	AutoButton:SetAlpha(0)
 	AutoButton:EnableMouse(false)
+	AutoButton:RegisterForClicks('AnyUp')
 
 	-- Texture for our button
 	AutoButton.t = AutoButton:CreateTexture(nil, "OVERLAY", nil)
