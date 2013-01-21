@@ -210,6 +210,8 @@ function CH:StyleChat(frame)
 	local name = frame:GetName()
 	_G[name.."TabText"]:FontTemplate(LSM:Fetch("font", self.db.tabFont), self.db.tabFontSize, self.db.tabFontOutline)
 	
+	if not frame.oldAlpha then frame.oldAlpha = 1 end
+	
 	if frame.styled then return end
 	
 	frame:SetFrameLevel(4)
@@ -1139,7 +1141,7 @@ function CH:SetupChat(event, ...)
 		
 		if id > NUM_CHAT_WINDOWS then
 			frame:SetScript("OnEvent", CH.FloatingChatFrame_OnEvent)
-		else
+		elseif id ~= 2 then
 			frame:SetScript("OnEvent", CH.ChatFrame_OnEvent)
 		end
 		

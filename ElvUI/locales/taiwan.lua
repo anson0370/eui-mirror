@@ -1185,6 +1185,7 @@ end
 
 --Misc
 do
+	L['Link All'] = '物品通告';
 	L['Bags'] = "背包";
 	L['Totems'] = "圖騰";
 	L['No Guild'] = "無公會";

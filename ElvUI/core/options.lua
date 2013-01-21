@@ -688,6 +688,14 @@ local CNDONATORS = {
 	"belthil17",
 	"deathduo",
 	"吧嗒吧嗒大学生",
+	"路过的羽毛",
+	"open1648",
+	"bigzmeng617",
+	"geenar",
+	"fxymike",
+	"叶落心安",
+	"duyu75526150",
+	"jiangxuxing1985_",
 }
 
 local DEVELOPERS = {

@@ -505,6 +505,7 @@ L["This texture will get used on objects like chat windows and dropdown menus."]
 L["Value Color"] = true;
 
 --Misc
+L['Link All'] = true;
 L['Bags'] = true;
 L['Totems'] = true;
 L['No Guild'] = true;

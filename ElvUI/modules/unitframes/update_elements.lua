@@ -472,6 +472,7 @@ end
 
 function UF:UpdateHoly(event, unit, powerType)
 	if (self.unit ~= unit or (powerType and powerType ~= 'HOLY_POWER')) then return end
+
 	local db = self.db
 	if not db then return; end
 	local BORDER = E.Border
@@ -509,19 +510,19 @@ function UF:UpdateHoly(event, unit, powerType)
 		else
 			self.HolyPower[i]:SetAlpha(.2)
 		end
-		
-		self.HolyPower[i]:SetWidth(E:Scale(self.HolyPower:GetWidth() - (E.PixelMode and 4 or 2))/maxHolyPower)	
-		self.HolyPower[i]:ClearAllPoints()
-		if i == 1 then
-			self.HolyPower[i]:SetPoint("LEFT", self.HolyPower)
-		else
-			if USE_MINI_CLASSBAR then
-				self.HolyPower[i]:Point("LEFT", self.HolyPower[i-1], "RIGHT", maxHolyPower == 5 and 7 or 13, 0)
+		if not InCombatLockdown() then
+			self.HolyPower[i]:SetWidth(E:Scale(self.HolyPower:GetWidth() - (E.PixelMode and 4 or 2))/maxHolyPower)	
+			self.HolyPower[i]:ClearAllPoints()
+			if i == 1 then
+				self.HolyPower[i]:SetPoint("LEFT", self.HolyPower)
 			else
-				self.HolyPower[i]:Point("LEFT", self.HolyPower[i-1], "RIGHT", 1, 0)
+				if USE_MINI_CLASSBAR then
+					self.HolyPower[i]:Point("LEFT", self.HolyPower[i-1], "RIGHT", maxHolyPower == 5 and 7 or 13, 0)
+				else
+					self.HolyPower[i]:Point("LEFT", self.HolyPower[i-1], "RIGHT", 1, 0)
+				end
 			end
 		end
-
 		if i > maxHolyPower then
 			self.HolyPower[i]:Hide()
 			self.HolyPower[i].backdrop:SetAlpha(0)
@@ -535,37 +536,41 @@ end
 function UF:UpdateShadowOrbs(event, unit, powerType)
 	local frame = self:GetParent()
 	local db = frame.db
-		
-	local point, _, anchorPoint, x, y = frame.Health:GetPoint()
-	if self:IsShown() and point then
-		if db.classbar.fill == 'spaced' then
-			frame.Health:SetPoint(point, frame, anchorPoint, x, -7)
-		else
-			frame.Health:SetPoint(point, frame, anchorPoint, x, -13)
+
+	if not InCombatLockdown() then
+		local point, _, anchorPoint, x, y = frame.Health:GetPoint()
+		if self:IsShown() and point then
+			if db.classbar.fill == 'spaced' then
+				frame.Health:SetPoint(point, frame, anchorPoint, x, -7)
+			else
+				frame.Health:SetPoint(point, frame, anchorPoint, x, -13)
+			end
+		elseif point then
+			frame.Health:SetPoint(point, frame, anchorPoint, x, -2)
 		end
-	elseif point then
-		frame.Health:SetPoint(point, frame, anchorPoint, x, -2)
-	end
 	
-	UF:UpdatePlayerFrameAnchors(frame, self:IsShown())
+		UF:UpdatePlayerFrameAnchors(frame, self:IsShown())
+	end
 end	
 
 function UF:UpdateArcaneCharges(event, unit, arcaneCharges, maxCharges)
 	local frame = self:GetParent()
 	local db = frame.db
-		
-	local point, _, anchorPoint, x, y = frame.Health:GetPoint()
-	if self:IsShown() and point then
-		if db.classbar.fill == 'spaced' then
-			frame.Health:SetPoint(point, frame, anchorPoint, x, -7)
-		else
-			frame.Health:SetPoint(point, frame, anchorPoint, x, -13)
+
+	if not InCombatLockdown() then
+		local point, _, anchorPoint, x, y = frame.Health:GetPoint()
+		if self:IsShown() and point then
+			if db.classbar.fill == 'spaced' then
+				frame.Health:SetPoint(point, frame, anchorPoint, x, -7)
+			else
+				frame.Health:SetPoint(point, frame, anchorPoint, x, -13)
+			end
+		elseif point then
+			frame.Health:SetPoint(point, frame, anchorPoint, x, -2)
 		end
-	elseif point then
-		frame.Health:SetPoint(point, frame, anchorPoint, x, -2)
-	end
-	
-	UF:UpdatePlayerFrameAnchors(frame, self:IsShown())
+		
+		UF:UpdatePlayerFrameAnchors(frame, self:IsShown())
+	end	
 end	
 
 function UF:UpdateHarmony()
@@ -614,20 +619,21 @@ function UF:UpdateHarmony()
 	
 	local colors = ElvUF.colors.harmony
 	for i = 1, maxBars do		
-		self[i]:SetHeight(self:GetHeight())	
-		self[i]:SetWidth((self:GetWidth() - (maxBars - 1)) / maxBars)	
-		self[i]:ClearAllPoints()
+		if not InCombatLockdown() then
+			self[i]:SetHeight(self:GetHeight())	
+			self[i]:SetWidth((self:GetWidth() - (maxBars - 1)) / maxBars)	
+			self[i]:ClearAllPoints()
 		
-		if i == 1 then
-			self[i]:SetPoint("LEFT", self)
-		else
-			if USE_MINI_CLASSBAR then
-				self[i]:Point("LEFT", self[i-1], "RIGHT", E.PixelMode and (maxBars == 5 and 4 or 7) or (maxBars == 5 and 6 or 9), 0)
+			if i == 1 then
+				self[i]:SetPoint("LEFT", self)
 			else
-				self[i]:Point("LEFT", self[i-1], "RIGHT", 1, 0)
-			end
+				if USE_MINI_CLASSBAR then
+					self[i]:Point("LEFT", self[i-1], "RIGHT", E.PixelMode and (maxBars == 5 and 4 or 7) or (maxBars == 5 and 6 or 9), 0)
+				else
+					self[i]:Point("LEFT", self[i-1], "RIGHT", 1, 0)
+				end
+			end	
 		end	
-				
 		self[i]:SetStatusBarColor(colors[i][1], colors[i][2], colors[i][3])
 	end
 end
@@ -637,6 +643,7 @@ function UF:UpdateShardBar(spec)
 	local db = frame.db
 	
 	if not db then return; end
+	
 	local maxBars = self.number
 	
 	for i=1, UF['classMaxResourceBar'][E.myclass] do
@@ -646,25 +653,29 @@ function UF:UpdateShardBar(spec)
 			self[i].backdrop:Hide()
 		end
 	end
-
-	if db.classbar.fill == 'spaced' and maxBars == 1 then
-		self:ClearAllPoints()
-		self:Point("LEFT", frame.Health.backdrop, "TOPLEFT", 8, 0)
-	elseif db.classbar.fill == 'spaced' then
-		self:ClearAllPoints()
-		self:Point("CENTER", frame.Health.backdrop, "TOP", -12, -2)
-	end
 	
-	local SPACING = db.classbar.fill == 'spaced' and 11 or 1
-	for i = 1, maxBars do
-		self[i]:SetHeight(self:GetHeight())	
-		self[i]:SetWidth(E:Scale(self:GetWidth() - E.Border)/maxBars)	
-		self[i]:ClearAllPoints()
-		if i == 1 then
-			self[i]:SetPoint("LEFT", self)
-		else
-			self[i]:Point("LEFT", self[i-1], "RIGHT", SPACING , 0)
-		end		
+	if not InCombatLockdown() then
+		if db.classbar.fill == 'spaced' and maxBars == 1 then
+			self:ClearAllPoints()
+			self:Point("LEFT", frame.Health.backdrop, "TOPLEFT", 8, 0)
+		elseif db.classbar.fill == 'spaced' then
+			self:ClearAllPoints()
+			self:Point("CENTER", frame.Health.backdrop, "TOP", -12, -2)
+		end
+		
+		local SPACING = db.classbar.fill == 'spaced' and 11 or 1
+		for i = 1, maxBars do
+			self[i]:SetHeight(self:GetHeight())	
+			self[i]:SetWidth(E:Scale(self:GetWidth() - E.Border)/maxBars)	
+			self[i]:ClearAllPoints()
+			if i == 1 then
+				self[i]:SetPoint("LEFT", self)
+			else
+				self[i]:Point("LEFT", self[i-1], "RIGHT", SPACING , 0)
+			end		
+		end
+		
+		UF:UpdatePlayerFrameAnchors(frame, self:IsShown())
 	end
 	
 	if maxBars == 1 and db.classbar.text then
@@ -672,9 +683,7 @@ function UF:UpdateShardBar(spec)
 		self[1].Text:SetText(power or '')
 	else
 		self[1].Text:SetText('')
-	end	
-	
-	UF:UpdatePlayerFrameAnchors(frame, self:IsShown())
+	end		
 end
 
 function UF:EclipseDirection()

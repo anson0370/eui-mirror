@@ -17,13 +17,14 @@ local function LoadSkin()
 			if not bar.injected then
 					bar.ApplyStyle=function()
 					local frame = bar.frame
-					local tbar = _G[frame:GetName().."Bar"]
-					local spark = _G[frame:GetName().."BarSpark"]
-					local texture = _G[frame:GetName().."BarTexture"]
-					local icon1 = _G[frame:GetName().."BarIcon1"]
-					local icon2 = _G[frame:GetName().."BarIcon2"]
-					local name = _G[frame:GetName().."BarName"]
-					local timer = _G[frame:GetName().."BarTimer"]
+					local frameName = frame:GetName()
+					local tbar = _G[frameName.."Bar"]
+					local spark = _G[frameName.."BarSpark"]
+					local texture = _G[frameName.."BarTexture"]
+					local icon1 = _G[frameName.."BarIcon1"]
+					local icon2 = _G[frameName.."BarIcon2"]
+					local name = _G[frameName.."BarName"]
+					local timer = _G[frameName.."BarTimer"]
 					
 					if not (icon1.overlay) then
 						icon1.overlay = CreateFrame("Frame", "$parentIcon1Overlay", tbar)
@@ -123,7 +124,7 @@ local function LoadSkin()
 					tbar:SetAlpha(1)
 					frame:SetAlpha(1)
 					texture:SetAlpha(1)
-					frame:Show()
+					if not frame:IsShown() then frame:Show() end
 					bar:Update(0)
 					bar.injected=true
 				end

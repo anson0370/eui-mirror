@@ -7,6 +7,8 @@ local iconSize = 30;
 
 local max = math.max
 local tinsert = table.insert
+local sf = string.format
+local gsub = string.gsub
 
 local sq, ss, sn
 local OnEnter = function(self)
@@ -252,6 +254,53 @@ function M:LOOT_OPENED(event, autoloot)
 	lootFrame:Width(max(w, t))
 end
 
+local output = { }
+function M:LinkLoot()
+	local inGroup, inRaid, inPartyLFG = IsInGroup(), IsInRaid(), IsPartyLFG()
+	local output, key, buffer = output, 1
+	local channel = 'SAY'
+	
+	if isGroup then
+		if inPartyLFG then
+			channel = "INSTANCE_CHAT"
+		else
+			channel = "PARTY"
+		end
+	elseif isRaid then
+		if inPartyLFG then
+			channel = "INSTANCE_CHAT"
+		else
+			channel = "RAID"
+		end
+	end
+	
+	if UnitExists('target') then
+		output[1] = sf('%s:', UnitName('target'))
+	end
+
+	for i=1, GetNumLootItems() do
+		if GetLootSlotType(i) == LOOT_SLOT_ITEM then 
+			local texture, item, quantity, rarity = GetLootSlotInfo(i)
+			local link = GetLootSlotLink(i)
+			if rarity >= 2 then
+				buffer = sf('%s%s%s', (output[key] and output[key].." " or ""), (quantity > 1 and quantity.."x" or ""), link)
+				if strlen(buffer) > 255 then
+					key = key + 1
+					output[key] = (quantity > 1 and quantity.."x" or "")..link
+				else
+					output[key] = buffer
+				end
+			end
+		end
+	end
+
+	for k, v in pairs(output) do
+		v  = gsub(v, "\n", " ", 1, true) -- DIE NEWLINES, DIE A HORRIBLE DEATH
+		SendChatMessage(v, channel)
+		output[k] = nil
+	end
+end
+
 function M:LoadLoot()
 	if not E.private.general.loot then return end
 	lootFrameHolder = CreateFrame("Frame", "ElvLootFrameHolder", E.UIParent)
@@ -274,6 +323,24 @@ function M:LoadLoot()
 		StaticPopup_Hide"CONFIRM_LOOT_DISTRIBUTION"
 		CloseLoot()
 	end)
+	
+	lootFrame.linkAll = CreateFrame('Button', nil, lootFrame)
+	lootFrame.linkAll:SetPoint('TOPLEFT', lootFrame, 'BOTTOMLEFT')
+	lootFrame.linkAll:Size(46, 16)
+	lootFrame.linkAll.text = lootFrame.linkAll:CreateFontString(nil, 'OVERLAY')
+	lootFrame.linkAll.text:FontTemplate(nil, nil, 'OUTLINE')
+	lootFrame.linkAll.text:SetPoint('TOPLEFT')
+	lootFrame.linkAll.text:SetText(L['Link All'])
+	lootFrame.linkAll:SetScript('OnClick', function(self)
+		M:LinkLoot()
+	end)
+	lootFrame.linkAll:SetScript('OnEnter', function(self)
+		self.text:SetTextColor(.78, .67, .35)
+	end)
+	lootFrame.linkAll:SetScript('OnLeave', function(self)
+		self.text:SetTextColor(1, 1, 1)
+	end)
+	
 	E["frames"][lootFrame] = nil;
 
 	self:RegisterEvent("LOOT_OPENED")

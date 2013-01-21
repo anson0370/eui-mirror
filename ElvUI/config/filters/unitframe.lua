@@ -619,6 +619,7 @@ G.unitframe.aurafilters['RaidDebuffs'] = {
 			[SpellName(129078)] = Defaults(),	-- Amber Prison
 			[SpellName(122055)] = Defaults(),	-- Residue
 			[SpellName(122064)] = Defaults(),	-- Corrosive Resin
+			[SpellName(123962)] = Defaults(),   -- Korthik Strike
 			-- Amber-Shaper Un'sok
 			[SpellName(121949)] = Defaults(),	-- Parasitic Growth
 			[SpellName(122370)] = Defaults(),	-- Reshape Life

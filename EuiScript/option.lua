@@ -617,7 +617,7 @@ E.Options.args.sao = {
 					order = 1,
 					type = 'toggle',
 					name = L['useIcon style'],
-					set = function(info, value) if value then E.db.sao.useIcon = value; E.db.sao.useBuffIcon = value; end end,
+					set = function(info, value) E.db.sao.useIcon = value; E.db.sao.useBuffIcon = value; end,
 				},
 				useBuffIcon = {
 					order = 7,

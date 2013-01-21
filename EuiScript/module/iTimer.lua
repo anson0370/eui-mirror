@@ -110,7 +110,7 @@ function SAO_ShowTimer(...)
 		if E.db.sao.spells[E.myclass][spellID] then
 			overlay:SetPoint("TOP", SAOF, "BOTTOM", E.db.sao.spells[E.myclass][spellID].offsetX, E.db.sao.spells[E.myclass][spellID].offsetY)
 		else	
-			overlay:SetPoint("TOP", SAOF, "BOTTOM", ( iconNum - 1 ) * ( E.db.sao.iconSize + E.db.sao.iconGap ), -16)
+		--	overlay:SetPoint("TOP", SAOF, "BOTTOM", ( iconNum - 1 ) * ( E.db.sao.iconSize + E.db.sao.iconGap ), -16)
 		end
 		SAO[spellID].timer.count:SetPoint("BOTTOMRIGHT", overlay, "BOTTOMRIGHT", -1, 1)
 		SAO[spellID].timer.text:SetPoint("CENTER", overlay, "CENTER")

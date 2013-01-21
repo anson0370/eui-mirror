@@ -199,6 +199,7 @@ function RD:StartTimer(name, spellId)
 			return
 		end
 	end
+	if #bars > E.db.euiscript.raidcd_maxbars then return; end
 	local bar = self:CreateBar()
 	local spell, rank, icon = GetSpellInfo(spellId)
 	bar.endTime = GetTime() + raid_spells[spellId]

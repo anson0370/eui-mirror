@@ -35,9 +35,8 @@ local data = {
 			["The Deadmines"] = 756,
 			["Razorfen Downs"] = 760,
 			["Razorfen Kraul"] = 761,
-			["Scarlet Halls"] = 871,
-			["Scarlet Monastery"] = 874,
-			["Scholomance"] = 898,
+			["Scarlet Monastery"] = 762,
+			["Scholomance"] = 763,
 			["Shadowfang Keep"] = 764,
 			["Stratholme"] = 765,
 		},
@@ -100,9 +99,6 @@ local data = {
 			["Shado-pan Monastery"] = 877,
 			["Gate of the Setting Sun"] = 875,
 			["Siege of Niuzao Temple"] = 887,
-			["Scarlet Halls"] = 871,
-			["Scarlet Monastery"] = 874,
-			["Scholomance"] = 898,
 		},
 	},
 	-- Northrend Raids
@@ -158,8 +154,6 @@ local data = {
 			["Isle of Conquest"] = 540,
 			["Twin Peaks"] = 626,
 			["The Battle for Gilneas"] = 736,
-			["Temple of Kotmogu"] = 856,
-			["Silvershard Mines"] = 860,
 		},
 	}
 }

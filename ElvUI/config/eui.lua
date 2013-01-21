@@ -240,6 +240,7 @@ P['unitframe'].units.target.buffs.playerOnly = {friendly = false, enemy = false}
 P['unitframe'].units.target.castbar.InterruptSound = false
 P['unitframe'].units.focus.castbar.InterruptSound = false
 P['unitframe'].units.player.classbar.text = true
+P['unitframe'].units.player.classbar.fill = 'spaced'
 P['unitframe'].units.player.aurabar.auraBarWidth = 270
 P['unitframe'].units.player.aurabar.auraBarHeight = 20
 P['unitframe'].units.player.aurabar.lock = true
