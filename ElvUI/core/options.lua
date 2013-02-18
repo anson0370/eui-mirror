@@ -696,6 +696,12 @@ local CNDONATORS = {
 	"叶落心安",
 	"duyu75526150",
 	"jiangxuxing1985_",
+	"上帝的知己",
+	"atcc7212",
+	"gugg594254843",
+	"wawq919",
+	"arler",
+	"listzj",
 }
 
 local DEVELOPERS = {

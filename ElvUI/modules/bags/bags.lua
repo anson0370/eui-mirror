@@ -236,6 +236,25 @@ function B:ResetSlotAlphaForBags(f)
 	end
 end
 
+local function ContainerItemPreClick(self, button) 
+	if(button == "RightButton" and not IsModifierKeyDown()) then
+		local bag, item = self:GetParent():GetID(), self:GetID();
+		local texture, itemCount, locked, quality, readable = GetContainerItemInfo(bag, item);
+		if (AuctionFrame and AuctionFrame:IsVisible() and texture and not locked) then			
+			if(AuctionsItemButton and AuctionsItemButton:IsVisible()) then
+				AuctionFrameTab_OnClick(AuctionFrameTab3);
+			else
+		--		AuctionFrameTab_OnClick(AuctionFrameTab5);
+			end
+			if ((AuctionsItemButton and AuctionsItemButton:IsVisible()) or (SellItemButton and SellItemButton:IsVisible())) then
+				PickupContainerItem(bag, item);
+				ClickAuctionSellItemButton();
+				AuctionsFrameAuctions_ValidateAuction();	
+			end			
+		end
+	end
+end
+
 function B:Layout(isBank)
 	if E.private.bags.enable ~= true then return; end
 	local f = self:GetContainerFrame(isBank);
@@ -351,6 +370,7 @@ function B:Layout(isBank)
 					f.Bags[bagID][slotID].cooldown = _G[f.Bags[bagID][slotID]:GetName()..'Cooldown'];
 					f.Bags[bagID][slotID].bagID = bagID
 					f.Bags[bagID][slotID].slotID = slotID
+					f.Bags[bagID][slotID]:SetScript("PreClick", ContainerItemPreClick) --by eui.cc for rightbutton click to ah
 				end
 				
 				f.Bags[bagID][slotID]:SetID(slotID);

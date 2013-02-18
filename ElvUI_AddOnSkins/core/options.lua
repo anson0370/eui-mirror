@@ -22,6 +22,10 @@ local Skins = {
 		["buttonText"] = "Ara Broker Guild Friends",
 		["addon"] = "Ara_Broker_Guild_Friends",
 	},
+	["AraBrokerTradeskillsSkin"] = {
+		["buttonText"] = "Ara Broker Tradeskills",
+		["addon"] = "Ara_Broker_Tradeskills",
+	},
 	["ArchySkin"] = {
 		["addon"] = "Archy",
 	},
@@ -257,9 +261,6 @@ local Skins = {
 	["SymbiosisTipSkin"] = {
 		["addon"] = "SymbiosisTip",
 	},
-	["TellMeWhenSkin"] = {
-		["addon"] = "TellMeWhen",
-	},
 	["TinyDPSSkin"] = {
 		["addon"] = "TinyDPS",
 	},
@@ -291,6 +292,11 @@ local Skins = {
 	["DBMSkinHalf"] = {
 		["buttonText"] = "DBM Half-Bar Skin",
 		["addon"] = "DBM-Core",
+		["ui"] = "ElvUI",
+	},
+	["CLCInfoSkin"] = {
+		["buttonText"] = "CLCInfo Icons",
+		["addon"] = "CLCInfo",
 		["ui"] = "ElvUI",
 	},
 	["CLCProtSkin"] = {

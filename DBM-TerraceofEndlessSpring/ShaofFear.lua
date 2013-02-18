@@ -149,6 +149,7 @@ local function leavePlatform()
 	if onPlatform then
 		onPlatform = false
 		MobID = nil
+		if phase == 2 then return end
 		--Breath of fear timer recovery
 		local fearlessApplied = UnitBuff("player", fearless)
 		local shaPower = UnitPower("boss1") --Get Boss Power
@@ -158,6 +159,12 @@ local function leavePlatform()
 			if shaPower < 23.3 then
 				mod:Schedule(23.3 - shaPower, function()
 					if not onPlatform then
+						sndWOP:Cancel("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_tenkj.mp3")
+						sndWOP:Cancel("Interface\\AddOns\\DBM-Core\\extrasounds\\countfive.mp3")
+						sndWOP:Cancel("Interface\\AddOns\\DBM-Core\\extrasounds\\countfour.mp3")
+						sndWOP:Cancel("Interface\\AddOns\\DBM-Core\\extrasounds\\countthree.mp3")
+						sndWOP:Cancel("Interface\\AddOns\\DBM-Core\\extrasounds\\counttwo.mp3")
+						sndWOP:Cancel("Interface\\AddOns\\DBM-Core\\extrasounds\\countone.mp3")
 						sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_tenkj.mp3") --10秒後恐懼之息
 						DBM.Flash:Show(1, 0, 0)
 						sndWOP:Schedule(5.5, "Interface\\AddOns\\DBM-Core\\extrasounds\\countfive.mp3")
@@ -232,6 +239,12 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnBreathOfFearSoon:Schedule(23.3)
 		self:Schedule(23.3, function()
 			if not onPlatform then
+				sndWOP:Cancel("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_tenkj.mp3")
+				sndWOP:Cancel("Interface\\AddOns\\DBM-Core\\extrasounds\\countfive.mp3")
+				sndWOP:Cancel("Interface\\AddOns\\DBM-Core\\extrasounds\\countfour.mp3")
+				sndWOP:Cancel("Interface\\AddOns\\DBM-Core\\extrasounds\\countthree.mp3")
+				sndWOP:Cancel("Interface\\AddOns\\DBM-Core\\extrasounds\\counttwo.mp3")
+				sndWOP:Cancel("Interface\\AddOns\\DBM-Core\\extrasounds\\countone.mp3")
 				sndWOP:Play("Interface\\AddOns\\DBM-Core\\extrasounds\\ex_mop_tenkj.mp3") --10秒後恐懼之息
 				DBM.Flash:Show(1, 0, 0)
 				sndWOP:Schedule(5.5, "Interface\\AddOns\\DBM-Core\\extrasounds\\countfive.mp3")
@@ -253,7 +266,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			elseif mod:IsHealer() then
 				DBM.ShaAssistStarModeChosed = "Healther"
 			else
-				DBM.ShaAssistStarModeChosed = nil
+				DBM.ShaAssistStarModeChosed = "Tank"
 			end
 		else
 			DBM.ShaAssistStarModeChosed = nil

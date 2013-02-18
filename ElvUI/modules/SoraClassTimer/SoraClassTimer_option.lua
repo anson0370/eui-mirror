@@ -108,6 +108,8 @@ E.Options.args.SoraClassTimer =  {
 			type = "range", order = 3,
 			name = L['Duration Limit'],
 			desc = L['The aura must be below this duration for the buff to show, set to 0 to disable. Note: This is in seconds.'],
+			get = function(info) return E.db.SoraClassTimer.timelimit end,
+			set = function(info, value) E.db.SoraClassTimer.timelimit = value; end,
 			min = 0, max = 300, step = 1,
 		},
 		fontGroup = {
@@ -115,8 +117,8 @@ E.Options.args.SoraClassTimer =  {
 			type = 'group',
 			guiInline = true,
 			name = L['Fonts'],
-			get = function(info) return E.db.AuraWatch[ info[#info] ] end,
-			set = function(info, value) E.db.AuraWatch[ info[#info] ] = value; E:StaticPopup_Show("CONFIG_RL"); end,			
+			get = function(info) return E.db.SoraClassTimer[ info[#info] ] end,
+			set = function(info, value) E.db.SoraClassTimer[ info[#info] ] = value; E:StaticPopup_Show("CONFIG_RL"); end,			
 			args = {
 				font = {
 					type = "select", dialogControl = 'LSM30_Font',

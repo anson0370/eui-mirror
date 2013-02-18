@@ -119,7 +119,12 @@ E.Options.args.euiscript = {
 							order = 18,
 							type = "toggle",
 							name = L["Shift+LeftButton set focus"],
-						},						
+						},	
+						buttonCollect = {
+							order = 19,
+							type = 'toggle',
+							name = L['Square minimap icons'],
+						},
 						camerafactor = {
 							order = 19,
 							type = "range",

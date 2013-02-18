@@ -790,7 +790,7 @@ function barPrototype:ApplyStyle()
 	if self.enlarged then frame:SetWidth(self.owner.options.HugeWidth) else frame:SetWidth(self.owner.options.Width) end
 	if self.enlarged then bar:SetWidth(self.owner.options.HugeWidth) else bar:SetWidth(self.owner.options.Width) end
 	if self.enlarged then frame:SetScale(self.owner.options.HugeScale) else frame:SetScale(self.owner.options.Scale) end
-	self.frame:Show()
+	if not self.frame:IsShown() then self.frame:Show() end
 	spark:SetAlpha(1)
 	texture:SetAlpha(1)
 	bar:SetAlpha(1)

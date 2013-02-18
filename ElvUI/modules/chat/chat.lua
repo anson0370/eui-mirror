@@ -110,7 +110,7 @@ local smileyKeys = {
 };
 
 local specialChatIcons = {
-	["Kil'jaeden"] = {
+	["Spirestone"] = {
 		["Elvz"] = "|TInterface\\AddOns\\ElvUI\\media\\textures\\ElvUI_Chat_Logo:13:22|t"
 	},
 	["Illidan"] = {

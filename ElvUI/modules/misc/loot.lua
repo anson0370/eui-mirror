@@ -260,17 +260,17 @@ function M:LinkLoot()
 	local output, key, buffer = output, 1
 	local channel = 'SAY'
 	
-	if isGroup then
-		if inPartyLFG then
-			channel = "INSTANCE_CHAT"
-		else
-			channel = "PARTY"
-		end
-	elseif isRaid then
+	if inRaid then
 		if inPartyLFG then
 			channel = "INSTANCE_CHAT"
 		else
 			channel = "RAID"
+		end
+	elseif inGroup then
+		if inPartyLFG then
+			channel = "INSTANCE_CHAT"
+		else
+			channel = "PARTY"
 		end
 	end
 	

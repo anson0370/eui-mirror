@@ -24,6 +24,13 @@ function AS:EmbedWindowResize()
 		EmbeddingWindow:SetPoint("TOP", (AS:CheckOption("EmbedRight") and RightChatPanel or LeftChatPanel), "TOP", 0, 0) EmbeddingWindow:Size(((AS:CheckOption("EmbedRight") and RightChatPanel or LeftChatPanel):GetWidth() - 1),(AS:CheckOption("EmbedRight") and RightChatPanel or LeftChatPanel):GetHeight() - 1)
 	end
 	
+	local OrigHeight, OrigWidth
+	if OrigHeight == nil then OrigHeight = EmbeddingWindow:GetHeight() end
+	if OrigWidth == nil then OrigWidth = EmbeddingWindow:GetWidth() end
+	if EmbeddingWindow:GetHeight() == OrigHeight and EmbeddingWindow:GetWidth() == OrigWidth then return end
+	OrigHeight = EmbeddingWindow:GetHeight()
+	OrigWidth = EmbeddingWindow:GetWidth()
+	
 	if (self:CheckOption("EmbedRO","Recount","Omen")) then self:EmbedRecountOmenResize() end
 	if (self:CheckOption("EmbedTDPS","TinyDPS")) then self:EmbedTDPSResize() end
 	if (self:CheckOption("EmbedRecount","Recount")) then self:EmbedRecountResize() end
@@ -43,7 +50,7 @@ function AS:EmbedRecount()
 	Recount_MainWindow:ClearAllPoints()
 	self:EmbedRecountResize()
 	if (self:CheckOption("EmbedRight") and RightChatPanel or LeftChatPanel) then Recount_MainWindow:SetParent((AS:CheckOption("EmbedRight") and RightChatPanel or LeftChatPanel)) end
-	Recount.MainWindow:SetFrameStrata("HIGH")
+	Recount.MainWindow:SetFrameStrata("LOW")
 end
 
 function AS:EmbedRecountResize()
@@ -85,7 +92,7 @@ function AS:EmbedOmen()
 		OmenBarList:SetTemplate("Transparent")
 		self:EmbedOmenResize()
 		if RightChatPanel then OmenBarList:SetParent(RightChatPanel) end
-		OmenBarList:SetFrameStrata("HIGH")
+		OmenBarList:SetFrameStrata("LOW")
 end
 
 function AS:EmbedOmenResize()
@@ -137,8 +144,8 @@ function AS:EmbedRecountOmen()
 		Recount_MainWindow:SetParent((AS:CheckOption("EmbedRight") and RightChatPanel or LeftChatPanel))
 	end
 	
-	Recount_MainWindow:SetFrameStrata("HIGH")
-	OmenBarList:SetFrameStrata("HIGH")
+	Recount_MainWindow:SetFrameStrata("LOW")
+	OmenBarList:SetFrameStrata("LOW")
 	self:EmbedRecountOmenResize()
 end
 
@@ -231,7 +238,7 @@ end
 
 function AS:EmbedTDPS()
 	tdpsFrame:SetParent((AS:CheckOption("EmbedRight") and RightChatPanel or LeftChatPanel))
-	tdpsFrame:SetFrameStrata("MEDIUM")
+	tdpsFrame:SetFrameStrata("LOW")
 	tdpsFrame.spacing = 0
 	tdpsFrame.barHeight = 14
 	tdpsVisibleBars = 9
@@ -265,7 +272,7 @@ function AS:EmbedInit()
 				Skada:ToggleWindow()
 			end
 			if (AS:CheckOption("EmbedOmen","Omen")) or (AS:CheckOption("EmbedRO")) then
-				if OmenBarList:IsShown() then
+				if OmenBarList:IsVisible() then
 					OmenBarList:Hide()
 				else
 					OmenBarList:Show()
@@ -308,7 +315,6 @@ function AS:EmbedInit()
 	if (self:CheckOption("EmbedRO","Recount","Omen")) then self:EmbedRecountOmen() end
 	if (self:CheckOption("EmbedOmen","Omen")) then self:EmbedOmen() end
 	if (self:CheckOption("EmbedSkada","Skada")) then self:EmbedSkada() end
-	--hooksecurefunc((AS:CheckOption("EmbedRight") and RightChatPanel or LeftChatPanel), "SetSize", function(self, width, height) AS:EmbedSkada() end)
 	if (self:CheckOption("EmbedTDPS","TinyDPS")) then self:EmbedTDPS() end
 	if (self:CheckOption("EmbedRecount","Recount")) then self:EmbedRecount() end
 end

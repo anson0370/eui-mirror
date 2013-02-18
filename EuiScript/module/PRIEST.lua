@@ -3,13 +3,6 @@ if E.db["euiscript"].priestpet ~= true then return end
 if E.myclass ~= "PRIEST" then return end
 
 local spellname = GetSpellInfo(34433)
-local petname = "Anyingmo"
-if GetLocale() == "zhCN" then
-	petname = "暗影魔"
-elseif GetLocale() == "zhTW" then
-	petname = "暗影惡魔"
-end
-
 local sformat = string.format
 local floor = math.floor
 local timer = 0
@@ -32,7 +25,7 @@ end
 
 local CreateFS = function(frame, fsize, fstyle)
 	local fstring = frame:CreateFontString(nil, "OVERLAY")
-	fstring:FontTemplate(nil, E.db.general.fontSize, nil)
+	fstring:FontTemplate(nil, E.db.general.fontSize, 'OUTLINE')
 	return fstring
 end
 
@@ -40,16 +33,11 @@ local StopTimer = function(bar)
 	bar:SetScript("OnUpdate", nil)
 	bar:Hide()
 	tremove(bars, bar.id)
-	EuiPriestPet.havePet = false
 end
 
 local BarUpdate = function(self, elapsed)
 	local curTime = GetTime()
---	if self.endTime < curTime then
---		StopTimer(self)
---		return
---	end
-	if not ElvUF_Pet:IsShown() then
+	if self.endTime < curTime then
 		StopTimer(self)
 		return
 	end
@@ -105,15 +93,15 @@ end
 local StartTimer = function(name, spellId)
 	local bar = CreateBar()
 	local spell, rank, icon = GetSpellInfo(spellId)
-	bar.endTime = GetTime() + 15
+	bar.endTime = GetTime() + 12
 	bar.startTime = GetTime()
 	bar.left:SetText(name)
-	bar.right:SetText(FormatTime(15))
+	bar.right:SetText(FormatTime(12))
 	bar.icon:SetNormalTexture(icon)
 	bar.icon:GetNormalTexture():SetTexCoord(0.1, 0.9, 0.1, 0.9)
 	bar.spell = spell
 	bar:Show()
-	local color = RAID_CLASS_COLORS[select(2, UnitClass(name))]
+	local color = RAID_CLASS_COLORS[E.myclass]
 	if color then
 		bar:SetStatusBarColor(color.r, color.g, color.b)
 		bar.bg:SetVertexColor(color.r, color.g, color.b, 0.25)
@@ -128,13 +116,11 @@ local StartTimer = function(name, spellId)
 	bar:SetAllPoints(PRIESTAnchor);
 end
 
-local EuiPriestPetOnUpdate = function(self)
-	if E.myclass ~= "PRIEST" or ElvUF_Pet == nil then return end
-	if ElvUF_Pet:IsShown() and (UnitName("pet") == petname) and self.havePet == false then
+addon:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+addon:SetScript("OnEvent", function(self, ...)
+	local _, _, eventType, _, _, sourceName, sourceFlags = ...
+	local spellId = select(13, ...)
+	if eventType == "SPELL_CAST_SUCCESS" and spellId == 34433 then
 		StartTimer(spellname, 34433);
-		self.havePet = true;
 	end
-end
-
-addon.havePet = false
-addon:SetScript("OnUpdate", EuiPriestPetOnUpdate);
+end)

@@ -15,4 +15,5 @@
 	<Include file='SoraClassTimer\Load_SoraClassTimer.xml'/>
 	<Include file='clickset\load_clickset.xml'/>	
 	<Include file='reminder\load_reminder.xml'/>
+	<Include file='filters\load_filters.xml'/>
 </Ui>

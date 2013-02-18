@@ -23,6 +23,11 @@ A.Stamina = {
 	['DEFAULT'] = 21562
 }
 
+if E.wowbuild > 16357 then --for PTR
+	A.Stamina[6307] = nil
+	A.Stamina[109773] = 'WARLOCK'
+end
+
 A.AttackPower = {
 	[19506] = 'HUNTER', -- Trueshot Aura
 	[6673] = 'WARRIOR', -- Battle Shout

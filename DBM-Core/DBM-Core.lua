@@ -83,11 +83,13 @@ imsg.text = imsg:CreateFontString(nil, 'ARTWORK', 'GameFont_Gigantic')
 imsg.text:SetPoint("BOTTOM", 0, 12)
 imsg.text:SetTextColor(1, 0.82, 0)
 imsg.text:SetJustifyH("CENTER")
+
+
 -------------------------------
 --  Globals/Default Options  --
 -------------------------------
 DBM = {
-	Revision = tonumber(("$Revision: 8570 $"):sub(12, -3)),
+	Revision = tonumber(("$Revision: 8600 $"):sub(12, -3)),
 	DisplayVersion = "5.1 語音增強版", -- the string that is shown as version
 	ReleaseRevision = 8421 -- the revision of the latest stable version that is available
 }
@@ -139,7 +141,7 @@ DBM.DefaultOptions = {
 	HideBossEmoteFrame = false,
 	SpamBlockRaidWarning = true,
 	SpamBlockBossWhispers = false,
-	ShowMinimapButton = false,
+	ShowMinimapButton = true,
 	BlockVersionUpdateNotice = true,
 	ShowSpecialWarnings = true,
 	ShowLHFrame = true,
@@ -191,6 +193,7 @@ DBM.DefaultOptions = {
 	AlwaysShowSpeedKillTimer = true,
 	DisableCinematics = false,
 	DisableCinematicsOutside = false,
+	DisableUIFrameFlash = false,
 	EnableReadyCheckSound = true,
 --	HelpMessageShown = false,
 	MoviesSeen = {},
@@ -894,6 +897,7 @@ SlashCmdList["DEADLYBOSSMODS"] = function(msg)
 		if timer > 30 then DBM:Schedule(timer - 30, SendChatMessage, DBM_CORE_BREAK_SEC:format(30), channel) end
 		DBM:Schedule(timer, SendChatMessage, DBM_CORE_ANNOUNCE_BREAK_OVER, channel)
 	elseif cmd:sub(1, 4) == "pull" then
+		if IsEncounterInProgress() then return end
 		if DBM:GetRaidRank() == 0 then
 			return DBM:AddMsg(DBM_ERROR_NO_PERMISSION)
 		end
@@ -1122,8 +1126,6 @@ function DBM:ShowPizzaInfo(id, sender)
 	end
 end
 
-
-
 ------------------
 --  Hyperlinks  --
 ------------------
@@ -1202,6 +1204,30 @@ do
 	function DBM:RegisterOnGuiLoadCallback(f, sort)
 		table.insert(callOnLoad, {f, sort or math.huge})
 	end
+end
+
+--invoke using /script DBM:TaintTest()
+--This will taint all 4 indexes
+--Once done, just try to change a glyph. ;)
+local indexChanger = 0
+function DBM:TaintTest()
+	indexChanger = indexChanger + 1
+	StaticPopupDialogs["DBM_TAINT_TEST"] = {
+		preferredIndex = indexChanger,
+		text = "I am tainting your UI. ".."index: "..indexChanger,
+		button1 = DBM_CORE_OK,
+		OnAccept = function()
+			if indexChanger < 4 then
+				DBM:TaintTest()
+			else
+				indexChanger = 0
+			end
+		end,
+		timeout = 0,
+		exclusive = 1,
+		whileDead = 1
+	}
+	StaticPopup_Show("DBM_TAINT_TEST")
 end
 
 
@@ -1640,6 +1666,9 @@ do
 					end
 				end
 			end)
+		end
+		if DBM.Options.DisableUIFrameFlash then
+			UIFrameFlash = function() end--Yes, this is very bad, tainting a broken blizzard function to avoid it tainting other shit.
 		end
 	end
 end
@@ -2615,6 +2644,7 @@ end
 local lowestBossHealth = 1 -- lowest health the boss had in the current fight
 local savedDifficulty
 local difficultyText
+local ignoreBestkill = false -- for bosses we enter combat with that aren't full health (likely a world boss)
 
 function DBM:StartCombat(mod, delay, synced)
 	if not checkEntry(inCombat, mod) then
@@ -2670,6 +2700,8 @@ function DBM:StartCombat(mod, delay, synced)
 				DBM.BossHealth:AddBoss(mod.combatInfo.mob, mod.localization.general.name)
 			end
 		end
+		-- (this may break on old bosses one lower below 95% within first 3 seconds of combat detection) For this reason, it's not yet enabled until i evaluate solutions to this
+--		if mod:GetHP() < 95 then ignoreBestkill = true end--Boss was not full health when engaged, disable stats and best times
 		if (DBM.Options.AlwaysShowSpeedKillTimer or mod.Options.SpeedKillTimer) and mod.Options.Enabled then
 			local bestTime
 			if mod:IsDifficulty("lfr25") and mod.stats.lfr25BestTime then
@@ -2685,7 +2717,7 @@ function DBM:StartCombat(mod, delay, synced)
 			elseif mod:IsDifficulty("heroic25") and mod.stats.heroic25BestTime then
 				bestTime = mod.stats.heroic25BestTime
 			end
-			if bestTime and bestTime > 0 then	-- only start if you already have a bestTime :)
+			if bestTime and bestTime > 0 and not ignoreBestkill then	-- only start if you already have a bestTime :)
 				local speedTimer = mod:NewTimer(bestTime, DBM_SPEED_KILL_TIMER_TEXT, "Interface\\Icons\\Spell_Holy_BorrowedTime")
 				speedTimer:Start()
 			end
@@ -2702,6 +2734,7 @@ function DBM:StartCombat(mod, delay, synced)
 				BigBrother:ConsumableCheck("SELF")
 			end
 		end
+		DBM:ToggleRaidBossEmoteFrame(1)
 	end
 end
 
@@ -2788,6 +2821,7 @@ function DBM:EndCombat(mod, wipe)
 				if not mod.stats.lfr25Kills or mod.stats.lfr25Kills < 0 then mod.stats.lfr25Kills = 0 end
 				if mod.stats.lfr25Kills > mod.stats.lfr25Pulls then mod.stats.lfr25Kills = mod.stats.lfr25Pulls end--Fix logical error i've seen where for some reason we have more kills then pulls for boss as seen by - stats for wipe messages.
 				mod.stats.lfr25Kills = mod.stats.lfr25Kills + 1
+				if ignoreBestkill then return end--Save kill count, hault the time saving if it was a bad pull health
 				mod.stats.lfr25LastTime = thisTime
 				if bestTime and bestTime > 0 and bestTime < 10 then--Just to prevent pre mature end combat calls from broken mods from saving bad time stats.
 					mod.stats.lfr25BestTime = thisTime
@@ -2798,24 +2832,28 @@ function DBM:EndCombat(mod, wipe)
 				if not mod.stats.normalKills or mod.stats.normalKills < 0 then mod.stats.normalKills = 0 end
 				if mod.stats.normalKills > mod.stats.normalPulls then mod.stats.normalKills = mod.stats.normalPulls end
 				mod.stats.normalKills = mod.stats.normalKills + 1
+				if ignoreBestkill then return end--Save kill count, hault the time saving if it was a bad pull health
 				mod.stats.normalLastTime = thisTime
 				mod.stats.normalBestTime = math.min(bestTime or math.huge, thisTime)
 			elseif savedDifficulty == "heroic5" then
 				if not mod.stats.heroicKills or mod.stats.heroicKills < 0 then mod.stats.heroicKills = 0 end
 				if mod.stats.heroicKills > mod.stats.heroicPulls then mod.stats.heroicKills = mod.stats.heroicPulls end
 				mod.stats.heroicKills = mod.stats.heroicKills + 1
+				if ignoreBestkill then return end--Save kill count, hault the time saving if it was a bad pull health
 				mod.stats.heroicLastTime = thisTime
 				mod.stats.heroicBestTime = math.min(bestTime or math.huge, thisTime)
 			elseif savedDifficulty == "challenge5" then
 				if not mod.stats.challengeKills or mod.stats.challengeKills < 0 then mod.stats.challengeKills = 0 end
 				if mod.stats.challengeKills > mod.stats.challengePulls then mod.stats.challengeKills = mod.stats.challengePulls end
 				mod.stats.challengeKills = mod.stats.challengeKills + 1
+				if ignoreBestkill then return end--Save kill count, hault the time saving if it was a bad pull health
 				mod.stats.challengeLastTime = thisTime
 				mod.stats.challengeBestTime = math.min(bestTime or math.huge, thisTime)
 			elseif savedDifficulty == "normal10" then
 				if not mod.stats.normalKills or mod.stats.normalKills < 0 then mod.stats.normalKills = 0 end
 				if mod.stats.normalKills > mod.stats.normalPulls then mod.stats.normalKills = mod.stats.normalPulls end
 				mod.stats.normalKills = mod.stats.normalKills + 1
+				if ignoreBestkill then return end--Save kill count, hault the time saving if it was a bad pull health
 				mod.stats.normalLastTime = thisTime
 				if bestTime and bestTime > 0 and bestTime < 1.5 then--you did not kill a raid boss in one global CD. (all level 60 raids report as instance difficulty 1 which means this time has to be ridiculously low. It's more or less only gonna fix kill times of 0.)
 					mod.stats.normalBestTime = thisTime
@@ -2826,6 +2864,7 @@ function DBM:EndCombat(mod, wipe)
 				if not mod.stats.heroicKills or mod.stats.heroicKills < 0 then mod.stats.heroicKills = 0 end
 				if mod.stats.heroicKills > mod.stats.heroicPulls then mod.stats.heroicKills = mod.stats.heroicPulls end
 				mod.stats.heroicKills = mod.stats.heroicKills + 1
+				if ignoreBestkill then return end--Save kill count, hault the time saving if it was a bad pull health
 				mod.stats.heroicLastTime = thisTime
 				if bestTime and bestTime > 0 and bestTime < 10 then
 					mod.stats.heroicBestTime = thisTime
@@ -2836,6 +2875,7 @@ function DBM:EndCombat(mod, wipe)
 				if not mod.stats.normal25Kills or mod.stats.normal25Kills < 0 then mod.stats.normal25Kills = 0 end
 				if mod.stats.normal25Kills > mod.stats.normal25Pulls then mod.stats.normal25Kills = mod.stats.normal25Pulls end
 				mod.stats.normal25Kills = mod.stats.normal25Kills + 1
+				if ignoreBestkill then return end--Save kill count, hault the time saving if it was a bad pull health
 				mod.stats.normal25LastTime = thisTime
 				if bestTime and bestTime > 0 and bestTime < 10 then
 					mod.stats.normal25BestTime = thisTime
@@ -2846,6 +2886,7 @@ function DBM:EndCombat(mod, wipe)
 				if not mod.stats.heroic25Kills or mod.stats.heroic25Kills < 0 then mod.stats.heroic25Kills = 0 end
 				if mod.stats.heroic25Kills > mod.stats.heroic25Pulls then mod.stats.heroic25Kills = mod.stats.heroic25Pulls end
 				mod.stats.heroic25Kills = mod.stats.heroic25Kills + 1
+				if ignoreBestkill then return end--Save kill count, hault the time saving if it was a bad pull health
 				mod.stats.heroic25LastTime = thisTime
 				if bestTime and bestTime > 0 and bestTime < 10 then
 					mod.stats.heroic25BestTime = thisTime
@@ -2855,7 +2896,9 @@ function DBM:EndCombat(mod, wipe)
 			end
 			local totalKills = (savedDifficulty == "lfr25" and mod.stats.lfr25Kills) or ((savedDifficulty == "heroic5" or savedDifficulty == "heroic10") and mod.stats.heroicKills) or (savedDifficulty == "challenge5" and mod.stats.challengeKills) or (savedDifficulty == "normal25" and mod.stats.normal25Kills) or (savedDifficulty == "heroic25" and mod.stats.heroic25Kills) or mod.stats.normalKills
 			if DBM.Options.ShowKillMessage then
-				if not lastTime then
+				if not thisTime then--was a bad pull so we ignored thisTime
+					self:AddMsg(DBM_CORE_BOSS_DOWN:format(difficultyText..mod.combatInfo.name, DBM_CORE_UNKNOWN))
+				elseif not lastTime then
 					self:AddMsg(DBM_CORE_BOSS_DOWN:format(difficultyText..mod.combatInfo.name, strFromTime(thisTime)))
 				elseif thisTime < (bestTime or math.huge) then
 					self:AddMsg(DBM_CORE_BOSS_DOWN_NR:format(difficultyText..mod.combatInfo.name, strFromTime(thisTime), strFromTime(bestTime), totalKills))
@@ -2878,6 +2921,7 @@ function DBM:EndCombat(mod, wipe)
 		if mod.OnCombatEnd then mod:OnCombatEnd(wipe) end
 		DBM.BossHealth:Hide()
 		DBM.Arrow:Hide(true)
+		DBM:ToggleRaidBossEmoteFrame(0)
 	end
 end
 
@@ -3028,6 +3072,7 @@ do
 					speedTimer:Update(time + lag, bestTime)
 				end
 			end
+			DBM:ToggleRaidBossEmoteFrame(1)
 		end
 	end
 
@@ -3270,14 +3315,24 @@ do
 	end)
 end
 
-do
-	local old = RaidBossEmoteFrame:GetScript("OnEvent")
-	RaidBossEmoteFrame:SetScript("OnEvent", function(...)
-		if DBM.Options.HideBossEmoteFrame and IsInInstance() then--Function doesn't work, AT ALL. Table returns nil here, so try it a different way
-			return
-		end
-		return old(...)
-	end)
+--Raid Boss Emote frame handler for core and BG mods.
+--This completely unregisteres or registers event so frame simply does or doesn't show events
+--No dirty hooking. Least invasive way to do it. Uses lowest CPU
+--Toggle is for if we are turning off or on.
+--Custom is for exterior mods to call function without needing global option turned on (such as BG mods option)
+--All also handled by core so both core AND pvp mods aren't trying to hook/hide it. Should all be done HERE
+local unRegistered = false
+function DBM:ToggleRaidBossEmoteFrame(toggle, custom)
+	if not DBM.Options.HideBossEmoteFrame and not custom then return end
+	if toggle == 1 and not unRegistered then
+		unRegistered = true
+		RaidBossEmoteFrame:UnregisterEvent("RAID_BOSS_EMOTE")
+		RaidBossEmoteFrame:UnregisterEvent("RAID_BOSS_WHISPER")
+	elseif toggle == 0 and unRegistered then
+		unRegistered = false
+		RaidBossEmoteFrame:RegisterEvent("RAID_BOSS_EMOTE")
+		RaidBossEmoteFrame:RegisterEvent("RAID_BOSS_WHISPER")
+	end
 end
 
 

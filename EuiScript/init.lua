@@ -314,6 +314,93 @@ function S:TradeTargetLevel(event)
 	end
 end
 
+----------------------------------------------------------------------------------------
+--	Collect minimap buttons in one line
+----------------------------------------------------------------------------------------
+local BlackList = {
+	["QueueStatusMinimapButton"] = true,
+	["MiniMapTracking"] = true,
+	["MiniMapMailFrame"] = true,
+	["HelpOpenTicketButton"] = true,
+	["GameTimeFrame"] = true,
+	["ElvConfigToggle"] = true,
+	["ZygorGuidesViewerMapIcon"] = true,
+	["MiniMapTrackingButton"] = true,
+	["MiniMapVoiceChatFrame"] = true,
+	["TimeManagerClockButton"] = true,	
+}
+
+local buttons = {}
+local function CreateMinimapButton()
+	local button = CreateFrame("Button", "EUIMinimapButton", UIParent)
+	local line = math.ceil(E.db.general.minimap.size / 20)
+	button:SetFrameStrata("DIALOG")
+	button:EnableMouse(true)
+	button:SetClampedToScreen(true)
+	button:StyleButton()
+	button:SetTemplate('Default')
+	button:Size(20)
+	button:SetPoint('CENTER', Minimap, 'TOPLEFT', 0, -E.db.general.minimap.size / 3)
+	E:CreateMover(button, "EUIMinimapButtonMover", L['Square minimap icons'], nil, nil, nil, "ALL,SOLO")
+	button.texture = button:CreateTexture(nil, 'OVERLAY')
+	button.texture:Size(22)
+	button.texture:SetPoint('CENTER')
+	button.texture:SetTexture('Interface\\AddOns\\ElvUI\\media\\textures\\tank')
+	button:SetScript("OnClick", function(self)
+		for i = 1, #buttons do
+			if buttons[i]:IsShown() then buttons[i]:Hide() else buttons[i]:Show() end
+		end
+	end)
+	
+	return button
+end
+
+local function PositionAndStyle(button)
+	for i = 1, #buttons do
+		buttons[i]:ClearAllPoints()
+		if i == 1 then
+			buttons[i]:SetPoint("TOP", button, "BOTTOM", 0, -2)
+		elseif i == line then
+			buttons[i]:SetPoint("TOPRIGHT", buttons[1], "TOPLEFT", -1, 0)
+		else
+			buttons[i]:SetPoint("TOP", buttons[i-1], "BOTTOM", 0, -1)
+		end
+		buttons[i].ClearAllPoints = E.dummy
+		buttons[i].SetPoint = E.dummy
+		buttons[i]:Hide()
+		buttons[i]:HookScript("OnClick", function(self)
+			for i = 1, #buttons do
+				if buttons[i]:IsShown() then buttons[i]:Hide() end
+			end
+		end)
+	end
+end
+
+function S:ButtonCollect()
+	self:ModifyChatSticky() --call other module
+	
+	if not E.db.euiscript.buttonCollect then return; end
+	
+	if IsAddOnLoaded('MBB') then DisableAddOn('MBB') end
+	
+	local button = CreateMinimapButton()
+	
+	for i, child in ipairs({Minimap:GetChildren()}) do
+		if not BlackList[child:GetName()] then
+			if child:GetObjectType() == "Button" and child:GetNumRegions() >= 3 and child:IsShown() then
+				child:SetParent(button)
+				tinsert(buttons, child)
+			end
+		end
+	end
+	if #buttons == 0 then
+		button:Hide()
+	end
+	
+	PositionAndStyle(button)	
+end
+
+
 function S:Initialize()
 	self:CreateVehicleExit()
 	self:AutoCollect()
@@ -326,7 +413,8 @@ function S:Initialize()
 	self:SecureHook('MerchantItemButton_OnModifiedClick', 'ByMaxNumber')
 	self:SecureHook('WorldStateAlwaysUpFrame_Update', 'MoveWorldState')
 	self:RegisterEvent("MERCHANT_SHOW", 'SellItem')
-	self:RegisterEvent("PLAYER_ENTERING_WORLD", "ModifyChatSticky")
+--	self:RegisterEvent("PLAYER_ENTERING_WORLD", "ModifyChatSticky")
+	self:RegisterEvent("PLAYER_ENTERING_WORLD", "ButtonCollect")
 	self:RegisterEvent("CHAT_MSG_WHISPER", "AutoInvite")
 	self:RegisterEvent("ZONE_CHANGED_NEW_AREA", "ModifyCamera")
 	self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED", "FixoUF_Swing")

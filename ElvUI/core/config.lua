@@ -275,6 +275,22 @@ function E:CreateMoverPopup()
 	snapping:SetScript("OnClick", function(self)
 		E.db.general.stickyFrames = self:GetChecked()
 	end)
+	
+	local nudge = CreateFrame('CheckButton', f:GetName()..'CheckButton2', f, 'OptionsCheckButtonTemplate')
+	_G[nudge:GetName().. "Text"]:SetText(L['Nudge'])
+	
+	nudge:SetScript("OnShow", function(self)
+		self:SetChecked(E.db.general.nudgeWindow)
+	end)
+	
+	nudge:SetScript("OnClick", function(self)
+		E.db.general.nudgeWindow = self:GetChecked() or false
+		if E.db.general.nudgeWindow and not ElvUIMoverNudgeWindow:IsShown() then
+			ElvUIMoverNudgeWindow:Show()
+		elseif not E.db.general.nudgeWindow and ElvUIMoverNudgeWindow:IsShown() then
+			ElvUIMoverNudgeWindow:Hide()
+		end
+	end)
 
 	local lock = CreateFrame("Button", f:GetName()..'CloseButton', f, "OptionsButtonTemplate")
 	_G[lock:GetName() .. "Text"]:SetText(L["Lock"])
@@ -326,8 +342,10 @@ function E:CreateMoverPopup()
 	snapping:SetPoint("BOTTOMLEFT", 14, 10)
 	lock:SetPoint("BOTTOMRIGHT", -14, 14)
 	align:SetPoint('TOPRIGHT', lock, 'TOPLEFT', -4, -2)
+	nudge:SetPoint("BOTTOMLEFT", 14, 30)
 	
 	S:HandleCheckBox(snapping)
+	S:HandleCheckBox(nudge)
 	S:HandleButton(lock)
 	S:HandleEditBox(align)
 	

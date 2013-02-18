@@ -280,6 +280,8 @@ end
 
 --NamePlate Config
 do
+	L["Combo Points"] = '连击点';
+	L["Display combo points on nameplates."] = '在姓名版上显示连击点';
 	L["Small Plates"] = "小型姓名版";
 	L["Adjust nameplate size on smaller mobs to scale down. This will only adjust the health bar width not the actual nameplate hitbox you click on."] = "启用较小宽度尺寸的姓名版,这通常用来显示一些低级的怪.";
 	L["Class Icons"] = '职业图标';
@@ -318,7 +320,7 @@ do
 	L["Enemy"] = "敌对";
 	L["Threat"] = "仇恨";
 	L["Reactions"] = "声望";
-	L["Filters"] = "过滤";
+	L["Filters"] = "过滤器";
 	L['Add Name'] = "添加名字";
 	L['Remove Name'] = "删除名字";
 	L['Use this filter.'] = "使用过滤器";
@@ -333,7 +335,7 @@ do
 	L['Bad Scale'] = "危险比例";
 	L["Auras"] = "光环";
 	L['Healer Icon'] = "治疗标志";
-	L['Display a healer icon over known healers inside battlegrounds.'] = "在战场上显示治疗标志";
+	L["Display a healer icon over known healers inside battlegrounds or arenas."] = "在战场或竞技场上显示治疗标志";
 	L['Restoration'] = "恢复";
 	L['Holy'] = "神圣";
 	L['Discipline'] = "戒律";

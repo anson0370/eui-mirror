@@ -60,6 +60,7 @@ P['sao'] = {
 P['general'].bordercolor = { r = .31,g = .31,b = .31 }
 P['general'].backdropfadecolor = { r = .06,g = .06,b = .06, a = 0.9 }
 P['general'].stickyFrames = false
+P['general'].nudgeWindow = true
 P['unitframe'].colors.health = P.general.bordercolor
 P['unitframe'].colors.auraBarBuff = P.general.bordercolor
 
@@ -592,6 +593,7 @@ P["euiscript"] = {
 	["autochangeloot"] = false,
 	['inviteRank'] = 4,
 	['embedfocuser'] = true,
+	['buttonCollect'] = true,
 }
 
 P["combattext"] = {

@@ -291,20 +291,6 @@ E.Options.args.unitframe.args.focus.args.range = {
 E.Options.args.unitframe.args['raid10'] = nil
 E.Options.args.unitframe.args['raid40'] = nil
 
-E.Options.args.unitframe.args.filters.args.selectFilter.values = function()
-	local filters = {}
-	filters[''] = NONE
-	for filter in pairs(E.global.unitframe['aurafilters']) do
-		filters[filter] = L[filter] or filter
-	end
-	
-	filters['Buff Indicator'] = L['Buff Indicator']
-	filters['Buff Indicator (Pet)'] = L['Buff Indicator (Pet)']
-	filters['AuraBar Colors'] = L['AuraBar Colors']
-	filters['Blacklist (Strict)'] = L['Blacklist (Strict)']
-	return filters
-end
-
 --Attention Frames
 --[[ E.Options.args.unitframe.args.attention = {
 	name = L['Attention Frames'],

@@ -202,7 +202,7 @@ local function CreateMover(parent, name, text, overlay, snapOffset, postdrag)
 	f:SetScript("OnEnter", function(self) 
 		if isDragging then return end
 		self.text:SetTextColor(1, 1, 1)
-		ElvUIMoverNudgeWindow:Show()
+		if E.db['general'].nudgeWindow then ElvUIMoverNudgeWindow:Show() end
 		E.AssignFrameToNudge(self)
 		coordFrame.child = self
 		coordFrame:GetScript('OnUpdate')(coordFrame)
